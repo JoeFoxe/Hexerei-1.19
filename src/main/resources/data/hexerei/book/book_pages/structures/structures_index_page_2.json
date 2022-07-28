@@ -1,0 +1,140 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 7,
+          "y": 0,
+          "height": 18,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.structures_index_page_2.passage_1",
+      "align": "middle"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 3,
+          "height": 18,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.structures_index_page_2.passage_2"
+    }
+  ],
+  "images": [
+    {
+      "x": 2.5,
+      "y": 2,
+      "u": 0,
+      "v": 0,
+      "width": 165,
+      "height": 165,
+      "imageWidth": 165,
+      "imageHeight": 165,
+      "scale": 0.35,
+      "texture": "hexerei:textures/book/pictures/witch_hut.png",
+      "hyperlink":
+      {
+        "chapter": 5,
+        "page": 3
+      },
+      "tooltip": [
+        {
+          "color_hex": "808080",
+          "text": "book.hexerei.tooltip_go_to_page"
+        },
+        {
+          "color_hex": "16777215",
+          "text": " - ",
+          "type": "append"
+        },
+        {
+          "color_hex": "CCB37E",
+          "text": "book.hexerei.structures_witch_hut_page_1.passage_1",
+          "type": "append"
+        }
+      ],
+      "effects": [
+        {
+          "type": "hover_change_texture",
+          "image": {
+            "u": 0,
+            "v": 0,
+            "width": 165,
+            "height": 165,
+            "imageWidth": 165,
+            "imageHeight": 165,
+            "texture": "hexerei:textures/book/pictures/witch_hut_hover.png",
+            "effects": [
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "x": 2.5,
+      "y": 5.5,
+      "u": 0,
+      "v": 0,
+      "width": 165,
+      "height": 165,
+      "imageWidth": 165,
+      "imageHeight": 165,
+      "scale": 0.35,
+      "texture": "hexerei:textures/book/pictures/dark_coven.png",
+      "hyperlink":
+      {
+        "chapter": 5,
+        "page": 5
+      },
+      "tooltip": [
+        {
+          "color_hex": "808080",
+          "text": "book.hexerei.tooltip_go_to_page"
+        },
+        {
+          "color_hex": "16777215",
+          "text": " - ",
+          "type": "append"
+        },
+        {
+          "color_hex": "CCB37E",
+          "text": "book.hexerei.structures_dark_coven_page_1.passage_1",
+          "type": "append"
+        }
+      ],
+      "effects": [
+        {
+          "type": "hover_change_texture",
+          "image": {
+            "u": 0,
+            "v": 0,
+            "width": 165,
+            "height": 165,
+            "imageWidth": 165,
+            "imageHeight": 165,
+            "texture": "hexerei:textures/book/pictures/dark_coven_hover.png",
+            "effects": [
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "x": 2.5,
+      "y": -0.3,
+      "z": -4,
+      "u": 0,
+      "v": 0,
+      "width": 380,
+      "height": 74,
+      "imageWidth": 380,
+      "imageHeight": 74,
+      "scale": 0.3,
+      "texture": "hexerei:textures/book/chapter_header.png"
+    }
+  ]
+}

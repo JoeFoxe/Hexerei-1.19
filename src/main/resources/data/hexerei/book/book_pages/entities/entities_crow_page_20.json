@@ -1,0 +1,74 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 19,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_crow_page_20.passage_1"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 12,
+          "height": 3,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_crow_page_20.passage_2"
+    }
+  ],
+
+
+  "entities": [
+    {
+      "x": 2.5,
+      "y": 3.55,
+      "scale": 2,
+      "name": "hexerei:crow",
+      "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"jeb_\"}',DyeColor:15,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:crow\",inv:{Items:[{Count:1b,Slot:0,id:\"hexerei:witch_helmet\",tag:{Damage:0,RepairCost:0,display:{Name:'{\"text\":\"joe_\"}',color:1481884}}}],Size:3}}",
+      "hover_offset": {
+        "x": 0,
+        "y": -0.35,
+        "scale": 0.4
+      }
+    },
+    {
+      "x": 1,
+      "y": 2.45,
+      "scale": 2,
+      "name": "hexerei:crow",
+      "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"les_\"}',DyeColor:15,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:crow\",inv:{Items:[{Count:1b,Slot:0,id:\"hexerei:witch_helmet\",tag:{Damage:0,RepairCost:0,display:{Name:'{\"text\":\"joe_\"}',color:1481884}}}],Size:3}}",
+      "hover_offset": {
+        "x": 0,
+        "y": -0.35,
+        "scale": 0.4
+      }
+    },
+    {
+      "x": 4,
+      "y": 2.45,
+      "scale": 2,
+      "name": "hexerei:crow",
+      "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"trans_\"}',DyeColor:15,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:crow\",inv:{Items:[{Count:1b,Slot:0,id:\"hexerei:witch_helmet\",tag:{Damage:0,RepairCost:0,display:{Name:'{\"text\":\"joe_\"}',color:1481884}}}],Size:3}}",
+      "hover_offset": {
+        "x": 0,
+        "y": -0.35,
+        "scale": 0.4
+      }
+    }
+  ],
+  "items_and_fluids": [
+    {
+      "type": "item",
+      "x": 2.5,
+      "y": 6,
+      "name": "hexerei:seed_mixture"
+    }
+  ]
+}

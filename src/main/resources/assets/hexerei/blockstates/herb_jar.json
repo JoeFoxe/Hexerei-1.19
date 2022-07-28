@@ -1,0 +1,17 @@
+
+{
+  "variants": {
+    "gui_render=false,dyed=true": {
+      "model": "hexerei:block/blank"
+    },
+    "gui_render=true,dyed=true": {
+      "model": "hexerei:block/herb_jar_dyed"
+    },
+    "gui_render=false,dyed=false": {
+      "model": "hexerei:block/blank"
+    },
+    "gui_render=true,dyed=false": {
+      "model": "hexerei:block/herb_jar"
+    }
+  }
+}

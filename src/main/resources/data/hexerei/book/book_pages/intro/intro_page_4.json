@@ -1,0 +1,79 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 6,
+          "width": 32
+        },{
+          "x": 0,
+          "y": 9,
+          "height": 4,
+          "width": 32
+        },{
+          "x": 0,
+          "y": 13,
+          "height": 8,
+          "width": 18
+        }
+      ],
+      "passage_text": "book.hexerei.intro_page_4.passage_1"
+    }
+  ],
+  "images": [
+    {
+      "x": 2.5,
+      "y": 2.5,
+      "u": 0,
+      "v": 0,
+      "width": 320,
+      "height": 90,
+      "imageWidth": 320,
+      "imageHeight": 90,
+      "scale": 0.25,
+      "texture": "hexerei:textures/book/pictures/bookmark_button_colors.png"
+    },{
+      "x": 1.25,
+      "y": 2.85,
+      "z": 1,
+      "u": 0,
+      "v": 0,
+      "width": 32,
+      "height": 48,
+      "imageWidth": 32,
+      "imageHeight": 48,
+      "scale": 0.25,
+      "texture": "hexerei:textures/book/right_click_icon.png",
+      "effects": [
+        {
+          "type": "hover_change_texture",
+          "image": {
+            "u": 0,
+            "v": 0,
+            "width": 32,
+            "height": 48,
+            "imageWidth": 32,
+            "imageHeight": 48,
+            "texture": "hexerei:textures/book/right_click_icon_hover.png",
+            "effects": [
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "x": 4,
+      "y": 6,
+      "u": 0,
+      "v": 0,
+      "width": 181,
+      "height": 167,
+      "imageWidth": 181,
+      "imageHeight": 167,
+      "scale": 0.25,
+      "texture": "hexerei:textures/book/pictures/bookmark_buttons_on_page.png"
+    }
+  ]
+}

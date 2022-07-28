@@ -1,0 +1,35 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 6,
+          "width": 19.5
+        },{
+          "x": 0,
+          "y": 6,
+          "height": 13,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_crow_page_12.passage_1"
+    }
+  ],
+  "images": [
+
+    {
+      "x": 4.2,
+      "y": 0.55,
+      "u": 0,
+      "v": 0,
+      "width": 165,
+      "height": 165,
+      "imageWidth": 165,
+      "imageHeight": 165,
+      "scale": 0.25,
+      "texture": "hexerei:textures/book/pictures/crow_pickpocket_villager_2.png"
+    }
+  ]
+}

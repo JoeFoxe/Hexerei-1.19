@@ -1,0 +1,43 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 7,
+          "y": 0,
+          "height": 18,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_index_page_1.passage_1",
+      "align": "middle"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 3,
+          "height": 18,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_index_page_1.passage_2"
+    }
+  ],
+  "images": [
+
+    {
+      "x": 2.5,
+      "y": -0.3,
+      "z": -4,
+      "u": 0,
+      "v": 0,
+      "width": 380,
+      "height": 74,
+      "imageWidth": 380,
+      "imageHeight": 74,
+      "scale": 0.3,
+      "texture": "hexerei:textures/book/chapter_header.png"
+    }
+  ]
+}

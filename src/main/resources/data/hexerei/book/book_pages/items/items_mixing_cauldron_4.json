@@ -1,0 +1,125 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 3,
+          "width": 32
+        },
+        {
+          "x": 4,
+          "y": 3,
+          "height": 15,
+          "width": 25
+        }
+      ],
+      "passage_text": "book.hexerei.items_mixing_cauldron_4.passage_1"
+    }
+  ],
+  "images": [
+    {
+      "x": 0.5,
+      "y": 1.5,
+      "u": 0,
+      "v": 0,
+      "width": 90,
+      "height": 90,
+      "imageWidth": 90,
+      "imageHeight": 90,
+      "scale": 0.25,
+      "texture": "hexerei:textures/book/pictures/mixing_cauldron_jei_gui.png"
+    },
+    {
+      "x": 1,
+      "y": 1.5,
+      "z": 1,
+      "u": 0,
+      "v": 0,
+      "width": 18,
+      "height": 18,
+      "imageWidth": 18,
+      "imageHeight": 18,
+      "scale": 1,
+      "texture": "hexerei:textures/book/arrow_left.png"
+    },
+
+    {
+      "x": 0.5,
+      "y": 3,
+      "u": 0,
+      "v": 0,
+      "width": 90,
+      "height": 90,
+      "imageWidth": 90,
+      "imageHeight": 90,
+      "scale": 0.25,
+      "texture": "hexerei:textures/book/pictures/mixing_cauldron_jei_transfer_button.png"
+    },
+    {
+      "x": 1,
+      "y": 3,
+      "z": 1,
+      "u": 0,
+      "v": 0,
+      "width": 18,
+      "height": 18,
+      "imageWidth": 18,
+      "imageHeight": 18,
+      "scale": 1,
+      "texture": "hexerei:textures/book/arrow_left.png"
+    },
+
+    {
+      "x": 0.5,
+      "y": 4.5,
+      "u": 0,
+      "v": 0,
+      "width": 90,
+      "height": 90,
+      "imageWidth": 90,
+      "imageHeight": 90,
+      "scale": 0.25,
+      "texture": "hexerei:textures/book/pictures/mixing_cauldron_blood_sigil_gui.png"
+    },
+    {
+      "x": 1,
+      "y": 4.5,
+      "z": 1,
+      "u": 0,
+      "v": 0,
+      "width": 18,
+      "height": 18,
+      "imageWidth": 18,
+      "imageHeight": 18,
+      "scale": 1,
+      "texture": "hexerei:textures/book/arrow_left.png"
+    },
+
+    {
+      "x": 1.75,
+      "y": 6.5,
+      "u": 0,
+      "v": 0,
+      "width": 266,
+      "height": 266,
+      "imageWidth": 266,
+      "imageHeight": 266,
+      "scale": 0.1,
+      "texture": "hexerei:textures/book/pictures/mixing_cauldron_blood_sigil.png"
+    },
+    {
+      "x": 3.75,
+      "y": 6.5,
+      "u": 0,
+      "v": 0,
+      "width": 266,
+      "height": 266,
+      "imageWidth": 266,
+      "imageHeight": 266,
+      "scale": 0.1,
+      "texture": "hexerei:textures/book/pictures/mixing_cauldron_blood_sigil_blood.png"
+    }
+  ]
+}

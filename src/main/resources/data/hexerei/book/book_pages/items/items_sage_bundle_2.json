@@ -1,0 +1,107 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 1,
+          "height": 17,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.crafting_type.crafting_table"
+    }
+  ],
+  "items_and_fluids": [
+
+    {
+      "type": "item",
+      "x": 3.5,
+      "y": 2.75,
+      "name": "minecraft:crafting_table"
+    },
+
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 3,
+      "name": "hexerei:sage"
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 3,
+      "name": "hexerei:sage"
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 3,
+      "name": "hexerei:sage"
+    },
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 4,
+      "name": "hexerei:sage"
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 4,
+      "name": "minecraft:string"
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 4,
+      "name": "hexerei:sage"
+    },
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 5,
+      "name": "hexerei:sage"
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 5,
+      "name": "hexerei:sage"
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 5,
+      "name": "hexerei:sage"
+    },
+
+
+
+    {
+      "type": "item",
+      "x": 5,
+      "y": 4,
+      "name": "hexerei:sage_bundle"
+    }
+  ],
+  "images": [
+    {
+      "x": 3.5,
+      "y": 4,
+      "u": 0,
+      "v": 0,
+      "width": 18,
+      "height": 18,
+      "imageWidth": 18,
+      "imageHeight": 18,
+      "scale": 1,
+      "texture": "hexerei:textures/book/arrow_right.png",
+      "effects": [
+      ]
+    }
+  ]
+}

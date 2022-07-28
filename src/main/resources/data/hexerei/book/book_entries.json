@@ -1,0 +1,662 @@
+{
+  "chapters": [
+    {
+      "name": "Index",
+      "pages": [
+        {
+          "page_location": "book_pages/index/index_page"
+        },
+        {
+          "page_location": "book_pages/index/index_page_2"
+        }
+      ]
+    },
+    {
+      "name": "Intro",
+      "pages": [
+        {
+          "page_location": "book_pages/intro/intro_page_1"
+        },
+        {
+          "page_location": "book_pages/intro/intro_page_2"
+        },
+        {
+          "page_location": "book_pages/intro/intro_page_3"
+        },
+        {
+          "page_location": "book_pages/intro/intro_page_4"
+        },
+        {
+          "page_location": "book_pages/intro/intro_page_5"
+        },
+        {
+          "page_location": "book_pages/intro/intro_page_6"
+        }
+      ]
+    },
+    {
+      "name": "Support Me",
+      "pages": [
+        {
+          "page_location": "book_pages/support/support_page_1"
+        },
+        {
+          "page_location": "book_pages/support/support_page_2"
+        },
+        {
+          "page_location": "book_pages/support/support_page_3"
+        },
+        {
+          "page_location": "book_pages/support/support_page_4"
+        },
+        {
+          "page_location": "book_pages/support/support_page_5"
+        }
+      ]
+    },
+    {
+      "name": "Items",
+      "pages": [
+        {
+          "page_location": "book_pages/items/items_index_page_1"
+        },
+        {
+          "page_location": "book_pages/items/items_index_page_2"
+        },
+        {
+          "page_location": "book_pages/items/items_index_page_3"
+        },
+
+        {
+          "page_location": "book_pages/items/items_book_of_shadows_1"
+        },
+        {
+          "page_location": "book_pages/items/items_book_of_shadows_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_altar_1"
+        },
+        {
+          "page_location": "book_pages/items/items_altar_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_mixing_cauldron_1"
+        },
+        {
+          "page_location": "book_pages/items/items_mixing_cauldron_2"
+        },
+        {
+          "page_location": "book_pages/items/items_mixing_cauldron_3"
+        },
+        {
+          "page_location": "book_pages/items/items_mixing_cauldron_4"
+        },
+        {
+          "page_location": "book_pages/items/items_mixing_cauldron_5"
+        },
+        {
+          "page_location": "book_pages/items/items_mixing_cauldron_6"
+        },
+
+        {
+          "page_location": "book_pages/items/items_coffer_1"
+        },
+        {
+          "page_location": "book_pages/items/items_coffer_2"
+        },
+        {
+          "page_location": "book_pages/items/items_coffer_3"
+        },
+        {
+          "page_location": "book_pages/items/items_coffer_4"
+        },
+        {
+          "page_location": "book_pages/items/items_coffer_5"
+        },
+
+        {
+          "page_location": "book_pages/items/items_herb_jar_1"
+        },
+        {
+          "page_location": "book_pages/items/items_herb_jar_2"
+        },
+        {
+          "page_location": "book_pages/items/items_herb_jar_3"
+        },
+        {
+          "page_location": "book_pages/items/items_herb_jar_4"
+        },
+
+        {
+          "page_location": "book_pages/items/items_sage_burning_plate_1"
+        },
+        {
+          "page_location": "book_pages/items/items_sage_burning_plate_2"
+        },
+        {
+          "page_location": "book_pages/items/items_sage_burning_plate_3"
+        },
+
+        {
+          "page_location": "book_pages/items/items_drying_rack_1"
+        },
+        {
+          "page_location": "book_pages/items/items_drying_rack_2"
+        },
+        {
+          "page_location": "book_pages/items/items_drying_rack_3"
+        },
+        {
+          "page_location": "book_pages/items/items_drying_rack_4"
+        },
+
+        {
+          "page_location": "book_pages/items/items_pestle_and_mortar_1"
+        },
+        {
+          "page_location": "book_pages/items/items_pestle_and_mortar_2"
+        },
+        {
+          "page_location": "book_pages/items/items_pestle_and_mortar_3"
+        },
+
+        {
+          "page_location": "book_pages/items/items_candle_dipper_1"
+        },
+        {
+          "page_location": "book_pages/items/items_candle_dipper_2"
+        },
+        {
+          "page_location": "book_pages/items/items_candle_dipper_3"
+        },
+        {
+          "page_location": "book_pages/items/items_candle_dipper_4"
+        },
+
+        {
+          "page_location": "book_pages/items/items_candle_1"
+        },
+        {
+          "page_location": "book_pages/items/items_candle_2"
+        },
+        {
+          "page_location": "book_pages/items/items_candle_3"
+        },
+
+        {
+          "page_location": "book_pages/items/items_candelabra_1"
+        },
+        {
+          "page_location": "book_pages/items/items_candelabra_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_crystal_ball_1"
+        },
+        {
+          "page_location": "book_pages/items/items_crystal_ball_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_dowsing_rod_1"
+        },
+        {
+          "page_location": "book_pages/items/items_dowsing_rod_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_blood_sigil_1"
+        },
+        {
+          "page_location": "book_pages/items/items_blood_sigil_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_blood_bottle_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_willow_broom_1"
+        },
+        {
+          "page_location": "book_pages/items/items_willow_broom_2"
+        },
+        {
+          "page_location": "book_pages/items/items_willow_broom_3"
+        },
+        {
+          "page_location": "book_pages/items/items_willow_broom_4"
+        },
+
+        {
+          "page_location": "book_pages/items/items_mahogany_broom_1"
+        },
+        {
+          "page_location": "book_pages/items/items_mahogany_broom_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_gold_rings_1"
+        },
+        {
+          "page_location": "book_pages/items/items_gold_rings_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_broom_keychain_1"
+        },
+        {
+          "page_location": "book_pages/items/items_broom_keychain_2"
+        },
+        {
+          "page_location": "book_pages/items/items_broom_keychain_3"
+        },
+
+        {
+          "page_location": "book_pages/items/items_broom_netherite_tip_1"
+        },
+        {
+          "page_location": "book_pages/items/items_broom_netherite_tip_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_broom_waterproof_tip_1"
+        },
+        {
+          "page_location": "book_pages/items/items_broom_waterproof_tip_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_small_satchel_1"
+        },
+        {
+          "page_location": "book_pages/items/items_small_satchel_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_medium_satchel_1"
+        },
+        {
+          "page_location": "book_pages/items/items_medium_satchel_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_large_satchel_1"
+        },
+        {
+          "page_location": "book_pages/items/items_large_satchel_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_broom_brush_1"
+        },
+        {
+          "page_location": "book_pages/items/items_broom_brush_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_wet_broom_brush_1"
+        },
+        {
+          "page_location": "book_pages/items/items_wet_broom_brush_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_herb_enhanced_broom_brush_1"
+        },
+        {
+          "page_location": "book_pages/items/items_herb_enhanced_broom_brush_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_wet_herb_enhanced_broom_brush_1"
+        },
+        {
+          "page_location": "book_pages/items/items_wet_herb_enhanced_broom_brush_2"
+        },
+        {
+          "page_location": "book_pages/items/items_wet_herb_enhanced_broom_brush_3"
+        },
+
+        {
+          "page_location": "book_pages/items/items_crow_flute_1"
+        },
+        {
+          "page_location": "book_pages/items/items_crow_flute_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_seed_mixture_1"
+        },
+        {
+          "page_location": "book_pages/items/items_seed_mixture_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_warhammer_1"
+        },
+        {
+          "page_location": "book_pages/items/items_warhammer_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_sage_seed_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_sage_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_sage_bundle_1"
+        },
+        {
+          "page_location": "book_pages/items/items_sage_bundle_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_dried_sage_bundle_1"
+        },
+        {
+          "page_location": "book_pages/items/items_dried_sage_bundle_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_flowering_lily_pad_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_animal_fat_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_infused_fabric_1"
+        },
+        {
+          "page_location": "book_pages/items/items_infused_fabric_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_witch_helmet_1"
+        },
+        {
+          "page_location": "book_pages/items/items_witch_helmet_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_witch_chestplate_1"
+        },
+        {
+          "page_location": "book_pages/items/items_witch_chestplate_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_witch_boots_1"
+        },
+        {
+          "page_location": "book_pages/items/items_witch_boots_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_mushroom_witch_hat_1"
+        },
+        {
+          "page_location": "book_pages/items/items_mushroom_witch_hat_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_mandrake_flower_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_belladonna_flower_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_mugwort_bush_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_yellow_dock_bush_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_willow_sapling_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_mahogany_sapling_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_mandrake_flowers_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_belladonna_flowers_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_mugwort_flowers_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_yellow_dock_flowers_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_willow_log_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_mahogany_log_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_mandrake_root_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_belladonna_berries_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_mugwort_leaves_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_yellow_dock_leaves_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_willow_planks_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_mahogany_planks_1"
+        },
+
+        {
+          "page_location": "book_pages/items/items_dried_mandrake_flowers_1"
+        },
+        {
+          "page_location": "book_pages/items/items_dried_mandrake_flowers_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_dried_belladonna_flowers_1"
+        },
+        {
+          "page_location": "book_pages/items/items_dried_belladonna_flowers_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_dried_mugwort_flowers_1"
+        },
+        {
+          "page_location": "book_pages/items/items_dried_mugwort_flowers_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_dried_yellow_dock_flowers_1"
+        },
+        {
+          "page_location": "book_pages/items/items_dried_yellow_dock_flowers_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_dried_mugwort_leaves_1"
+        },
+        {
+          "page_location": "book_pages/items/items_dried_mugwort_leaves_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_dried_yellow_dock_leaves_1"
+        },
+        {
+          "page_location": "book_pages/items/items_dried_yellow_dock_leaves_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_mindful_trance_blend_1"
+        },
+        {
+          "page_location": "book_pages/items/items_mindful_trance_blend_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_reading_glasses_1"
+        },
+        {
+          "page_location": "book_pages/items/items_reading_glasses_2"
+        }
+      ]
+    },
+    {
+      "name": "Entities",
+      "pages": [
+        {
+          "page_location": "book_pages/entities/entities_index_page_1"
+        },
+        {
+          "page_location": "book_pages/entities/entities_index_page_2"
+        },
+
+        {
+          "page_location": "book_pages/entities/entities_crow_page_1"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_2"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_3"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_4"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_5"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_6"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_7"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_8"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_9"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_10"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_11"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_12"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_13"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_14"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_15"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_16"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_17"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_18"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_19"
+        },
+        {
+          "page_location": "book_pages/entities/entities_crow_page_20"
+        },
+
+        {
+          "page_location": "book_pages/entities/entities_broom_page_1"
+        },
+        {
+          "page_location": "book_pages/entities/entities_broom_page_2"
+        },
+        {
+          "page_location": "book_pages/entities/entities_broom_page_3"
+        },
+        {
+          "page_location": "book_pages/entities/entities_broom_page_4"
+        },
+        {
+          "page_location": "book_pages/entities/entities_broom_page_5"
+        },
+        {
+          "page_location": "book_pages/entities/entities_broom_page_6"
+        },
+        {
+          "page_location": "book_pages/entities/entities_broom_page_7"
+        },
+        {
+          "page_location": "book_pages/entities/entities_broom_page_8"
+        },
+        {
+          "page_location": "book_pages/entities/entities_broom_page_9"
+        }
+      ]
+    },
+    {
+      "name": "Structures",
+      "pages": [
+        {
+          "page_location": "book_pages/structures/structures_index_page_1"
+        },
+        {
+          "page_location": "book_pages/structures/structures_index_page_2"
+        },
+        {
+          "page_location": "book_pages/structures/structures_witch_hut_page_1"
+        },
+        {
+          "page_location": "book_pages/structures/structures_witch_hut_page_2"
+        },
+        {
+          "page_location": "book_pages/structures/structures_dark_coven_page_1"
+        },
+        {
+          "page_location": "book_pages/structures/structures_dark_coven_page_2"
+        }
+      ]
+    }
+  ]
+}

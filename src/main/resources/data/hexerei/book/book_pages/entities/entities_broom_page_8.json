@@ -1,0 +1,64 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 10,
+          "width": 32
+        },
+        {
+          "x": 0,
+          "y": 13,
+          "height": 6,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_broom_page_8.passage_1"
+    }
+  ],
+
+  "items_and_fluids": [
+    {
+      "type": "item",
+      "x": 0.75,
+      "y": 4,
+      "name": "hexerei:broom_brush",
+      "show_slot": false,
+      "tag": "{Damage: 1}"
+    },
+    {
+      "type": "item",
+      "x": 1.75,
+      "y": 4,
+      "name": "hexerei:broom_brush",
+      "show_slot": false,
+      "tag": "{Damage: 25}"
+    },
+    {
+      "type": "item",
+      "x": 2.75,
+      "y": 4,
+      "name": "hexerei:broom_brush",
+      "show_slot": false,
+      "tag": "{Damage: 50}"
+    },
+    {
+      "type": "item",
+      "x": 3.75,
+      "y": 4,
+      "name": "hexerei:broom_brush",
+      "show_slot": false,
+      "tag": "{Damage: 75}"
+    },
+    {
+      "type": "item",
+      "x": 4.75,
+      "y": 4,
+      "name": "hexerei:broom_brush",
+      "show_slot": false,
+      "tag": "{Damage: 99}"
+    }
+  ]
+}

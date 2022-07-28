@@ -1,0 +1,80 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 7,
+          "y": 0,
+          "height": 18,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_crow_page_1.passage_1",
+      "align": "middle"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 7,
+          "height": 11,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_crow_page_1.passage_2"
+    }
+  ],
+  "entities": [
+    {
+      "x": 2.5,
+      "y": 2,
+      "scale": 2.5,
+      "name": "hexerei:crow",
+      "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe_\"}',DyeColor:15,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:crow\",inv:{Items:[{Count:1b,Slot:0,id:\"hexerei:witch_helmet\",tag:{Damage:0,RepairCost:0,display:{Name:'{\"text\":\"joe_\"}',color:1481884}}}],Size:3}}",
+
+      "tag_array": [
+        {
+          "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe_\"}',DyeColor:15,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:crow\",inv:{Items:[{Count:1b,Slot:0,id:\"hexerei:witch_helmet\",tag:{Damage:0,RepairCost:0,display:{Name:'{\"text\":\"joe_\"}',color:1481884}}}],Size:3}}"
+        },
+        {
+          "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"jeb_\"}',DyeColor:15,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:crow\",inv:{Items:[{Count:1b,Slot:0,id:\"hexerei:mushroom_witch_hat\",tag:{Damage:0}},{Slot: 1, id: \"hexerei:crow_flute\", Count: 1b, tag: {crowList: {}, helpCommandSelected: 0, RepairCost: 0, commandSelected: 0, display: {Name: '{\"text\":\"jeb_\"}'}, dyeColor1: -1, commandMode: 0b, dyeColor2: -1}}],Size:3}}"
+        },
+        {
+          "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe\"}',DyeColor:-1,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:crow\",inv:{Items:[{Count:1b,Slot:1,id:\"hexerei:seed_mixture\",tag:{}}],Size:3}}"
+        },
+        {
+          "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe\"}',DyeColor:-1,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:crow\",inv:{Items:[],Size:3}}"
+        },
+        {
+          "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe\"}',DyeColor:-1,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:crow\",inv:{Items:[{Count:1b,Slot:0,id:\"minecraft:iron_helmet\",tag:{}}],Size:3}}"
+        },
+        {
+          "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe\"}',DyeColor:12,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:crow\",inv:{Items:[],Size:3}}"
+        },
+        {
+          "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"Thor\"}',DyeColor:-1,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:crow\",inv:{Items:[{Count:1b,Slot:1,id:\"hexerei:warhammer\",tag:{}}],Size:3}}"
+        }
+      ],
+      "hover_offset": {
+        "x": 0,
+        "y": -0.5,
+        "scale": 0.5
+      }
+    }
+  ],
+  "images": [
+    {
+      "x": 2.5,
+      "y": -0.3,
+      "z": -4,
+      "u": 0,
+      "v": 0,
+      "width": 380,
+      "height": 74,
+      "imageWidth": 380,
+      "imageHeight": 74,
+      "scale": 0.3,
+      "texture": "hexerei:textures/book/chapter_header.png"
+    }
+  ]
+}

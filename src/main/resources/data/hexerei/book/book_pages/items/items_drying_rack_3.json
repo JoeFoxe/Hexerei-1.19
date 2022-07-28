@@ -1,0 +1,38 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 13,
+          "width": 32
+        },{
+          "x": 0,
+          "y": 13,
+          "height": 6,
+          "width": 19
+        }
+      ],
+      "passage_text": "book.hexerei.items_drying_rack_3.passage_1"
+
+    }
+  ],
+
+  "images": [
+
+
+    {
+      "x": 4.1,
+      "y": 6,
+      "u": 0,
+      "v": 0,
+      "width": 165,
+      "height": 165,
+      "imageWidth": 165,
+      "imageHeight": 165,
+      "scale": 0.25,
+      "texture": "hexerei:textures/book/pictures/drying_rack_items.png"
+    }
+  ]
+}

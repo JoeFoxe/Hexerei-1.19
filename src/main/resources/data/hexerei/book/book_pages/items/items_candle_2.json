@@ -1,0 +1,103 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 19,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.crafting_type.dipper"
+    }
+  ],
+  "items_and_fluids": [
+
+    {
+      "type": "item",
+      "x": 2.5,
+      "y": 2.5,
+      "name": "hexerei:candle_dipper"
+    },
+
+
+    {
+      "type": "item",
+      "x": 1,
+      "y": 3.25,
+      "name": "minecraft:string",
+
+      "extra_tooltips":[
+        {
+          "color_hex": 808080,
+          "text": "Dipped 3 times"
+        },{
+          "color_hex": 808080,
+          "text": "10 seconds of dipping",
+          "type": "trail"
+        },{
+          "color_hex": 808080,
+          "text": "10 seconds of drying",
+          "type": "trail"
+        }
+      ]
+    },
+
+    {
+      "type": "fluid",
+      "x": 1,
+      "y": 4.5,
+      "amount": 50,
+      "show_slot": false,
+      "fluid_width": 14,
+      "fluid_height": 14,
+      "fluid_offset_x": 0,
+      "fluid_offset_y": -1,
+      "name": "hexerei:tallow_fluid",
+
+      "extra_tooltips":[
+        {
+          "color_hex": 808080,
+          "text": "Per dip action"
+        }
+      ]
+
+    },
+
+
+    {
+      "type": "item",
+      "x": 4,
+      "y": 4,
+      "name": "hexerei:candle"
+    }
+  ],
+  "images": [
+    {
+      "x": 2.5,
+      "y": 4,
+      "u": 0,
+      "v": 0,
+      "width": 18,
+      "height": 18,
+      "imageWidth": 18,
+      "imageHeight": 18,
+      "scale": 1,
+      "texture": "hexerei:textures/book/arrow_right.png"
+    },
+    {
+      "x": 1,
+      "y": 4.5,
+      "z": 2,
+      "u": 0,
+      "v": 0,
+      "width": 24,
+      "height": 16,
+      "imageWidth": 24,
+      "imageHeight": 16,
+      "scale": 1,
+      "texture": "hexerei:textures/book/cauldron_overlay.png"
+    }
+  ]
+}

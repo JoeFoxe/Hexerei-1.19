@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "net.joefoxe.hexerei.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "hexerei.mixin-refmap.json",
+  "client": [
+    "HumanoidArmorLayerMixin",
+    "PlayerItemInHandLayerMixin",
+    "ThirdPersonRendererMixin",
+    "MouseHandlerMixin",
+    "ItemInHandMixin"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}

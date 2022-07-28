@@ -1,0 +1,39 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "liquid": {
+    "fluid": "minecraft:water"
+  },
+  "ingredients": [
+    {
+      "item": "hexerei:animal_fat"
+    },
+    {
+      "item": "hexerei:animal_fat"
+    },
+    {
+      "item": "minecraft:honeycomb"
+    },
+    {
+      "item": "hexerei:animal_fat"
+    },
+    {
+      "item": "hexerei:animal_fat"
+    },
+    {
+      "item": "hexerei:animal_fat"
+    },
+    {
+      "item": "minecraft:honeycomb"
+    },
+    {
+      "item": "hexerei:animal_fat"
+    }
+  ],
+  "output": {
+    "item": "hexerei:tallow_impurity"
+  },
+  "liquidOutput": {
+    "fluid": "hexerei:tallow_fluid"
+  },
+  "fluidLevelsConsumed": 0
+}

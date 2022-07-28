@@ -1,0 +1,1291 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:emerald",
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:paper",
+          "weight": 25
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_nugget",
+          "weight": 25
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:wheat_seeds",
+          "weight": 25
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:torch",
+          "weight": 25
+        },
+
+
+
+
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:golden_carrot",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:farmer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 15
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:apple",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:farmer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:bread",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:farmer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:carrot",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:farmer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:potato",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:farmer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:wheat",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:farmer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:pumpkin_pie",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:farmer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 25
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:cake",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:farmer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 2
+        },
+
+
+
+
+
+
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:leather",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:leatherworker\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:rabbit_hide",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:leatherworker\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:saddle",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:leatherworker\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:leather_helmet",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:leatherworker\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:leather_chestplate",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:leatherworker\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:leather_leggings",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:leatherworker\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:leather_boots",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:leatherworker\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 5
+        },
+
+
+
+
+
+
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:chicken",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:butcher\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:cooked_chicken",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:butcher\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:beef",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:butcher\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:cooked_beef",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:butcher\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:porkchop",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:butcher\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:cooked_porkchop",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:butcher\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:rabbit_stew",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:butcher\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+
+
+
+
+
+
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:paper",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:cartographer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:map",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:cartographer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 15
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:compass",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:cartographer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 5
+        },
+
+
+
+
+
+
+
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:shears",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 15
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:string",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:white_wool",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:orange_wool",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:magenta_wool",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:light_blue_wool",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:yellow_wool",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:lime_wool",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:pink_wool",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:gray_wool",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:light_gray_wool",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:cyan_wool",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:purple_wool",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:blue_wool",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:brown_wool",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:green_wool",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:red_wool",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:black_wool",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:shepherd\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+
+
+
+
+
+
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:cod",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:fisherman\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:cooked_cod",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:fisherman\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:salmon",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:fisherman\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:cooked_salmon",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:fisherman\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:string",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:fisherman\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 25
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:spruce_boat",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:fisherman\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 1
+        },
+
+
+
+
+
+
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:coal",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:weaponsmith\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:weaponsmith\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_ingot",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:weaponsmith\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 20
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_sword",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:weaponsmith\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 15
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_axe",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:weaponsmith\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 15
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond_sword",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:weaponsmith\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 1
+        },
+
+
+
+
+
+
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:clay_ball",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:mason\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:brick",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:mason\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:stone",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:mason\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:terracotta",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:mason\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+
+
+
+
+
+
+
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:stick",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:fletcher\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:arrow",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:fletcher\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:bow",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:fletcher\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:feather",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:fletcher\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:flint",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:fletcher\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },
+
+
+
+
+
+
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond_helmet",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:armorer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 1
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:coal",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:armorer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:iron_helmet",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:armorer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 15
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:iron_chestplate",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:armorer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 15
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:iron_leggings",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:armorer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 15
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:iron_boots",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:armorer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 15
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:chainmail_helmet",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:armorer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 5
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:chainmail_chestplate",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:armorer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 5
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:chainmail_leggings",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:armorer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 5
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:chainmail_boots",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:armorer\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 5
+        },
+
+
+
+
+
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:charcoal",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:toolsmith\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:stone_pickaxe",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:toolsmith\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:stone_hoe",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:toolsmith\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:iron_pickaxe",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:toolsmith\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 25
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:iron_axe",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:toolsmith\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 25
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:iron_shovel",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:toolsmith\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 25
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:diamond_hoe",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:toolsmith\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 5
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:diamond_pickaxe",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:toolsmith\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 1
+        },
+
+
+
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:paper",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:librarian\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:book",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:librarian\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 50
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:book",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:librarian\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "functions": [
+            {
+              "function": "minecraft:enchant_randomly"
+            }
+          ],
+          "weight": 25
+        },
+
+
+
+
+
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:redstone",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:cleric\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 5
+        },{
+          "type": "minecraft:item",
+          "name": "minecraft:rotten_flesh",
+          "conditions": [
+            {
+              "condition": "entity_properties",
+              "predicate": {
+                "nbt": "{VillagerData:{profession:\"minecraft:cleric\"}}"
+              },
+              "entity": "this"
+            }
+          ],
+          "weight": 30
+        }
+
+
+      ]
+    }
+  ]
+}

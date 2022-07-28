@@ -1,0 +1,28 @@
+{
+  "type": "hexerei:book_of_shadows_dye",
+  "pattern": [
+    "LDL",
+    "ABS",
+    "LLL"
+  ],
+  "key": {
+    "D": {
+      "tag": "forge:dyes"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "A": {
+      "item": "hexerei:animal_fat"
+    },
+    "B": {
+      "item": "minecraft:book"
+    },
+    "S": {
+      "item": "hexerei:sage_seed"
+    }
+  },
+  "result": {
+    "item": "hexerei:book_of_shadows"
+  }
+}

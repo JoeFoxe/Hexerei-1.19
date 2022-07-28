@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "hexerei:item/medium_satchel",
+    "layer1": "hexerei:item/medium_satchel_dye"
+  }
+}

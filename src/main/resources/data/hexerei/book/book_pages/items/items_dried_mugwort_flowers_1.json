@@ -1,0 +1,51 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 7,
+          "y": 0,
+          "height": 18,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.items_dried_mugwort_flowers_1.passage_1",
+      "align": "middle"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 5,
+          "height": 14,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.items_dried_mugwort_flowers_1.passage_2"
+    }
+  ],
+  "item_hyperlink": "hexerei:dried_mugwort_flowers",
+  "items_and_fluids": [
+    {
+      "type": "item",
+      "x": 2.5,
+      "y": 0.75,
+      "name": "hexerei:dried_mugwort_flowers"
+    }
+  ],
+  "images": [
+    {
+      "x": 2.5,
+      "y": -0.3,
+      "z": -4,
+      "u": 0,
+      "v": 0,
+      "width": 380,
+      "height": 74,
+      "imageWidth": 380,
+      "imageHeight": 74,
+      "scale": 0.3,
+      "texture": "hexerei:textures/book/chapter_header.png"
+    }
+  ]
+}

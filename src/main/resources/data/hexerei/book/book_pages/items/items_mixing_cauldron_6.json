@@ -1,0 +1,40 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 18,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.items_mixing_cauldron_6.passage_1"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 12,
+          "height": 18,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.items_mixing_cauldron_6.passage_2"
+    }
+  ],
+  "items_and_fluids": [
+    {
+      "type": "item",
+      "x": 3.5,
+      "y": 4.5,
+      "name": "hexerei:blood_sigil"
+    },
+    {
+      "type": "item",
+      "x": 4.5,
+      "y": 4.5,
+      "name": "hexerei:candle_dipper"
+    }
+  ]
+}

@@ -1,0 +1,200 @@
+{
+  "showTitle": "none",
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 7,
+          "y": 0,
+          "height": 4,
+          "width": 50
+        }
+      ],
+      "passage_text": "book.hexerei.index_page_1.passage_1",
+      "align": "middle"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 1,
+          "y": 3,
+          "height": 4,
+          "width": 50
+        }
+      ],
+      "passage_text": "book.hexerei.index_page_1.passage_2"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 1,
+          "y": 5,
+          "height": 4,
+          "width": 50
+        }
+      ],
+      "passage_text": "book.hexerei.index_page_1.passage_3"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 1,
+          "y": 7,
+          "height": 4,
+          "width": 50
+        }
+      ],
+      "passage_text": "book.hexerei.index_page_1.passage_4"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 1,
+          "y": 9,
+          "height": 4,
+          "width": 50
+        }
+      ],
+      "passage_text": "book.hexerei.index_page_1.passage_5"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 1,
+          "y": 11,
+          "height": 4,
+          "width": 50
+        }
+      ],
+      "passage_text": "book.hexerei.index_page_1.passage_6"
+    }
+  ],
+  "non_item_tooltips": [
+    {
+      "x": 1,
+      "y": 0.5,
+      "width": 0.08,
+      "height": 0.03,
+      "hyperlink":
+      {
+        "chapter": 1,
+        "page": 0
+      },
+      "text_components":[
+        {
+          "color_hex": "808080",
+          "text": "book.hexerei.index_page_1.tooltip_intro_1"
+        },
+        {
+          "color": 16777215,
+          "text": "book.hexerei.index_page_1.tooltip_right_click",
+          "type": "append"
+        }
+      ]
+
+    },{
+      "x": 1,
+      "y": 1.5,
+      "width": 0.08,
+      "height": 0.03,
+      "hyperlink":
+      {
+        "chapter": 2,
+        "page": 0
+      },
+      "text_components":[
+        {
+          "color_hex": "808080",
+          "text": "book.hexerei.index_page_1.tooltip_support_1"
+        },
+        {
+          "color": 16777215,
+          "text": "book.hexerei.index_page_1.tooltip_right_click",
+          "type": "append"
+        }
+      ]
+
+    },{
+      "x": 1,
+      "y": 2.5,
+      "width": 0.08,
+      "height": 0.03,
+      "hyperlink":
+      {
+        "chapter": 3,
+        "page": 0
+      },
+      "text_components":[
+        {
+          "color_hex": "808080",
+          "text": "book.hexerei.index_page_1.tooltip_items_1"
+        },
+        {
+          "color": 16777215,
+          "text": "book.hexerei.index_page_1.tooltip_right_click",
+          "type": "append"
+        }
+      ]
+
+    },{
+      "x": 1,
+      "y": 3.5,
+      "width": 0.08,
+      "height": 0.03,
+      "hyperlink":
+      {
+        "chapter": 4,
+        "page": 0
+      },
+      "text_components":[
+        {
+          "color_hex": "808080",
+          "text": "book.hexerei.index_page_1.tooltip_entities_1"
+        },
+        {
+          "color": 16777215,
+          "text": "book.hexerei.index_page_1.tooltip_right_click",
+          "type": "append"
+        }
+      ]
+
+    },{
+      "x": 1,
+      "y": 4.5,
+      "width": 0.08,
+      "height": 0.03,
+      "hyperlink":
+      {
+        "chapter": 5,
+        "page": 0
+      },
+      "text_components":[
+        {
+          "color_hex": "808080",
+          "text": "book.hexerei.index_page_1.tooltip_structures_1"
+        },
+        {
+          "color": 16777215,
+          "text": "book.hexerei.index_page_1.tooltip_right_click",
+          "type": "append"
+        }
+      ]
+
+    }
+  ],
+  "images": [
+    {
+      "x": 2.5,
+      "y": -0.3,
+      "z": -4,
+      "u": 0,
+      "v": 0,
+      "width": 380,
+      "height": 74,
+      "imageWidth": 380,
+      "imageHeight": 74,
+      "scale": 0.3,
+      "texture": "hexerei:textures/book/chapter_header.png"
+    }
+  ]
+}

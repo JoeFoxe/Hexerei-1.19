@@ -1,0 +1,67 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 3,
+          "width": 32
+        },
+        {
+          "x": 0,
+          "y": 7,
+          "height": 6,
+          "width": 19.5
+        },
+        {
+          "x": 0,
+          "y": 13,
+          "height": 5,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_crow_page_10.passage_1"
+    }
+  ],
+  "images": [
+
+    {
+      "x": 2.5,
+      "y": 1.5,
+      "u": 0,
+      "v": 0,
+      "width": 620,
+      "height": 185,
+      "imageWidth": 620,
+      "imageHeight": 185,
+      "scale": 0.15,
+      "texture": "hexerei:textures/book/pictures/crow_gui_harvest_command.png"
+    },
+    {
+      "x": 3.95,
+      "y": 1.8,
+      "z": 1,
+      "u": 0,
+      "v": 0,
+      "width": 18,
+      "height": 18,
+      "imageWidth": 18,
+      "imageHeight": 18,
+      "scale": 1,
+      "texture": "hexerei:textures/book/arrow_left.png"
+    },
+    {
+      "x": 4.25,
+      "y": 3.3,
+      "u": 0,
+      "v": 0,
+      "width": 165,
+      "height": 165,
+      "imageWidth": 165,
+      "imageHeight": 165,
+      "scale": 0.25,
+      "texture": "hexerei:textures/book/pictures/crow_harvest.png"
+    }
+  ]
+}

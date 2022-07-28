@@ -1,0 +1,18 @@
+{
+  "type": "hexerei:witch_hut",
+
+  "config": {
+    "start_pool": "hexerei:witch_hut/start_pool",
+
+    "size": 2
+  },
+
+  "biomes": "minecraft:swamp",
+
+  "adapt_noise": false,
+
+  "spawn_overrides": {
+
+  }
+
+}

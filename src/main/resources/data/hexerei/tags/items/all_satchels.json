@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#hexerei:small_satchels",
+    "#hexerei:medium_satchels",
+    "#hexerei:large_satchels"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "hexerei:item/crow_flute",
+    "layer1": "hexerei:item/crow_flute_top",
+    "layer2": "hexerei:item/crow_flute_bottom"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 10,
+          "width": 32
+        },
+        {
+          "x": 0,
+          "y": 13.25,
+          "height": 6,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.support_page_2.passage_1"
+    }
+  ],
+  "images": [
+
+    {
+      "x": 2.5,
+      "y": 4.1,
+      "u": 0,
+      "v": 0,
+      "width": 320,
+      "height": 90,
+      "imageWidth": 320,
+      "imageHeight": 90,
+      "scale": 0.25,
+      "texture": "hexerei:textures/book/pictures/hexerei_paypal.png"
+    },{
+      "x": 4.45,
+      "y": 4.6,
+      "z": 1,
+      "u": 0,
+      "v": 0,
+      "width": 32,
+      "height": 48,
+      "imageWidth": 32,
+      "imageHeight": 48,
+      "scale": 0.25,
+      "texture": "hexerei:textures/book/right_click_icon.png",
+      "effects": [
+        {
+          "type": "hover_change_texture",
+          "image": {
+            "u": 0,
+            "v": 0,
+            "width": 32,
+            "height": 48,
+            "imageWidth": 32,
+            "imageHeight": 48,
+            "texture": "hexerei:textures/book/right_click_icon_hover.png",
+            "effects": [
+            ]
+          }
+        }
+      ]
+    }
+
+  ],
+  "non_item_tooltips": [
+    {
+      "x": 2.5,
+      "y": 4.1,
+      "width": 0.1,
+      "height": 0.03,
+      "hyperlink": {
+        "url": "https://www.paypal.com/donate/?hosted_button_id=GX5T4CA6X96MC"
+      },
+      "text_components":[
+        {
+          "color": 16777215,
+          "text": "book.hexerei.support_page_2.paypal_link_tooltip_1"
+        },{
+          "color_hex": "1249A8",
+          "text": "book.hexerei.support_page_2.paypal_link_tooltip_2",
+          "type": "append"
+        },{
+          "color_hex": "009CDE",
+          "text": "book.hexerei.support_page_2.paypal_link_tooltip_3",
+          "type": "append"
+        },{
+          "color_hex": "A5A5A5",
+          "text": "book.hexerei.support_page_2.paypal_link_tooltip_4",
+          "type": "trail"
+        }
+      ]
+    }
+  ]
+}

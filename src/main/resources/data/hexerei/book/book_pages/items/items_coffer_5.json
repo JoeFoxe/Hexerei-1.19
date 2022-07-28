@@ -1,0 +1,35 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 12,
+          "width": 32
+        },
+        {
+          "x": 0,
+          "y": 12,
+          "height": 7,
+          "width": 16
+        }
+      ],
+      "passage_text": "book.hexerei.items_coffer_5.passage_1"
+    }
+  ],
+  "images": [
+    {
+      "x": 4,
+      "y": 5.75,
+      "u": 0,
+      "v": 0,
+      "width": 320,
+      "height": 320,
+      "imageWidth": 320,
+      "imageHeight": 320,
+      "scale": 0.15,
+      "texture": "hexerei:textures/book/pictures/coffer_crow_deposit.png"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "showTitle": "none",
+  "paragraphs": [
+
+    {
+      "paragraph_box": [
+        {
+          "x": 7,
+          "y": 0,
+          "height": 1,
+          "width": 40
+        },
+        {
+          "x": 7,
+          "y": 16,
+          "height": 2,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.index_page_2.passage_1",
+      "align": "middle"
+    }
+  ],
+  "non_item_tooltips": [
+
+  ],
+  "images": [
+    {
+      "x": 2.5,
+      "y": 7.15,
+      "u": 0,
+      "v": 0,
+      "width": 32,
+      "height": 32,
+      "imageWidth": 32,
+      "imageHeight": 32,
+      "scale": 0.5,
+      "texture": "hexerei:textures/book/arrow_right.png",
+      "effects": [
+        {
+          "type": "hover_change_texture",
+          "image": {
+            "u": 0,
+            "v": 0,
+            "width": 32,
+            "height": 32,
+            "imageWidth": 32,
+            "imageHeight": 32,
+            "texture": "hexerei:textures/book/arrow_right_hover.png",
+            "effects": [
+              {
+                "type": "scale",
+                "speed": 40,
+                "amount": 1.15
+
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

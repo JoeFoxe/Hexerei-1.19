@@ -1,0 +1,66 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 19,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_broom_page_2.passage_1"
+    }
+  ],
+
+  "items_and_fluids": [
+    {
+      "type": "item",
+      "x": 0.75,
+      "y": 5.75,
+      "name": "hexerei:willow_broom",
+      "show_slot": false
+    }
+  ],
+  "entities": [
+    {
+      "x": 3.25,
+      "y": 5.75,
+      "scale": 1.5,
+      "name": "hexerei:broom",
+      "tag": "{inv: {Size: 30, Items: []}, Type: \"willow\", CustomName: '{\"translate\":\"item.hexerei.willow_broom\"}', floatMode: 0b}",
+
+      "tag_array": [
+        {
+          "tag": "{inv: {Size: 30, Items: []}, Type: \"willow\", CustomName: '{\"translate\":\"item.hexerei.willow_broom\"}', floatMode: 0b}"
+        },
+        {
+          "tag": "{inv: {Size: 30, Items: []}, Type: \"willow\", CustomName: '{\"translate\":\"item.hexerei.willow_broom\"}', floatMode: 0b}"
+        },
+        {
+          "tag": "{inv: {Size: 30, Items: [{Slot: 2, id: \"hexerei:broom_brush\", Count: 1b, tag: {Damage: 0}}]}, Type: \"willow\", CustomName: '{\"translate\":\"item.hexerei.willow_broom\"}', floatMode: 0b}"
+        },
+        {
+          "tag": "{inv: {Size: 30, Items: [{Slot: 1, id: \"hexerei:small_satchel\", Count: 1b},{Slot: 2, id: \"hexerei:broom_brush\", Count: 1b, tag: {Damage: 0}}]}, Type: \"willow\", CustomName: '{\"translate\":\"item.hexerei.willow_broom\"}', floatMode: 0b}"
+        },
+        {
+          "tag": "{inv: {Size: 30, Items: [{Slot: 0, id: \"hexerei:gold_rings\", Count: 1b},{Slot: 1, id: \"hexerei:small_satchel\", Count: 1b},{Slot: 2, id: \"hexerei:broom_brush\", Count: 1b, tag: {Damage: 0}}]}, Type: \"willow\", CustomName: '{\"translate\":\"item.hexerei.willow_broom\"}', floatMode: 0b}"
+        },
+        {
+          "tag": "{inv: {Size: 30, Items: [{Slot: 0, id: \"hexerei:gold_rings\", Count: 1b},{Slot: 1, id: \"hexerei:small_satchel\", Count: 1b},{Slot: 2, id: \"hexerei:broom_brush\", Count: 1b, tag: {Damage: 0}}]}, Type: \"willow\", CustomName: '{\"translate\":\"item.hexerei.willow_broom\"}', floatMode: 0b}"
+        },
+        {
+          "tag": "{inv: {Size: 30, Items: [{Slot: 1, id: \"hexerei:small_satchel\", Count: 1b},{Slot: 2, id: \"hexerei:broom_brush\", Count: 1b, tag: {Damage: 0}}]}, Type: \"willow\", CustomName: '{\"translate\":\"item.hexerei.willow_broom\"}', floatMode: 0b}"
+        },
+        {
+          "tag": "{inv: {Size: 30, Items: [{Slot: 2, id: \"hexerei:broom_brush\", Count: 1b, tag: {Damage: 0}}]}, Type: \"willow\", CustomName: '{\"translate\":\"item.hexerei.willow_broom\"}', floatMode: 0b}"
+        }
+      ],
+      "hover_offset": {
+        "x": 0,
+        "y": -0.05,
+        "scale": 0.85
+      }
+    }
+  ]
+}

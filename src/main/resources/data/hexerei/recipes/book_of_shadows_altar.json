@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "@@@",
+    "# #",
+    "# #"
+  ],
+  "key": {
+    "#": {
+      "item": "hexerei:mahogany_planks"
+    },
+    "@": {
+      "item": "hexerei:mahogany_slab"
+    }
+  },
+  "result": {
+    "item": "hexerei:book_of_shadows_altar"
+  }
+}

@@ -1,0 +1,82 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"texture_size": [64, 64],
+	"textures": {
+		"1": "hexerei:block/book_of_shadows_dyed",
+		"particle": "hexerei:block/book_of_shadows"
+	},
+	"elements": [
+		{
+			"name": "corner",
+			"from": [5.93, -0.57, 8.43],
+			"to": [7.57, 0.07, 10.07],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 16.5, 8]},
+			"faces": {
+				"north": {"uv": [1.75, 8.5, 1.375, 8.625], "texture": "#1", "tintindex": 0},
+				"east": {"uv": [1.75, 8.25, 1.375, 8.375], "texture": "#1", "tintindex": 0},
+				"south": {"uv": [0.375, 8.25, 0, 8.375], "texture": "#1", "tintindex": 0},
+				"west": {"uv": [0.375, 8.5, 0, 8.625], "texture": "#1", "tintindex": 0},
+				"up": {"uv": [1.375, 8.625, 1.75, 8.25], "texture": "#1", "tintindex": 0},
+				"down": {"uv": [1.375, 8.25, 1.75, 8.625], "texture": "#1", "tintindex": 0}
+			}
+		},
+		{
+			"name": "corner",
+			"from": [0.43, -0.57, 8.43],
+			"to": [2.07, 0.07, 10.07],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 16.5, 8]},
+			"faces": {
+				"north": {"uv": [1.375, 8.5, 1.75, 8.625], "texture": "#1", "tintindex": 0},
+				"east": {"uv": [0, 8.5, 0.375, 8.625], "texture": "#1", "tintindex": 0},
+				"south": {"uv": [0, 8.25, 0.375, 8.375], "texture": "#1", "tintindex": 0},
+				"west": {"uv": [1.375, 8.25, 1.75, 8.375], "texture": "#1", "tintindex": 0},
+				"up": {"uv": [1.75, 8.625, 1.375, 8.25], "texture": "#1", "tintindex": 0},
+				"down": {"uv": [1.75, 8.25, 1.375, 8.625], "texture": "#1", "tintindex": 0}
+			}
+		},
+		{
+			"name": "corner",
+			"from": [0.43, -0.57, -0.07],
+			"to": [2.07, 0.07, 1.57],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-6.75, -0.25, 3.25]},
+			"faces": {
+				"north": {"uv": [1.375, 8.25, 1.75, 8.375], "texture": "#1", "tintindex": 0},
+				"east": {"uv": [1.375, 8.5, 1.75, 8.625], "texture": "#1", "tintindex": 0},
+				"south": {"uv": [0, 8.5, 0.375, 8.625], "texture": "#1", "tintindex": 0},
+				"west": {"uv": [0, 8.25, 0.375, 8.375], "texture": "#1", "tintindex": 0},
+				"up": {"uv": [1.75, 8.625, 1.375, 8.25], "rotation": 90, "texture": "#1", "tintindex": 0},
+				"down": {"uv": [1.75, 8.25, 1.375, 8.625], "rotation": 270, "texture": "#1", "tintindex": 0}
+			}
+		},
+		{
+			"name": "corner",
+			"from": [5.93, -0.57, -0.07],
+			"to": [7.57, 0.07, 1.57],
+			"rotation": {"angle": 0, "axis": "y", "origin": [22.75, -0.25, 3.25]},
+			"faces": {
+				"north": {"uv": [1.75, 8.25, 1.375, 8.375], "texture": "#1", "tintindex": 0},
+				"east": {"uv": [0.375, 8.25, 0, 8.375], "texture": "#1", "tintindex": 0},
+				"south": {"uv": [0.375, 8.5, 0, 8.625], "texture": "#1", "tintindex": 0},
+				"west": {"uv": [1.75, 8.5, 1.375, 8.625], "texture": "#1", "tintindex": 0},
+				"up": {"uv": [1.75, 8.25, 1.375, 8.625], "rotation": 90, "texture": "#1", "tintindex": 0},
+				"down": {"uv": [1.75, 8.625, 1.375, 8.25], "rotation": 270, "texture": "#1", "tintindex": 0}
+			}
+		}
+	],
+	"display": {
+		"firstperson_righthand": {
+			"rotation": [0, 135, 0],
+			"scale": [0.4, 0.4, 0.4]
+		}
+	},
+	"groups": [
+		{
+			"name": "Book",
+			"origin": [8, 16.5, 11.5],
+			"color": 0,
+			"children": [0, 1, 2, 3]
+		}
+	]
+}

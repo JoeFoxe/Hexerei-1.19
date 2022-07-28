@@ -1,0 +1,130 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 1,
+          "width": 32
+        },
+        {
+          "x": 0,
+          "y": 3,
+          "height": 1,
+          "width": 32
+        },
+        {
+          "x": 0,
+          "y": 7,
+          "height": 1,
+          "width": 32
+        },
+        {
+          "x": 0,
+          "y": 11,
+          "height": 1,
+          "width": 32
+        },
+        {
+          "x": 0,
+          "y": 15,
+          "height": 4,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_broom_page_9.passage_1"
+    }
+  ],
+
+  "items_and_fluids": [
+    {
+      "type": "tag",
+      "x": -0.1,
+      "y": 0.8,
+      "name": "hexerei:broom_misc",
+      "show_slot": false
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 1.55,
+      "name": "hexerei:gold_rings",
+      "show_slot": false
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 1.55,
+      "name": "hexerei:broom_keychain",
+      "show_slot": false
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 1.55,
+      "name": "hexerei:broom_waterproof_tip",
+      "show_slot": false
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 1.55,
+      "name": "hexerei:broom_netherite_tip",
+      "show_slot": false
+    },
+
+
+    {
+      "type": "tag",
+      "x": -0.1,
+      "y": 2.4,
+      "name": "hexerei:all_satchels",
+      "show_slot": false
+    },
+    {
+      "type": "tag",
+      "x": 1,
+      "y": 3.15,
+      "name": "hexerei:small_satchels",
+      "show_slot": false
+    },
+    {
+      "type": "tag",
+      "x": 2,
+      "y": 3.15,
+      "name": "hexerei:medium_satchels",
+      "show_slot": false
+    },
+    {
+      "type": "tag",
+      "x": 3,
+      "y": 3.15,
+      "name": "hexerei:large_satchels",
+      "show_slot": false
+    },
+
+
+    {
+      "type": "tag",
+      "x": -0.1,
+      "y": 4,
+      "name": "hexerei:broom_brush",
+      "show_slot": false
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 4.75,
+      "name": "hexerei:broom_brush",
+      "show_slot": false
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 4.75,
+      "name": "hexerei:herb_enhanced_broom_brush",
+      "show_slot": false
+    }
+  ]
+}

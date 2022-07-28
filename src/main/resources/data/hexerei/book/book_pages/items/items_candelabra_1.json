@@ -1,0 +1,91 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 7,
+          "y": 0,
+          "height": 18,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.items_candelabra_1.passage_1",
+      "align": "middle"
+
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 5,
+          "height": 6,
+          "width": 19
+        },{
+          "x": 0,
+          "y": 11,
+          "height": 2,
+          "width": 32
+        },{
+          "x": 6.25,
+          "y": 13,
+          "height": 6,
+          "width": 19
+        }
+      ],
+      "passage_text": "book.hexerei.items_candelabra_1.passage_2"
+
+    }
+  ],
+  "item_hyperlink": "hexerei:candelabra",
+
+  "items_and_fluids": [
+    {
+      "type": "item",
+      "x": 2.5,
+      "y": 0.75,
+      "name": "hexerei:candelabra"
+
+    }
+  ],
+  "images": [
+
+    {
+      "x": 4.2,
+      "y": 2.65,
+      "u": 0,
+      "v": 0,
+      "width": 165,
+      "height": 165,
+      "imageWidth": 165,
+      "imageHeight": 165,
+      "scale": 0.25,
+      "texture": "hexerei:textures/book/pictures/candelabra_hanging.png"
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "u": 0,
+      "v": 0,
+      "width": 165,
+      "height": 165,
+      "imageWidth": 165,
+      "imageHeight": 165,
+      "scale": 0.25,
+      "texture": "hexerei:textures/book/pictures/candelabra_sitting.png"
+    },
+    {
+      "x": 2.5,
+      "y": -0.3,
+      "z": -4,
+      "u": 0,
+      "v": 0,
+      "width": 380,
+      "height": 74,
+      "imageWidth": 380,
+      "imageHeight": 74,
+      "scale": 0.3,
+      "texture": "hexerei:textures/book/chapter_header.png"
+    }
+
+  ]
+}

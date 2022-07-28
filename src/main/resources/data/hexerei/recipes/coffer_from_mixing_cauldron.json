@@ -1,0 +1,39 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "liquid": {
+    "fluid": "minecraft:water"
+  },
+  "ingredients": [
+    {
+      "item": "hexerei:mahogany_planks"
+    },
+    {
+      "item": "hexerei:mahogany_planks"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "hexerei:mahogany_planks"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "hexerei:mahogany_planks"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "hexerei:mahogany_planks"
+    }
+  ],
+  "output": {
+    "item": "hexerei:coffer"
+  },
+  "liquidOutput": {
+    "fluid": "minecraft:water"
+  },
+  "fluidLevelsConsumed": 1000
+}

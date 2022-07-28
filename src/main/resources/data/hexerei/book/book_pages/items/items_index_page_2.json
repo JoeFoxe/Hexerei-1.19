@@ -1,0 +1,262 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 7,
+          "y": 0,
+          "height": 18,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.items_index_page_2.passage_1",
+      "align": "middle"
+    }
+  ],
+  "items_and_fluids": [
+    {
+      "type": "item",
+      "x": 0,
+      "y": 1,
+      "name": "hexerei:book_of_shadows"
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 1,
+      "name": "hexerei:book_of_shadows_altar"
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 1,
+      "name": "hexerei:mixing_cauldron"
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 1,
+      "name": "hexerei:coffer"
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 1,
+      "name": "hexerei:herb_jar"
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 1,
+      "name": "hexerei:sage_burning_plate"
+    },
+
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 2,
+      "name": "hexerei:herb_drying_rack"
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 2,
+      "name": "hexerei:pestle_and_mortar"
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 2,
+      "name": "hexerei:candle_dipper"
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 2,
+      "name": "hexerei:candle"
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 2,
+      "name": "hexerei:candelabra"
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 2,
+      "name": "hexerei:crystal_ball"
+    },
+
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 3,
+      "name": "hexerei:dowsing_rod"
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 3,
+      "name": "hexerei:blood_sigil"
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 3,
+      "name": "hexerei:blood_bottle"
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 3,
+      "name": "hexerei:willow_broom"
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 3,
+      "name": "hexerei:mahogany_broom"
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 3,
+      "name": "hexerei:gold_rings"
+    },
+
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 4,
+      "name": "hexerei:broom_keychain"
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 4,
+      "name": "hexerei:broom_netherite_tip"
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 4,
+      "name": "hexerei:broom_waterproof_tip"
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 4,
+      "name": "hexerei:small_satchel"
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 4,
+      "name": "hexerei:medium_satchel"
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 4,
+      "name": "hexerei:large_satchel"
+    },
+
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 5,
+      "name": "hexerei:broom_brush"
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 5,
+      "name": "hexerei:wet_broom_brush"
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 5,
+      "name": "hexerei:herb_enhanced_broom_brush"
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 5,
+      "name": "hexerei:wet_herb_enhanced_broom_brush"
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 5,
+      "name": "hexerei:crow_flute"
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 5,
+      "name": "hexerei:seed_mixture"
+    },
+
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 6,
+      "name": "hexerei:warhammer"
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 6,
+      "name": "hexerei:sage_seed"
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 6,
+      "name": "hexerei:sage"
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 6,
+      "name": "hexerei:sage_bundle"
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 6,
+      "name": "hexerei:dried_sage_bundle"
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 6,
+      "name": "hexerei:flowering_lily_pad"
+    }
+
+
+
+  ],
+  "images": [
+    {
+      "x": 2.5,
+      "y": -0.3,
+      "z": -4,
+      "u": 0,
+      "v": 0,
+      "width": 380,
+      "height": 74,
+      "imageWidth": 380,
+      "imageHeight": 74,
+      "scale": 0.3,
+      "texture": "hexerei:textures/book/chapter_header.png"
+    }
+  ]
+}

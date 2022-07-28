@@ -1,0 +1,54 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 7,
+          "y": 0,
+          "height": 18,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.structures_witch_hut_page_1.passage_1",
+      "align": "middle"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 8,
+          "height": 18,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.structures_witch_hut_page_1.passage_2"
+    }
+  ],
+  "images": [
+    {
+      "x": 2.5,
+      "y": -0.3,
+      "z": -4,
+      "u": 0,
+      "v": 0,
+      "width": 380,
+      "height": 74,
+      "imageWidth": 380,
+      "imageHeight": 74,
+      "scale": 0.3,
+      "texture": "hexerei:textures/book/chapter_header.png"
+    },
+    {
+      "x": 2.5,
+      "y": 1.45,
+      "u": 0,
+      "v": 0,
+      "width": 212,
+      "height": 63,
+      "imageWidth": 212,
+      "imageHeight": 63,
+      "scale": 0.45,
+      "texture": "hexerei:textures/book/pictures/witch_hut_inside.png"
+    }
+  ]
+}

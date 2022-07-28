@@ -1,0 +1,72 @@
+
+{
+  "crow_flute": {
+    "subtitle": "sounds.hexerei.crow_flute",
+    "sounds": [
+      "hexerei:crow_flute"
+    ]
+  },
+  "crow_flute_select": {
+    "subtitle": "sounds.hexerei.crow_flute_select",
+    "sounds": [
+      "hexerei:crow_flute_select"
+    ]
+  },
+  "crow_flute_deselect": {
+    "subtitle": "sounds.hexerei.crow_flute_deselect",
+    "sounds": [
+      "hexerei:crow_flute_deselect"
+    ]
+  },
+  "crow_caw": {
+    "subtitle": "sounds.hexerei.crow_caw",
+    "sounds": [
+      "hexerei:crow_caw_01",
+      "hexerei:crow_caw_02",
+      "hexerei:crow_caw_03"
+    ]
+  },
+  "book_turn_page_slow": {
+    "subtitle": "sounds.hexerei.book_turn_page_slow",
+    "sounds": [
+      "hexerei:book_turn_page_01"
+    ]
+  },
+  "book_turn_page_fast": {
+    "subtitle": "sounds.hexerei.book_turn_page_fast",
+    "sounds": [
+      "hexerei:book_turn_page_02",
+      "hexerei:book_turn_page_03"
+    ]
+  },
+  "bookmark_button": {
+    "subtitle": "sounds.hexerei.bookmark_button",
+    "sounds": [
+      "hexerei:bookmark_button"
+    ]
+  },
+  "bookmark_delete": {
+    "subtitle": "sounds.hexerei.bookmark_delete",
+    "sounds": [
+      "hexerei:bookmark_delete"
+    ]
+  },
+  "bookmark_swap": {
+    "subtitle": "sounds.hexerei.bookmark_swap",
+    "sounds": [
+      "hexerei:bookmark_swap"
+    ]
+  },
+  "book_close": {
+    "subtitle": "sounds.hexerei.book_close",
+    "sounds": [
+      "hexerei:book_close"
+    ]
+  },
+  "book_opening": {
+    "subtitle": "sounds.hexerei.book_opening",
+    "sounds": [
+      "hexerei:book_opening"
+    ]
+  }
+}

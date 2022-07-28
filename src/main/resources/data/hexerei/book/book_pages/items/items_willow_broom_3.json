@@ -1,0 +1,35 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 11,
+          "width": 32
+        },
+        {
+          "x": 8,
+          "y": 11,
+          "height": 7,
+          "width": 15
+        }
+      ],
+      "passage_text": "book.hexerei.items_willow_broom_3.passage_1"
+    }
+  ],
+  "images": [
+    {
+      "x": 1.25,
+      "y": 5.5,
+      "u": 0,
+      "v": 0,
+      "width": 211,
+      "height": 216,
+      "imageWidth": 211,
+      "imageHeight": 216,
+      "scale": 0.25,
+      "texture": "hexerei:textures/book/pictures/broom_gui.png"
+    }
+  ]
+}

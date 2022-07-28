@@ -1,0 +1,19 @@
+{
+  "type": "hexerei:crow_flute_dye",
+  "pattern": [
+    "  P",
+    "DP ",
+    "PD "
+  ],
+  "key": {
+    "D": {
+      "tag": "forge:dyes"
+    },
+    "P": {
+      "item": "hexerei:mahogany_planks"
+    }
+  },
+  "result": {
+    "item": "hexerei:crow_flute"
+  }
+}

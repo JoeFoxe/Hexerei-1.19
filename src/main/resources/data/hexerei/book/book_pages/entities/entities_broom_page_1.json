@@ -1,0 +1,65 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 7,
+          "y": 0,
+          "height": 18,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_broom_page_1.passage_1",
+      "align": "middle"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 7,
+          "height": 11,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_broom_page_1.passage_2"
+    }
+  ],
+  "entities": [
+    {
+      "x": 2.5,
+      "y": 1.5,
+      "scale": 1.5,
+      "name": "hexerei:broom",
+      "tag": "{inv: {Size: 30, Items: [{Slot: 0, id: \"hexerei:broom_keychain\", Count: 1b, tag: {Items: [{Slot: 0b, id: \"hexerei:coffer\", Count: 1b, tag: {}}]}}, {Slot: 1, id: \"hexerei:large_satchel\", Count: 1b}, {Slot: 2, id: \"hexerei:broom_brush\", Count: 1b, tag: {Damage: 0}}]}, Type: \"willow\", CustomName: '{\"translate\":\"item.hexerei.willow_broom\"}', floatMode: 0b}",
+
+      "tag_array": [
+        {
+          "tag": "{inv: {Size: 30, Items: [{Slot: 0, id: \"hexerei:broom_keychain\", Count: 1b, tag: {Items: [{Slot: 0b, id: \"hexerei:coffer\", Count: 1b, tag: {}}]}}, {Slot: 1, id: \"hexerei:medium_satchel\", Count: 1b}, {Slot: 2, id: \"hexerei:broom_brush\", Count: 1b, tag: {Damage: 0}}]}, Type: \"willow\", CustomName: '{\"translate\":\"item.hexerei.willow_broom\"}', floatMode: 0b}"
+        },
+        {
+          "tag": "{inv: {Size: 30, Items: [{Slot: 0, id: \"hexerei:broom_netherite_tip\", Count: 1b, tag: {Damage: 0}}, {Slot: 1, id: \"hexerei:large_satchel\", Count: 1b}, {Slot: 2, id: \"hexerei:herb_enhanced_broom_brush\", Count: 1b, tag: {Damage: 0}}]}, FallDistance: 0.0f, Type: \"mahogany\", CustomName: '{\"translate\":\"item.hexerei.mahogany_broom\"}', floatMode: 0b}"
+        }
+      ],
+      "hover_offset": {
+        "x": 0,
+        "y": -0.05,
+        "scale": 0.85
+      }
+    }
+  ],
+  "images": [
+    {
+      "x": 2.5,
+      "y": -0.3,
+      "z": -4,
+      "u": 0,
+      "v": 0,
+      "width": 380,
+      "height": 74,
+      "imageWidth": 380,
+      "imageHeight": 74,
+      "scale": 0.3,
+      "texture": "hexerei:textures/book/chapter_header.png"
+    }
+  ]
+}
