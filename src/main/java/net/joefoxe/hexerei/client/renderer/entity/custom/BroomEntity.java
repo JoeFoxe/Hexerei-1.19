@@ -26,7 +26,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ServerboundPaddleBoatPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -1338,7 +1338,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider{
 
             @Override
             public Component getDisplayName() {
-                return new TranslatableComponent("");
+                return Component.translatable("");
             }
 
 

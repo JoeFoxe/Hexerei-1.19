@@ -7,7 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.GsonHelper;
 
 import java.util.ArrayList;
@@ -128,7 +127,7 @@ public class BookImage {
         List<Component> extra_tooltips = new ArrayList<>();
         int item_number_of_extra_tooltips = image.getInt("image_number_of_extra_tooltips");
 
-        Component component = new TranslatableComponent("");
+        Component component = Component.translatable("");
         List<BookTooltipExtra> extra_tooltips_raw = new ArrayList<>();
         for (int k = 0; k < item_number_of_extra_tooltips; k++) {
             int color = image.getInt("image_extra_tooltips_color" + k);
@@ -143,9 +142,9 @@ public class BookImage {
             if (text_type.equals("trail")) {
                 extra_tooltips.add(component);
 
-                component = new TranslatableComponent(text).withStyle(Style.EMPTY.withColor(color));
+                component = Component.translatable(text).withStyle(Style.EMPTY.withColor(color));
             } else if (text_type.equals("append")) {
-                component.getSiblings().add(new TranslatableComponent(text).withStyle(Style.EMPTY.withColor(color)));
+                component.getSiblings().add(Component.translatable(text).withStyle(Style.EMPTY.withColor(color)));
 
             }
 
@@ -199,7 +198,7 @@ public class BookImage {
         java.util.List<net.minecraft.network.chat.Component> textComponentsList = new ArrayList<>();
         List<BookTooltipExtra> bookTooltipExtraList = new ArrayList<>();
 
-        MutableComponent component = new TranslatableComponent("");
+        MutableComponent component = Component.translatable("");
 
         for (int i = 0; i < textComp.size(); i++) {
             JsonObject extraItemObject = textComp.get(i).getAsJsonObject();
@@ -212,10 +211,10 @@ public class BookImage {
 
             if(type.equals("trail")) {
                 textComponentsList.add(component);
-                component = (new TranslatableComponent(string)).withStyle(Style.EMPTY.withColor(color));
+                component = (Component.translatable(string)).withStyle(Style.EMPTY.withColor(color));
             }
             else if(type.equals("append")){
-                component.getSiblings().add(new TranslatableComponent(string).withStyle(Style.EMPTY.withColor(color)));
+                component.getSiblings().add(Component.translatable(string).withStyle(Style.EMPTY.withColor(color)));
             }
 
             if(!(i + 1 < textComp.size())){

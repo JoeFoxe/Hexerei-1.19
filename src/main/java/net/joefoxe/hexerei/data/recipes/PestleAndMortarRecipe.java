@@ -12,7 +12,6 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -171,8 +170,7 @@ public class PestleAndMortarRecipe implements Recipe<SimpleContainer> {
 
 
     // for Serializing the recipe into/from a json
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>>
-            implements RecipeSerializer<PestleAndMortarRecipe> {
+    public static class Serializer implements RecipeSerializer<PestleAndMortarRecipe> {
         public static final PestleAndMortarRecipe.Serializer INSTANCE = new PestleAndMortarRecipe.Serializer();
         public static final ResourceLocation ID =
                 new ResourceLocation(Hexerei.MOD_ID,"pestle_and_mortar");

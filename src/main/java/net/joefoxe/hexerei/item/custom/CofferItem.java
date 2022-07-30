@@ -154,9 +154,9 @@ public class CofferItem extends BlockItem implements DyeableLeatherItem {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
 //        if(Screen.hasShiftDown()) {
-//            tooltip.add(new TranslatableComponent("tooltip.hexerei.dowsing_rod"));
+//            tooltip.add(Component.translatable("tooltip.hexerei.dowsing_rod"));
 //        } else {
-//            tooltip.add(new TranslatableComponent("tooltip.hexerei.dowsing_rod"));
+//            tooltip.add(Component.translatable("tooltip.hexerei.dowsing_rod"));
 //        }
 
         super.appendHoverText(stack, world, tooltip, flagIn);

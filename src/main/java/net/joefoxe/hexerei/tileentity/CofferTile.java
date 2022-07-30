@@ -1,60 +1,45 @@
 package net.joefoxe.hexerei.tileentity;
 
 import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.block.ModBlocks;
-import net.joefoxe.hexerei.block.custom.Coffer;
 import net.joefoxe.hexerei.config.HexConfig;
 import net.joefoxe.hexerei.container.CofferContainer;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
 import net.joefoxe.hexerei.util.HexereiUtil;
-import net.joefoxe.hexerei.util.message.BroomSyncFloatModeToServer;
 import net.joefoxe.hexerei.util.message.CofferSyncCrowButtonToServer;
 import net.joefoxe.hexerei.util.message.TESyncPacket;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.Clearable;
-import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
-import net.minecraft.world.level.block.entity.TickingBlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.client.renderer.texture.Tickable;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Set;
-import java.util.function.Function;
 
 public class CofferTile extends RandomizableContainerBlockEntity implements Clearable {
 
@@ -178,7 +163,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
 
     @Override
     public boolean canPlaceItem(int p_18952_, ItemStack stack) {
-        String id = stack.getItem().getRegistryName().toString();
+        String id = HexereiUtil.getRegistryName(stack.getItem()).toString();
         if(HexConfig.COFFER_BLACKLIST.get().contains(id))
             return false;
         return super.canPlaceItem(p_18952_, stack);
@@ -192,7 +177,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
 
     @Override
     protected Component getDefaultName() {
-        return new TranslatableComponent("container." + Hexerei.MOD_ID + ".coffer");
+        return Component.translatable("container." + Hexerei.MOD_ID + ".coffer");
     }
 
     @Override
@@ -338,7 +323,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return !HexConfig.COFFER_BLACKLIST.get().contains(stack.getItem().getRegistryName().toString());
+                return !HexConfig.COFFER_BLACKLIST.get().contains(HexereiUtil.getRegistryName(stack.getItem()).toString());
             }
 
             @Override
@@ -438,7 +423,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
     @Override
     public Component getDisplayName() {
         return customName != null ? customName
-                : new TextComponent("");
+                : Component.literal("");
     }
 
     @Override

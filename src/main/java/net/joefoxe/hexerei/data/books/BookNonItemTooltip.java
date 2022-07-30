@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.GsonHelper;
 
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public class BookNonItemTooltip {
         java.util.List<Component> textComponentsList = new ArrayList<>();
         List<BookTooltipExtra> bookTooltipExtraList = new ArrayList<>();
 
-        MutableComponent component = new TranslatableComponent("");
+        MutableComponent component = Component.translatable("");
 
         for (int i = 0; i < yourJson.size(); i++) {
             JsonObject extraItemObject = yourJson.get(i).getAsJsonObject();
@@ -66,10 +66,10 @@ public class BookNonItemTooltip {
             if(type.equals("trail")) {
                 textComponentsList.add(component);
 
-                component = new TranslatableComponent(string).withStyle(Style.EMPTY.withColor(color));
+                component = Component.translatable(string).withStyle(Style.EMPTY.withColor(color));
             }
             else if(type.equals("append")){
-                component.getSiblings().add(new TranslatableComponent(string).withStyle(Style.EMPTY.withColor(color)));
+                component.getSiblings().add(Component.translatable(string).withStyle(Style.EMPTY.withColor(color)));
 
             }
 

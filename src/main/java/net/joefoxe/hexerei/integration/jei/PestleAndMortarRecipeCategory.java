@@ -12,7 +12,7 @@ import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.data.recipes.PestleAndMortarRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -85,8 +85,8 @@ public class PestleAndMortarRecipeCategory implements IRecipeCategory<PestleAndM
         String grindingTimeString = grindingTime < Integer.MAX_VALUE ? grindingTime / 20 + (grindingTime % 20 == 0 ? "" : ("." + Integer.toString(grindingTime % 20))) : "?";
         if(grindingTimeString.charAt(grindingTimeString.length()-1) == '0' && grindingTime != 0 && grindingTime % 20 != 0)
             grindingTimeString = grindingTimeString.substring(0, grindingTimeString.length()-1);
-        TranslatableComponent dip_time_1 = new TranslatableComponent("gui.jei.category.pestle_and_mortar.grind_time_1");
-        TranslatableComponent dip_time_3 = new TranslatableComponent("gui.jei.category.dipper.resultSeconds", grindingTimeString);
+        MutableComponent dip_time_1 = Component.translatable("gui.jei.category.pestle_and_mortar.grind_time_1");
+        MutableComponent dip_time_3 = Component.translatable("gui.jei.category.dipper.resultSeconds", grindingTimeString);
 
 
         minecraft.font.draw(matrixStack, dip_time_1, 6*1.666f, 68.5f*1.666f, 0xFF808080);

@@ -29,8 +29,8 @@ public class ClientCofferToolTip implements HexereiBookTooltip {
     private final ItemStack self;
     public Font font = Minecraft.getInstance().font;
 
-    public MutableComponent shift_down = new TranslatableComponent("<%s>", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999)));
-    public MutableComponent shift_up = new TranslatableComponent("[%s]", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999)));
+    public MutableComponent shift_down = Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999)));
+    public MutableComponent shift_up = Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999)));
 
     public ClientCofferToolTip(CofferItem.CofferItemToolTip tooltip) {
         this.handler = tooltip.handler();

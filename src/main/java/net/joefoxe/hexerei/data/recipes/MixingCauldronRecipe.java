@@ -19,7 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -161,8 +160,7 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
     }
 
     // for Serializing the recipe into/from a json
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>>
-            implements RecipeSerializer<MixingCauldronRecipe> {
+    public static class Serializer implements RecipeSerializer<MixingCauldronRecipe> {
             public static final Serializer INSTANCE = new Serializer();
             public static final ResourceLocation ID =
                     new ResourceLocation(Hexerei.MOD_ID,"mixingcauldron");

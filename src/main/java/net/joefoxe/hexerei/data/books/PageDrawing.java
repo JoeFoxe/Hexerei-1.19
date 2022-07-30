@@ -1170,7 +1170,7 @@ public class PageDrawing {
 
                             CompoundTag stringTag = TagParser.parseTag(tag2);
 
-                            livingEntity.setCustomName(new TranslatableComponent(stringTag.getString("text")));
+                            livingEntity.setCustomName(Component.translatable(stringTag.getString("text")));
 
                             livingEntity.load(tag);
 
@@ -1210,7 +1210,7 @@ public class PageDrawing {
 
                             CompoundTag stringTag = TagParser.parseTag(tag2);
 
-                            bookEntity.entity.setCustomName(new TranslatableComponent(stringTag.getString("text")));
+                            bookEntity.entity.setCustomName(Component.translatable(stringTag.getString("text")));
 
                             bookEntity.entity.load(tag);
 
@@ -1237,7 +1237,7 @@ public class PageDrawing {
 
                                 CompoundTag stringTag = TagParser.parseTag(tag2);
 
-                                livingEntity.setCustomName(new TranslatableComponent(stringTag.getString("text")));
+                                livingEntity.setCustomName(Component.translatable(stringTag.getString("text")));
 
                                 livingEntity.readAdditionalSaveData(tag);
 
@@ -1270,7 +1270,7 @@ public class PageDrawing {
 
                                 CompoundTag stringTag = TagParser.parseTag(tag2);
 
-                                entity.setCustomName(new TranslatableComponent(stringTag.getString("text")));
+                                entity.setCustomName(Component.translatable(stringTag.getString("text")));
 
                                 entity.load(tag);
 
@@ -1681,7 +1681,7 @@ public class PageDrawing {
                             String output = col.getName().substring(0, 1).toUpperCase() + col.getName().substring(1);
                             output = output.replaceAll("_", " ");
 
-                            list.add(new TranslatableComponent("Change Color - %s", new TranslatableComponent("%s", output).withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col)))).withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
+                            list.add(Component.translatable("Change Color - %s", Component.translatable("%s", output).withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col)))).withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
                             this.tooltipText = list;
                             this.tooltipStack = ItemStack.EMPTY;
                             this.drawTooltipText = true;
@@ -1699,7 +1699,7 @@ public class PageDrawing {
                         if(flag){
                             List<Component> list = new ArrayList<>();
 
-                            list.add(new TranslatableComponent("Bookmark Page").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
+                            list.add(Component.translatable("Bookmark Page").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
                             this.tooltipText = list;
                             this.tooltipStack = ItemStack.EMPTY;
                             this.drawTooltipText = true;
@@ -1775,11 +1775,11 @@ public class PageDrawing {
                                 BookEntries bookEntries = BookManager.getBookEntries();
 
                                 if(bookEntries != null){
-                                    list.add(new TranslatableComponent("%s%s - Page %s%s",
-                                            new TranslatableComponent("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
-                                            new TranslatableComponent("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
-                                            new TranslatableComponent("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
-                                            new TranslatableComponent("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
+                                    list.add(Component.translatable("%s%s - Page %s%s",
+                                            Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
+                                            Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
+                                            Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
+                                            Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
                                             .withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
                                     this.tooltipText = list;
                                     this.tooltipStack = ItemStack.EMPTY;
@@ -1836,11 +1836,11 @@ public class PageDrawing {
                                 BookEntries bookEntries = BookManager.getBookEntries();
 
                                 if(bookEntries != null){
-                                    list.add(new TranslatableComponent("%s%s - Page %s%s",
-                                            new TranslatableComponent("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
-                                            new TranslatableComponent("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
-                                            new TranslatableComponent("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
-                                            new TranslatableComponent("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
+                                    list.add(Component.translatable("%s%s - Page %s%s",
+                                            Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
+                                            Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
+                                            Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
+                                            Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
                                             .withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
                                     this.tooltipText = list;
                                     this.tooltipStack = ItemStack.EMPTY;
@@ -1892,11 +1892,11 @@ public class PageDrawing {
                                 BookEntries bookEntries = BookManager.getBookEntries();
 
                                 if(bookEntries != null){
-                                    list.add(new TranslatableComponent("%s%s - Page %s%s",
-                                            new TranslatableComponent("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
-                                            new TranslatableComponent("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
-                                            new TranslatableComponent("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
-                                            new TranslatableComponent("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
+                                    list.add(Component.translatable("%s%s - Page %s%s",
+                                            Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
+                                            Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
+                                            Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
+                                            Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
                                             .withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
                                     this.tooltipText = list;
                                     this.tooltipStack = ItemStack.EMPTY;
@@ -1959,11 +1959,11 @@ public class PageDrawing {
 
 
                                 if(bookEntries != null){
-                                    list.add(new TranslatableComponent("%s%s - Page %s%s",
-                                            new TranslatableComponent("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
-                                            new TranslatableComponent("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
-                                            new TranslatableComponent("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
-                                            new TranslatableComponent("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
+                                    list.add(Component.translatable("%s%s - Page %s%s",
+                                            Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
+                                            Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
+                                            Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
+                                            Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
                                             .withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
                                     this.tooltipText = list;
                                     this.tooltipStack = ItemStack.EMPTY;
@@ -2182,7 +2182,7 @@ public class PageDrawing {
                     loc = "hexerei:textures/book/back_page_hover.png";
 
                     List<Component> list = new ArrayList<>();
-                    list.add(new TranslatableComponent("Back").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
+                    list.add(Component.translatable("Back").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
                     this.tooltipText = list;
                     this.tooltipStack = ItemStack.EMPTY;
                     this.drawTooltipText = true;
@@ -2230,7 +2230,7 @@ public class PageDrawing {
                     if (tileEntityIn.slotClicked != -1 && tileEntityIn.slotClickedTick > 5) {
                         loc_del = "hexerei:textures/book/delete_hover.png";
                         List<Component> list = new ArrayList<>();
-                        list.add(new TranslatableComponent("Delete Bookmark").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
+                        list.add(Component.translatable("Delete Bookmark").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
                         this.tooltipText = list;
                         this.drawTooltipText = true;
                         this.tooltipStack = ItemStack.EMPTY;
@@ -2238,7 +2238,7 @@ public class PageDrawing {
                     else {
                         loc_close = "hexerei:textures/book/close_hover.png";
                         List<Component> list = new ArrayList<>();
-                        list.add(new TranslatableComponent("Close Book").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
+                        list.add(Component.translatable("Close Book").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
                         this.tooltipText = list;
                         this.drawTooltipText = true;
                         this.tooltipStack = ItemStack.EMPTY;
@@ -2282,7 +2282,7 @@ public class PageDrawing {
                     effects.add(bookImageEffect_tilt);
                     loc = "hexerei:textures/book/home_hover.png";
                     List<Component> list = new ArrayList<>();
-                    list.add(new TranslatableComponent("Home").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
+                    list.add(Component.translatable("Home").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
                     this.tooltipText = list;
                     this.drawTooltipText = true;
                     this.tooltipStack = ItemStack.EMPTY;
@@ -2328,7 +2328,7 @@ public class PageDrawing {
                         effects.add(bookImageEffect_tilt);
                         loc = "hexerei:textures/book/next_page_hover.png";
                         List<Component> list = new ArrayList<>();
-                        list.add(new TranslatableComponent("Next").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
+                        list.add(Component.translatable("Next").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
                         this.tooltipText = list;
                         this.drawTooltipText = true;
                         this.tooltipStack = ItemStack.EMPTY;
@@ -4110,7 +4110,7 @@ public class PageDrawing {
 
             String modId = this.tooltipStack.getItem().getRegistryName().getNamespace();
             String modName = getModNameForModId(modId);
-            TranslatableComponent modNameComponent = new TranslatableComponent(modName);
+            MutableComponent modNameComponent = Component.translatable(modName);
             modNameComponent.withStyle(Style.EMPTY.withItalic(true).withColor(5592575));
             if(!HexereiModNameTooltipCompat.LOADED)
                 tooltip.add(modNameComponent);
@@ -4133,14 +4133,14 @@ public class PageDrawing {
             return tooltip;
         }
 
-        TranslatableComponent displayName = (TranslatableComponent)fluidStack.getDisplayName();
+        MutableComponent displayName = (MutableComponent)fluidStack.getDisplayName();
         displayName.withStyle(ChatFormatting.WHITE);
         tooltip.add(displayName);
         if (capacity != 0) {
-            MutableComponent amountString = new TranslatableComponent("book.hexerei.tooltip.liquid.amount.with.capacity", nf.format(amount), nf.format(capacity));
+            MutableComponent amountString = Component.translatable("book.hexerei.tooltip.liquid.amount.with.capacity", nf.format(amount), nf.format(capacity));
             tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
         }else if(amount != 0){
-            TranslatableComponent amountString = new TranslatableComponent("book.hexerei.tooltip.liquid.amount", nf.format(amount));
+            MutableComponent amountString = Component.translatable("book.hexerei.tooltip.liquid.amount", nf.format(amount));
             tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
         }
 
@@ -4150,7 +4150,7 @@ public class PageDrawing {
 
         String modId = fluidStack.getFluid().getRegistryName().getNamespace();
         String modName = getModNameForModId(modId);
-        TranslatableComponent modNameComponent = new TranslatableComponent(modName);
+        MutableComponent modNameComponent = Component.translatable(modName);
         modNameComponent.withStyle(Style.EMPTY.withItalic(true).withColor(5592575));
         tooltip.add(modNameComponent);
 
@@ -4192,7 +4192,7 @@ public class PageDrawing {
         List<ClientTooltipComponent> list = ForgeHooksClient.gatherTooltipComponents(stack, components, p_169391_, p_169392_, 300, 750, Minecraft.getInstance().font, Minecraft.getInstance().font);
         List<Component> newComponentList = new ArrayList<>();
         for (Component component : components){
-            newComponentList.add(new TranslatableComponent(component.getString()).withStyle(component.getStyle().withColor(0x292929)));
+            newComponentList.add(Component.translatable(component.getString()).withStyle(component.getStyle().withColor(0x292929)));
         }
         List<ClientTooltipComponent> list2 = ForgeHooksClient.gatherTooltipComponents(stack, newComponentList, p_169391_, p_169392_, 300, 750, Minecraft.getInstance().font, Minecraft.getInstance().font);
         this.renderTooltipInternal(buffer, p_169389_, list, list2, p_169392_, p_169393_, overlay, light);
@@ -4857,7 +4857,7 @@ public class PageDrawing {
     @OnlyIn(Dist.CLIENT)
     public void drawString(BookParagraph bookParagraph, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float mouseX, float mouseY, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
 
-        TranslatableComponent pageText = bookParagraph.translatablePassage;
+        MutableComponent pageText = bookParagraph.translatablePassage;
         int wordNumber = -1;
         int boxOn = 0;
         BookParagraphElements activeElement = (bookParagraph.paragraphElements.get(0));

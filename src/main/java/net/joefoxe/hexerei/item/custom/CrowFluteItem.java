@@ -365,28 +365,28 @@ public class CrowFluteItem extends Item implements Container, IThirdPersonItemAn
 
                     int selected = itemstack.getOrCreateTag().getInt("commandSelected");
                     if (selected == 0) {
-                        playerIn.displayClientMessage(new TranslatableComponent("entity.hexerei.crow_flute_set_message", crows.size(), crows.size() > 1 ? "s" : "", new TranslatableComponent("entity.hexerei.crow_command_gui_0")), true);
+                        playerIn.displayClientMessage(Component.translatable("entity.hexerei.crow_flute_set_message", crows.size(), crows.size() > 1 ? "s" : "", Component.translatable("entity.hexerei.crow_command_gui_0")), true);
                         for (CrowEntity crow : crows) {
                             if (crow.isOwnedBy(playerIn)) {
                                 crow.setCommandFollow();
                             }
                         }
                     } else if (selected == 1) {
-                        playerIn.displayClientMessage(new TranslatableComponent("entity.hexerei.crow_flute_set_message", crows.size(), crows.size() > 1 ? "s" : "", new TranslatableComponent("entity.hexerei.crow_command_gui_1")), true);
+                        playerIn.displayClientMessage(Component.translatable("entity.hexerei.crow_flute_set_message", crows.size(), crows.size() > 1 ? "s" : "", Component.translatable("entity.hexerei.crow_command_gui_1")), true);
                         for (CrowEntity crow : crows) {
                             if (crow.isOwnedBy(playerIn)) {
                                 crow.setCommandSit();
                             }
                         }
                     } else if (selected == 2) {
-                        playerIn.displayClientMessage(new TranslatableComponent("entity.hexerei.crow_flute_set_message", crows.size(), crows.size() > 1 ? "s" : "", new TranslatableComponent("entity.hexerei.crow_command_gui_2")), true);
+                        playerIn.displayClientMessage(Component.translatable("entity.hexerei.crow_flute_set_message", crows.size(), crows.size() > 1 ? "s" : "", Component.translatable("entity.hexerei.crow_command_gui_2")), true);
                         for (CrowEntity crow : crows) {
                             if (crow.isOwnedBy(playerIn)) {
                                 crow.setCommandWander();
                             }
                         }
                     } else if (selected == 3) {
-                        playerIn.displayClientMessage(new TranslatableComponent("entity.hexerei.crow_flute_set_message", crows.size(), crows.size() > 1 ? "s" : "", new TranslatableComponent("entity.hexerei.crow_command_gui_3")).append(" (").append(new TranslatableComponent("entity.hexerei.crow_help_command_gui_" + itemstack.getOrCreateTag().getInt("helpCommandSelected"))).append(")"), true);
+                        playerIn.displayClientMessage(Component.translatable("entity.hexerei.crow_flute_set_message", crows.size(), crows.size() > 1 ? "s" : "", Component.translatable("entity.hexerei.crow_command_gui_3")).append(" (").append(Component.translatable("entity.hexerei.crow_help_command_gui_" + itemstack.getOrCreateTag().getInt("helpCommandSelected"))).append(")"), true);
                         for (CrowEntity crow : crows) {
                             if (crow.isOwnedBy(playerIn)) {
                                 crow.setHelpCommand(itemstack.getOrCreateTag().getInt("helpCommandSelected"));
@@ -438,7 +438,7 @@ public class CrowFluteItem extends Item implements Container, IThirdPersonItemAn
                     ListTag id = itemstack.getOrCreateTag().getList("crowList", Tag.TAG_COMPOUND);
 
                     if (id.size() < 1){
-                        playerIn.displayClientMessage(new TranslatableComponent("entity.hexerei.crow_flute_perch_message_fail_no_crows"), true);
+                        playerIn.displayClientMessage(Component.translatable("entity.hexerei.crow_flute_perch_message_fail_no_crows"), true);
 //                        level.playSound(null, playerIn.getX() + playerIn.getLookAngle().x(), playerIn.getY() + playerIn.getEyeHeight(), playerIn.getZ() + playerIn.getLookAngle().z(), ModSounds.CROW_FLUTE_SELECT.get(), SoundSource.PLAYERS, 0.25F, 0.1F);
                         playerIn.getCooldowns().addCooldown(this, 5);
                     }
@@ -462,7 +462,7 @@ public class CrowFluteItem extends Item implements Container, IThirdPersonItemAn
 
 
                     if (raytraceresult.getType() != HitResult.Type.ENTITY) {
-                        playerIn.displayClientMessage(new TranslatableComponent("entity.hexerei.crow_flute_select_message_fail"), true);
+                        playerIn.displayClientMessage(Component.translatable("entity.hexerei.crow_flute_select_message_fail"), true);
                         playerIn.playSound(ModSounds.CROW_FLUTE_DESELECT.get(), 1, 0.1f);
                         return InteractionResultHolder.fail(itemstack);
                     }
@@ -479,7 +479,7 @@ public class CrowFluteItem extends Item implements Container, IThirdPersonItemAn
                             }
                         }
                         if (!flag) {
-                            playerIn.displayClientMessage(new TranslatableComponent("entity.hexerei.crow_flute_select_message_fail"), true);
+                            playerIn.displayClientMessage(Component.translatable("entity.hexerei.crow_flute_select_message_fail"), true);
                             playerIn.playSound(ModSounds.CROW_FLUTE_DESELECT.get(), 1, 0.1f);
                             return InteractionResultHolder.fail(itemstack);
                         }
@@ -491,7 +491,7 @@ public class CrowFluteItem extends Item implements Container, IThirdPersonItemAn
 //                return InteractionResultHolder.success(itemstack);
                         HitResult raytraceresult = getPlayerPOVHitResult(level, playerIn, ClipContext.Fluid.NONE);
                         if (raytraceresult.getType() != HitResult.Type.BLOCK) {
-                            playerIn.displayClientMessage(new TranslatableComponent("entity.hexerei.crow_flute_perch_message_fail_no_block"), true);
+                            playerIn.displayClientMessage(Component.translatable("entity.hexerei.crow_flute_perch_message_fail_no_block"), true);
                             playerIn.playSound(ModSounds.CROW_FLUTE_DESELECT.get(), 1, 0.1f);
                             return InteractionResultHolder.fail(itemstack);
                         } else {
@@ -499,7 +499,7 @@ public class CrowFluteItem extends Item implements Container, IThirdPersonItemAn
                         ListTag id = itemstack.getOrCreateTag().getList("crowList", Tag.TAG_COMPOUND);
 
                         if (id.size() < 1) {
-                            playerIn.displayClientMessage(new TranslatableComponent("entity.hexerei.crow_flute_perch_message_fail_no_crows"), true);
+                            playerIn.displayClientMessage(Component.translatable("entity.hexerei.crow_flute_perch_message_fail_no_crows"), true);
                             playerIn.playSound(ModSounds.CROW_FLUTE_DESELECT.get(), 1, 0.1f);
                             return InteractionResultHolder.fail(itemstack);
                         }
@@ -517,14 +517,14 @@ public class CrowFluteItem extends Item implements Container, IThirdPersonItemAn
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
 
         if(Screen.hasShiftDown()) {
-            tooltip.add(new TranslatableComponent("<%s>", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.crow_flute_shift_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.crow_flute_shift_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.crow_flute_shift_3").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.crow_flute_shift_4").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.crow_flute_shift_5").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("tooltip.hexerei.crow_flute_shift_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("tooltip.hexerei.crow_flute_shift_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("tooltip.hexerei.crow_flute_shift_3").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("tooltip.hexerei.crow_flute_shift_4").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("tooltip.hexerei.crow_flute_shift_5").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
         } else {
-            tooltip.add(new TranslatableComponent("[%s]", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
 
             if(stack.getOrCreateTag().contains("commandMode")) {
                 String command = "";
@@ -551,7 +551,7 @@ public class CrowFluteItem extends Item implements Container, IThirdPersonItemAn
                     command = "entity.hexerei.crow_flute_select";
                 }
 
-                tooltip.add(new TranslatableComponent("-%s-", new TranslatableComponent(command).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                tooltip.add(Component.translatable("-%s-", Component.translatable(command).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             }
         }
 

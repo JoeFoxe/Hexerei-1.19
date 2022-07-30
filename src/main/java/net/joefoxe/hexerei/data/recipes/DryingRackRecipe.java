@@ -12,7 +12,6 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -104,8 +103,7 @@ public class DryingRackRecipe implements Recipe<SimpleContainer> {
 
 
     // for Serializing the recipe into/from a json
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>>
-            implements RecipeSerializer<DryingRackRecipe> {
+    public static class Serializer implements RecipeSerializer<DryingRackRecipe> {
         public static final DryingRackRecipe.Serializer INSTANCE = new DryingRackRecipe.Serializer();
         public static final ResourceLocation ID =
                 new ResourceLocation(Hexerei.MOD_ID,"drying_rack");

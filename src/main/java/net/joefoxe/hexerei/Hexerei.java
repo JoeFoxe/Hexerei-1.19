@@ -60,7 +60,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -119,7 +118,7 @@ public class Hexerei
 //        eventBus.addListener(this::gatherData);
 
 //        eventBus.addListener(HexereiDataGenerator::gatherData);
-        eventBus.addGenericListener(RecipeSerializer.class, ModItems::registerRecipeSerializers);
+        //eventBus.addGenericListener(RecipeSerializer.class, ModItems::registerRecipeSerializers);
         ModItems.register(eventBus);
         ModBlocks.register(eventBus);
         ModFluids.register(eventBus);
@@ -165,7 +164,7 @@ public class Hexerei
     public void gatherData(GatherDataEvent event) {
         DataGenerator gen = event.getGenerator();
 
-        gen.addProvider(new HexereiRecipeProvider(gen));
+        gen.addProvider(event.includeServer(),new HexereiRecipeProvider(gen));
     }
 
 
@@ -358,18 +357,6 @@ public class Hexerei
 
     private void processIMC(final InterModProcessEvent event)
     {
-
-    }
-
-    // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
-    // Event bus for receiving Registry Events)
-    @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistryEvents {
-        @SubscribeEvent
-        public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
-            // register a new block here
-            LOGGER.info("HELLO from Register Block");
-        }
 
     }
 

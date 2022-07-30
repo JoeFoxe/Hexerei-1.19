@@ -186,7 +186,7 @@ public class BookItemsAndFluids {
         this.fluid_offset_x = 0;
         this.fluid_offset_y = 0;
         List<Component> extra_tooltips2 = new ArrayList<>();
-        extra_tooltips2.add(new TranslatableComponent("book.hexerei.tooltip.accepts_any", new TextComponent(tag)).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x808080))));
+        extra_tooltips2.add(Component.translatable("book.hexerei.tooltip.accepts_any", new TextComponent(tag)).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x808080))));
         this.extra_tooltips = extra_tooltips2;
         this.extra_tooltips.addAll(extra_tooltips);
         this.extra_tooltips_raw = tooltipExtras;
@@ -215,7 +215,7 @@ public class BookItemsAndFluids {
                 JsonArray yourJson = GsonHelper.getAsJsonArray(object,"extra_tooltips", new JsonArray());
                 java.util.List<net.minecraft.network.chat.Component> textComponentsList = new ArrayList<>();
 
-                net.minecraft.network.chat.Component component = new TranslatableComponent("");
+                net.minecraft.network.chat.Component component = Component.translatable("");
                 List<BookTooltipExtra> bookTooltipExtraList = new ArrayList<>();
 
                 for (int i = 0; i < yourJson.size(); i++) {
@@ -231,10 +231,10 @@ public class BookItemsAndFluids {
                     if(string_type.equals("trail")) {
                         textComponentsList.add(component);
 
-                        component = new TranslatableComponent(string).withStyle(Style.EMPTY.withColor(color));
+                        component = Component.translatable(string).withStyle(Style.EMPTY.withColor(color));
                     }
                     else if(string_type.equals("append")){
-                        component.getSiblings().add(new TranslatableComponent(string).withStyle(Style.EMPTY.withColor(color)));
+                        component.getSiblings().add(Component.translatable(string).withStyle(Style.EMPTY.withColor(color)));
 
                     }
 
@@ -253,7 +253,7 @@ public class BookItemsAndFluids {
                 java.util.List<net.minecraft.network.chat.Component> textComponentsList = new ArrayList<>();
                 List<BookTooltipExtra> bookTooltipExtraList = new ArrayList<>();
 
-                net.minecraft.network.chat.Component component = new TranslatableComponent("");
+                net.minecraft.network.chat.Component component = Component.translatable("");
 
                 for (int i = 0; i < yourJson.size(); i++) {
                     JsonObject extraItemObject = yourJson.get(i).getAsJsonObject();
@@ -267,9 +267,9 @@ public class BookItemsAndFluids {
                     if (string_type.equals("trail")) {
                         textComponentsList.add(component);
 
-                        component = new TranslatableComponent(string).withStyle(Style.EMPTY.withColor(color));
+                        component = Component.translatable(string).withStyle(Style.EMPTY.withColor(color));
                     } else if (string_type.equals("append")) {
-                        component.getSiblings().add(new TranslatableComponent(string).withStyle(Style.EMPTY.withColor(color)));
+                        component.getSiblings().add(Component.translatable(string).withStyle(Style.EMPTY.withColor(color)));
 
                     }
 
@@ -309,7 +309,7 @@ public class BookItemsAndFluids {
                 JsonArray yourJson = GsonHelper.getAsJsonArray(object, "extra_tooltips", new JsonArray());
                 java.util.List<net.minecraft.network.chat.Component> textComponentsList = new ArrayList<>();
 
-                net.minecraft.network.chat.Component component = new TranslatableComponent("");
+                net.minecraft.network.chat.Component component = Component.translatable("");
                 List<BookTooltipExtra> bookTooltipExtraList = new ArrayList<>();
 
                 for (int i = 0; i < yourJson.size(); i++) {
@@ -324,9 +324,9 @@ public class BookItemsAndFluids {
                     if (string_type.equals("trail")) {
                         textComponentsList.add(component);
 
-                        component = new TranslatableComponent(string).withStyle(Style.EMPTY.withColor(color));
+                        component = Component.translatable(string).withStyle(Style.EMPTY.withColor(color));
                     } else if (string_type.equals("append")) {
-                        component.getSiblings().add(new TranslatableComponent(string).withStyle(Style.EMPTY.withColor(color)));
+                        component.getSiblings().add(Component.translatable(string).withStyle(Style.EMPTY.withColor(color)));
 
                     }
 

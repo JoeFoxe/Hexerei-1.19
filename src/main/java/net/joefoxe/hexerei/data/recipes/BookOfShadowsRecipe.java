@@ -3,7 +3,6 @@ package net.joefoxe.hexerei.data.recipes;
 import com.google.gson.JsonObject;
 import net.joefoxe.hexerei.data.books.HexereiBookItem;
 import net.joefoxe.hexerei.item.ModItems;
-import net.joefoxe.hexerei.item.custom.CrowFluteItem;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -12,7 +11,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 
@@ -46,8 +44,7 @@ public class BookOfShadowsRecipe extends ShapedRecipe {
         return new ItemStack(ModItems.BOOK_OF_SHADOWS.get());
     }
 
-    private static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>>
-            implements RecipeSerializer<BookOfShadowsRecipe> {
+    private static class Serializer implements RecipeSerializer<BookOfShadowsRecipe> {
         @Nonnull
         @Override
         public BookOfShadowsRecipe fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {

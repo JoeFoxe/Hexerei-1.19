@@ -19,7 +19,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
@@ -78,103 +78,103 @@ public class CrowScreen extends AbstractContainerScreen<CrowContainer> {
 
         List<Component> components = new ArrayList<>();
         if (isHovering((double)mouseX, (double)mouseY, 23D, 92D, 18D, 18D)) {
-            components.add(new TranslatableComponent("entity.hexerei.crow_command_gui_0"));
+            components.add(Component.translatable("entity.hexerei.crow_command_gui_0"));
             if(Screen.hasShiftDown()) {
-                components.add(new TranslatableComponent("<%s>", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_follow_button_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_follow_button_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_follow_button_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_follow_button_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_follow_button_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_follow_button_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             }
             else {
-                components.add(new TranslatableComponent("[%s]", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             }
             this.renderTooltip(matrixStack, components, Optional.empty(), mouseX, mouseY, Minecraft.getInstance().font, ItemStack.EMPTY);
         }
 
 
         if (isHovering((double)mouseX, (double)mouseY, 43D, 92D, 18D, 18D)) {
-            components.add(new TranslatableComponent("entity.hexerei.crow_command_gui_1"));
+            components.add(Component.translatable("entity.hexerei.crow_command_gui_1"));
             if(Screen.hasShiftDown()) {
-                components.add(new TranslatableComponent("<%s>", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_sit_button_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_sit_button_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_sit_button_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_sit_button_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             }
             else {
-                components.add(new TranslatableComponent("[%s]", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             }
             this.renderTooltip(matrixStack, components, Optional.empty(), mouseX, mouseY, Minecraft.getInstance().font, ItemStack.EMPTY);
         }
 
 
         if (isHovering((double)mouseX, (double)mouseY, 63D, 92D, 18D, 18D)) {
-            components.add(new TranslatableComponent("entity.hexerei.crow_command_gui_2"));
+            components.add(Component.translatable("entity.hexerei.crow_command_gui_2"));
             if(Screen.hasShiftDown()) {
-                components.add(new TranslatableComponent("<%s>", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_wander_button_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_wander_button_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_wander_button_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_wander_button_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             }
             else {
-                components.add(new TranslatableComponent("[%s]", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             }
             this.renderTooltip(matrixStack, components, Optional.empty(), mouseX, mouseY, Minecraft.getInstance().font, ItemStack.EMPTY);
         }
 
 
         if (isHovering((double)mouseX, (double)mouseY, 83D, 92D, 18D, 18D)) {
-            components.add(new TranslatableComponent("entity.hexerei.crow_command_gui_3"));
+            components.add(Component.translatable("entity.hexerei.crow_command_gui_3"));
             if(Screen.hasShiftDown()) {
-                components.add(new TranslatableComponent("<%s>", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_help_button_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_help_button_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_help_button_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_help_button_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_help_button_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_help_button_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             }
             else {
-                components.add(new TranslatableComponent("[%s]", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             }
             this.renderTooltip(matrixStack, components, Optional.empty(), mouseX, mouseY, Minecraft.getInstance().font, ItemStack.EMPTY);
         }
 
 
         if (isHovering((double)mouseX, (double)mouseY, 107D, 92D, 18D, 18D)) {
-            components.add(new TranslatableComponent("entity.hexerei.crow_help_command_gui_0"));
+            components.add(Component.translatable("entity.hexerei.crow_help_command_gui_0"));
             if(Screen.hasShiftDown()) {
-                components.add(new TranslatableComponent("<%s>", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_gather_button_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_gather_button_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_gather_button_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_gather_button_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_gather_button_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_gather_button_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             }
             else {
-                components.add(new TranslatableComponent("[%s]", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             }
             this.renderTooltip(matrixStack, components, Optional.empty(), mouseX, mouseY, Minecraft.getInstance().font, ItemStack.EMPTY);
         }
 
 
         if (isHovering((double)mouseX, (double)mouseY, 127D, 92D, 18D, 18D)) {
-            components.add(new TranslatableComponent("entity.hexerei.crow_help_command_gui_1"));
+            components.add(Component.translatable("entity.hexerei.crow_help_command_gui_1"));
             if(Screen.hasShiftDown()) {
-                components.add(new TranslatableComponent("<%s>", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_harvest_button_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_harvest_button_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_harvest_button_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_harvest_button_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             }
             else {
-                components.add(new TranslatableComponent("[%s]", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             }
             this.renderTooltip(matrixStack, components, Optional.empty(), mouseX, mouseY, Minecraft.getInstance().font, ItemStack.EMPTY);
         }
 
 
         if (isHovering((double)mouseX, (double)mouseY, 147D, 92D, 18D, 18D)) {
-            components.add(new TranslatableComponent("entity.hexerei.crow_help_command_gui_2"));
+            components.add(Component.translatable("entity.hexerei.crow_help_command_gui_2"));
             if(Screen.hasShiftDown()) {
-                components.add(new TranslatableComponent("<%s>", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_pickpocket_button_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_pickpocket_button_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_pickpocket_button_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                components.add(new TranslatableComponent("tooltip.hexerei.crow_flute_pickpocket_button_3").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_pickpocket_button_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_pickpocket_button_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_pickpocket_button_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("tooltip.hexerei.crow_flute_pickpocket_button_3").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             }
             else {
-                components.add(new TranslatableComponent("[%s]", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                components.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             }
             this.renderTooltip(matrixStack, components, Optional.empty(), mouseX, mouseY, Minecraft.getInstance().font, ItemStack.EMPTY);
         }
@@ -272,30 +272,30 @@ public class CrowScreen extends AbstractContainerScreen<CrowContainer> {
 //                    this.topPos - 25);
 
 //        matrixStack.translate(this.leftPos + 42*1.666f, this.topPos + 14*1.666f, 0f);
-        TranslatableComponent hat = new TranslatableComponent("entity.hexerei.crow_slot_0");
-        TranslatableComponent misc1 = new TranslatableComponent("entity.hexerei.crow_slot_1");
-        TranslatableComponent misc2 = new TranslatableComponent("entity.hexerei.crow_slot_2");
-        TranslatableComponent command;
-        TranslatableComponent helpCommand;
+        MutableComponent hat = Component.translatable("entity.hexerei.crow_slot_0");
+        MutableComponent misc1 = Component.translatable("entity.hexerei.crow_slot_1");
+        MutableComponent misc2 = Component.translatable("entity.hexerei.crow_slot_2");
+        MutableComponent command;
+        MutableComponent helpCommand;
         if(this.menu.getCommand() == 0)
-            command = new TranslatableComponent("entity.hexerei.crow_command_gui_0");
+            command = Component.translatable("entity.hexerei.crow_command_gui_0");
         else if(this.menu.getCommand() == 1)
-            command = new TranslatableComponent("entity.hexerei.crow_command_gui_1");
+            command = Component.translatable("entity.hexerei.crow_command_gui_1");
         else if(this.menu.getCommand() == 2)
-            command = new TranslatableComponent("entity.hexerei.crow_command_gui_2");
+            command = Component.translatable("entity.hexerei.crow_command_gui_2");
         else {
-            command = new TranslatableComponent("entity.hexerei.crow_command_gui_3");
+            command = Component.translatable("entity.hexerei.crow_command_gui_3");
 
         }
         if(this.menu.getHelpCommand() == 0)
         {
-            helpCommand = new TranslatableComponent("entity.hexerei.crow_help_command_gui_0");
+            helpCommand = Component.translatable("entity.hexerei.crow_help_command_gui_0");
         }else if(this.menu.getHelpCommand() == 1)
         {
-            helpCommand = new TranslatableComponent("entity.hexerei.crow_help_command_gui_1");
+            helpCommand = Component.translatable("entity.hexerei.crow_help_command_gui_1");
         } else
         {
-            helpCommand = new TranslatableComponent("entity.hexerei.crow_help_command_gui_2");
+            helpCommand = Component.translatable("entity.hexerei.crow_help_command_gui_2");
         }
 
 
@@ -311,33 +311,33 @@ public class CrowScreen extends AbstractContainerScreen<CrowContainer> {
 //
 //        RenderSystem.enableDepthTest();
 
-//        TranslatableComponent command;
-//        TranslatableComponent helpCommand;
-//        TranslatableComponent crowSelect;
+//        MutableComponent command;
+//        MutableComponent helpCommand;
+//        MutableComponent crowSelect;
 //        if(this.menu.getCommand() == 0)
-//            command = new TranslatableComponent("entity.hexerei.crow_command_gui_0");
+//            command = Component.translatable("entity.hexerei.crow_command_gui_0");
 //        else if(this.menu.getCommand() == 1)
-//            command = new TranslatableComponent("entity.hexerei.crow_command_gui_1");
+//            command = Component.translatable("entity.hexerei.crow_command_gui_1");
 //        else if(this.menu.getCommand() == 2)
-//            command = new TranslatableComponent("entity.hexerei.crow_command_gui_2");
+//            command = Component.translatable("entity.hexerei.crow_command_gui_2");
 //        else {
-//            command = new TranslatableComponent("entity.hexerei.crow_command_gui_3");
+//            command = Component.translatable("entity.hexerei.crow_command_gui_3");
 //
 //        }
 //        if(this.menu.getHelpCommand() == 0)
 //        {
-//            helpCommand = new TranslatableComponent("entity.hexerei.crow_help_command_gui_0");
+//            helpCommand = Component.translatable("entity.hexerei.crow_help_command_gui_0");
 //        }else if(this.menu.getHelpCommand() == 1)
 //        {
-//            helpCommand = new TranslatableComponent("entity.hexerei.crow_help_command_gui_1");
+//            helpCommand = Component.translatable("entity.hexerei.crow_help_command_gui_1");
 //        } else
 //        {
-//            helpCommand = new TranslatableComponent("entity.hexerei.crow_help_command_gui_2");
+//            helpCommand = Component.translatable("entity.hexerei.crow_help_command_gui_2");
 //        }
 //
 //        minecraft.font.draw(matrixStack, command, this.leftPos + 56 - (float)(font.width(command.getVisualOrderText()) / 2), this.topPos + 63 - 14, 0xFF606060);
 //        minecraft.font.draw(matrixStack, helpCommand, this.leftPos + 131 - (float)(font.width(helpCommand.getVisualOrderText()) / 2), this.topPos + 63 - 14, 0xFF606060);
-//        minecraft.font.draw(matrixStack, new TranslatableComponent("entity.hexerei.crow_flute_perch"), this.leftPos + 128 - (float)(font.width(new TranslatableComponent("entity.hexerei.crow_flute_perch").getVisualOrderText()) / 2), this.topPos + 91, 0xFFAAAAAA);
+//        minecraft.font.draw(matrixStack, Component.translatable("entity.hexerei.crow_flute_perch"), this.leftPos + 128 - (float)(font.width(Component.translatable("entity.hexerei.crow_flute_perch").getVisualOrderText()) / 2), this.topPos + 91, 0xFFAAAAAA);
 
 
 
@@ -370,46 +370,46 @@ public class CrowScreen extends AbstractContainerScreen<CrowContainer> {
             this.menu.setCommand(0);
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             if(this.crowEntity.getOwner() instanceof Player)
-                ((Player)this.crowEntity.getOwner()).displayClientMessage(new TranslatableComponent("entity.hexerei.crow_command_" + 0, this.crowEntity.getName()), true);
+                ((Player)this.crowEntity.getOwner()).displayClientMessage(Component.translatable("entity.hexerei.crow_command_" + 0, this.crowEntity.getName()), true);
         }
         else if (x > this.leftPos + 43f && x < this.leftPos + 43f + 18 && y > this.topPos + 92 && y < this.topPos + 92 + 18) {
             this.menu.setCommand(1);
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             if(this.crowEntity.getOwner() instanceof Player)
-                ((Player)this.crowEntity.getOwner()).displayClientMessage(new TranslatableComponent("entity.hexerei.crow_command_" + 1, this.crowEntity.getName()), true);
+                ((Player)this.crowEntity.getOwner()).displayClientMessage(Component.translatable("entity.hexerei.crow_command_" + 1, this.crowEntity.getName()), true);
         }
         else if (x > this.leftPos + 63f && x < this.leftPos + 63f + 18 && y > this.topPos + 92 && y < this.topPos + 92 + 18) {
             this.menu.setCommand(2);
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             if(this.crowEntity.getOwner() instanceof Player)
-                ((Player)this.crowEntity.getOwner()).displayClientMessage(new TranslatableComponent("entity.hexerei.crow_command_" + 2, this.crowEntity.getName()), true);
+                ((Player)this.crowEntity.getOwner()).displayClientMessage(Component.translatable("entity.hexerei.crow_command_" + 2, this.crowEntity.getName()), true);
         }
         else if (x > this.leftPos + 83f && x < this.leftPos + 83f + 18 && y > this.topPos + 92 && y < this.topPos + 92 + 18) {
             this.menu.setCommand(3);
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             if(this.crowEntity.getOwner() instanceof Player) {
-                    ((Player) this.crowEntity.getOwner()).displayClientMessage(new TranslatableComponent("entity.hexerei.crow_command_3_" + this.menu.getHelpCommand(), this.crowEntity.getName()), true);
+                    ((Player) this.crowEntity.getOwner()).displayClientMessage(Component.translatable("entity.hexerei.crow_command_3_" + this.menu.getHelpCommand(), this.crowEntity.getName()), true);
             }
         }
         else if (x > this.leftPos + 107f && x < this.leftPos + 107f + 18 && y > this.topPos + 92 && y < this.topPos + 92 + 18) {
             this.menu.setHelpCommand(0);
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             if(this.crowEntity.getOwner() instanceof Player) {
-                    ((Player) this.crowEntity.getOwner()).displayClientMessage(new TranslatableComponent("entity.hexerei.crow_command_3_0", this.crowEntity.getName()), true);
+                    ((Player) this.crowEntity.getOwner()).displayClientMessage(Component.translatable("entity.hexerei.crow_command_3_0", this.crowEntity.getName()), true);
             }
         }
         else if (x > this.leftPos + 127f && x < this.leftPos + 127f + 18 && y > this.topPos + 92 && y < this.topPos + 92 + 18) {
             this.menu.setHelpCommand(1);
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             if(this.crowEntity.getOwner() instanceof Player) {
-                    ((Player) this.crowEntity.getOwner()).displayClientMessage(new TranslatableComponent("entity.hexerei.crow_command_3_1", this.crowEntity.getName()), true);
+                    ((Player) this.crowEntity.getOwner()).displayClientMessage(Component.translatable("entity.hexerei.crow_command_3_1", this.crowEntity.getName()), true);
             }
         }
         else if (x > this.leftPos + 147f && x < this.leftPos + 147f + 18 && y > this.topPos + 92 && y < this.topPos + 92 + 18) {
             this.menu.setHelpCommand(2);
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             if(this.crowEntity.getOwner() instanceof Player) {
-                    ((Player) this.crowEntity.getOwner()).displayClientMessage(new TranslatableComponent("entity.hexerei.crow_command_3_2", this.crowEntity.getName()), true);
+                    ((Player) this.crowEntity.getOwner()).displayClientMessage(Component.translatable("entity.hexerei.crow_command_3_2", this.crowEntity.getName()), true);
             }
         }
 

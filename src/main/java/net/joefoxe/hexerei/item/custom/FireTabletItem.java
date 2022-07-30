@@ -2,7 +2,7 @@ package net.joefoxe.hexerei.item.custom;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.item.Item;
@@ -30,9 +30,9 @@ public class FireTabletItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
         if(Screen.hasShiftDown()) {
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.broom_shift"));
+            tooltip.add(Component.translatable("tooltip.hexerei.broom_shift"));
         } else {
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.broom"));
+            tooltip.add(Component.translatable("tooltip.hexerei.broom"));
         }
 
 

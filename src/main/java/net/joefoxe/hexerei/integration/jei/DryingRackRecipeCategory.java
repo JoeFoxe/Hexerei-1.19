@@ -12,7 +12,7 @@ import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.data.recipes.DryingRackRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -80,8 +80,8 @@ public class DryingRackRecipeCategory implements IRecipeCategory<DryingRackRecip
         String dryingTimeString = dryingTime < Integer.MAX_VALUE ? dryingTime / 20 + (dryingTime % 20 == 0 ? "" : ("." + Integer.toString(dryingTime % 20))) : "?";
         if(dryingTimeString.charAt(dryingTimeString.length()-1) == '0' && dryingTime != 0 && dryingTime % 20 != 0)
             dryingTimeString = dryingTimeString.substring(0, dryingTimeString.length()-1);
-        TranslatableComponent dip_time_1 = new TranslatableComponent("gui.jei.category.dipper.dry_time_1");
-        TranslatableComponent dip_time_3 = new TranslatableComponent("gui.jei.category.dipper.resultSeconds", dryingTimeString);
+        MutableComponent dip_time_1 = Component.translatable("gui.jei.category.dipper.dry_time_1");
+        MutableComponent dip_time_3 = Component.translatable("gui.jei.category.dipper.resultSeconds", dryingTimeString);
         minecraft.font.draw(matrixStack, dip_time_1, 6*1.666f, 41*1.666f, 0xFF808080);
         minecraft.font.draw(matrixStack, dip_time_3, 55*1.666f, 41*1.666f, 0xFF808080);
 

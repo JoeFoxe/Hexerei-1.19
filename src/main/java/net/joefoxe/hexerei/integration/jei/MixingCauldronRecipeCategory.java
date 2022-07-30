@@ -16,7 +16,7 @@ import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.data.recipes.MixingCauldronRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -129,8 +129,8 @@ public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauld
         String outputName = recipe.getResultItem().getHoverName().getString();
         matrixStack.scale(0.6f, 0.6f, 0.6f);
         minecraft.font.draw(matrixStack, outputName, 43*1.666f, 4*1.666f, 0xFF404040);
-        minecraft.font.draw(matrixStack, new TranslatableComponent("gui.jei.category.mixing_cauldron.fluid"), 19*1.666f, 36*1.666f, 0xFF404040);
-        minecraft.font.draw(matrixStack, new TranslatableComponent("gui.jei.category.mixing_cauldron.output"), 140*1.666f, 24*1.666f, 0xFF404040);
+        minecraft.font.draw(matrixStack, Component.translatable("gui.jei.category.mixing_cauldron.fluid"), 19*1.666f, 36*1.666f, 0xFF404040);
+        minecraft.font.draw(matrixStack, Component.translatable("gui.jei.category.mixing_cauldron.output"), 140*1.666f, 24*1.666f, 0xFF404040);
 
     }
 }

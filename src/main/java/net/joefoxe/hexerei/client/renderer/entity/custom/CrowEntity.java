@@ -28,7 +28,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -1034,7 +1033,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 
                                 if (tempuuid != null && thisuuid.toString().equals(tempuuid.toString())) {
                                     flag = true;
-                                    player.displayClientMessage(new TranslatableComponent("entity.hexerei.crow_flute_deselect_message", this.getName()), true);
+                                    player.displayClientMessage(Component.translatable("entity.hexerei.crow_flute_deselect_message", this.getName()), true);
                                     this.playSound(ModSounds.CROW_FLUTE_DESELECT.get(), 1f, 0.75f);
                                     nbtTagList.remove(i);
                                     break;
@@ -1046,7 +1045,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                                     itemTag.putUUID("UUID", this.getUUID());
                                     itemTag.putInt("ID", this.getId());
                                     nbtTagList.add(itemTag);
-                                    player.displayClientMessage(new TranslatableComponent("entity.hexerei.crow_flute_selected_message", this.getName()), true);
+                                    player.displayClientMessage(Component.translatable("entity.hexerei.crow_flute_selected_message", this.getName()), true);
                                     this.playSound(ModSounds.CROW_FLUTE_SELECT.get(), 1f, 0.75f);
                                     tag.put("crowList", nbtTagList);
                                 }
@@ -1117,14 +1116,14 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                     }
                     if(this.getCommand() == 3) {
                         if(this.getHelpCommand() == 0)
-                            player.displayClientMessage(new TranslatableComponent("entity.hexerei.crow_command_3_0", this.getName()), true);
+                            player.displayClientMessage(Component.translatable("entity.hexerei.crow_command_3_0", this.getName()), true);
                         if(this.getHelpCommand() == 1)
-                            player.displayClientMessage(new TranslatableComponent("entity.hexerei.crow_command_3_1", this.getName()), true);
+                            player.displayClientMessage(Component.translatable("entity.hexerei.crow_command_3_1", this.getName()), true);
                         if(this.getHelpCommand() == 2)
-                            player.displayClientMessage(new TranslatableComponent("entity.hexerei.crow_command_3_2", this.getName()), true);
+                            player.displayClientMessage(Component.translatable("entity.hexerei.crow_command_3_2", this.getName()), true);
                     }
                     else
-                        player.displayClientMessage(new TranslatableComponent("entity.hexerei.crow_command_" + this.getCommand(), this.getName()), true);
+                        player.displayClientMessage(Component.translatable("entity.hexerei.crow_command_" + this.getCommand(), this.getName()), true);
                     this.setOrderedToSit(this.getCommand() == 1);
 
 
@@ -1354,7 +1353,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 
             @Override
             public Component getDisplayName() {
-                return new TranslatableComponent("");
+                return Component.translatable("");
             }
 
 

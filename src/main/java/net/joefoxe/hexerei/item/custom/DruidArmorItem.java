@@ -12,7 +12,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -54,9 +54,9 @@ public class DruidArmorItem extends ArmorItem {
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
         if(Screen.hasShiftDown()) {
 
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.druid_armor_shift"));
+            tooltip.add(Component.translatable("tooltip.hexerei.druid_armor_shift"));
         } else {
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.druid_armor"));
+            tooltip.add(Component.translatable("tooltip.hexerei.druid_armor"));
         }
         super.appendHoverText(stack, world, tooltip, flagIn);
     }
