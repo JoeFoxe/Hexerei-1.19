@@ -269,6 +269,22 @@ public class HexereiPacketHandler {
 
         instance.registerMessage(
                 ++ id,
+                BookEntriesPacket.class,
+                BookEntriesPacket::encode,
+                BookEntriesPacket::decode,
+                BookEntriesPacket::consume
+        );
+
+        instance.registerMessage(
+                ++ id,
+                AskForEntriesAndPagesPacket.class,
+                AskForEntriesAndPagesPacket::encode,
+                AskForEntriesAndPagesPacket::decode,
+                AskForEntriesAndPagesPacket::consume
+        );
+
+        instance.registerMessage(
+                ++ id,
                 BookTurnPageToServer.class,
                 BookTurnPageToServer::encode,
                 BookTurnPageToServer::decode,

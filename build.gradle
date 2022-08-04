@@ -16,7 +16,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 
-version = "0.2.1"
+version = "0.2.2"
 group = 'net.joefoxe.hexerei' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'hexerei'
 

@@ -50,6 +50,7 @@ public class BookReloadListener extends SimpleJsonResourceReloadListener {
         });
 
         if (EffectiveSide.get().isServer() && ServerLifecycleHooks.getCurrentServer() != null) {
+            BookManager.sendBookEntriesToClient();
             BookManager.sendBookPagesToClient();
         }
     }

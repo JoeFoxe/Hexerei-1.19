@@ -85,7 +85,8 @@ public class BookOfShadowsAltarRenderer implements BlockEntityRenderer<BookOfSha
             }
             else{
 
-                tileEntityIn.drawing.drawBaseButtons(tileEntityIn, matrixStackIn, (MultiBufferSource.BufferSource) bufferIn, combinedLightIn, combinedOverlayIn, false, false, tag.getInt("chapter"), tag.getInt("page"), false, ItemTransforms.TransformType.NONE, true);
+                if(bufferIn instanceof MultiBufferSource.BufferSource)
+                    tileEntityIn.drawing.drawBaseButtons(tileEntityIn, matrixStackIn, (MultiBufferSource.BufferSource) bufferIn, combinedLightIn, combinedOverlayIn, false, false, tag.getInt("chapter"), tag.getInt("page"), false, ItemTransforms.TransformType.NONE, true);
             }
 
             matrixStackIn.pushPose();

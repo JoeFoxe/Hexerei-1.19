@@ -14,7 +14,10 @@ import net.joefoxe.hexerei.integration.jei.HexereiJei;
 import net.joefoxe.hexerei.integration.jei.HexereiJeiCompat;
 import net.joefoxe.hexerei.screen.tooltip.HexereiBookTooltip;
 import net.joefoxe.hexerei.util.ClientProxy;
+import net.joefoxe.hexerei.util.HexereiPacketHandler;
 import net.joefoxe.hexerei.util.HexereiUtil;
+import net.joefoxe.hexerei.util.message.AskForEntriesAndPagesPacket;
+import net.joefoxe.hexerei.util.message.CrowAskForSyncPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.MouseHandler;
@@ -1406,6 +1409,8 @@ public class PageDrawing {
         this.drawTooltipText = false;
         BookEntries bookEntries = BookManager.getBookEntries();
 
+        if(bookEntries == null)
+            HexereiPacketHandler.sendToServer(new AskForEntriesAndPagesPacket());
         if(bookEntries == null)
             return;
 
@@ -5022,16 +5027,16 @@ public class PageDrawing {
 
                         String alt = "key." + temp;
 
-//                        for (KeyMapping k : ClientProxy.keys) {
-//                            String name = k.getName();
-//                            if (name.equals(temp) || name.equals(alt)) {
-//                                String keyName = k.getTranslatedKeyMessage().getString();
-//                                if(keyName.length() <= 1)
-//                                    keyName = keyName.toUpperCase(Locale.ROOT);
-//                                words[itor] = keyName;
-//                                pageTextString = pageTextString.replaceAll(word, words[itor]);
-//                            }
-//                        }
+                        for (KeyMapping k : ClientProxy.keys) {
+                            String name = k.getName();
+                            if (name.equals(temp) || name.equals(alt)) {
+                                String keyName = k.getTranslatedKeyMessage().getString();
+                                if(keyName.length() <= 1)
+                                    keyName = keyName.toUpperCase(Locale.ROOT);
+                                words[itor] = keyName;
+                                pageTextString = pageTextString.replaceAll(word, words[itor]);
+                            }
+                        }
 
                     }
                 }

@@ -1,6 +1,7 @@
 package net.joefoxe.hexerei.data.books;
 
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
+import net.joefoxe.hexerei.util.message.BookEntriesPacket;
 import net.joefoxe.hexerei.util.message.BookPagesPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.PacketDistributor;
@@ -18,6 +19,10 @@ public class  BookManager {
         BOOK_PAGES.clear();
     }
 
+    public static void clearBookEntries() {
+        BOOK_ENTRIES = null;
+    }
+
     public static void addBookPage(ResourceLocation loc, BookPage bookPage) {
         BOOK_PAGES.put(loc, bookPage);
     }
@@ -32,6 +37,10 @@ public class  BookManager {
 
     public static void sendBookPagesToClient() {
         HexereiPacketHandler.instance.send(PacketDistributor.ALL.noArg(), new BookPagesPacket(BOOK_PAGES));
+    }
+
+    public static void sendBookEntriesToClient() {
+        HexereiPacketHandler.instance.send(PacketDistributor.ALL.noArg(), new BookEntriesPacket(BOOK_ENTRIES));
     }
 
     public static BookPage getBookPages(ResourceLocation loc){
