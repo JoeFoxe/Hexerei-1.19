@@ -49,7 +49,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.*;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -355,16 +355,16 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag flagIn) {
 
         if(Screen.hasShiftDown()) {
-//            tooltip.add(new TranslatableComponent("<%s>", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+//            tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             if(stack.getItem() instanceof CofferItem cofferItem) {
                 ItemStackHandler handler = cofferItem.createHandler();
                 handler.deserializeNBT(stack.getOrCreateTag().getCompound("Inventory"));
                 if(isEmpty(handler)){
-                    tooltip.add(new TranslatableComponent("tooltip.hexerei.coffer_shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                    tooltip.add(new TranslatableComponent("tooltip.hexerei.coffer_shift_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                    tooltip.add(new TranslatableComponent("tooltip.hexerei.coffer_shift_3").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                    tooltip.add(new TranslatableComponent("tooltip.hexerei.coffer_shift_4").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                    tooltip.add(new TranslatableComponent("tooltip.hexerei.coffer_shift_5").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    tooltip.add(Component.translatable("tooltip.hexerei.coffer_shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    tooltip.add(Component.translatable("tooltip.hexerei.coffer_shift_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    tooltip.add(Component.translatable("tooltip.hexerei.coffer_shift_3").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    tooltip.add(Component.translatable("tooltip.hexerei.coffer_shift_4").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    tooltip.add(Component.translatable("tooltip.hexerei.coffer_shift_5").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                 }
             }
 
@@ -372,7 +372,7 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
 
 
         } else {
-                tooltip.add(new TranslatableComponent("tooltip.hexerei.coffer").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                tooltip.add(Component.translatable("tooltip.hexerei.coffer").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
         }
         super.appendHoverText(stack, world, tooltip, flagIn);
     }
@@ -398,8 +398,8 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
             @Override
             public Component getDisplayName() {
                 if(((CofferTile)worldIn.getBlockEntity(pos)).customName != null)
-                    return new TranslatableComponent(((CofferTile)worldIn.getBlockEntity(pos)).customName.getString());
-                return new TranslatableComponent("screen.hexerei.coffer");
+                    return Component.translatable(((CofferTile)worldIn.getBlockEntity(pos)).customName.getString());
+                return Component.translatable("screen.hexerei.coffer");
             }
 
         };

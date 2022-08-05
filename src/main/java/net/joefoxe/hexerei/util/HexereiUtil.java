@@ -16,15 +16,15 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,8 +32,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.IForgeRegistryEntry;
-import net.minecraftforge.registries.IRegistryDelegate;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.*;
@@ -42,6 +41,23 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class HexereiUtil {
+
+    public static ResourceLocation getRegistryName(Item i) {
+        return ForgeRegistries.ITEMS.getKey(i);
+    }
+
+    public static ResourceLocation getRegistryName(Block b) {
+        return ForgeRegistries.BLOCKS.getKey(b);
+    }
+
+    public static ResourceLocation getRegistryName(EntityType<?> i) {
+        return ForgeRegistries.ENTITIES.getKey(i);
+    }
+
+    public static ResourceLocation getRegistryName(Enchantment e) {
+        return ForgeRegistries.ENCHANTMENTS.getKey(e);
+    }
+
 
     public static float moveTo(float input, float movedTo, float speed)
     {

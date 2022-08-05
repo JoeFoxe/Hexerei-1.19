@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -49,7 +49,7 @@ public class TallowImpurityItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
 
-        tooltip.add(new TranslatableComponent("tooltip.hexerei.tallow_impurity_shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+        tooltip.add(Component.translatable("tooltip.hexerei.tallow_impurity_shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
 
 
         super.appendHoverText(stack, world, tooltip, flagIn);

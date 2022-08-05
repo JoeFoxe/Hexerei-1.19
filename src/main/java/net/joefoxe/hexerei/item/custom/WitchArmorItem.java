@@ -25,7 +25,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -96,7 +96,7 @@ public class WitchArmorItem extends DyeableArmorItem {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flagIn) {
         if(Screen.hasShiftDown()) {
-            tooltip.add(new TranslatableComponent("<%s>", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
 
             Player player = null;
             if(level != null && level.isClientSide)
@@ -113,21 +113,21 @@ public class WitchArmorItem extends DyeableArmorItem {
             if(boots)
                 num++;
 
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.witch_armor_shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.witch_armor_pieces").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(num < 2 ? 0x4F1C18 : 0x249100))));
-            tooltip.add(new TranslatableComponent("").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("tooltip.hexerei.witch_armor_shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("tooltip.hexerei.witch_armor_pieces").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(num < 2 ? 0x4F1C18 : 0x249100))));
+            tooltip.add(Component.translatable("").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
 
-            tooltip.add(new TranslatableComponent(" %s - %s",new TranslatableComponent("item.hexerei.witch_helmet"),new TranslatableComponent("item.hexerei.mushroom_witch_hat")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(hat ? (num < 2 ? 0x1C7044 : 0x31C475) : 0x333333))));
-            tooltip.add(new TranslatableComponent(" %s",new TranslatableComponent("item.hexerei.witch_chestplate")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(robe ? (num < 2 ? 0x1C7044 : 0x31C475) : 0x333333))));
-            tooltip.add(new TranslatableComponent(" %s",new TranslatableComponent("item.hexerei.witch_boots")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(boots ? (num < 2 ? 0x1C7044 : 0x31C475) : 0x333333))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.witch_armor_bonus", num, 2).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(num < 2 ? 0x4F1C18 : 0x249100))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.witch_armor_bonus_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(num < 2 ? 0x333333 : 0x31C475))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.witch_armor_bonus_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(num < 2 ? 0x333333 : 0x31C475))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.witch_armor_bonus", num, 3).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(num < 3 ? 0x4F1C18 : 0x249100))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.witch_armor_bonus_3").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(num < 3 ? 0x333333 : 0x31C475))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.witch_armor_bonus_4").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(num < 3 ? 0x333333 : 0x31C475))));
+            tooltip.add(Component.translatable(" %s - %s",Component.translatable("item.hexerei.witch_helmet"),Component.translatable("item.hexerei.mushroom_witch_hat")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(hat ? (num < 2 ? 0x1C7044 : 0x31C475) : 0x333333))));
+            tooltip.add(Component.translatable(" %s",Component.translatable("item.hexerei.witch_chestplate")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(robe ? (num < 2 ? 0x1C7044 : 0x31C475) : 0x333333))));
+            tooltip.add(Component.translatable(" %s",Component.translatable("item.hexerei.witch_boots")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(boots ? (num < 2 ? 0x1C7044 : 0x31C475) : 0x333333))));
+            tooltip.add(Component.translatable("tooltip.hexerei.witch_armor_bonus", num, 2).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(num < 2 ? 0x4F1C18 : 0x249100))));
+            tooltip.add(Component.translatable("tooltip.hexerei.witch_armor_bonus_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(num < 2 ? 0x333333 : 0x31C475))));
+            tooltip.add(Component.translatable("tooltip.hexerei.witch_armor_bonus_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(num < 2 ? 0x333333 : 0x31C475))));
+            tooltip.add(Component.translatable("tooltip.hexerei.witch_armor_bonus", num, 3).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(num < 3 ? 0x4F1C18 : 0x249100))));
+            tooltip.add(Component.translatable("tooltip.hexerei.witch_armor_bonus_3").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(num < 3 ? 0x333333 : 0x31C475))));
+            tooltip.add(Component.translatable("tooltip.hexerei.witch_armor_bonus_4").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(num < 3 ? 0x333333 : 0x31C475))));
         } else {
-            tooltip.add(new TranslatableComponent("[%s]", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
 
             Player player = null;
             if(level != null && level.isClientSide)
@@ -143,7 +143,7 @@ public class WitchArmorItem extends DyeableArmorItem {
                 num++;
             if(boots)
                 num++;
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.witch_armor_bonus", num, 2).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(num < 2 ? 0x4F1C18 : 0x249100))));
+            tooltip.add(Component.translatable("tooltip.hexerei.witch_armor_bonus", num, 2).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(num < 2 ? 0x4F1C18 : 0x249100))));
         }
         super.appendHoverText(stack, level, tooltip, flagIn);
     }

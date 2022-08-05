@@ -10,7 +10,6 @@ import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 
@@ -51,8 +50,7 @@ public class CrowFluteRecipe extends ShapedRecipe {
         return new ItemStack(ModItems.CROW_FLUTE.get());
     }
 
-    private static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>>
-            implements RecipeSerializer<CrowFluteRecipe> {
+    private static class Serializer implements RecipeSerializer<CrowFluteRecipe> {
         @Nonnull
         @Override
         public CrowFluteRecipe fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {

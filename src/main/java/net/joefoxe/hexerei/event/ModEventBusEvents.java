@@ -8,10 +8,11 @@ import net.joefoxe.hexerei.item.custom.ModSpawnEggItem;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 
 import javax.annotation.Nonnull;
 
@@ -23,7 +24,10 @@ public class ModEventBusEvents {
     }
 
     @SubscribeEvent
-    public static void onRegisterEntities(RegistryEvent.Register<EntityType<?>> event) {
+    public static void onRegisterEntities(RegisterEvent event) {
+        if (event.getRegistryKey().equals(ForgeRegistries.Keys.ENTITY_TYPES)){
+            //example on how to replace RegistryEvent.Register<T>
+        }
 //        ModSpawnEggItem.initSpawnEggs();
     }
 

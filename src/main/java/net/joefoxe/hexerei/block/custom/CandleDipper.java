@@ -33,7 +33,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
@@ -194,11 +194,11 @@ public class CandleDipper extends BaseEntityBlock implements ITileEntity<CandleD
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag flagIn) {
 
         if(Screen.hasShiftDown()) {
-            tooltip.add(new TranslatableComponent("<%s>", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.candle_dipper_shift_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.candle_dipper_shift_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("tooltip.hexerei.candle_dipper_shift_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("tooltip.hexerei.candle_dipper_shift_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
         } else {
-            tooltip.add(new TranslatableComponent("[%s]", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
         }
         super.appendHoverText(stack, world, tooltip, flagIn);
     }

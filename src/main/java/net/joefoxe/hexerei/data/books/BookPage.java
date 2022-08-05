@@ -8,7 +8,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.TamableAnimal;
@@ -296,7 +295,7 @@ public class BookPage {
                     List<Component> extra_tooltips = new ArrayList<>();
                     int item_number_of_extra_tooltips = itemsAndFluids.getInt("item_number_of_extra_tooltips" + i);
 
-                    Component component = new TranslatableComponent("");
+                    Component component = Component.translatable("");
                     List<BookTooltipExtra> tooltipExtras = new ArrayList<>();
                     for (int k = 0; k < item_number_of_extra_tooltips; k++) {
                         int color = itemsAndFluids.getInt("item_extra_tooltips_color" + i + k);
@@ -311,9 +310,9 @@ public class BookPage {
                         if (text_type.equals("trail")) {
                             extra_tooltips.add(component);
 
-                            component = new TranslatableComponent(text).withStyle(Style.EMPTY.withColor(color));
+                            component = Component.translatable(text).withStyle(Style.EMPTY.withColor(color));
                         } else if (text_type.equals("append")) {
-                            component.getSiblings().add(new TranslatableComponent(text).withStyle(Style.EMPTY.withColor(color)));
+                            component.getSiblings().add(Component.translatable(text).withStyle(Style.EMPTY.withColor(color)));
 
                         }
 
@@ -343,7 +342,7 @@ public class BookPage {
                     FluidStack fluid = FluidStack.loadFluidStackFromNBT(compoundFluid);
                     List<Component> extra_tooltips = new ArrayList<>();
 
-                    Component component = new TranslatableComponent("");
+                    Component component = Component.translatable("");
                     List<BookTooltipExtra> tooltipExtras = new ArrayList<>();
                     for (int k = 0; k < item_number_of_extra_tooltips; k++) {
                         int color = itemsAndFluids.getInt("item_extra_tooltips_color" + i + k);
@@ -358,9 +357,9 @@ public class BookPage {
                         if (text_type.equals("trail")) {
                             extra_tooltips.add(component);
 
-                            component = new TranslatableComponent(text).withStyle(Style.EMPTY.withColor(color));
+                            component = Component.translatable(text).withStyle(Style.EMPTY.withColor(color));
                         } else if (text_type.equals("append")) {
-                            component.getSiblings().add(new TranslatableComponent(text).withStyle(Style.EMPTY.withColor(color)));
+                            component.getSiblings().add(Component.translatable(text).withStyle(Style.EMPTY.withColor(color)));
 
                         }
 
@@ -382,7 +381,7 @@ public class BookPage {
                     List<Component> extra_tooltips = new ArrayList<>();
                     int item_number_of_extra_tooltips = itemsAndFluids.getInt("item_number_of_extra_tooltips" + i);
 
-                    Component component = new TranslatableComponent("");
+                    Component component = Component.translatable("");
                     List<BookTooltipExtra> tooltipExtras = new ArrayList<>();
                     for (int k = 1; k < item_number_of_extra_tooltips; k++) {
                         int color = itemsAndFluids.getInt("item_extra_tooltips_color" + i + k);
@@ -397,9 +396,9 @@ public class BookPage {
                         if (text_type.equals("trail")) {
                             extra_tooltips.add(component);
 
-                            component = new TranslatableComponent(text).withStyle(Style.EMPTY.withColor(color));
+                            component = Component.translatable(text).withStyle(Style.EMPTY.withColor(color));
                         } else if (text_type.equals("append")) {
-                            component.getSiblings().add(new TranslatableComponent(text).withStyle(Style.EMPTY.withColor(color)));
+                            component.getSiblings().add(Component.translatable(text).withStyle(Style.EMPTY.withColor(color)));
 
                         }
 
@@ -443,7 +442,7 @@ public class BookPage {
             List<Component> extra_tooltips = new ArrayList<>();
             int item_number_of_extra_tooltips = image.getInt("image_number_of_extra_tooltips");
 
-            Component component = new TranslatableComponent("");
+            Component component = Component.translatable("");
             List<BookTooltipExtra> extra_tooltips_raw = new ArrayList<>();
             for (int k = 0; k < item_number_of_extra_tooltips; k++) {
                 int color = image.getInt("image_extra_tooltips_color" + k);
@@ -458,9 +457,9 @@ public class BookPage {
                 if (text_type.equals("trail")) {
                     extra_tooltips.add(component);
 
-                    component = new TranslatableComponent(text).withStyle(Style.EMPTY.withColor(color));
+                    component = Component.translatable(text).withStyle(Style.EMPTY.withColor(color));
                 } else if (text_type.equals("append")) {
-                    component.getSiblings().add(new TranslatableComponent(text).withStyle(Style.EMPTY.withColor(color)));
+                    component.getSiblings().add(Component.translatable(text).withStyle(Style.EMPTY.withColor(color)));
 
                 }
 
@@ -522,7 +521,7 @@ public class BookPage {
             List<Component> extra_tooltips = new ArrayList<>();
             int number_of_tooltips = nonItemTooltip.getInt("number_of_tooltips");
 
-            Component component = new TranslatableComponent("");
+            Component component = Component.translatable("");
             List<BookTooltipExtra> extra_tooltips_raw = new ArrayList<>();
             for (int k = 0; k < number_of_tooltips; k++) {
                 int color = nonItemTooltip.getInt("extra_tooltips_color" + k);
@@ -537,9 +536,9 @@ public class BookPage {
                 if (text_type.equals("trail")) {
                     extra_tooltips.add(component);
 
-                    component = new TranslatableComponent(text).withStyle(Style.EMPTY.withColor(color));
+                    component = Component.translatable(text).withStyle(Style.EMPTY.withColor(color));
                 } else if (text_type.equals("append")) {
-                    component.getSiblings().add(new TranslatableComponent(text).withStyle(Style.EMPTY.withColor(color)));
+                    component.getSiblings().add(Component.translatable(text).withStyle(Style.EMPTY.withColor(color)));
 
                 }
 

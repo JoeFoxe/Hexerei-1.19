@@ -10,7 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
@@ -554,7 +554,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
 
     @Override
     protected Component getDefaultName() {
-        return new TranslatableComponent("container." + Hexerei.MOD_ID + ".dipper");
+        return Component.translatable("container." + Hexerei.MOD_ID + ".dipper");
     }
 
     @Override

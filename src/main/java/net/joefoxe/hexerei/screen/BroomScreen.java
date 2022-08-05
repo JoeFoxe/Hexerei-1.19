@@ -24,7 +24,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
@@ -122,31 +122,31 @@ public class BroomScreen extends AbstractContainerScreen<BroomContainer> {
 
         List<Component> components = new ArrayList<>();
         if (isHovering((double)mouseX, (double)mouseY, 188.25D, 89 + offset, 18D, 18D)) {
-            components.add(new TranslatableComponent("tooltip.hexerei.broom_settings"));
+            components.add(Component.translatable("tooltip.hexerei.broom_settings"));
             this.renderTooltip(matrixStack, components, Optional.empty(), mouseX, mouseY, Minecraft.getInstance().font, ItemStack.EMPTY);
         }
         else if(dropdownOffset > 29){
             if (isHovering((double)mouseX, (double)mouseY, 188.25D, 88 + offset + ((int)dropdownOffset), 18D, 18D)) {
-                components.add(new TranslatableComponent("tooltip.hexerei.broom_float_mode_off"));
+                components.add(Component.translatable("tooltip.hexerei.broom_float_mode_off"));
                 if(Screen.hasShiftDown()) {
-                    components.add(new TranslatableComponent("<%s>", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                    components.add(new TranslatableComponent("tooltip.hexerei.broom_float_mode_off_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    components.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    components.add(Component.translatable("tooltip.hexerei.broom_float_mode_off_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                 }
                 else {
-                    components.add(new TranslatableComponent("[%s]", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    components.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                 }
                 this.renderTooltip(matrixStack, components, Optional.empty(), mouseX, mouseY, Minecraft.getInstance().font, ItemStack.EMPTY);
             }
 
             if (isHovering((double)mouseX, (double)mouseY, 188.25D, 60 + offset + ((int)dropdownOffset), 18D, 18D)) {
-                components.add(new TranslatableComponent("tooltip.hexerei.broom_float_mode_on"));
+                components.add(Component.translatable("tooltip.hexerei.broom_float_mode_on"));
                 if(Screen.hasShiftDown()) {
-                    components.add(new TranslatableComponent("<%s>", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                    components.add(new TranslatableComponent("tooltip.hexerei.broom_float_mode_on_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-                    components.add(new TranslatableComponent("tooltip.hexerei.broom_float_mode_on_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    components.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    components.add(Component.translatable("tooltip.hexerei.broom_float_mode_on_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    components.add(Component.translatable("tooltip.hexerei.broom_float_mode_on_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                 }
                 else {
-                    components.add(new TranslatableComponent("[%s]", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    components.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                 }
                 this.renderTooltip(matrixStack, components, Optional.empty(), mouseX, mouseY, Minecraft.getInstance().font, ItemStack.EMPTY);
             }
@@ -239,9 +239,9 @@ public class BroomScreen extends AbstractContainerScreen<BroomContainer> {
                 this.topPos - 25);
 
 //        matrixStack.translate(this.leftPos + 42*1.666f, this.topPos + 14*1.666f, 0f);
-        TranslatableComponent misc = new TranslatableComponent("tooltip.hexerei.broom_misc");
-        TranslatableComponent satchel = new TranslatableComponent("tooltip.hexerei.broom_satchel");
-        TranslatableComponent brush = new TranslatableComponent("tooltip.hexerei.broom_brush");
+        MutableComponent misc = Component.translatable("tooltip.hexerei.broom_misc");
+        MutableComponent satchel = Component.translatable("tooltip.hexerei.broom_satchel");
+        MutableComponent brush = Component.translatable("tooltip.hexerei.broom_brush");
 
         minecraft.font.draw(matrixStack, misc, this.leftPos + 34, this.topPos + 29, 0xFF606060);
         minecraft.font.draw(matrixStack, satchel, this.leftPos + 89, this.topPos + 29, 0xFF606060);

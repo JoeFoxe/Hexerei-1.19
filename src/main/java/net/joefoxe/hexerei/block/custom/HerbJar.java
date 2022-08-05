@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
@@ -48,7 +49,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
@@ -359,7 +359,7 @@ public class HerbJar extends Block implements ITileEntity<HerbJarTile>, EntityBl
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(BlockState state, Level world, BlockPos pos, Random rand) {
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rand) {
     }
 
     private MenuProvider createContainerProvider(Level worldIn, BlockPos pos, ItemStack stack) {
@@ -373,8 +373,8 @@ public class HerbJar extends Block implements ITileEntity<HerbJarTile>, EntityBl
             @Override
             public Component getDisplayName() {
                 if(((HerbJarTile)worldIn.getBlockEntity(pos)).customName != null)
-                    return new TranslatableComponent(((HerbJarTile)worldIn.getBlockEntity(pos)).customName.getString());
-                return new TranslatableComponent("screen.hexerei.herb_jar");
+                    return Component.translatable(((HerbJarTile)worldIn.getBlockEntity(pos)).customName.getString());
+                return Component.translatable("screen.hexerei.herb_jar");
             }
 
         };

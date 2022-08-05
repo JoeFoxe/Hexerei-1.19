@@ -12,7 +12,6 @@ import net.joefoxe.hexerei.util.message.CofferSyncCrowButtonToServer;
 import net.joefoxe.hexerei.util.message.HerbJarSyncCrowButtonToServer;
 import net.joefoxe.hexerei.util.message.MessageCountUpdate;
 import net.joefoxe.hexerei.util.message.TESyncPacket;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.Clearable;
@@ -43,7 +42,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -68,7 +67,7 @@ public class HerbJarTile extends RandomizableContainerBlockEntity implements Cle
 
     private final FormattedCharSequence[] renderText = new FormattedCharSequence[1];
 
-    private final Component[] signText = new Component[]{new TextComponent("Text")};
+    private final Component[] signText = new Component[]{Component.literal("Text")};
 
     public int degreesOpened;
 
@@ -142,7 +141,7 @@ public class HerbJarTile extends RandomizableContainerBlockEntity implements Cle
 
     @Override
     protected Component getDefaultName() {
-        return new TranslatableComponent("container." + Hexerei.MOD_ID + ".herb_jar");
+        return Component.translatable("container." + Hexerei.MOD_ID + ".herb_jar");
     }
 
 //    public HerbJarTile() {
@@ -316,7 +315,7 @@ public class HerbJarTile extends RandomizableContainerBlockEntity implements Cle
     @Override
     public Component getDisplayName() {
         return customName != null ? customName
-                : new TranslatableComponent("");
+                : Component.translatable("");
     }
 
     @Nonnull

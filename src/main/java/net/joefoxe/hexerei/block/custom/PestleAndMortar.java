@@ -8,7 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -134,15 +134,15 @@ public class PestleAndMortar extends Block implements ITileEntity<PestleAndMorta
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag flagIn) {
 
         if(Screen.hasShiftDown()) {
-            tooltip.add(new TranslatableComponent("<%s>", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
 
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.pestle_and_mortar_shift_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.pestle_and_mortar_shift_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.pestle_and_mortar_shift_3").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.pestle_and_mortar_shift_4").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("tooltip.hexerei.pestle_and_mortar_shift_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("tooltip.hexerei.pestle_and_mortar_shift_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("tooltip.hexerei.pestle_and_mortar_shift_3").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("tooltip.hexerei.pestle_and_mortar_shift_4").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
         } else {
-            tooltip.add(new TranslatableComponent("[%s]", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.pestle_and_mortar_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("tooltip.hexerei.pestle_and_mortar_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
         }
         super.appendHoverText(stack, world, tooltip, flagIn);
     }

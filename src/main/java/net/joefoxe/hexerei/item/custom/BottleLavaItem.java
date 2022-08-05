@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -62,12 +62,12 @@ public class BottleLavaItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
         if(Screen.hasShiftDown()) {
-            tooltip.add(new TranslatableComponent("<%s>", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
 
-            tooltip.add(new TranslatableComponent("tooltip.hexerei.bottle_lava_shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("tooltip.hexerei.bottle_lava_shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
         } else {
-            tooltip.add(new TranslatableComponent("[%s]", new TranslatableComponent("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-//            tooltip.add(new TranslatableComponent("tooltip.hexerei.bottle_lava"));
+            tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+//            tooltip.add(Component.translatable("tooltip.hexerei.bottle_lava"));
         }
 
 

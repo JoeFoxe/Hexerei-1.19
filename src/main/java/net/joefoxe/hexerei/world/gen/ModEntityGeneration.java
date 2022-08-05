@@ -8,14 +8,15 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Arrays;
 import java.util.List;
 
+//Use BiomeModifiers
+
 public class ModEntityGeneration {
+    /*
     public static void onEntitySpawn(final BiomeLoadingEvent event) {
 
         ResourceKey<Biome> key = ResourceKey.<Biome>create(ForgeRegistries.Keys.BIOMES, event.getName());
@@ -77,4 +78,6 @@ public class ModEntityGeneration {
         List<MobSpawnSettings.SpawnerData> base = event.getSpawns().getSpawner(type.getCategory());
         base.add(new MobSpawnSettings.SpawnerData(type,weight, minCount, maxCount));
     }
+
+    */
 }
