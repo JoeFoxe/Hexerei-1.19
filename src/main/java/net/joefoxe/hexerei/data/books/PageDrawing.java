@@ -71,11 +71,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
@@ -3986,8 +3988,9 @@ public class PageDrawing {
 
         TextureAtlasSprite fluidStillSprite = getStillFluidSprite(fluidStack);
 
-        FluidAttributes attributes = fluid.getAttributes();
-        int fluidColor = attributes.getColor(fluidStack);
+//        FluidType attributes = fluid.getFluidType();
+//        int fluidColor = attributes.getColor(fluidStack);
+        int fluidColor = IClientFluidTypeExtensions.of(fluid).getTintColor(fluidStack);
 
         int amount = fluidStack.getAmount();
 //        int amount = (int)Math.abs((Math.sin(Hexerei.getClientTicks() / 100) * 2000));
