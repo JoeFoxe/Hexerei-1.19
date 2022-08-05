@@ -1,6 +1,5 @@
 package net.joefoxe.hexerei.data.books;
 
-import com.google.common.collect.Maps;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -17,7 +16,6 @@ import net.joefoxe.hexerei.util.ClientProxy;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.joefoxe.hexerei.util.message.AskForEntriesAndPagesPacket;
-import net.joefoxe.hexerei.util.message.CrowAskForSyncPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.MouseHandler;
@@ -48,6 +46,7 @@ import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -75,7 +74,6 @@ import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.ModContainer;
@@ -156,7 +154,7 @@ public class PageDrawing {
     private static final Quaternion ITEM_LIGHT_ROTATION_FLAT = new Quaternion(Vector3f.XP, 45f, true);
 
     public static ItemStack getTagStack(TagKey<Item> key){
-        Optional<Item> optional = Registry.ITEM.getTag(key).flatMap(tag -> tag.getRandomElement(new Random())).map(Holder::value);
+        Optional<Item> optional = Registry.ITEM.getTag(key).flatMap(tag -> tag.getRandomElement(RandomSource.create())).map(Holder::value);
 
         if (optional.isPresent()) {
             Item item = optional.get();
@@ -167,7 +165,7 @@ public class PageDrawing {
 //        return Registry.ITEM.getTag(TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(loc))).flatMap(tag -> tag.getRandomElement(new Random())).map(Holder::value);
     }
     public static Optional<Item> getTagStackStatic(TagKey<Item> key){
-        return Registry.ITEM.getTag(key).flatMap(tag -> tag.getRandomElement(new Random())).map(Holder::value);
+        return Registry.ITEM.getTag(key).flatMap(tag -> tag.getRandomElement(RandomSource.create())).map(Holder::value);
     }
 
 
@@ -2562,7 +2560,7 @@ public class PageDrawing {
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public void onClickEvent(InputEvent.MouseInputEvent event) {
+    public void onClickEvent(InputEvent.MouseButton event) {
 
         Player playerIn = Hexerei.proxy.getPlayer();
         if(event.getButton() == 1 && playerIn != null){
@@ -2764,6 +2762,93 @@ public class PageDrawing {
             this.isLeftPressedOld = event.getAction() == 1;
         }
 
+        if(playerIn != null && event.getButton() == 1){
+
+            for(int i = 0; i < 6; i++){
+                BlockHitResult raytrace = getPlayerPOVHitResult(i, playerIn.level, playerIn, ClipContext.Fluid.NONE);
+                if(raytrace.getType() != HitResult.Type.MISS) {
+                    BlockPos pos = raytrace.getBlockPos();
+
+
+                    BlockEntity blockEntity = playerIn.level.getBlockEntity(pos);
+                    if(blockEntity instanceof BookOfShadowsAltarTile altarTile && altarTile.turnPage == 0){
+
+                        if(altarTile.slotClicked != -1){
+                            if(++altarTile.slotClickedTick > 0) {
+                                playerIn.swinging = false;
+                                event.setCanceled(true);
+                                event.setResult(Event.Result.DENY);
+                            }
+                        }
+
+                        CompoundTag tag = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
+
+                        if(tag.contains("opened") && tag.getBoolean("opened")) {
+                            int clicked = checkClick(playerIn, altarTile);
+//                            System.out.println(clicked);
+                            if (clicked == 1) {
+                                if (altarTile.slotClicked == -1 && clickedNext(altarTile)) {
+                                    altarTile.setTurnPage(clicked);
+
+                                    event.setCanceled(true);
+                                    event.setResult(Event.Result.DENY);
+                                    break;
+                                }
+                            }
+                            if (clicked == 2) {
+                                if (altarTile.slotClicked == -1 && clickedBack(altarTile)) {
+                                    altarTile.setTurnPage(clicked);
+
+                                    event.setCanceled(true);
+                                    event.setResult(Event.Result.DENY);
+                                    break;
+                                }
+                            }
+                            if (clicked == -2) {
+                                //close
+                                altarTile.setTurnPage(clicked);
+
+                                event.setCanceled(true);
+                                event.setResult(Event.Result.DENY);
+                                break;
+                            }
+                            if (clicked == -1) {
+
+                                event.setCanceled(true);
+                                event.setResult(Event.Result.DENY);
+                                break;
+                            }
+                            if (clicked == -3) {
+                                //close
+
+                                event.setCanceled(true);
+                                event.setResult(Event.Result.DENY);
+                                break;
+                            }
+                            if (clicked == 3) {
+                                // clicked bookmark
+                                if(tag.getInt("chapter") != 0) {
+                                    altarTile.clickPageBookmark(tag.getInt("chapter"), tag.getInt("page"));
+
+                                    event.setCanceled(true);
+                                    event.setResult(Event.Result.DENY);
+                                    break;
+                                }
+                            }
+                            if (clicked == -5){
+                                playerIn.swinging = false;
+                                event.setCanceled(true);
+                                event.setResult(Event.Result.DENY);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            this.isRightPressedOld = true;
+        }
+
     }
 
 
@@ -2777,7 +2862,7 @@ public class PageDrawing {
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public void onKeyEvent(InputEvent.KeyInputEvent event) {
+    public void onKeyEvent(InputEvent.Key event) {
 //        System.out.println(event.getKey() == ModKeyBindings.bookJEIShowUses.getKey().getValue());
 
         if(!HexereiJeiCompat.LOADED)
@@ -2946,104 +3031,6 @@ public class PageDrawing {
                 }
             }
 
-        }
-    }
-
-    @SubscribeEvent
-    @OnlyIn(Dist.CLIENT)
-    public void onClickEvent(InputEvent.ClickInputEvent event) {
-
-        if(Minecraft.getInstance().screen != null)
-            return;
-
-        Player playerIn = Hexerei.proxy.getPlayer();
-        if(playerIn != null && event.isUseItem()){
-
-
-
-            for(int i = 0; i < 6; i++){
-                BlockHitResult raytrace = getPlayerPOVHitResult(i, playerIn.level, playerIn, ClipContext.Fluid.NONE);
-                if(raytrace.getType() != HitResult.Type.MISS) {
-                    BlockPos pos = raytrace.getBlockPos();
-
-
-                    BlockEntity blockEntity = playerIn.level.getBlockEntity(pos);
-                    if(blockEntity instanceof BookOfShadowsAltarTile altarTile && altarTile.turnPage == 0){
-
-                        if(altarTile.slotClicked != -1){
-                            if(++altarTile.slotClickedTick > 0) {
-                                event.setSwingHand(false);
-                                event.setCanceled(true);
-                                event.setResult(Event.Result.DENY);
-                            }
-                        }
-
-                        CompoundTag tag = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
-
-                        if(tag.contains("opened") && tag.getBoolean("opened")) {
-                            int clicked = checkClick(playerIn, altarTile);
-//                            System.out.println(clicked);
-                            if (clicked == 1) {
-                                if (altarTile.slotClicked == -1 && clickedNext(altarTile)) {
-                                    altarTile.setTurnPage(clicked);
-
-                                    event.setCanceled(true);
-                                    event.setResult(Event.Result.DENY);
-                                    break;
-                                }
-                            }
-                            if (clicked == 2) {
-                                if (altarTile.slotClicked == -1 && clickedBack(altarTile)) {
-                                    altarTile.setTurnPage(clicked);
-
-                                    event.setCanceled(true);
-                                    event.setResult(Event.Result.DENY);
-                                    break;
-                                }
-                            }
-                            if (clicked == -2) {
-                                //close
-                                altarTile.setTurnPage(clicked);
-
-                                event.setCanceled(true);
-                                event.setResult(Event.Result.DENY);
-                                break;
-                            }
-                            if (clicked == -1) {
-
-                                event.setCanceled(true);
-                                event.setResult(Event.Result.DENY);
-                                break;
-                            }
-                            if (clicked == -3) {
-                                //close
-
-                                event.setCanceled(true);
-                                event.setResult(Event.Result.DENY);
-                                break;
-                            }
-                            if (clicked == 3) {
-                                // clicked bookmark
-                                if(tag.getInt("chapter") != 0) {
-                                    altarTile.clickPageBookmark(tag.getInt("chapter"), tag.getInt("page"));
-
-                                    event.setCanceled(true);
-                                    event.setResult(Event.Result.DENY);
-                                    break;
-                                }
-                            }
-                            if (clicked == -5){
-                                event.setSwingHand(false);
-                                event.setCanceled(true);
-                                event.setResult(Event.Result.DENY);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            this.isRightPressedOld = true;
         }
     }
 
@@ -3536,9 +3523,9 @@ public class PageDrawing {
                                 String itemRegistryName;
 
                                 if (bookItemStackInSlot.item != null)
-                                    itemRegistryName = bookItemStackInSlot.item.getItem().getRegistryName().toString();
+                                    itemRegistryName = bookItemStackInSlot.item.getItem().getDescriptionId();
                                 else
-                                    itemRegistryName = bookItemStackInSlot.fluid.getFluid().getRegistryName().toString();
+                                    itemRegistryName = bookItemStackInSlot.fluid.getFluid().getFluidType().getDescriptionId();
 
                                 boolean flag = false;
                                 if (BookManager.getBookItemHyperlinks().containsKey(itemRegistryName)) {
@@ -3710,9 +3697,9 @@ public class PageDrawing {
                                 String itemRegistryName;
 
                                 if (bookItemStackInSlot.item != null)
-                                    itemRegistryName = bookItemStackInSlot.item.getItem().getRegistryName().toString();
+                                    itemRegistryName = bookItemStackInSlot.item.getItem().getDescriptionId();
                                 else
-                                    itemRegistryName = bookItemStackInSlot.fluid.getFluid().getRegistryName().toString();
+                                    itemRegistryName = bookItemStackInSlot.fluid.getFluid().getFluidType().getDescriptionId();
 
                                 boolean flag = false;
                                 if (BookManager.getBookItemHyperlinks().containsKey(itemRegistryName)) {
@@ -4043,8 +4030,8 @@ public class PageDrawing {
     private static TextureAtlasSprite getStillFluidSprite(FluidStack fluidStack) {
         Minecraft minecraft = Minecraft.getInstance();
         Fluid fluid = fluidStack.getFluid();
-        FluidAttributes attributes = fluid.getAttributes();
-        ResourceLocation fluidStill = attributes.getStillTexture(fluidStack);
+        FluidType type = fluid.getFluidType();
+        ResourceLocation fluidStill = IClientFluidTypeExtensions.of(fluid).getStillTexture(fluidStack);
         return minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStill);
     }
 
@@ -4116,7 +4103,7 @@ public class PageDrawing {
             if(tooltip.size() > 0)
                 tooltip.addAll(this.tooltipText);
 
-            String modId = this.tooltipStack.getItem().getRegistryName().getNamespace();
+            String modId = Registry.ITEM.getKey(this.tooltipStack.getItem()).getNamespace();
             String modName = getModNameForModId(modId);
             MutableComponent modNameComponent = Component.translatable(modName);
             modNameComponent.withStyle(Style.EMPTY.withItalic(true).withColor(5592575));
@@ -4156,7 +4143,7 @@ public class PageDrawing {
             tooltip.addAll(bookItemStackInSlot.extra_tooltips);
 
 
-        String modId = fluidStack.getFluid().getRegistryName().getNamespace();
+        String modId = Registry.FLUID.getKey(fluidStack.getFluid()).getNamespace();
         String modName = getModNameForModId(modId);
         MutableComponent modNameComponent = Component.translatable(modName);
         modNameComponent.withStyle(Style.EMPTY.withItalic(true).withColor(5592575));
