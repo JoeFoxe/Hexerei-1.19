@@ -22,11 +22,13 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
+
+import net.minecraft.world.item.Item.Properties;
 
 public class HexereiBookItem extends Item implements DyeableLeatherItem {
 
@@ -89,13 +91,13 @@ public class HexereiBookItem extends Item implements DyeableLeatherItem {
 
 
     @Override
-    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         super.initializeClient(consumer);
         CustomItemRendererWithPageDrawing renderer = createItemRenderer();
         if (renderer != null) {
-            consumer.accept(new IItemRenderProperties() {
+            consumer.accept(new IClientItemExtensions() {
                 @Override
-                public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+                public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                     return renderer.getRenderer();
                 }
             });

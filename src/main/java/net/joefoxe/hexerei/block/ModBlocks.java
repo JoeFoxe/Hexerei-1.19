@@ -30,7 +30,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -477,8 +477,8 @@ public class ModBlocks {
         if (block instanceof HerbJar) {
             itemBlock = new BlockItem(block, itemProperties) {
                 @Override
-                public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-                    consumer.accept(new IItemRenderProperties() {
+                public void initializeClient(@Nonnull Consumer<IClientItemExtensions> consumer) {
+                    consumer.accept(new IClientItemExtensions() {
                         final BlockEntityWithoutLevelRenderer myRenderer = new BlockEntityWithoutLevelRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels()) {
                             private HerbJarTile blockEntity;
 
@@ -493,7 +493,7 @@ public class ModBlocks {
                         };
 
                         @Override
-                        public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+                        public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                             return myRenderer;
                         }
                     });

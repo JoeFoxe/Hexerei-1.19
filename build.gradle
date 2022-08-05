@@ -25,7 +25,7 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply from: 'https://raw.githubusercontent.com/SizableShrimp/ForgeUpdatesRemapper/main/remapper.gradle'
 
 
-version = "0.2.2"
+version = "0.2.3"
 group = 'net.joefoxe.hexerei' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'hexerei'
 

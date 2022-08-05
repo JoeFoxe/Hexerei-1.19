@@ -66,6 +66,8 @@ import java.util.Random;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class HerbJar extends Block implements ITileEntity<HerbJarTile>, EntityBlock, SimpleWaterloggedBlock, DyeableLeatherItem {
 
     public static final BooleanProperty HANGING = BlockStateProperties.HANGING;
@@ -126,7 +128,7 @@ public class HerbJar extends Block implements ITileEntity<HerbJarTile>, EntityBl
             if(!worldIn.isClientSide()) {
                 if (tileEntity instanceof HerbJarTile) {
                     MenuProvider containerProvider = createContainerProvider(worldIn, pos, getCloneItemStack(worldIn, pos, state));
-                    NetworkHooks.openGui(((ServerPlayer) player), containerProvider, b -> b.writeBlockPos(tileEntity.getBlockPos()).writeItem(getCloneItemStack(worldIn, pos, state)));
+                    NetworkHooks.openScreen(((ServerPlayer) player), containerProvider, b -> b.writeBlockPos(tileEntity.getBlockPos()).writeItem(getCloneItemStack(worldIn, pos, state)));
                 } else {
                     throw new IllegalStateException("Our Container provider is missing!");
                 }

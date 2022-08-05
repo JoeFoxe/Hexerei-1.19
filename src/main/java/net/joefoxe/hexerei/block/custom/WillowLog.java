@@ -14,6 +14,8 @@ import net.minecraftforge.common.ToolActions;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class WillowLog extends RotatedPillarBlock {
     public WillowLog(Properties properties) {
         super(properties);

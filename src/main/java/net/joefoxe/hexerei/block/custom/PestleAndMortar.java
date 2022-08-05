@@ -41,6 +41,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Stream;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class PestleAndMortar extends Block implements ITileEntity<PestleAndMortarTile>, EntityBlock, SimpleWaterloggedBlock {
 
 

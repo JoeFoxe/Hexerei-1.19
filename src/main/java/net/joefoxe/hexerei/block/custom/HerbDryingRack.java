@@ -49,6 +49,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class HerbDryingRack extends Block implements ITileEntity<DryingRackTile>, EntityBlock, SimpleWaterloggedBlock {
 
 

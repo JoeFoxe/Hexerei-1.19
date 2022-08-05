@@ -8,7 +8,7 @@ import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.world.level.GrassColor;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -41,7 +41,7 @@ public class ModBlockColors {
 
 
     @SubscribeEvent
-    public static void onBlockColorsInit(ColorHandlerEvent.Block event) {
+    public static void onBlockColorsInit(RegisterColorHandlersEvent.Block event) {
         final BlockColors blockColors = event.getBlockColors();
 
         // blocks

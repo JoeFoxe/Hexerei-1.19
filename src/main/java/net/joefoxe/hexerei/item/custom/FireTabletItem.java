@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.Predicate;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class FireTabletItem extends Item {
     private static final Predicate<Entity> field_219989_a = EntitySelector.NO_SPECTATORS.and(Entity::canBeCollidedWith);
 

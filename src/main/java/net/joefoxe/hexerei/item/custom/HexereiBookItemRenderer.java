@@ -402,7 +402,7 @@ public class HexereiBookItemRenderer extends CustomItemRendererWithPageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void renderSingleBlock(BlockState p_110913_, PoseStack poseStack, MultiBufferSource p_110915_, int p_110916_, int p_110917_, net.minecraftforge.client.model.data.IModelData modelData, int color) {
+    public void renderSingleBlock(BlockState p_110913_, PoseStack poseStack, MultiBufferSource p_110915_, int p_110916_, int p_110917_, net.minecraftforge.client.model.data.ModelData modelData, int color) {
         RenderShape rendershape = p_110913_.getRenderShape();
         if (rendershape != RenderShape.INVISIBLE) {
             switch(rendershape) {
@@ -419,7 +419,7 @@ public class HexereiBookItemRenderer extends CustomItemRendererWithPageDrawing {
                     ItemStack stack = new ItemStack(p_110913_.getBlock());
 
                     poseStack.translate(0.2, -0.1, -0.1);
-                    net.minecraftforge.client.RenderProperties.get(stack).getItemStackRenderer().renderByItem(stack, ItemTransforms.TransformType.NONE, poseStack, p_110915_, p_110916_, p_110917_);
+                    net.minecraftforge.client.RenderProperties.get(stack).getCustomRenderer().renderByItem(stack, ItemTransforms.TransformType.NONE, poseStack, p_110915_, p_110916_, p_110917_);
             }
 
         }

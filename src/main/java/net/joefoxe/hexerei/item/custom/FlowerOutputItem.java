@@ -19,6 +19,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 
+import net.minecraft.world.item.Item.Properties;
+
 public class FlowerOutputItem extends Item {
 
     public FlowerOutputItem(Properties properties) {

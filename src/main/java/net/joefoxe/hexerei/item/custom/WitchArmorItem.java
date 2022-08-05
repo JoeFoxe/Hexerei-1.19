@@ -29,7 +29,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -41,6 +41,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static net.joefoxe.hexerei.util.ClientProxy.WITCH_ARMOR_LAYER;
+
+import net.minecraft.world.item.Item.Properties;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = "hexerei", bus = Mod.EventBusSubscriber.Bus.MOD)
 public class WitchArmorItem extends DyeableArmorItem {
@@ -152,9 +154,9 @@ public class WitchArmorItem extends DyeableArmorItem {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void initializeClient(java.util.function.Consumer<net.minecraftforge.client.IItemRenderProperties> consumer) {
+    public void initializeClient(java.util.function.Consumer<net.minecraftforge.client.extensions.common.IClientItemExtensions> consumer) {
 
-        consumer.accept(new IItemRenderProperties() {
+        consumer.accept(new IClientItemExtensions() {
             static WitchArmorModel model;
 
             @Override

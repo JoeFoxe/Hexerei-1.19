@@ -40,6 +40,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Stream;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class Altar extends BaseEntityBlock implements ITileEntity<BookOfShadowsAltarTile>, EntityBlock, SimpleWaterloggedBlock {
 
 

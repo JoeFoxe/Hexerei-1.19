@@ -11,9 +11,9 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
-public class ArmorModel <T extends LivingEntity> extends HumanoidModel<T> implements IItemRenderProperties {
+public class ArmorModel <T extends LivingEntity> extends HumanoidModel<T> implements IClientItemExtensions {
 
     public EquipmentSlot slot;
     ModelPart root, modelHead, modelBody, modelLeft_arm, modelRight_arm, modelBelt, modelLeft_leg, modelRight_leg, modelLeft_foot, modelRight_foot;

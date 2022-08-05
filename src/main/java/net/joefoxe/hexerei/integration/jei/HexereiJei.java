@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import Mode;
+
 @JeiPlugin
 public class HexereiJei implements IModPlugin {
 

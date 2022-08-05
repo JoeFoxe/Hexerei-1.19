@@ -24,7 +24,7 @@ import net.joefoxe.hexerei.client.renderer.entity.render.BroomRenderer;
 import net.joefoxe.hexerei.tileentity.ModTileEntities;
 import net.joefoxe.hexerei.tileentity.renderer.*;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.util.NonNullLazy;
@@ -66,14 +66,14 @@ public class ClientProxy implements SidedProxy {
     }
 
 
-    public static void registerISTER(Consumer<IItemRenderProperties> consumer, BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutLevelRenderer> factory) {
-        consumer.accept(new IItemRenderProperties() {
+    public static void registerISTER(Consumer<IClientItemExtensions> consumer, BiFunction<BlockEntityRenderDispatcher, EntityModelSet, BlockEntityWithoutLevelRenderer> factory) {
+        consumer.accept(new IClientItemExtensions() {
             final NonNullLazy<BlockEntityWithoutLevelRenderer> renderer = NonNullLazy.of(
                     () -> factory.apply(Minecraft.getInstance().getBlockEntityRenderDispatcher(),
                             Minecraft.getInstance().getEntityModels()));
 
             @Override
-            public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 return renderer.get();
             }
         });

@@ -35,6 +35,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class CofferItem extends BlockItem implements DyeableLeatherItem {
 
     public CofferItem(Block block, Properties properties) {

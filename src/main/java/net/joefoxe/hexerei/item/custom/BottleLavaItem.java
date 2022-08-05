@@ -21,6 +21,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class BottleLavaItem extends Item {
 
     public static FoodProperties FOOD = new FoodProperties.Builder().saturationMod(0).nutrition(0).alwaysEat().build();

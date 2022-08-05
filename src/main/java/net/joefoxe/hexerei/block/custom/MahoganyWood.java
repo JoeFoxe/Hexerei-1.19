@@ -12,6 +12,8 @@ import net.minecraftforge.common.ToolActions;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class MahoganyWood extends RotatedPillarBlock {
     public MahoganyWood(Properties properties) {
         super(properties);

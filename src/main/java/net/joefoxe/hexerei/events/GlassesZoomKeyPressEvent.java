@@ -10,7 +10,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.FOVModifierEvent;
+import net.minecraftforge.client.event.ComputeFovModifierEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.event.TickEvent;
@@ -29,7 +29,7 @@ public class GlassesZoomKeyPressEvent {
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public void onKeyEvent(InputEvent.KeyInputEvent event) {
+    public void onKeyEvent(InputEvent.Key event) {
         if(Minecraft.getInstance().screen == null) {
             if (event.getAction() == 1) {
 
@@ -58,7 +58,7 @@ public class GlassesZoomKeyPressEvent {
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public void onModifyFOV(FOVModifierEvent event){
+    public void onModifyFOV(ComputeFovModifierEvent event){
         if(zoomWithKeyToggled){
             Inventory inventory = Hexerei.proxy.getPlayer().inventory;
             Item item = inventory.getArmor(3).getItem();

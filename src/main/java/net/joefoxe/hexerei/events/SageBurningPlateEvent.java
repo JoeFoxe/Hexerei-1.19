@@ -38,7 +38,7 @@ public class SageBurningPlateEvent {
 
     @SubscribeEvent
     public void onEntityJoin(LivingSpawnEvent.CheckSpawn e) {
-        Level world = e.getWorld().isClientSide() ? null : e.getWorld() instanceof Level ? (Level)e.getWorld() : null;
+        Level world = e.getLevel().isClientSide() ? null : e.getLevel() instanceof Level ? (Level)e.getLevel() : null;
 
         if (world == null) {
             return;

@@ -20,7 +20,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 @Mod.EventBusSubscriber(modid = Hexerei.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModEntityTypes {
     public static DeferredRegister<EntityType<?>> ENTITY_TYPES
-            = DeferredRegister.create(ForgeRegistries.ENTITIES, Hexerei.MOD_ID);
+            = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Hexerei.MOD_ID);
 
 //    public static final EntityType<CrowEntity> CROW2 = registerEntity(EntityType.Builder.create(CrowEntity::new, MobCategory.CREATURE).size(0.45F, 0.45F), "crow");
 

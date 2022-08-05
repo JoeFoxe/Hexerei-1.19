@@ -85,6 +85,8 @@ import java.util.stream.Stream;
 import static net.joefoxe.hexerei.tileentity.renderer.MixingCauldronRenderer.MAX_Y;
 import static net.joefoxe.hexerei.tileentity.renderer.MixingCauldronRenderer.MIN_Y;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class MixingCauldron extends BaseEntityBlock implements ITileEntity<MixingCauldronTile> {
 
     public static final IntegerProperty LEVEL = IntegerProperty.create("level", 0, 3);
@@ -467,7 +469,7 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
             if (tileEntity instanceof MixingCauldronTile) {
                 MenuProvider containerProvider = createContainerProvider(world, pos);
 
-                NetworkHooks.openGui(((ServerPlayer) player), containerProvider, tileEntity.getBlockPos());
+                NetworkHooks.openScreen(((ServerPlayer) player), containerProvider, tileEntity.getBlockPos());
 
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");

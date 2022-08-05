@@ -24,6 +24,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 
+import net.minecraft.world.item.Item.Properties;
+
 public class SatchelItem extends Item implements DyeableLeatherItem {
 
     public SatchelItem(Properties properties) {

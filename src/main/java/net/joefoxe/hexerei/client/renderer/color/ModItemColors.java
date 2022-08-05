@@ -11,7 +11,7 @@ import net.minecraft.world.level.GrassColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.WaterlilyBlock;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -22,7 +22,7 @@ public class ModItemColors {
     // FORGE: Use RegistryDelegates as non-Vanilla item ids are not constant
 
     @SubscribeEvent
-    public static void initItemColors(ColorHandlerEvent.Item event) {
+    public static void initItemColors(RegisterColorHandlersEvent.Item event) {
         event.getItemColors().register((stack, color) -> {
             DyeColor col = HexereiUtil.getDyeColorNamed(stack.getHoverName().getString());
             return color == 0 ? -1 : ((WitchArmorItem)stack.getItem()).getColor(stack);

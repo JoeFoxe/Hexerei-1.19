@@ -1973,7 +1973,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
     }
 
 
-    public void renderSingleBlock(BlockState p_110913_, PoseStack p_110914_, MultiBufferSource p_110915_, int p_110916_, int p_110917_, net.minecraftforge.client.model.data.IModelData modelData, int color) {
+    public void renderSingleBlock(BlockState p_110913_, PoseStack p_110914_, MultiBufferSource p_110915_, int p_110916_, int p_110917_, net.minecraftforge.client.model.data.ModelData modelData, int color) {
         RenderShape rendershape = p_110913_.getRenderShape();
         if (rendershape != RenderShape.INVISIBLE) {
             switch(rendershape) {
@@ -1988,7 +1988,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
                     break;
                 case ENTITYBLOCK_ANIMATED:
                     ItemStack stack = new ItemStack(p_110913_.getBlock());
-                    net.minecraftforge.client.RenderProperties.get(stack).getItemStackRenderer().renderByItem(stack, ItemTransforms.TransformType.NONE, p_110914_, p_110915_, p_110916_, p_110917_);
+                    net.minecraftforge.client.RenderProperties.get(stack).getCustomRenderer().renderByItem(stack, ItemTransforms.TransformType.NONE, p_110914_, p_110915_, p_110916_, p_110917_);
             }
 
         }

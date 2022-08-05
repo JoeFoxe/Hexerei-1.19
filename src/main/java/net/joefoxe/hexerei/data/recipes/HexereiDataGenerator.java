@@ -1,7 +1,7 @@
 package net.joefoxe.hexerei.data.recipes;
 
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.data.event.GatherDataEvent;
 
 public class HexereiDataGenerator {
     private HexereiDataGenerator() {}

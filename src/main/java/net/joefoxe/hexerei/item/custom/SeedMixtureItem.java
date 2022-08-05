@@ -15,6 +15,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 
+import net.minecraft.world.item.Item.Properties;
+
 public class SeedMixtureItem extends Item {
 
     public static FoodProperties FOOD = new FoodProperties.Builder().saturationMod(1).nutrition(2).build();

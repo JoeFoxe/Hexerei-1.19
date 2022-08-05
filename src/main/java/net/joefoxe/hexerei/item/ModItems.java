@@ -26,7 +26,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -80,7 +80,7 @@ public class ModItems {
                 static class ColorRegisterHandler
                 {
                     @SubscribeEvent(priority = EventPriority.HIGHEST)
-                    public static void registerFluteColors(ColorHandlerEvent.Item event)
+                    public static void registerFluteColors(RegisterColorHandlersEvent.Item event)
                     {
                         SatchelItem.ItemHandlerConsumer items = event.getItemColors()::register;
                         // s = stack, t = tint-layer
@@ -111,7 +111,7 @@ public class ModItems {
                 static class ColorRegisterHandler
                 {
                     @SubscribeEvent(priority = EventPriority.HIGHEST)
-                    public static void registerFluteColors(ColorHandlerEvent.Item event)
+                    public static void registerFluteColors(RegisterColorHandlersEvent.Item event)
                     {
                         SatchelItem.ItemHandlerConsumer items = event.getItemColors()::register;
                         // s = stack, t = tint-layer
@@ -143,7 +143,7 @@ public class ModItems {
                 static class ColorRegisterHandler
                 {
                     @SubscribeEvent(priority = EventPriority.HIGHEST)
-                    public static void registerFluteColors(ColorHandlerEvent.Item event)
+                    public static void registerFluteColors(RegisterColorHandlersEvent.Item event)
                     {
                         SatchelItem.ItemHandlerConsumer items = event.getItemColors()::register;
                         // s = stack, t = tint-layer
@@ -435,7 +435,7 @@ public class ModItems {
                 static class ColorRegisterHandler
                 {
                     @SubscribeEvent(priority = EventPriority.HIGHEST)
-                    public static void registerFluteColors(ColorHandlerEvent.Item event)
+                    public static void registerFluteColors(RegisterColorHandlersEvent.Item event)
                     {
                         CofferItem.ItemHandlerConsumer items = event.getItemColors()::register;
                         // s = stack, t = tint-layer

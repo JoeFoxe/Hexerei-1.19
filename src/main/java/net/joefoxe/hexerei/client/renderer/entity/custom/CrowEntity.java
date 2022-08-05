@@ -606,8 +606,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                         this.level.broadcastEntityEvent(this, (byte) 6);
                     }
                 }
-                if (this.itemHandler.getStackInSlot(1).hasContainerItem()) {
-                    this.spawnAtLocation(this.itemHandler.getStackInSlot(1).getContainerItem());
+                if (this.itemHandler.getStackInSlot(1).hasCraftingRemainingItem()) {
+                    this.spawnAtLocation(this.itemHandler.getStackInSlot(1).getCraftingRemainingItem());
                 }
                 this.itemHandler.getStackInSlot(1).shrink(1);
             }
@@ -1066,7 +1066,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
             if (!level.isClientSide()) {
                 MenuProvider containerProvider = createContainerProvider(level, blockPosition());
 
-                NetworkHooks.openGui((ServerPlayer) player, containerProvider, b -> b.writeInt(this.getId()));
+                NetworkHooks.openScreen((ServerPlayer) player, containerProvider, b -> b.writeInt(this.getId()));
 
             }
             return InteractionResult.sidedSuccess(this.level.isClientSide);

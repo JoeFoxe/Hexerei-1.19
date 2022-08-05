@@ -35,7 +35,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -315,7 +315,7 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
 
     @NotNull
     @Override
-    public IModelData getModelData() {
+    public ModelData getModelData() {
         return super.getModelData();
     }
 

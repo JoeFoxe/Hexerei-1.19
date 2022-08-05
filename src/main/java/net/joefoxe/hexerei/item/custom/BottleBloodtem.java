@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 
+import net.minecraft.world.item.Item.Properties;
+
 public class BottleBloodtem extends Item {
 
     public static FoodProperties FOOD = new FoodProperties.Builder().saturationMod(1).nutrition(1).effect(new MobEffectInstance(MobEffects.ABSORPTION, 200), 1).alwaysEat().build();

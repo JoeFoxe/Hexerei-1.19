@@ -30,6 +30,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class GlassesItem extends Item implements IThirdPersonItemAnimation, Wearable {
 
     public GlassesItem(Properties builder) {

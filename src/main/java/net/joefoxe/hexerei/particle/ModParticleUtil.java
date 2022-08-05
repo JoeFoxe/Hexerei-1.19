@@ -2,7 +2,7 @@ package net.joefoxe.hexerei.particle;
 
 import net.joefoxe.hexerei.Hexerei;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -16,7 +16,7 @@ public class ModParticleUtil {
      */
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void registerParticles(ParticleFactoryRegisterEvent event) {
+    public static void registerParticles(RegisterParticleProvidersEvent event) {
         Minecraft.getInstance().particleEngine.register(ModParticleTypes.CAULDRON.get(), CauldronParticle.Factory::new);
         Minecraft.getInstance().particleEngine.register(ModParticleTypes.BLOOD.get(), BloodParticle.Factory::new);
         Minecraft.getInstance().particleEngine.register(ModParticleTypes.BLOOD_BIT.get(), BloodBitParticle.Factory::new);

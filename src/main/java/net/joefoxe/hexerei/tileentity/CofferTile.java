@@ -29,7 +29,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -212,7 +212,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
 
     @NotNull
     @Override
-    public IModelData getModelData() {
+    public ModelData getModelData() {
         return super.getModelData();
     }
 

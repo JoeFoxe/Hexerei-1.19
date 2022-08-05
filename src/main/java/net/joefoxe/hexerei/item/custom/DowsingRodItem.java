@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class DowsingRodItem extends Item {
 
     public BlockPos nearestPos = null;

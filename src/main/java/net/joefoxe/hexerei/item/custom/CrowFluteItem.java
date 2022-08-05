@@ -49,7 +49,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -64,6 +64,8 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+
+import net.minecraft.world.item.Item.Properties;
 
 public class CrowFluteItem extends Item implements Container, IThirdPersonItemAnimation,
         IThirdPersonItemRenderer, IFirstPersonItemAnimation {
@@ -285,7 +287,7 @@ public class CrowFluteItem extends Item implements Container, IThirdPersonItemAn
     private static class ColorRegisterHandler
     {
         @SubscribeEvent(priority = EventPriority.HIGHEST)
-        public static void registerFluteColors(ColorHandlerEvent.Item event)
+        public static void registerFluteColors(RegisterColorHandlersEvent.Item event)
         {
             ItemHandlerConsumer items = event.getItemColors()::register;
 
@@ -341,7 +343,7 @@ public class CrowFluteItem extends Item implements Container, IThirdPersonItemAn
 
                 MenuProvider containerProvider = createContainerProvider(itemstack, handIn, itemstack.getTag());
 
-                NetworkHooks.openGui((ServerPlayer) playerIn, containerProvider, b -> b.writeNbt(itemstack.getTag()).writeInt(handIn == InteractionHand.MAIN_HAND ? 0 : 1));
+                NetworkHooks.openScreen((ServerPlayer) playerIn, containerProvider, b -> b.writeNbt(itemstack.getTag()).writeInt(handIn == InteractionHand.MAIN_HAND ? 0 : 1));
 
             }
             else if (itemstack.getOrCreateTag().getInt("commandMode") == 0)

@@ -44,6 +44,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class Candle extends BaseEntityBlock implements ITileEntity<CandleTile>, EntityBlock, SimpleWaterloggedBlock {
 
     public static final IntegerProperty CANDLES = IntegerProperty.create("candles", 1, 4);

@@ -20,7 +20,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class ModContainers {
 
-    public static DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Hexerei.MOD_ID);
+    public static DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Hexerei.MOD_ID);
 
     public static final RegistryObject<MenuType<MixingCauldronContainer>> MIXING_CAULDRON_CONTAINER
             = CONTAINERS.register("mixing_cauldron_container",

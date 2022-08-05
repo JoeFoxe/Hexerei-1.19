@@ -67,6 +67,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, EntityBlock, SimpleWaterloggedBlock, DyeableLeatherItem {
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -219,7 +221,7 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
             if(tileEntity instanceof CofferTile) {
                 MenuProvider containerProvider = createContainerProvider(worldIn, pos);
 
-                NetworkHooks.openGui(((ServerPlayer)player), containerProvider, tileEntity.getBlockPos());
+                NetworkHooks.openScreen(((ServerPlayer)player), containerProvider, tileEntity.getBlockPos());
 
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");

@@ -9,6 +9,11 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Function;
 
+import net.minecraft.client.renderer.RenderStateShard.OverlayStateShard;
+import net.minecraft.client.renderer.RenderStateShard.ShaderStateShard;
+import net.minecraft.client.renderer.RenderStateShard.TextureStateShard;
+import net.minecraft.client.renderer.RenderType.CompositeState;
+
 public class CustomRenderType extends RenderType {
 
     // Dummy

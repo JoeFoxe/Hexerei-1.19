@@ -49,6 +49,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class Candelabra extends Block implements SimpleWaterloggedBlock {
 
     public static final BooleanProperty HANGING = BlockStateProperties.HANGING;

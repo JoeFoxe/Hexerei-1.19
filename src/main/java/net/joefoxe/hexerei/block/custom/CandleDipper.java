@@ -47,6 +47,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class CandleDipper extends BaseEntityBlock implements ITileEntity<CandleDipperTile>, EntityBlock, SimpleWaterloggedBlock {
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;

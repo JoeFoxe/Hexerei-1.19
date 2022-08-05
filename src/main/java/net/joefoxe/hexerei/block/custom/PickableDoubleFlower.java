@@ -36,6 +36,9 @@ import org.lwjgl.system.CallbackI;
 
 import java.util.Random;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.OffsetType;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class PickableDoubleFlower extends DoublePlantBlock implements BonemealableBlock {
     protected static final float AABB_OFFSET = 3.0F;
     protected static final VoxelShape SHAPE = Block.box(5.0D, 0.0D, 5.0D, 11.0D, 10.0D, 11.0D);

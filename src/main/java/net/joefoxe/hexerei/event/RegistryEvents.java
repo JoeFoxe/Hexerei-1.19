@@ -1,7 +1,7 @@
 package net.joefoxe.hexerei.event;
 
 import net.joefoxe.hexerei.model.ModModels;
-import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.ModelEvent.RegisterGeometryLoaders;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.Mod;
 public class RegistryEvents {
 
     @SubscribeEvent
-    public static void onModelRegister(ModelRegistryEvent event) {
+    public static void onModelRegister(RegisterGeometryLoaders event) {
         ModModels.setupRenderLayers();
     }
 

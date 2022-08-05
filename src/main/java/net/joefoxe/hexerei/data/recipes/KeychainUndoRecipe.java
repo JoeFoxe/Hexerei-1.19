@@ -27,8 +27,8 @@ public class KeychainUndoRecipe extends CustomRecipe {
 
         for(int i = 0; i < nonnulllist.size(); ++i) {
             ItemStack item = p_44004_.getItem(i);
-            if (item.hasContainerItem()) {
-                nonnulllist.set(i, item.getContainerItem());
+            if (item.hasCraftingRemainingItem()) {
+                nonnulllist.set(i, item.getCraftingRemainingItem());
             }
             if(item.getItem() instanceof KeychainItem keychainItem)
                 nonnulllist.set(i, new ItemStack(keychainItem));
