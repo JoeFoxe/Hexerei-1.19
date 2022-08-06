@@ -34,6 +34,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
@@ -233,7 +234,7 @@ public class CauldronParticle extends TextureSheetParticle {
             CauldronParticle cauldronParticle = new CauldronParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
             Random random = new Random();
 
-//            this.spriteSet = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(fluidStack.getFluid().getAttributes().getStillTexture(fluidStack));
+//            this.spriteSet = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(IClientFluidTypeExtensions.of(fluidStack.getFluid()).getStillTexture(fluidStack));
             MixingCauldronTile mixingCauldronTile = null;
             FluidStack fluidStack = FluidStack.EMPTY;
 
@@ -246,9 +247,9 @@ public class CauldronParticle extends TextureSheetParticle {
 
             BlockState blockStateAtPos = worldIn.getBlockState(new BlockPos(x, y-0.1, z));
 
-            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(fluidStack.getFluid().getAttributes().getStillTexture(fluidStack));
+            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(IClientFluidTypeExtensions.of(fluidStack.getFluid()).getStillTexture(fluidStack));
 
-            int colorInt = fluidStack.getFluid().getAttributes().getColor(fluidStack);
+            int colorInt = IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor(fluidStack);
             float alpha = (colorInt >> 24 & 255) / 275f;
             float red = (colorInt >> 16 & 255) / 275f;
             float green = (colorInt >> 8 & 255) / 275f;

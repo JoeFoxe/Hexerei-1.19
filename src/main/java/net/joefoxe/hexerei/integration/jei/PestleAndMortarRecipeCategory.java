@@ -2,10 +2,13 @@ package net.joefoxe.hexerei.integration.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
@@ -26,17 +29,12 @@ public class PestleAndMortarRecipeCategory implements IRecipeCategory<PestleAndM
 
     public PestleAndMortarRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 143, 80);
-        this.icon = helper.createDrawableIngredient(new ItemStack(ModBlocks.PESTLE_AND_MORTAR.get()));
+        this.icon = helper.createDrawableItemStack(new ItemStack(ModBlocks.PESTLE_AND_MORTAR.get()));
     }
 
     @Override
-    public ResourceLocation getUid() {
-        return UID;
-    }
-
-    @Override
-    public Class<? extends PestleAndMortarRecipe> getRecipeClass() {
-        return PestleAndMortarRecipe.class;
+    public RecipeType<PestleAndMortarRecipe> getRecipeType() {
+        return new RecipeType<>(PestleAndMortarRecipeCategory.UID, PestleAndMortarRecipe.class);
     }
 
     @Override
@@ -55,28 +53,41 @@ public class PestleAndMortarRecipeCategory implements IRecipeCategory<PestleAndM
     }
 
     @Override
-    public void setIngredients(PestleAndMortarRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputIngredients(recipe.getIngredients());
-        ingredients.setOutput(VanillaTypes.ITEM, recipe.getResultItem());
+    public void setRecipe(IRecipeLayoutBuilder builder, PestleAndMortarRecipe recipe, IFocusGroup focuses) {
+        builder.setShapeless();
+        builder.addSlot(RecipeIngredientRole.INPUT, 10, 13).addIngredients(recipe.getIngredients().get(0));//.getItemStacks().init(0, true, 10, 13);
+        builder.addSlot(RecipeIngredientRole.INPUT, 19, 35).addIngredients(recipe.getIngredients().get(1));
+        builder.addSlot(RecipeIngredientRole.INPUT, 41, 44).addIngredients(recipe.getIngredients().get(2));
+        builder.addSlot(RecipeIngredientRole.INPUT, 63, 35).addIngredients(recipe.getIngredients().get(3));
+        builder.addSlot(RecipeIngredientRole.INPUT, 72, 13).addIngredients(recipe.getIngredients().get(4));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 116, 30).addIngredients(recipe.getIngredients().get(5));
+
+//        builder.getItemStacks().set(ingredients);
     }
+//
+//    @Override
+//    public void setIngredients(PestleAndMortarRecipe recipe, IIngredients ingredients) {
+//        ingredients.setInputIngredients(recipe.getIngredients());
+//        ingredients.setOutput(VanillaTypes.ITEM, recipe.getResultItem());
+//    }
+//
+//    @Override
+//    public void setRecipe(IRecipeLayout recipeLayout, PestleAndMortarRecipe recipe, IIngredients ingredients) {
+//
+//        recipeLayout.setShapeless();
+//        recipeLayout.getItemStacks().init(0, true, 10, 13);
+//        recipeLayout.getItemStacks().init(1, true, 19, 35);
+//        recipeLayout.getItemStacks().init(2, true, 41, 44);
+//        recipeLayout.getItemStacks().init(3, true, 63, 35);
+//        recipeLayout.getItemStacks().init(4, true, 72, 13);
+//        recipeLayout.getItemStacks().init(5, false, 116, 30);
+//
+//        recipeLayout.getItemStacks().set(ingredients);
+//
+//    }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, PestleAndMortarRecipe recipe, IIngredients ingredients) {
-
-        recipeLayout.setShapeless();
-        recipeLayout.getItemStacks().init(0, true, 10, 13);
-        recipeLayout.getItemStacks().init(1, true, 19, 35);
-        recipeLayout.getItemStacks().init(2, true, 41, 44);
-        recipeLayout.getItemStacks().init(3, true, 63, 35);
-        recipeLayout.getItemStacks().init(4, true, 72, 13);
-        recipeLayout.getItemStacks().init(5, false, 116, 30);
-
-        recipeLayout.getItemStacks().set(ingredients);
-
-    }
-
-    @Override
-    public void draw(PestleAndMortarRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(PestleAndMortarRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
 
         int grindingTime = recipe.getGrindingTime();
         Minecraft minecraft = Minecraft.getInstance();

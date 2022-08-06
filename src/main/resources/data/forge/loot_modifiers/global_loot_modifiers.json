@@ -2,9 +2,7 @@
 {
   "replace": false,
   "entries": [
-    "hexerei:animal_fat_from_cow",
-    "hexerei:animal_fat_from_sheep",
-    "hexerei:animal_fat_from_pig",
+    "hexerei:animal_fat_drops",
     "hexerei:sage_seeds_from_grass"
   ]
 }

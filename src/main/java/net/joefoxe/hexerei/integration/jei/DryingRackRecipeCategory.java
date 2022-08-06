@@ -1,11 +1,13 @@
 package net.joefoxe.hexerei.integration.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
@@ -26,17 +28,12 @@ public class DryingRackRecipeCategory implements IRecipeCategory<DryingRackRecip
 
     public DryingRackRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 100, 53);
-        this.icon = helper.createDrawableIngredient(new ItemStack(ModBlocks.HERB_DRYING_RACK.get()));
+        this.icon = helper.createDrawableItemStack(new ItemStack(ModBlocks.HERB_DRYING_RACK.get()));
     }
 
     @Override
-    public ResourceLocation getUid() {
-        return UID;
-    }
-
-    @Override
-    public Class<? extends DryingRackRecipe> getRecipeClass() {
-        return DryingRackRecipe.class;
+    public RecipeType<DryingRackRecipe> getRecipeType() {
+        return new RecipeType<>(DryingRackRecipeCategory.UID, DryingRackRecipe.class);
     }
 
     @Override
@@ -55,23 +52,14 @@ public class DryingRackRecipeCategory implements IRecipeCategory<DryingRackRecip
     }
 
     @Override
-    public void setIngredients(DryingRackRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputIngredients(recipe.getIngredients());
-        ingredients.setOutput(VanillaTypes.ITEM, recipe.getResultItem());
+    public void setRecipe(IRecipeLayoutBuilder builder, DryingRackRecipe recipe, IFocusGroup focuses) {
+
+        builder.addSlot(RecipeIngredientRole.INPUT,13, 15).addIngredients(recipe.getIngredients().get(0));
+        builder.addSlot(RecipeIngredientRole.OUTPUT,69, 15).addIngredients(recipe.getIngredients().get(1));
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, DryingRackRecipe recipe, IIngredients ingredients) {
-
-        recipeLayout.getItemStacks().init(0, true, 13, 15);
-        recipeLayout.getItemStacks().init(1, false, 69, 15);
-
-        recipeLayout.getItemStacks().set(ingredients);
-
-    }
-
-    @Override
-    public void draw(DryingRackRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(DryingRackRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
 
         int dryingTime = recipe.getDryingTime();
         Minecraft minecraft = Minecraft.getInstance();

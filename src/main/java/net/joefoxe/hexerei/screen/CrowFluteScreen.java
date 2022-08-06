@@ -250,7 +250,7 @@ public class CrowFluteScreen extends AbstractContainerScreen<CrowFluteContainer>
     @Override
     public Component getTitle() {
 
-        MutableComponent mutablecomponent = (new TextComponent("")).append(crowFluteStack.getHoverName());
+        MutableComponent mutablecomponent = (Component.translatable("")).append(crowFluteStack.getHoverName());
         if (crowFluteStack.hasCustomHoverName()) {
             mutablecomponent.withStyle(ChatFormatting.ITALIC);
         }

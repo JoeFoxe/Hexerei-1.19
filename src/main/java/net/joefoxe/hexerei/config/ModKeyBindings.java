@@ -2,17 +2,19 @@ package net.joefoxe.hexerei.config;
 
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.sun.java.accessibility.util.Translator;
+import net.joefoxe.hexerei.Hexerei;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraftforge.client.ClientRegistry;
-import net.minecraftforge.client.settings.IKeyConflictContext;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
-import net.minecraftforge.client.settings.KeyModifier;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
+@Mod.EventBusSubscriber(modid = Hexerei.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class ModKeyBindings {
     public static final KeyMapping broomDescend;
     public static final KeyMapping bookJEIShowUses;
@@ -44,10 +46,11 @@ public final class ModKeyBindings {
 
     private ModKeyBindings() {
     }
-
-    public static void init() {
+    @SubscribeEvent
+    public static void registerKeybinds(RegisterKeyMappingsEvent ev)
+    {
         for (KeyMapping binding : allBindings) {
-            ClientRegistry.registerKeyBinding(binding);
+            ev.register(binding);
         }
     }
 

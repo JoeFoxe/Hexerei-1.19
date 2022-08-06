@@ -650,7 +650,7 @@ public class CrowFluteItem extends Item implements Container, IThirdPersonItemAn
 
             @Override
             public Component getDisplayName() {
-                MutableComponent mutablecomponent = (new TextComponent("")).append(itemStack.getHoverName());
+                MutableComponent mutablecomponent = (Component.translatable("")).append(itemStack.getHoverName());
                 if (itemStack.hasCustomHoverName()) {
                     mutablecomponent.withStyle(ChatFormatting.ITALIC);
                 }
@@ -835,7 +835,7 @@ public class CrowFluteItem extends Item implements Container, IThirdPersonItemAn
                 transform = leftHand ? ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND : ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND;
             }
 
-            Minecraft.getInstance().getItemInHandRenderer().renderItem(entity, stack, transform, leftHand, poseStack, bufferSource, light);
+            Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(entity, stack, transform, leftHand, poseStack, bufferSource, light);
 
             poseStack.popPose();
         }

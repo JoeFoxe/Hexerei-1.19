@@ -2,11 +2,13 @@ package net.joefoxe.hexerei.integration.jei;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredient;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.joefoxe.hexerei.container.MixingCauldronContainer;
 import net.joefoxe.hexerei.data.recipes.MixingCauldronRecipe;
 import net.joefoxe.hexerei.tileentity.MixingCauldronTile;
@@ -14,32 +16,48 @@ import net.joefoxe.hexerei.util.HexereiPacketHandler;
 import net.joefoxe.hexerei.util.message.RecipeToServer;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class MixingCauldronTransferInfo implements IRecipeTransferHandler<MixingCauldronContainer, MixingCauldronRecipe>{
 
+    private final IRecipeTransferHandlerHelper transferHandlerHelper;
+
+    public MixingCauldronTransferInfo(IRecipeTransferHandlerHelper transferHandlerHelper)
+    {
+        this.transferHandlerHelper = transferHandlerHelper;
+    }
     @Override
     public Class<MixingCauldronContainer> getContainerClass() {
         return MixingCauldronContainer.class;
     }
 
     @Override
-    public Class<MixingCauldronRecipe> getRecipeClass() {
-        return MixingCauldronRecipe.class;
+    public Optional<MenuType<MixingCauldronContainer>> getMenuType() {
+        return Optional.empty();
+    }
+
+    @Override
+    public RecipeType<MixingCauldronRecipe> getRecipeType() {
+        return new RecipeType<>(MixingCauldronRecipeCategory.UID, MixingCauldronRecipe.class);
     }
 
     @Override//MixingCauldronContainer, MixingCauldronRecipe
-    public @org.jetbrains.annotations.Nullable IRecipeTransferError transferRecipe(MixingCauldronContainer container, MixingCauldronRecipe recipe, IRecipeLayout recipeLayout, Player pPlayer, boolean pMaxTransfer, boolean pDoTransfer) {
+    public @org.jetbrains.annotations.Nullable IRecipeTransferError transferRecipe(MixingCauldronContainer container, MixingCauldronRecipe recipe, IRecipeSlotsView recipeSlots, Player pPlayer, boolean pMaxTransfer, boolean pDoTransfer) {
 
-        Map<Integer, ? extends IGuiIngredient<ItemStack>> guiIngredients = recipeLayout.getItemStacks().getGuiIngredients();
-
+        List<IRecipeSlotView> stacks = recipeSlots.getSlotViews();
+        NonNullList<ItemStack> convertedInput = NonNullList.withSize(stacks.size()-1, ItemStack.EMPTY);
         MixingCauldronTile inventory = (MixingCauldronTile)container.tileEntity;
 
         List<Boolean> itemMatchesSlot = new ArrayList<>();
@@ -84,7 +102,7 @@ public class MixingCauldronTransferInfo implements IRecipeTransferHandler<Mixing
 
         int check = 0;
         if(!allItemsMissing)
-            check = checkRecipe(guiIngredients, inventory, pPlayer);
+            check = checkRecipe(stacks, inventory, pPlayer);
 
         if(!pDoTransfer && check == 0) {
             return new IRecipeTransferError() {
@@ -150,7 +168,7 @@ public class MixingCauldronTransferInfo implements IRecipeTransferHandler<Mixing
         }
         if(pDoTransfer) {
 
-            if(!transferRecipe(guiIngredients, inventory, pPlayer)) {
+            if(!transferRecipe(stacks, inventory, pPlayer)) {
                 return new IRecipeTransferError() {
                     @Override
                     public Type getType() {
@@ -159,21 +177,30 @@ public class MixingCauldronTransferInfo implements IRecipeTransferHandler<Mixing
                 };
             }
         }
-        return IRecipeTransferHandler.super.transferRecipe(container, recipe, recipeLayout, pPlayer, pMaxTransfer, pDoTransfer);
+        return this.transferHandlerHelper.createUserErrorWithTooltip(Component.translatable("no space"));
+//        return IRecipeTransferHandler.super.transferRecipe(container, recipe, recipeSlots, pPlayer, pMaxTransfer, pDoTransfer);
     }
 
-    public static int checkRecipe(Map<Integer, ? extends IGuiIngredient<ItemStack>> guiIngredients, MixingCauldronTile blockEntity, Player player) {
+    public static int checkRecipe(List<IRecipeSlotView> guiIngredients, MixingCauldronTile blockEntity, Player player) {
         List<ItemStack> items = new ArrayList<>();
         for(int i = 0; i < 10; i++)
             items.add(ItemStack.EMPTY);
-        for (Map.Entry<Integer, ? extends IGuiIngredient<ItemStack>> entry : guiIngredients.entrySet()) {
-            int recipeSlot = entry.getKey();
-            if(recipeSlot != 8){
-                List<ItemStack> allIngredients = entry.getValue().getAllIngredients();
-                if (!allIngredients.isEmpty()) {
-                    items.set(recipeSlot, allIngredients.get(0));
-                }
-            }
+        int j = 0;
+        for (IRecipeSlotView slotView : guiIngredients) {
+            j++;
+            Optional<ItemStack> stack = slotView.getAllIngredients()
+                    .filter(t -> t.getType()==VanillaTypes.ITEM_STACK)
+                    .map(t -> (ItemStack)t.getIngredient())
+                    .findFirst();
+            if(stack.isPresent() && j != 8)
+                items.set(j, stack.get());
+//            int recipeSlot = entry.getKey();
+//            if(recipeSlot != 8){
+//                List<ItemStack> allIngredients = entry.getValue().getAllIngredients();
+//                if (!allIngredients.isEmpty()) {
+//                    items.set(recipeSlot, allIngredients.get(0));
+//                }
+//            }
         }
         NonNullList<ItemStack> inv = blockEntity.items;
 
@@ -206,18 +233,26 @@ public class MixingCauldronTransferInfo implements IRecipeTransferHandler<Mixing
         return matchesItems ? 2 : matchesAtleastOne ? 1 : 0;
     }
 
-    public static boolean transferRecipe(Map<Integer, ? extends IGuiIngredient<ItemStack>> guiIngredients, MixingCauldronTile blockEntity, Player player) {
+    public static boolean transferRecipe(List<IRecipeSlotView> IRecipeSlotViews, MixingCauldronTile blockEntity, Player player) {
         List<ItemStack> items = new ArrayList<>();
         for(int i = 0; i < 10; i++)
             items.add(ItemStack.EMPTY);
-        for (Map.Entry<Integer, ? extends IGuiIngredient<ItemStack>> entry : guiIngredients.entrySet()) {
-            int recipeSlot = entry.getKey();
-            if(recipeSlot != 8){
-                List<ItemStack> allIngredients = entry.getValue().getAllIngredients();
-                if (!allIngredients.isEmpty()) {
-                    items.set(recipeSlot, allIngredients.get(0));
-                }
-            }
+        int j = 0;
+        for (IRecipeSlotView slotView : IRecipeSlotViews) {
+            j++;
+            Optional<ItemStack> stack = slotView.getAllIngredients()
+                    .filter(t -> t.getType()==VanillaTypes.ITEM_STACK)
+                    .map(t -> (ItemStack)t.getIngredient())
+                    .findFirst();
+            if(stack.isPresent() && j != 8)
+                items.set(j, stack.get());
+//            int recipeSlot = entry.getKey();
+//            if(recipeSlot != 8){
+//                List<ItemStack> allIngredients = entry.getValue().getAllIngredients();
+//                if (!allIngredients.isEmpty()) {
+//                    items.set(recipeSlot, allIngredients.get(0));
+//                }
+//            }
         }
         boolean matchesItems = false;
         NonNullList<ItemStack> inv = blockEntity.items;

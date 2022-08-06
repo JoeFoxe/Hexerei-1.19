@@ -70,7 +70,7 @@ public class MushroomWitchArmorItem extends WitchArmorItem {
             static MushroomWitchArmorModel model;
 
             @Override
-            public MushroomWitchArmorModel getArmorModel(LivingEntity entity, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel _default) {
+            public MushroomWitchArmorModel getGenericArmorModel(LivingEntity entity, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel _default) {
                 if (model == null) model = new MushroomWitchArmorModel(Minecraft.getInstance().getEntityModels().bakeLayer(ClientProxy.MUSHROOM_WITCH_ARMOR_LAYER));
                 float pticks = Minecraft.getInstance().getFrameTime();
                 float f = Mth.rotLerp(pticks, entity.yBodyRotO, entity.yBodyRot);

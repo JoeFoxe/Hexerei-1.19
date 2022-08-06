@@ -2,7 +2,6 @@ package net.joefoxe.hexerei.item.custom;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.item.Item;
@@ -12,10 +11,8 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Properties;
 import java.util.function.Predicate;
 
-import net.minecraft.world.item.Item.Properties;
 
 public class FireTabletItem extends Item {
     private static final Predicate<Entity> field_219989_a = EntitySelector.NO_SPECTATORS.and(Entity::canBeCollidedWith);

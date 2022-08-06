@@ -1,0 +1,20 @@
+
+
+{
+  "type": "hexerei:animal_fat_drops",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:entities/cow"
+    },
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:entities/pig"
+    },
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:entities/sheep"
+    }
+  ],
+  "addition": "hexerei:animal_fat"
+}

@@ -12,7 +12,6 @@ import net.joefoxe.hexerei.client.renderer.entity.model.CrowModel;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.custom.BroomItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.CreeperModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
@@ -26,27 +25,24 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.layers.EnergySwirlLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.AbstractSkullBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
-import javax.annotation.Nullable;
 import java.util.Map;
-import java.util.Random;
 
 public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/crow.png");
@@ -134,11 +130,11 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
             matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-90F));
             matrixStackIn.scale(0.75F, 0.75F, 0.75F);
             ItemStack stack = itemstack.copy();
-//            Minecraft.getInstance().getItemInHandRenderer().renderItem(crow, stack, ItemTransforms.TransformType.GROUND, false, matrixStackIn, bufferIn, packedLightIn);
+//            Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(crow, stack, ItemTransforms.TransformType.GROUND, false, matrixStackIn, bufferIn, packedLightIn);
             if(itemstack.getItem() == ModItems.WARHAMMER.get() && crow.getDisplayName().getString().equals("Thor") && !itemstack.isEnchanted())
-                stack = EnchantmentHelper.enchantItem(new Random(), itemstack.copy(), 1, false);
+                stack = EnchantmentHelper.enchantItem(RandomSource.create(), itemstack.copy(), 1, false);
 
-            Minecraft.getInstance().getItemInHandRenderer().renderItem(crow, stack, ItemTransforms.TransformType.GROUND, false, matrixStackIn, bufferIn, packedLightIn);
+            Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(crow, stack, ItemTransforms.TransformType.GROUND, false, matrixStackIn, bufferIn, packedLightIn);
             matrixStackIn.popPose();
         }
 
@@ -217,7 +213,7 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
                 boolean flag1 = itemstack.hasFoil();
                 boolean notAVanillaModel = a != defaultBipedModel;
                 translateToHand(matrixStackIn);
-                if(notAVanillaModel && itemstack.getItem().getRegistryName().getNamespace().equals(Hexerei.MOD_ID)) {
+                if(notAVanillaModel && Registry.ITEM.getKey(itemstack.getItem()).getNamespace().equals(Hexerei.MOD_ID)) {
                     matrixStackIn.scale(0.35F, 0.35F, 0.35F);
                     matrixStackIn.translate(0f,  -0.15F, -0.25F);
                 }
@@ -251,7 +247,7 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
 
         }
         private void renderBlock(PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, BlockState state) {
-            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, matrixStackIn, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
+            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, matrixStackIn, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, null);
 
         }
 
@@ -335,7 +331,7 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
         }
 
         protected HumanoidModel<?> getArmorModelHook(LivingEntity entity, ItemStack itemStack, EquipmentSlot slot, HumanoidModel model) {
-            Model basicModel = net.minecraftforge.client.ForgeHooksClient.getArmorModel(entity, itemStack, slot, model);
+            Model basicModel = net.minecraftforge.client.ForgeHooksClient.getGenericArmorModel(entity, itemStack, slot, model);
             return basicModel instanceof HumanoidModel ? (HumanoidModel<?>) basicModel : model;
         }
 

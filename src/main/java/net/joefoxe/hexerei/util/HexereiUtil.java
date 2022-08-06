@@ -40,8 +40,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import IForgeRegistryEntry;
-
 public class HexereiUtil {
 
     public static ResourceLocation getRegistryName(Item i) {
@@ -462,15 +460,6 @@ public class HexereiUtil {
         return newState.setValue(property, oldState.getValue(property));
     }
 
-    public static <T extends IForgeRegistryEntry<? super T>> RegistryObject<T> acceptOrElse(RegistryObject<T> opt, Consumer<T> consumer, Runnable orElse) {
-        if (opt.isPresent()) {
-            consumer.accept(opt.get());
-        } else {
-            orElse.run();
-        }
-        return opt;
-    }
-
     public static <T> Optional<T> acceptOrElse(Optional<T> opt, Consumer<T> consumer, Runnable orElse) {
         if (opt.isPresent()) {
             consumer.accept(opt.get());
@@ -498,29 +487,5 @@ public class HexereiUtil {
             }
         }
         return false;
-    }
-
-    /**
-     * Takes various registry related objects and returns the
-     * registry id of the object it is representing
-     */
-    public static ResourceLocation getRegistryId(Object obj) {
-        if (obj instanceof ResourceLocation) {
-            return (ResourceLocation) obj;
-        }
-        if (obj instanceof String) {
-            // Returns null when namespace or path contain invalid charcters
-            return ResourceLocation.tryParse((String) obj);
-        }
-        if (obj instanceof IForgeRegistryEntry) {
-            return ((IForgeRegistryEntry) obj).getRegistryName();
-        }
-        if (obj instanceof IRegistryDelegate) {
-            return ((IRegistryDelegate) obj).name();
-        }
-        if (obj instanceof RegistryObject) {
-            return ((RegistryObject) obj).getId();
-        }
-        return null;
     }
 }

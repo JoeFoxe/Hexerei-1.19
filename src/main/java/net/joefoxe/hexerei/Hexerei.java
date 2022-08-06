@@ -16,6 +16,7 @@ import net.joefoxe.hexerei.events.CrowFluteEvent;
 import net.joefoxe.hexerei.events.GlassesZoomKeyPressEvent;
 import net.joefoxe.hexerei.events.SageBurningPlateEvent;
 import net.joefoxe.hexerei.events.WitchArmorEvent;
+import net.joefoxe.hexerei.fluid.ModFluidTypes;
 import net.joefoxe.hexerei.fluid.ModFluids;
 import net.joefoxe.hexerei.integration.HexereiModNameTooltipCompat;
 import net.joefoxe.hexerei.integration.jei.HexereiJeiCompat;
@@ -56,8 +57,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -81,6 +80,7 @@ import java.util.LinkedList;
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Hexerei.MOD_ID)
 public class Hexerei {
+
 	public static SidedProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
 	public static final String MOD_ID = "hexerei";
@@ -120,6 +120,7 @@ public class Hexerei {
 		ModItems.register(eventBus);
 		ModBlocks.register(eventBus);
 		ModFluids.register(eventBus);
+		ModFluidTypes.register(eventBus);
 		ModTileEntities.register(eventBus);
 		ModContainers.register(eventBus);
 		ModRecipeTypes.register(eventBus);
@@ -235,13 +236,12 @@ public class Hexerei {
 		// do something that can only be done on the client
 
 		setupCrowPerchRenderer();
-		ModKeyBindings.init();
 		event.enqueueWork(() -> {
 
 			//tooltips
-			MinecraftForgeClient.registerTooltipComponentFactory(HerbJarItem.HerbJarToolTip.class, ClientHerbJarToolTip::new);
-			MinecraftForgeClient.registerTooltipComponentFactory(CofferItem.CofferItemToolTip.class, ClientCofferToolTip::new);
-			MinecraftForgeClient.registerTooltipComponentFactory(BroomItem.BroomItemToolTip.class, ClientBroomToolTip::new);
+//			MinecraftForgeClient.registerTooltipComponentFactory(HerbJarItem.HerbJarToolTip.class, ClientHerbJarToolTip::new);
+//			MinecraftForgeClient.registerTooltipComponentFactory(CofferItem.CofferItemToolTip.class, ClientCofferToolTip::new);
+//			MinecraftForgeClient.registerTooltipComponentFactory(BroomItem.BroomItemToolTip.class, ClientBroomToolTip::new);
 
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.QUICKSILVER_FLUID.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.QUICKSILVER_FLOWING.get(), RenderType.translucent());

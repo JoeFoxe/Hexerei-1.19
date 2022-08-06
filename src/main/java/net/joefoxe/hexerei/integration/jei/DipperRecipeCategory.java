@@ -3,10 +3,13 @@ package net.joefoxe.hexerei.integration.jei;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
@@ -40,13 +43,8 @@ public class DipperRecipeCategory implements IRecipeCategory<DipperRecipe> {
     }
 
     @Override
-    public ResourceLocation getUid() {
-        return UID;
-    }
-
-    @Override
-    public Class<? extends DipperRecipe> getRecipeClass() {
-        return DipperRecipe.class;
+    public RecipeType<DipperRecipe> getRecipeType() {
+        return new RecipeType<>(DipperRecipeCategory.UID, DipperRecipe.class);
     }
 
     @Override
@@ -65,20 +63,10 @@ public class DipperRecipeCategory implements IRecipeCategory<DipperRecipe> {
     }
 
     @Override
-    public void setIngredients(DipperRecipe recipe, IIngredients ingredients) {
-        ingredients.setInput(ForgeTypes.FLUID_STACK, recipe.getLiquid());
-        ingredients.setInputIngredients(recipe.getIngredients());
-        ingredients.setOutput(VanillaTypes.ITEM, recipe.getResultItem());
-    }
+    public void setRecipe(IRecipeLayoutBuilder builder, DipperRecipe recipe, IFocusGroup focuses) {
+        builder.addSlot(RecipeIngredientRole.INPUT, 14, 13).addIngredients(recipe.getIngredients().get(0));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 68, 22).addIngredients(recipe.getIngredients().get(1));
 
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, DipperRecipe recipe, IIngredients ingredients) {
-
-
-        recipeLayout.getItemStacks().init(0, true, 14, 13);
-        recipeLayout.getItemStacks().init(1, false, 68, 22);
-
-        recipeLayout.getItemStacks().set(ingredients);
         FluidStack input = recipe.getLiquid();
         if(recipe.getFluidLevelsConsumed() != 0) {
             if(!input.isEmpty())
@@ -86,13 +74,12 @@ public class DipperRecipeCategory implements IRecipeCategory<DipperRecipe> {
         }
 
         if(!input.isEmpty()) {
-            recipeLayout.getFluidStacks().init(2, true, 17, 36, 12, 9, recipe.getFluidLevelsConsumed(), false, this.cauldron);
-            recipeLayout.getFluidStacks().set(2, input);
+            builder.addSlot(RecipeIngredientRole.INPUT, 17, 36).addFluidStack(recipe.getLiquid().getFluid(), recipe.getFluidLevelsConsumed()).setFluidRenderer(2000, false, 12, 10);
         }
     }
 
     @Override
-    public void draw(DipperRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(DipperRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
 
         int numberOfDips = recipe.getNumberOfDips();
         int dippingTime = recipe.getDippingTime();

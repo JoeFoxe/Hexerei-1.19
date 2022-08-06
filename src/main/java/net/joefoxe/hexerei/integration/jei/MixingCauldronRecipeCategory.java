@@ -2,27 +2,23 @@ package net.joefoxe.hexerei.integration.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
-import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.data.recipes.MixingCauldronRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-
-import javax.annotation.Nonnull;
 
 public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauldronRecipe> {
     public final static ResourceLocation UID = new ResourceLocation(Hexerei.MOD_ID, "mixingcauldron");
@@ -43,14 +39,8 @@ public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauld
     }
 
     @Override
-    public ResourceLocation getUid() {
-        return UID;
-    }
-
-
-    @Override
-    public Class<? extends MixingCauldronRecipe> getRecipeClass() {
-        return MixingCauldronRecipe.class;
+    public RecipeType<MixingCauldronRecipe> getRecipeType() {
+        return new RecipeType<>(MixingCauldronRecipeCategory.UID, MixingCauldronRecipe.class);
     }
 
     @Override
@@ -69,31 +59,20 @@ public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauld
     }
 
     @Override
-    public void setIngredients(MixingCauldronRecipe recipe, IIngredients ingredients) {
-        ingredients.setInput(ForgeTypes.FLUID_STACK, recipe.getLiquid());
-        ingredients.setInputIngredients(recipe.getIngredients());
-        ingredients.setOutput(VanillaTypes.ITEM, recipe.getResultItem());
-        ingredients.setOutput(ForgeTypes.FLUID_STACK, recipe.getLiquidOutput());
-    }
+    public void setRecipe(IRecipeLayoutBuilder builder, MixingCauldronRecipe recipe, IFocusGroup focuses) {
+        builder.moveRecipeTransferButton(160, 90);
+        builder.setShapeless();
 
+        builder.addSlot(RecipeIngredientRole.INPUT,79, 13).addIngredients(recipe.getIngredients().get(0));
+        builder.addSlot(RecipeIngredientRole.INPUT,101, 22).addIngredients(recipe.getIngredients().get(1));
+        builder.addSlot(RecipeIngredientRole.INPUT,110, 44).addIngredients(recipe.getIngredients().get(2));
+        builder.addSlot(RecipeIngredientRole.INPUT,101, 66).addIngredients(recipe.getIngredients().get(3));
+        builder.addSlot(RecipeIngredientRole.INPUT,79, 75).addIngredients(recipe.getIngredients().get(4));
+        builder.addSlot(RecipeIngredientRole.INPUT,57, 66).addIngredients(recipe.getIngredients().get(5));
+        builder.addSlot(RecipeIngredientRole.INPUT,48, 44).addIngredients(recipe.getIngredients().get(6));
+        builder.addSlot(RecipeIngredientRole.INPUT,57, 22).addIngredients(recipe.getIngredients().get(7));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 141, 36).addIngredients(recipe.getIngredients().get(8));
 
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, MixingCauldronRecipe recipe, IIngredients ingredients) {
-        recipeLayout.moveRecipeTransferButton(160, 90);
-        recipeLayout.setShapeless();
-
-        recipeLayout.getItemStacks().init(0, true, 79, 13);
-        recipeLayout.getItemStacks().init(1, true, 101, 22);
-        recipeLayout.getItemStacks().init(2, true, 110, 44);
-        recipeLayout.getItemStacks().init(3, true, 101, 66);
-        recipeLayout.getItemStacks().init(4, true, 79, 75);
-        recipeLayout.getItemStacks().init(5, true, 57, 66);
-        recipeLayout.getItemStacks().init(6, true, 48, 44);
-        recipeLayout.getItemStacks().init(7, true, 57, 22);
-        recipeLayout.getItemStacks().init(8, false, 141, 36);
-
-        recipeLayout.getItemStacks().set(ingredients);
         FluidStack input = recipe.getLiquid();
         FluidStack output = recipe.getLiquidOutput();
         if(recipe.getFluidLevelsConsumed() != 0) {
@@ -111,12 +90,12 @@ public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauld
             output.setAmount(2000-recipe.getFluidLevelsConsumed());
 
         if(!input.isEmpty()) {
-            recipeLayout.getFluidStacks().init(9, true, 20, 48, 12, 10, 2000, false, this.liquid);
-            recipeLayout.getFluidStacks().set(9, input);
+            builder.addSlot(RecipeIngredientRole.INPUT, 20, 48).addFluidStack(recipe.getLiquid().getFluid(), recipe.getFluidLevelsConsumed())
+                    .setFluidRenderer(2000, false, 12, 10).setBackground(this.liquid, 0, 0);
         }
         if(!output.isEmpty()) {
-            recipeLayout.getFluidStacks().init(10, false, 144, 61, 12, 10, 2000, true, this.liquid);
-            recipeLayout.getFluidStacks().set(10, output);
+            builder.addSlot(RecipeIngredientRole.INPUT, 144, 61).addFluidStack(recipe.getLiquid().getFluid(), recipe.getFluidLevelsConsumed())
+                    .setFluidRenderer(2000, true, 12, 10).setBackground(this.liquid, 0, 0);
         }
     }
 

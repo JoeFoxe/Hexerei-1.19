@@ -186,7 +186,7 @@ public class BookItemsAndFluids {
         this.fluid_offset_x = 0;
         this.fluid_offset_y = 0;
         List<Component> extra_tooltips2 = new ArrayList<>();
-        extra_tooltips2.add(Component.translatable("book.hexerei.tooltip.accepts_any", new TextComponent(tag)).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x808080))));
+        extra_tooltips2.add(Component.translatable("book.hexerei.tooltip.accepts_any", Component.translatable(tag)).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x808080))));
         this.extra_tooltips = extra_tooltips2;
         this.extra_tooltips.addAll(extra_tooltips);
         this.extra_tooltips_raw = tooltipExtras;

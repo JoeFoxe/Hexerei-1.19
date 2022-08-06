@@ -1,30 +1,10 @@
 package net.joefoxe.hexerei.item.custom;
 
-import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-
-import javax.annotation.Nullable;
-import java.util.List;
-
-
-import net.minecraft.world.item.Item.Properties;
 
 public class SatchelItem extends Item implements DyeableLeatherItem {
 

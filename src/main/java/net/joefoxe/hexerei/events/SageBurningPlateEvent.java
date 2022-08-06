@@ -1,36 +1,21 @@
 package net.joefoxe.hexerei.events;
 
 import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.block.ModBlocks;
-import net.joefoxe.hexerei.block.custom.Candle;
 import net.joefoxe.hexerei.block.custom.SageBurningPlate;
 import net.joefoxe.hexerei.config.HexConfig;
-import net.joefoxe.hexerei.item.custom.WitchArmorItem;
-import net.joefoxe.hexerei.tileentity.ModTileEntities;
-import net.joefoxe.hexerei.tileentity.SageBurningPlateTile;
-import net.joefoxe.hexerei.util.HexereiTags;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.Entity.RemovalReason;
-import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
-import net.minecraft.world.entity.monster.Witch;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.ComposterBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 @EventBusSubscriber

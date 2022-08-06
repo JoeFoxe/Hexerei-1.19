@@ -30,7 +30,7 @@ public class DruidArmorItem extends ArmorItem {
 
 //    @Override
 //    @OnlyIn(Dist.CLIENT)
-//    public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack stack, EquipmentSlot armorSlot, A _default) {
+//    public <A extends HumanoidModel<?>> A getGenericArmorModel(LivingEntity entityLiving, ItemStack stack, EquipmentSlot armorSlot, A _default) {
 //
 //        ModModels.GearModel gearModel = ModModels.GearModel.REGISTRY.get(0);
 //
@@ -43,7 +43,7 @@ public class DruidArmorItem extends ArmorItem {
 
 //    @Override
 //    @OnlyIn(Dist.CLIENT)
-//    public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack stack, EquipmentSlot armorSlot, A _default) {
+//    public <A extends HumanoidModel<?>> A getGenericArmorModel(LivingEntity entityLiving, ItemStack stack, EquipmentSlot armorSlot, A _default) {
 //        return DruidArmorModel.getModel(armorSlot, entityLiving);
 //    }
 

@@ -3,7 +3,6 @@ package net.joefoxe.hexerei.client.renderer;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.joefoxe.hexerei.Hexerei;
@@ -16,14 +15,6 @@ import java.util.function.Function;
 
 import static com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP;
 
-
-import net.minecraft.client.renderer.RenderStateShard.CullStateShard;
-import net.minecraft.client.renderer.RenderStateShard.LightmapStateShard;
-import net.minecraft.client.renderer.RenderStateShard.LineStateShard;
-import net.minecraft.client.renderer.RenderStateShard.ShaderStateShard;
-import net.minecraft.client.renderer.RenderStateShard.TextureStateShard;
-import net.minecraft.client.renderer.RenderStateShard.TransparencyStateShard;
-import net.minecraft.client.renderer.RenderStateShard.WriteMaskStateShard;
 
 public class ModRenderTypes extends RenderType {
     public ModRenderTypes(String name, VertexFormat format, VertexFormat.Mode drawMode, int bufferSize, boolean useDelegate, boolean needsSorting, Runnable pre, Runnable post) {

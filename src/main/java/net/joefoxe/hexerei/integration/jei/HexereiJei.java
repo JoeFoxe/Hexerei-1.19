@@ -2,31 +2,25 @@ package net.joefoxe.hexerei.integration.jei;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.RecipeTypes;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
-import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.IIngredientTypeWithSubtypes;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.recipe.IFocus;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
-import net.joefoxe.hexerei.container.MixingCauldronContainer;
 import net.joefoxe.hexerei.data.recipes.*;
 import net.joefoxe.hexerei.screen.BroomScreen;
 import net.joefoxe.hexerei.screen.CofferScreen;
 import net.joefoxe.hexerei.screen.MixingCauldronScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.MouseHandler;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -38,8 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import Mode;
 
 @JeiPlugin
 public class HexereiJei implements IModPlugin {
@@ -80,10 +72,10 @@ public class HexereiJei implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(new ItemStack(ModBlocks.MIXING_CAULDRON.get()), MIXING_CAULDRON_UID);
-        registration.addRecipeCatalyst(new ItemStack(ModBlocks.CANDLE_DIPPER.get()), DIPPER_UID);
-        registration.addRecipeCatalyst(new ItemStack(ModBlocks.HERB_DRYING_RACK.get()), DRYING_RACK_UID);
-        registration.addRecipeCatalyst(new ItemStack(ModBlocks.PESTLE_AND_MORTAR.get()), PESTLE_AND_MORTAR_UID);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.MIXING_CAULDRON.get()), new RecipeType<>(MixingCauldronRecipeCategory.UID, MixingCauldronRecipe.class));
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.CANDLE_DIPPER.get()), new RecipeType<>(DipperRecipeCategory.UID, DipperRecipe.class));
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.HERB_DRYING_RACK.get()), new RecipeType<>(DryingRackRecipeCategory.UID, DryingRackRecipe.class));
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.PESTLE_AND_MORTAR.get()), new RecipeType<>(PestleAndMortarRecipeCategory.UID, PestleAndMortarRecipe.class));
     }
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
@@ -134,16 +126,7 @@ public class HexereiJei implements IModPlugin {
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
 
-        registration.addRecipeTransferHandler(new MixingCauldronTransferInfo(), ModRecipeTypes.MIXING_SERIALIZER.getId());
-//        registration.addRecipeTransferHandler(MixingCauldronContainer.class, registration.getTransferHelper(), 8, ModRecipeTypes.MIXING_SERIALIZER.getId());
-//        IRecipeTransferHandlerHelper handlerHelper = registration.getTransferHelper();
-//        IStackHelper stackHelper = registration.getJeiHelpers().getStackHelper();
-//        registration.addRecipeTransferHandler(new CraftingContainerRecipeTransferHandlerBase<MixingCauldronContainer>(handlerHelper, stackHelper) {
-//            @Override
-//            public Class<MixingCauldronContainer> getContainerClass() {
-//                return MixingCauldronContainer.class;
-//            }
-//        }, RecipeTypes.CRAFTING);
+        registration.addRecipeTransferHandler(new MixingCauldronTransferInfo(registration.getTransferHelper()), new RecipeType<>(MixingCauldronRecipeCategory.UID, MixingCauldronRecipe.class));
     }
 
     public static void showUses(FluidStack fluid) {
@@ -183,11 +166,6 @@ public class HexereiJei implements IModPlugin {
 
                 return Optional.empty();
             }
-
-            @Override
-            public Mode getMode() {
-                return Mode.INPUT;
-            }
         });
         if(!(Minecraft.getInstance().screen instanceof IRecipesGui)){
             if(HexereiJei.runtime == null)
@@ -224,11 +202,6 @@ public class HexereiJei implements IModPlugin {
                 public <T> Optional<IFocus<T>> checkedCast(IIngredientType<T> ingredientType) {
 
                     return Optional.empty();
-                }
-
-                @Override
-                public Mode getMode() {
-                    return Mode.INPUT;
                 }
             });
         }
@@ -275,11 +248,6 @@ public class HexereiJei implements IModPlugin {
 
                 return Optional.empty();
             }
-
-            @Override
-            public Mode getMode() {
-                return Mode.INPUT;
-            }
         });
         if(!(Minecraft.getInstance().screen instanceof IRecipesGui)){
             if(HexereiJei.runtime == null)
@@ -316,11 +284,6 @@ public class HexereiJei implements IModPlugin {
                 public <T> Optional<IFocus<T>> checkedCast(IIngredientType<T> ingredientType) {
 
                     return Optional.empty();
-                }
-
-                @Override
-                public Mode getMode() {
-                    return Mode.INPUT;
                 }
             });
         }
@@ -363,11 +326,6 @@ public class HexereiJei implements IModPlugin {
 
                 return Optional.empty();
             }
-
-            @Override
-            public Mode getMode() {
-                return Mode.OUTPUT;
-            }
         });
     }
     public static void showRecipe(FluidStack fluid) {
@@ -405,11 +363,6 @@ public class HexereiJei implements IModPlugin {
             public <T> Optional<IFocus<T>> checkedCast(IIngredientType<T> ingredientType) {
 
                 return Optional.empty();
-            }
-
-            @Override
-            public Mode getMode() {
-                return Mode.OUTPUT;
             }
         });
     }

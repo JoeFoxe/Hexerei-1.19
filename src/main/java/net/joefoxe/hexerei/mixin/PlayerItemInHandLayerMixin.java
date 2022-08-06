@@ -7,6 +7,7 @@ import net.joefoxe.hexerei.item.custom.GlassesItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.*;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -26,8 +27,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PlayerItemInHandLayer.class)
 public abstract class PlayerItemInHandLayerMixin<T extends Player, M extends EntityModel<T> & ArmedModel & HeadedModel> extends ItemInHandLayer<T, M> {
 
-    public PlayerItemInHandLayerMixin(RenderLayerParent<T, M> parent) {
-        super(parent);
+    public PlayerItemInHandLayerMixin(RenderLayerParent<T, M> parent, ItemInHandRenderer renderer) {
+        super(parent, renderer);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -56,7 +57,7 @@ public abstract class PlayerItemInHandLayerMixin<T extends Player, M extends Ent
         modelpart.translateAndRotate(p_174521_);
         modelpart.xRot = f;
         CustomHeadLayer.translateToHead(p_174521_, false);
-        Minecraft.getInstance().getItemInHandRenderer().renderItem(p_174518_, p_174519_, ItemTransforms.TransformType.HEAD, false, p_174521_, p_174522_, p_174523_);
+        Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(p_174518_, p_174519_, ItemTransforms.TransformType.HEAD, false, p_174521_, p_174522_, p_174523_);
         p_174521_.popPose();
     }
 
