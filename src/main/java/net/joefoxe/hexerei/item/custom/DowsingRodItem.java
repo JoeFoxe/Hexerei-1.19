@@ -215,28 +215,32 @@ public class DowsingRodItem extends Item {
     private static BlockPos getChunkCoordinates(BlockPos pos, Level world, ResourceLocation biomes) {
         Biome biome;
 
+        Biome biomeToFind = world.registryAccess().registry(Registry.BIOME_REGISTRY).get().get(biomes);
+        if(biomeToFind == null)
+            return null;
+
         biome = world.getBiome(pos).value();
-        if (!biomes.equals(biome.getRegistryName())) {
+        if (!biomeToFind.equals(biome)) {
             return null;
         }
 
         biome = world.getBiome(pos.offset(-searchOffset, 0, 0)).value();
-        if (!biomes.equals(biome.getRegistryName())) {
+        if (!biomeToFind.equals(biome)) {
             return null;
         }
 
         biome = world.getBiome(pos.offset(searchOffset, 0, 0)).value();
-        if (!biomes.equals(biome.getRegistryName())) {
+        if (!biomeToFind.equals(biome)) {
             return null;
         }
 
         biome = world.getBiome(pos.offset(0, 0, -searchOffset)).value();
-        if (!biomes.equals(biome.getRegistryName())) {
+        if (!biomeToFind.equals(biome)) {
             return null;
         }
 
         biome = world.getBiome(pos.offset(0, 0, searchOffset)).value();
-        if (!biomes.equals(biome.getRegistryName())) {
+        if (!biomeToFind.equals(biome)) {
             return null;
         }
 

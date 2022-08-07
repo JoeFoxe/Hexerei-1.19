@@ -2,6 +2,7 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"ambientocclusion": false,
+	"render_type": "translucent",
 	"texture_size": [64, 64],
 	"textures": {
 		"1": "hexerei:block/herb_jar",

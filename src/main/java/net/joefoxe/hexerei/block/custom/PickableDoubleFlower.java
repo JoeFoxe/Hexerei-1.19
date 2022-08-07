@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
@@ -104,7 +105,7 @@ public class PickableDoubleFlower extends DoublePlantBlock implements Bonemealab
         return p_57284_.getValue(AGE) < 3;
     }
 
-    public void randomTick(BlockState p_57286_, ServerLevel p_57287_, BlockPos p_57288_, Random p_57289_) {
+    public void randomTick(BlockState p_57286_, ServerLevel p_57287_, BlockPos p_57288_, RandomSource p_57289_) {
         int i = p_57286_.getValue(AGE);
         if(p_57286_.hasProperty(HALF) && p_57286_.getValue(HALF) == DoubleBlockHalf.LOWER){
             if (i < 3 && p_57287_.getRawBrightness(p_57288_.above(), 0) >= 9 && net.minecraftforge.common.ForgeHooks.onCropsGrowPre(p_57287_, p_57288_, p_57286_, p_57289_.nextInt(10) == 0)) {
@@ -184,11 +185,11 @@ public class PickableDoubleFlower extends DoublePlantBlock implements Bonemealab
         return p_57262_.getValue(AGE) < 3;
     }
 
-    public boolean isBonemealSuccess(Level p_57265_, Random p_57266_, BlockPos p_57267_, BlockState p_57268_) {
+    public boolean isBonemealSuccess(Level p_57265_, RandomSource p_57266_, BlockPos p_57267_, BlockState p_57268_) {
         return true;
     }
 
-    public void performBonemeal(ServerLevel level, Random random, BlockPos blockPos, BlockState blockState) {
+    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos blockPos, BlockState blockState) {
 
 
         if(blockState.getValue(HALF) == DoubleBlockHalf.LOWER) {

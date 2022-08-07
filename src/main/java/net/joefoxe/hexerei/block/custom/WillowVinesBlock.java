@@ -7,6 +7,7 @@ import java.util.Random;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -20,7 +21,7 @@ public class WillowVinesBlock extends GrowingPlantHeadBlock {
         super(p_154966_, Direction.DOWN, SHAPE, false, 0.1D);
     }
 
-    protected int getBlocksToGrowWhenBonemealed(Random p_154968_) {
+    protected int getBlocksToGrowWhenBonemealed(RandomSource p_154968_) {
         return NetherVines.getBlocksToGrowWhenBonemealed(p_154968_);
     }
 

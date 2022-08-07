@@ -2,6 +2,7 @@ package net.joefoxe.hexerei.block.custom;
 
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -23,8 +24,7 @@ public class WillowLog extends RotatedPillarBlock {
 
     @Nullable
     @Override
-    public BlockState getToolModifiedState(BlockState state, Level world, BlockPos pos, Player player,
-                                           ItemStack stack, ToolAction toolAction) {
+    public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate) {
 
         boolean rightClickedWithAxe = ToolActions.AXE_STRIP.equals(toolAction);
         BlockState toReturn = ModBlocks.WILLOW_LOG.get().defaultBlockState();

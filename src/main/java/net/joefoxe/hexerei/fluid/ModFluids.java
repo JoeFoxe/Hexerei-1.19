@@ -50,9 +50,9 @@ public class ModFluids {
 
 
 
-    public static final RegistryObject<BloodFluid.Source> TALLOW_FLUID = FLUIDS.register("blood_fluid", () -> new BloodFluid.Source(ModFluids.TALLOW_PROPERTIES));
+    public static final RegistryObject<BloodFluid.Source> TALLOW_FLUID = FLUIDS.register("tallow_fluid", () -> new BloodFluid.Source(ModFluids.TALLOW_PROPERTIES));
 
-    public static final RegistryObject<BloodFluid.Flowing> TALLOW_FLOWING = FLUIDS.register("blood_flowing", () -> new BloodFluid.Flowing(ModFluids.TALLOW_PROPERTIES));
+    public static final RegistryObject<BloodFluid.Flowing> TALLOW_FLOWING = FLUIDS.register("tallow_flowing", () -> new BloodFluid.Flowing(ModFluids.TALLOW_PROPERTIES));
 
     public static final ForgeFlowingFluid.Properties TALLOW_PROPERTIES = new ForgeFlowingFluid.Properties(
             ModFluidTypes.TALLOW_FLUID_TYPE, TALLOW_FLUID, TALLOW_FLOWING).slopeFindDistance(2).levelDecreasePerBlock(3)

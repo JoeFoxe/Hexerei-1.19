@@ -190,7 +190,7 @@ public class CrystalBall extends BaseEntityBlock implements ITileEntity<CrystalB
 
 //    @Override
 //    @OnlyIn(Dist.CLIENT)
-//    public void animateTick(BlockState state, Level world, BlockPos pos, Random rand) {
+//    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rand) {
 //
 //        //world.addParticle(ParticleTypes.ENCHANT, pos.getX() + Math.round(rand.nextDouble()), pos.getY() + 1.2d, pos.getZ() + Math.round(rand.nextDouble()) , (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.035d ,(rand.nextDouble() - 0.5d) / 50d);
 //

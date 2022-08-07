@@ -7,6 +7,12 @@ import net.joefoxe.hexerei.client.renderer.entity.render.CrowRenderer;
 import net.joefoxe.hexerei.data.books.PageDrawing;
 import net.joefoxe.hexerei.item.ModItemProperties;
 import net.joefoxe.hexerei.item.ModItems;
+import net.joefoxe.hexerei.item.custom.BroomItem;
+import net.joefoxe.hexerei.item.custom.CofferItem;
+import net.joefoxe.hexerei.item.custom.HerbJarItem;
+import net.joefoxe.hexerei.screen.tooltip.ClientBroomToolTip;
+import net.joefoxe.hexerei.screen.tooltip.ClientCofferToolTip;
+import net.joefoxe.hexerei.screen.tooltip.ClientHerbJarToolTip;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -24,6 +30,7 @@ import net.joefoxe.hexerei.client.renderer.entity.render.BroomRenderer;
 import net.joefoxe.hexerei.tileentity.ModTileEntities;
 import net.joefoxe.hexerei.tileentity.renderer.*;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -79,6 +86,13 @@ public class ClientProxy implements SidedProxy {
         });
     }
 
+    @SubscribeEvent
+    public static void registerClientTooltip(RegisterClientTooltipComponentFactoriesEvent event) {
+        //tooltips
+        event.register(HerbJarItem.HerbJarToolTip.class, ClientHerbJarToolTip::new);
+        event.register(CofferItem.CofferItemToolTip.class, ClientCofferToolTip::new);
+        event.register(BroomItem.BroomItemToolTip.class, ClientBroomToolTip::new);
+    }
 
     @SubscribeEvent
     public static void setup(EntityRenderersEvent.RegisterRenderers e){

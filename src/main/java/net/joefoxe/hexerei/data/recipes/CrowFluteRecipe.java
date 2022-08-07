@@ -50,7 +50,7 @@ public class CrowFluteRecipe extends ShapedRecipe {
         return new ItemStack(ModItems.CROW_FLUTE.get());
     }
 
-    private static class Serializer implements RecipeSerializer<CrowFluteRecipe> {
+    public static class Serializer implements RecipeSerializer<CrowFluteRecipe> {
         @Nonnull
         @Override
         public CrowFluteRecipe fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {

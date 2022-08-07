@@ -7,6 +7,7 @@ import net.joefoxe.hexerei.block.ModBlocks;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
@@ -37,7 +38,7 @@ public class WitchHutLegProcessor extends StructureProcessor {
         if (blockInfoGlobal.state.getBlock() == Blocks.WHITE_STAINED_GLASS_PANE) {
             ChunkPos currentChunkPos = new ChunkPos(blockInfoGlobal.pos);
             ChunkAccess currentChunk = worldReader.getChunk(currentChunkPos.x, currentChunkPos.z);
-            Random random = structurePlacementData.getRandom(blockInfoGlobal.pos);
+            RandomSource random = structurePlacementData.getRandom(blockInfoGlobal.pos);
 
             // Always replace the glass itself with mossy cobble
             currentChunk.setBlockState(blockInfoGlobal.pos, Blocks.SPRUCE_LOG.defaultBlockState(), false);
@@ -54,7 +55,7 @@ public class WitchHutLegProcessor extends StructureProcessor {
         } else if (blockInfoGlobal.state.getBlock() == Blocks.RED_STAINED_GLASS_PANE) {
             ChunkPos currentChunkPos = new ChunkPos(blockInfoGlobal.pos);
             ChunkAccess currentChunk = worldReader.getChunk(currentChunkPos.x, currentChunkPos.z);
-            Random random = structurePlacementData.getRandom(blockInfoGlobal.pos);
+            RandomSource random = structurePlacementData.getRandom(blockInfoGlobal.pos);
 
             // Always replace the glass itself with mossy cobble
             currentChunk.setBlockState(blockInfoGlobal.pos, ModBlocks.MAHOGANY_LOG.get().defaultBlockState(), false);
@@ -71,7 +72,7 @@ public class WitchHutLegProcessor extends StructureProcessor {
         } else if (blockInfoGlobal.state.getBlock() == Blocks.YELLOW_STAINED_GLASS_PANE) {
             ChunkPos currentChunkPos = new ChunkPos(blockInfoGlobal.pos);
             ChunkAccess currentChunk = worldReader.getChunk(currentChunkPos.x, currentChunkPos.z);
-            Random random = structurePlacementData.getRandom(blockInfoGlobal.pos);
+            RandomSource random = structurePlacementData.getRandom(blockInfoGlobal.pos);
 
             // Always replace the glass itself with mossy cobble
             currentChunk.setBlockState(blockInfoGlobal.pos, Blocks.AIR.defaultBlockState(), false);
@@ -88,7 +89,7 @@ public class WitchHutLegProcessor extends StructureProcessor {
         } else if (blockInfoGlobal.state.getBlock() == Blocks.PURPLE_STAINED_GLASS_PANE) {
             ChunkPos currentChunkPos = new ChunkPos(blockInfoGlobal.pos);
             ChunkAccess currentChunk = worldReader.getChunk(currentChunkPos.x, currentChunkPos.z);
-            Random random = structurePlacementData.getRandom(blockInfoGlobal.pos);
+            RandomSource random = structurePlacementData.getRandom(blockInfoGlobal.pos);
 
             // Always replace the glass itself with mossy cobble
             currentChunk.setBlockState(blockInfoGlobal.pos, ModBlocks.WILLOW_LOG.get().defaultBlockState(), false);

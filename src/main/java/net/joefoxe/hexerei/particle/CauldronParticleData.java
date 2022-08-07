@@ -61,7 +61,7 @@ public class CauldronParticleData implements ParticleOptions {
     @Override
     public String writeToString() {
         return String.format(Locale.ROOT, "%s %.2f %i %i %i",
-                this.getType().getRegistryName(), diameter, tint.getRed(), tint.getGreen(), tint.getBlue());
+                this.getType().toString(), diameter, tint.getRed(), tint.getGreen(), tint.getBlue());
     }
 
     private static double constrainDiameterToValidRange(double diameter) {

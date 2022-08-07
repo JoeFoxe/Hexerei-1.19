@@ -49,7 +49,7 @@ public class MouseHandlerMixin {
             double d0 = Blaze3D.getTime();
             this.lastMouseEventTime = d0;
             if (this.isMouseGrabbed() && this.minecraft.isWindowActive() && this.minecraft.player != null && !this.minecraft.player.isScoping()) {
-                double d4 = this.minecraft.options.sensitivity * (double) 0.6F + (double) 0.2F;
+                double d4 = this.minecraft.options.sensitivity().get() * (double) 0.6F + (double) 0.2F;
 
                 this.smoothTurnX.reset();
                 this.smoothTurnY.reset();
@@ -59,7 +59,7 @@ public class MouseHandlerMixin {
                 this.accumulatedDX = 0.0D;
                 this.accumulatedDY = 0.0D;
                 int i = 1;
-                if (this.minecraft.options.invertYMouse) {
+                if (this.minecraft.options.invertYMouse().get()) {
                     i = -1;
                 }
 

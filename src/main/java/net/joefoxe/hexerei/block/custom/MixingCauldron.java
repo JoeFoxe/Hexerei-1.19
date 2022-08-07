@@ -541,7 +541,7 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(BlockState state, Level world, BlockPos pos, Random rand) {
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rand) {
 
         // get slots and animate particles based off number of items in the cauldron and based off the level and fluid type
         float height = MIN_Y;

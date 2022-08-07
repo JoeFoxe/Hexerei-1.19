@@ -26,6 +26,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
@@ -556,7 +557,7 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
         if(this.getBlockState().getValue(SageBurningPlate.LIT)){
             if (this.burnTime <= 0) {
                 if(!level.isClientSide){
-                    this.items.get(0).hurt(1, new Random(), null);
+                    this.items.get(0).hurt(1, RandomSource.create(), null);
 
                     if (this.items.get(0).getDamageValue() >= this.items.get(0).getMaxDamage()) {
                         removeItem(0, 1);

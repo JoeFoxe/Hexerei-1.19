@@ -440,7 +440,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider{
     }
 
     public void damageBrush(){
-        this.itemHandler.getStackInSlot(2).hurt(1, new Random(), null);
+        this.itemHandler.getStackInSlot(2).hurt(1, RandomSource.create(), null);
         if (this.itemHandler.getStackInSlot(2).getDamageValue() >= this.itemHandler.getStackInSlot(2).getMaxDamage()) {
             this.itemHandler.setStackInSlot(2, ItemStack.EMPTY);
             this.level.playSound((Player)null, this, SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
@@ -448,7 +448,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider{
         }
     }
     public void damageMisc(){
-        this.itemHandler.getStackInSlot(0).hurt(1, new Random(), null);
+        this.itemHandler.getStackInSlot(0).hurt(1, RandomSource.create(), null);
         if (this.itemHandler.getStackInSlot(0).getDamageValue() >= this.itemHandler.getStackInSlot(0).getMaxDamage()) {
             this.itemHandler.setStackInSlot(0, ItemStack.EMPTY);
             this.level.playSound((Player)null, this, SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
@@ -850,7 +850,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider{
     private void tickLerp() {
         if (this.isControlledByLocalInstance()) {
             this.lerpSteps = 0;
-            this.setPacketCoordinates(this.getX(), this.getY(), this.getZ());
+            this.syncPacketPositionCodec(this.getX(), this.getY(), this.getZ());
         }
 
         if (this.lerpSteps > 0) {
@@ -1354,8 +1354,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider{
             if (!level.isClientSide()) {
                 MenuProvider containerProvider = createContainerProvider(level, blockPosition());
 
-//                NetworkHooks.openGui(((ServerPlayer) player), containerProvider, blockPosition());
-                NetworkHooks.openGui((ServerPlayer) player, containerProvider, b -> b.writeInt(this.getId()));
+                NetworkHooks.openScreen((ServerPlayer) player, containerProvider, b -> b.writeInt(this.getId()));
 
 //                    throw new IllegalStateException("Our Container provider is missing!");
                 return InteractionResult.SUCCESS;

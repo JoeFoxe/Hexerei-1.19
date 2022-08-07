@@ -2582,6 +2582,87 @@ public class PageDrawing {
 
 
                             BlockEntity blockEntity = playerIn.level.getBlockEntity(pos);
+
+
+                            if(blockEntity instanceof BookOfShadowsAltarTile altarTile && altarTile.turnPage == 0){
+
+                                if(altarTile.slotClicked != -1){
+                                    if(++altarTile.slotClickedTick > 0) {
+                                        playerIn.swinging = false;
+                                        event.setCanceled(true);
+                                        event.setResult(Event.Result.DENY);
+                                    }
+                                }
+
+                                CompoundTag tag = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
+
+                                if(tag.contains("opened") && tag.getBoolean("opened")) {
+                                    int clicked = checkClick(playerIn, altarTile);
+//                            System.out.println(clicked);
+                                    if (clicked == 1) {
+                                        if (altarTile.slotClicked == -1 && clickedNext(altarTile)) {
+                                            altarTile.setTurnPage(clicked);
+
+                                            playerIn.swing(InteractionHand.MAIN_HAND);
+                                            event.setCanceled(true);
+                                            event.setResult(Event.Result.DENY);
+                                            break;
+                                        }
+                                    }
+                                    if (clicked == 2) {
+                                        if (altarTile.slotClicked == -1 && clickedBack(altarTile)) {
+                                            altarTile.setTurnPage(clicked);
+
+                                            playerIn.swing(InteractionHand.MAIN_HAND);
+                                            event.setCanceled(true);
+                                            event.setResult(Event.Result.DENY);
+                                            break;
+                                        }
+                                    }
+                                    if (clicked == -2) {
+                                        //close
+                                        altarTile.setTurnPage(clicked);
+
+                                        playerIn.swing(InteractionHand.MAIN_HAND);
+                                        event.setCanceled(true);
+                                        event.setResult(Event.Result.DENY);
+                                        break;
+                                    }
+                                    if (clicked == -1) {
+
+                                        playerIn.swing(InteractionHand.MAIN_HAND);
+                                        event.setCanceled(true);
+                                        event.setResult(Event.Result.DENY);
+                                        break;
+                                    }
+                                    if (clicked == -3) {
+                                        //close
+
+                                        playerIn.swing(InteractionHand.MAIN_HAND);
+                                        event.setCanceled(true);
+                                        event.setResult(Event.Result.DENY);
+                                        break;
+                                    }
+                                    if (clicked == 3) {
+                                        // clicked bookmark
+                                        if(tag.getInt("chapter") != 0) {
+                                            altarTile.clickPageBookmark(tag.getInt("chapter"), tag.getInt("page"));
+
+                                            playerIn.swing(InteractionHand.MAIN_HAND);
+                                            event.setCanceled(true);
+                                            event.setResult(Event.Result.DENY);
+                                            break;
+                                        }
+                                    }
+                                    if (clicked == -5){
+                                        playerIn.swinging = false;
+                                        event.setCanceled(true);
+                                        event.setResult(Event.Result.DENY);
+                                        break;
+                                    }
+                                }
+                            }
+
                             if(blockEntity instanceof BookOfShadowsAltarTile altarTile && altarTile.turnPage == 0 && altarTile.slotClicked != -1){
 
 
@@ -2771,78 +2852,6 @@ public class PageDrawing {
 
 
                     BlockEntity blockEntity = playerIn.level.getBlockEntity(pos);
-                    if(blockEntity instanceof BookOfShadowsAltarTile altarTile && altarTile.turnPage == 0){
-
-                        if(altarTile.slotClicked != -1){
-                            if(++altarTile.slotClickedTick > 0) {
-                                playerIn.swinging = false;
-                                event.setCanceled(true);
-                                event.setResult(Event.Result.DENY);
-                            }
-                        }
-
-                        CompoundTag tag = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
-
-                        if(tag.contains("opened") && tag.getBoolean("opened")) {
-                            int clicked = checkClick(playerIn, altarTile);
-//                            System.out.println(clicked);
-                            if (clicked == 1) {
-                                if (altarTile.slotClicked == -1 && clickedNext(altarTile)) {
-                                    altarTile.setTurnPage(clicked);
-
-                                    event.setCanceled(true);
-                                    event.setResult(Event.Result.DENY);
-                                    break;
-                                }
-                            }
-                            if (clicked == 2) {
-                                if (altarTile.slotClicked == -1 && clickedBack(altarTile)) {
-                                    altarTile.setTurnPage(clicked);
-
-                                    event.setCanceled(true);
-                                    event.setResult(Event.Result.DENY);
-                                    break;
-                                }
-                            }
-                            if (clicked == -2) {
-                                //close
-                                altarTile.setTurnPage(clicked);
-
-                                event.setCanceled(true);
-                                event.setResult(Event.Result.DENY);
-                                break;
-                            }
-                            if (clicked == -1) {
-
-                                event.setCanceled(true);
-                                event.setResult(Event.Result.DENY);
-                                break;
-                            }
-                            if (clicked == -3) {
-                                //close
-
-                                event.setCanceled(true);
-                                event.setResult(Event.Result.DENY);
-                                break;
-                            }
-                            if (clicked == 3) {
-                                // clicked bookmark
-                                if(tag.getInt("chapter") != 0) {
-                                    altarTile.clickPageBookmark(tag.getInt("chapter"), tag.getInt("page"));
-
-                                    event.setCanceled(true);
-                                    event.setResult(Event.Result.DENY);
-                                    break;
-                                }
-                            }
-                            if (clicked == -5){
-                                playerIn.swinging = false;
-                                event.setCanceled(true);
-                                event.setResult(Event.Result.DENY);
-                                break;
-                            }
-                        }
-                    }
                 }
             }
 

@@ -44,7 +44,7 @@ public class BookOfShadowsRecipe extends ShapedRecipe {
         return new ItemStack(ModItems.BOOK_OF_SHADOWS.get());
     }
 
-    private static class Serializer implements RecipeSerializer<BookOfShadowsRecipe> {
+    public static class Serializer implements RecipeSerializer<BookOfShadowsRecipe> {
         @Nonnull
         @Override
         public BookOfShadowsRecipe fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {

@@ -9,6 +9,6 @@ public class HexereiDataGenerator {
     public static void gatherData(GatherDataEvent event) {
         DataGenerator gen = event.getGenerator();
 
-        gen.addProvider(new HexereiRecipeProvider(gen));
+        gen.addProvider(true, new HexereiRecipeProvider(gen));
     }
 }

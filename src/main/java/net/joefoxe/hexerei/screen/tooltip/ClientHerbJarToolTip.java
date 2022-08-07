@@ -315,61 +315,6 @@ public class ClientHerbJarToolTip implements HexereiBookTooltip {
         poseStack.popPose();
 //        BufferUploader.end($$10);
     }
-//
-//    public void renderGuiItemDecorations(Font p_115175_, ItemStack p_115176_, int p_115177_, int p_115178_, @Nullable String p_115179_) {
-//        if (!p_115176_.isEmpty()) {
-//            PoseStack posestack = new PoseStack();
-//            if (p_115176_.getCount() != 1 || p_115179_ != null) {
-//                String s = p_115179_ == null ? String.valueOf(p_115176_.getCount()) : p_115179_;
-//                posestack.translate(0.0D, 0.0D, (double)(Minecraft.getInstance().getItemRenderer().blitOffset + 200.0F));
-//                MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-//                drawInternal(s, (float)(p_115177_ + 19 - 2 - p_115175_.width(s)), (float)(p_115178_ + 6 + 3), 16777215, true, posestack.last().pose(), multibuffersource$buffersource, false, 0, 15728880, Minecraft.getInstance().font.isBidirectional());
-//
-//                multibuffersource$buffersource.endBatch();
-//            }
-//
-//            if (p_115176_.isBarVisible()) {
-//                RenderSystem.disableDepthTest();
-//                RenderSystem.disableTexture();
-//                RenderSystem.disableBlend();
-//                Tesselator tesselator = Tesselator.getInstance();
-//                BufferBuilder bufferbuilder = tesselator.getBuilder();
-//                int i = p_115176_.getBarWidth();
-//                int j = p_115176_.getBarColor();
-//                this.fillRect(bufferbuilder, p_115177_ + 2, p_115178_ + 13, 13, 2, 0, 0, 0, 255);
-//                this.fillRect(bufferbuilder, p_115177_ + 2, p_115178_ + 13, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255);
-//                RenderSystem.enableBlend();
-//                RenderSystem.enableTexture();
-//                RenderSystem.enableDepthTest();
-//            }
-//
-//            LocalPlayer localplayer = Hexerei.proxy.getPlayer();
-//            float f = localplayer == null ? 0.0F : localplayer.getCooldowns().getCooldownPercent(p_115176_.getItem(), Minecraft.getInstance().getFrameTime());
-//            if (f > 0.0F) {
-//                RenderSystem.disableDepthTest();
-//                RenderSystem.disableTexture();
-//                RenderSystem.enableBlend();
-//                RenderSystem.defaultBlendFunc();
-//                Tesselator tesselator1 = Tesselator.getInstance();
-//                BufferBuilder bufferbuilder1 = tesselator1.getBuilder();
-//                this.fillRect(bufferbuilder1, p_115177_, p_115178_ + Mth.floor(16.0F * (1.0F - f)), 16, Mth.ceil(16.0F * f), 255, 255, 255, 127);
-//                RenderSystem.enableTexture();
-//                RenderSystem.enableDepthTest();
-//            }
-//
-//        }
-//    }
-
-    private void fillRect(BufferBuilder p_115153_, int p_115154_, int p_115155_, int p_115156_, int p_115157_, int p_115158_, int p_115159_, int p_115160_, int p_115161_) {
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        p_115153_.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        p_115153_.vertex((double)(p_115154_ + 0), (double)(p_115155_ + 0), 0.0D).color(p_115158_, p_115159_, p_115160_, p_115161_).endVertex();
-        p_115153_.vertex((double)(p_115154_ + 0), (double)(p_115155_ + p_115157_), 0.0D).color(p_115158_, p_115159_, p_115160_, p_115161_).endVertex();
-        p_115153_.vertex((double)(p_115154_ + p_115156_), (double)(p_115155_ + p_115157_), 0.0D).color(p_115158_, p_115159_, p_115160_, p_115161_).endVertex();
-        p_115153_.vertex((double)(p_115154_ + p_115156_), (double)(p_115155_ + 0), 0.0D).color(p_115158_, p_115159_, p_115160_, p_115161_).endVertex();
-        p_115153_.end();
-        BufferUploader.end(p_115153_);
-    }
 
     private int gridSizeX() {
         return 1;

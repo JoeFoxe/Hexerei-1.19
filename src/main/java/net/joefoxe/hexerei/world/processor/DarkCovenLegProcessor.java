@@ -6,6 +6,7 @@ import net.joefoxe.hexerei.Hexerei;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
@@ -36,7 +37,7 @@ public class DarkCovenLegProcessor extends StructureProcessor {
         if (blockInfoGlobal.state.getBlock() == Blocks.YELLOW_STAINED_GLASS_PANE) {
             ChunkPos currentChunkPos = new ChunkPos(blockInfoGlobal.pos);
             ChunkAccess currentChunk = worldReader.getChunk(currentChunkPos.x, currentChunkPos.z);
-            Random random = structurePlacementData.getRandom(blockInfoGlobal.pos);
+            RandomSource random = structurePlacementData.getRandom(blockInfoGlobal.pos);
 
             // Always replace the glass itself with mossy cobble
             currentChunk.setBlockState(blockInfoGlobal.pos, Blocks.DARK_OAK_LOG.defaultBlockState(), false);

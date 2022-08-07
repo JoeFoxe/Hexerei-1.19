@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.minecraft.data.worldgen.ProcessorLists;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelSimulatedReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -56,7 +57,7 @@ public class HexereiAbstractTreeFeature extends Feature<TreeConfiguration> {
         WorldGenLevel reader = context.level();
         TreeConfiguration config = context.config();
         BlockPos pos = context.origin();
-        Random rand = context.random();
+        RandomSource rand = context.random();
 
 
         int i = rand.nextInt(WILLOW_TREE.length);
@@ -113,7 +114,7 @@ public class HexereiAbstractTreeFeature extends Feature<TreeConfiguration> {
 
         BlockRotProcessor BlockRotProcessor = new BlockRotProcessor(0.9F);
 
-        StructureManager templatemanager = reader.getLevel().getServer().getStructureManager();
+        StructureTemplateManager templatemanager = reader.getLevel().getServer().getStructureManager();
         StructureTemplate template = templatemanager.getOrCreate(WILLOW_TREE[i]);
 
         if (template == null) {

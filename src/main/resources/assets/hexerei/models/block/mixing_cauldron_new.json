@@ -2,6 +2,7 @@
 	"credit": "Made with Blockbench",
 	"ambientocclusion": false,
 	"texture_size": [64, 64],
+	"renderLayer": "cutout_mipped",
 	"textures": {
 		"0": "hexerei:block/blank",
 		"1": "hexerei:block/mixing_cauldron_side",

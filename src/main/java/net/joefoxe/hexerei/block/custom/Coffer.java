@@ -168,7 +168,7 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
     }
 
     @Override
-    public void tick(BlockState p_60462_, ServerLevel p_60463_, BlockPos p_60464_, Random p_60465_) {
+    public void tick(BlockState p_60462_, ServerLevel p_60463_, BlockPos p_60464_, RandomSource p_60465_) {
         updateOrDestroy(p_60462_, p_60462_, p_60463_, p_60464_, 0);
         super.tick(p_60462_, p_60463_, p_60464_, p_60465_);
     }
@@ -382,7 +382,7 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(BlockState state, Level world, BlockPos pos, Random rand) {
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rand) {
 
         //world.addParticle(ParticleTypes.ENCHANT, pos.getX() + Math.round(rand.nextDouble()), pos.getY() + 1.2d, pos.getZ() + Math.round(rand.nextDouble()) , (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.035d ,(rand.nextDouble() - 0.5d) / 50d);
 

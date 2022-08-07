@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "block/block",
-	"ambientocclusion": false,
+	"parent": "minecraft:block/cube_all",
 	"texture_size": [64, 64],
+	"render_type": "translucent",
 	"textures": {
 		"1": "hexerei:block/herb_jar",
 		"particle": "hexerei:particle/herb_jar_particle"

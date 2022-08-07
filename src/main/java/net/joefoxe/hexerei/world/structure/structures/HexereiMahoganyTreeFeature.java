@@ -7,6 +7,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.ProcessorLists;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelSimulatedReader;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
@@ -56,7 +57,7 @@ public class HexereiMahoganyTreeFeature extends Feature<TreeConfiguration> {
         WorldGenLevel reader = context.level();
         TreeConfiguration config = context.config();
         BlockPos pos = context.origin();
-        Random rand = context.random();
+        RandomSource rand = context.random();
 
 
         int i = rand.nextInt(MAHOGANY_TREE.length);
@@ -113,7 +114,7 @@ public class HexereiMahoganyTreeFeature extends Feature<TreeConfiguration> {
 
         BlockRotProcessor BlockRotProcessor = new BlockRotProcessor(0.9F);
 
-        StructureManager templatemanager = reader.getLevel().getServer().getStructureManager();
+        StructureTemplateManager templatemanager = reader.getLevel().getServer().getStructureManager();
         StructureTemplate template = templatemanager.getOrCreate(MAHOGANY_TREE[i]);
 
         if (template == null) {

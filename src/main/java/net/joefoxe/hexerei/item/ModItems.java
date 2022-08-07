@@ -32,13 +32,11 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.registries.*;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 
 public class ModItems {
 
@@ -85,6 +83,8 @@ public class ModItems {
                         SatchelItem.ItemHandlerConsumer items = event.getItemColors()::register;
                         // s = stack, t = tint-layer
                         items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, SMALL_SATCHEL.get());
+                        items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, MEDIUM_SATCHEL.get());
+                        items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, LARGE_SATCHEL.get());
 
                     }
                 }
@@ -115,7 +115,9 @@ public class ModItems {
                     {
                         SatchelItem.ItemHandlerConsumer items = event.getItemColors()::register;
                         // s = stack, t = tint-layer
+                        items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, SMALL_SATCHEL.get());
                         items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, MEDIUM_SATCHEL.get());
+                        items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, LARGE_SATCHEL.get());
 
                     }
                 }
@@ -147,6 +149,8 @@ public class ModItems {
                     {
                         SatchelItem.ItemHandlerConsumer items = event.getItemColors()::register;
                         // s = stack, t = tint-layer
+                        items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, SMALL_SATCHEL.get());
+                        items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, MEDIUM_SATCHEL.get());
                         items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, LARGE_SATCHEL.get());
 
                     }
@@ -165,7 +169,7 @@ public class ModItems {
             });
 
     public static final RegistryObject<Item> BROOM_NETHERITE_TIP = ITEMS.register("broom_netherite_tip",
-            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(HexConfig.BROOM_NETHERITE_TIP_DURABILITY.get())){
+            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.BROOM_NETHERITE_TIP_DURABILITY.get()*/200)){
 
                 @Override
                 public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
@@ -183,7 +187,7 @@ public class ModItems {
             });
 
     public static final RegistryObject<Item> BROOM_WATERPROOF_TIP = ITEMS.register("broom_waterproof_tip",
-            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(HexConfig.BROOM_WATERPROOF_TIP_DURABILITY.get())){
+            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.BROOM_WATERPROOF_TIP_DURABILITY.get()*/800)){
 
                 @Override
                 public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
@@ -218,7 +222,7 @@ public class ModItems {
             () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
     public static final RegistryObject<Item> BROOM_BRUSH = ITEMS.register("broom_brush",
-            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(HexConfig.BROOM_BRUSH_DURABILITY.get())){
+            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.BROOM_BRUSH_DURABILITY.get()*/100)){
 
                 @Override
                 public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
@@ -232,7 +236,7 @@ public class ModItems {
             () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
     public static final RegistryObject<Item> HERB_ENHANCED_BROOM_BRUSH = ITEMS.register("herb_enhanced_broom_brush",
-            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(HexConfig.ENHANCED_BROOM_BRUSH_DURABILITY.get())){
+            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.ENHANCED_BROOM_BRUSH_DURABILITY.get()*/200)){
 
                 @Override
                 public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
@@ -324,7 +328,7 @@ public class ModItems {
             () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
     public static final RegistryObject<Item> DRIED_SAGE_BUNDLE = ITEMS.register("dried_sage_bundle",
-            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(HexConfig.SAGE_BUNDLE_DURATION.get())){
+            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.SAGE_BUNDLE_DURATION.get()*/3600)){
                 @Override
                 public boolean isEnchantable(ItemStack p_41456_) {
                     return false;
@@ -531,17 +535,16 @@ public class ModItems {
             () -> new MushroomWitchArmorItem(ModArmorMaterial.INFUSED_FABRIC, EquipmentSlot.HEAD,
                     new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
+//
+//    public static void registerRecipeSerializers(RegisterEvent evt) {
+//            //Use Deferred registry for serializer
+////        evt.getRegistry().register(CofferDyeingRecipe.SERIALIZER.setRegistryName(Hexerei.MOD_ID, "coffer_dyeing"));
+//        evt.getRegistry().register(CrowFluteRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Hexerei.MOD_ID, "crow_flute_dye")));
+//        evt.getRegistry().register(BookOfShadowsRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Hexerei.MOD_ID, "book_of_shadows_dye")));
+//        evt.getRegistry().register(KeychainRecipe.SERIALIZER.setRegistryName(Hexerei.MOD_ID, "keychain_apply"));
+//        evt.getRegistry().register(KeychainUndoRecipe.SERIALIZER.setRegistryName(Hexerei.MOD_ID, "keychain_undo"));
+//    }
 
-    public static void registerRecipeSerializers(RegisterEvent evt) {
-            //Use Deferred registry for serializer
-        /*
-//        evt.getRegistry().register(CofferDyeingRecipe.SERIALIZER.setRegistryName(Hexerei.MOD_ID, "coffer_dyeing"));
-        evt.getRegistry().register(CrowFluteRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Hexerei.MOD_ID, "crow_flute_dye")));
-        evt.getRegistry().register(BookOfShadowsRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Hexerei.MOD_ID, "book_of_shadows_dye")));
-        evt.getRegistry().register(KeychainRecipe.SERIALIZER.setRegistryName(Hexerei.MOD_ID, "keychain_apply"));
-        evt.getRegistry().register(KeychainUndoRecipe.SERIALIZER.setRegistryName(Hexerei.MOD_ID, "keychain_undo"));
-         */
-    }
 
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);

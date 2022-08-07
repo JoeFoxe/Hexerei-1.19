@@ -7,11 +7,11 @@ import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.client.renderer.CrowPerchRenderer;
 import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
 import net.joefoxe.hexerei.config.HexConfig;
-import net.joefoxe.hexerei.config.ModKeyBindings;
 import net.joefoxe.hexerei.container.ModContainers;
 import net.joefoxe.hexerei.data.books.PageDrawing;
 import net.joefoxe.hexerei.data.recipes.HexereiRecipeProvider;
 import net.joefoxe.hexerei.data.recipes.ModRecipeTypes;
+import net.joefoxe.hexerei.event.ModLootModifiers;
 import net.joefoxe.hexerei.events.CrowFluteEvent;
 import net.joefoxe.hexerei.events.GlassesZoomKeyPressEvent;
 import net.joefoxe.hexerei.events.SageBurningPlateEvent;
@@ -21,19 +21,12 @@ import net.joefoxe.hexerei.fluid.ModFluids;
 import net.joefoxe.hexerei.integration.HexereiModNameTooltipCompat;
 import net.joefoxe.hexerei.integration.jei.HexereiJeiCompat;
 import net.joefoxe.hexerei.item.ModItems;
-import net.joefoxe.hexerei.item.custom.BroomItem;
-import net.joefoxe.hexerei.item.custom.CofferItem;
-import net.joefoxe.hexerei.item.custom.HerbJarItem;
 import net.joefoxe.hexerei.particle.ModParticleTypes;
 import net.joefoxe.hexerei.screen.*;
-import net.joefoxe.hexerei.screen.tooltip.ClientBroomToolTip;
-import net.joefoxe.hexerei.screen.tooltip.ClientCofferToolTip;
-import net.joefoxe.hexerei.screen.tooltip.ClientHerbJarToolTip;
 import net.joefoxe.hexerei.sounds.ModSounds;
 import net.joefoxe.hexerei.tileentity.ModTileEntities;
 import net.joefoxe.hexerei.util.*;
 import net.joefoxe.hexerei.world.biome.ModBiomes;
-import net.joefoxe.hexerei.world.gen.ModBiomeGeneration;
 import net.joefoxe.hexerei.world.gen.ModFeatures;
 import net.joefoxe.hexerei.world.processor.DarkCovenLegProcessor;
 import net.joefoxe.hexerei.world.processor.MangroveTreeLegProcessor;
@@ -49,6 +42,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ComposterBlock;
@@ -117,6 +111,9 @@ public class Hexerei {
 
 //        eventBus.addListener(HexereiDataGenerator::gatherData);
 		//eventBus.addGenericListener(RecipeSerializer.class, ModItems::registerRecipeSerializers);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, HexConfig.CLIENT_CONFIG, "Hexerei-client.toml");
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, HexConfig.COMMON_CONFIG, "Hexerei-common.toml");
+
 		ModItems.register(eventBus);
 		ModBlocks.register(eventBus);
 		ModFluids.register(eventBus);
@@ -132,6 +129,7 @@ public class Hexerei {
 		ModEntityTypes.register(eventBus);
 
 		HexereiJeiCompat.init();
+		ModLootModifiers.init();
 		HexereiModNameTooltipCompat.init();
 
 
@@ -151,8 +149,6 @@ public class Hexerei {
 //        forgeEventBus.addListener(EventPriority.NORMAL, this::addDimensionalSpacing);
 //        forgeEventBus.addListener(EventPriority.NORMAL, WitchHutStructure::setupStructureSpawns);
 
-		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, HexConfig.CLIENT_CONFIG, "Hexerei-client.toml");
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, HexConfig.COMMON_CONFIG, "Hexerei-common.toml");
 
 		// Register ourselves for server and other game events we are interested in
 		MinecraftForge.EVENT_BUS.register(this);
@@ -175,7 +171,6 @@ public class Hexerei {
 		// some preinit code
 
 		event.enqueueWork(() -> {
-			ModBiomeGeneration.generateBiomes();
 
 			AxeItem.STRIPPABLES = new ImmutableMap.Builder<Block, Block>().putAll(AxeItem.STRIPPABLES)
 							.put(ModBlocks.MAHOGANY_LOG.get(), ModBlocks.STRIPPED_MAHOGANY_LOG.get())
@@ -238,21 +233,14 @@ public class Hexerei {
 		setupCrowPerchRenderer();
 		event.enqueueWork(() -> {
 
-			//tooltips
-//			MinecraftForgeClient.registerTooltipComponentFactory(HerbJarItem.HerbJarToolTip.class, ClientHerbJarToolTip::new);
-//			MinecraftForgeClient.registerTooltipComponentFactory(CofferItem.CofferItemToolTip.class, ClientCofferToolTip::new);
-//			MinecraftForgeClient.registerTooltipComponentFactory(BroomItem.BroomItemToolTip.class, ClientBroomToolTip::new);
 
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.QUICKSILVER_FLUID.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.QUICKSILVER_FLOWING.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModFluids.QUICKSILVER_BLOCK.get(), RenderType.translucent());
 
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.BLOOD_FLUID.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.BLOOD_FLOWING.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModFluids.BLOOD_BLOCK.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.TALLOW_FLUID.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.TALLOW_FLOWING.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModFluids.TALLOW_BLOCK.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ModBlocks.MAHOGANY_DOOR.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ModBlocks.MAHOGANY_TRAPDOOR.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ModBlocks.MAHOGANY_TRAPDOOR.get(), RenderType.translucent());
@@ -264,7 +252,6 @@ public class Hexerei {
 			ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSTAL_BALL_ORB.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSTAL_BALL_LARGE_RING.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSTAL_BALL_SMALL_RING.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.HERB_JAR.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ModBlocks.HERB_DRYING_RACK_FULL.get(), RenderType.cutout());
 			ItemBlockRenderTypes.setRenderLayer(ModBlocks.HERB_DRYING_RACK.get(), RenderType.cutout());
 			ItemBlockRenderTypes.setRenderLayer(ModBlocks.MAHOGANY_SAPLING.get(), RenderType.cutout());

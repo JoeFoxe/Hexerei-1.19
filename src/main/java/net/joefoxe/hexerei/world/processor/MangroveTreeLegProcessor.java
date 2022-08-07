@@ -6,6 +6,7 @@ import net.joefoxe.hexerei.Hexerei;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
@@ -36,7 +37,7 @@ public class MangroveTreeLegProcessor extends StructureProcessor {
     public StructureTemplate.StructureBlockInfo process(LevelReader worldReader, BlockPos jigsawPiecePos, BlockPos jigsawPieceBottomCenterPos, StructureTemplate.StructureBlockInfo blockInfoLocal, StructureTemplate.StructureBlockInfo blockInfoGlobal, StructurePlaceSettings structurePlacementData, @Nullable StructureTemplate template) {
         ChunkPos currentChunkPos = new ChunkPos(blockInfoGlobal.pos);
         ChunkAccess currentChunk = worldReader.getChunk(currentChunkPos.x, currentChunkPos.z);
-        Random random = structurePlacementData.getRandom(blockInfoGlobal.pos);
+        RandomSource random = structurePlacementData.getRandom(blockInfoGlobal.pos);
 
         if(!(currentChunk.getBlockState(blockInfoGlobal.pos).getBlock() instanceof LeavesBlock || currentChunk.getBlockState(blockInfoGlobal.pos).getBlock() == Blocks.AIR ||  currentChunk.getBlockState(blockInfoGlobal.pos).getBlock() == Blocks.GRASS || currentChunk.getBlockState(blockInfoGlobal.pos).getMaterial().isReplaceable()))
         {

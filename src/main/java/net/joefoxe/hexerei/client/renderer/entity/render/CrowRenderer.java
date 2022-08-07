@@ -331,7 +331,7 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
         }
 
         protected HumanoidModel<?> getArmorModelHook(LivingEntity entity, ItemStack itemStack, EquipmentSlot slot, HumanoidModel model) {
-            Model basicModel = net.minecraftforge.client.ForgeHooksClient.getGenericArmorModel(entity, itemStack, slot, model);
+            Model basicModel = net.minecraftforge.client.ForgeHooksClient.getArmorModel(entity, itemStack, slot, model);
             return basicModel instanceof HumanoidModel ? (HumanoidModel<?>) basicModel : model;
         }
 

@@ -52,6 +52,11 @@ public class CrowFluteContainer extends AbstractContainerMenu {
     }
 
     @Override
+    public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
+        return null;
+    }
+
+    @Override
     public void clicked(int p_150400_, int p_150401_, ClickType p_150402_, Player p_150403_) {
         super.clicked(p_150400_, p_150401_, p_150402_, p_150403_);
 

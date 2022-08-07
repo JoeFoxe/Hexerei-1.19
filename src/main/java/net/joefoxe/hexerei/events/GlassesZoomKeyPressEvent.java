@@ -5,18 +5,15 @@ import net.joefoxe.hexerei.config.ModKeyBindings;
 import net.joefoxe.hexerei.item.custom.GlassesItem;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.MouseHandler;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ComputeFovModifierEvent;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.RenderLevelLastEvent;
-import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.lwjgl.glfw.GLFW;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class GlassesZoomKeyPressEvent {
@@ -68,14 +65,14 @@ public class GlassesZoomKeyPressEvent {
         }
         zoomToggled = zoomWithItemToggled || zoomWithKeyToggled;
         if(zoomToggled) {
-            event.setNewfov(zoomAmount);
+            event.setNewFovModifier(zoomAmount);
         }
 
     }
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public void onRenderLast(RenderLevelLastEvent event) {
+    public void onRenderLast(RenderLevelStageEvent event) {
         if(zoomToggled)
             zoomAmount = HexereiUtil.moveTo(zoomAmount, zoomTo, 0.02f);
     }
