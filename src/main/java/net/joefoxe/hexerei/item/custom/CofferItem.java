@@ -1,6 +1,7 @@
 package net.joefoxe.hexerei.item.custom;
 
 import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +14,11 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
@@ -27,6 +33,19 @@ public class CofferItem extends BlockItem implements DyeableLeatherItem {
 
     public interface ItemHandlerConsumer {
         void register(ItemColor handler, ItemLike... items);
+    }
+
+    @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = "hexerei", bus = Mod.EventBusSubscriber.Bus.MOD)
+    static class ColorRegisterHandler
+    {
+        @SubscribeEvent(priority = EventPriority.HIGHEST)
+        public static void registerFluteColors(RegisterColorHandlersEvent.Item event)
+        {
+            CofferItem.ItemHandlerConsumer items = event.getItemColors()::register;
+            // s = stack, t = tint-layer
+            items.register((s, t) -> t == 1 ? getColorValue(CofferItem.getDyeColorNamed(s), s) : -1, ModItems.COFFER.get());
+
+        }
     }
 
     @Override

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_top_right",
+  "textures": {
+    "bottom": "hexerei:block/mahogany_door_bottom",
+    "top": "hexerei:block/mahogany_door_top"
+  }
+}

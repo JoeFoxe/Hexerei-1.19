@@ -53,11 +53,11 @@ public class ModBlockColors {
                 ModBlocks.MIXING_CAULDRON.get()
         );
 
-//        blockColors.register((state, reader, pos, color) -> {
-//                    return reader != null && pos != null ? Coffer.getColorValue(state, pos, reader) : 0x442013;
-//                },
-//                ModBlocks.COFFER.get()
-//        );
+        blockColors.register((state, reader, pos, color) -> {
+                    return reader != null && pos != null ? Coffer.getColorValue(state, pos, reader) : 0x442013;
+                },
+                ModBlocks.COFFER.get()
+        );
 
         blockColors.register((state, reader, pos, color) -> {
                     return reader != null && pos != null ? Coffer.getColorValue(state, pos, reader) : 0x442013;

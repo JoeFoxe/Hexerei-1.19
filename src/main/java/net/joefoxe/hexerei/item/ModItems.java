@@ -78,7 +78,7 @@ public class ModItems {
                 static class ColorRegisterHandler
                 {
                     @SubscribeEvent(priority = EventPriority.HIGHEST)
-                    public static void registerFluteColors(RegisterColorHandlersEvent.Item event)
+                    public static void registerSatchelColors(RegisterColorHandlersEvent.Item event)
                     {
                         SatchelItem.ItemHandlerConsumer items = event.getItemColors()::register;
                         // s = stack, t = tint-layer
@@ -111,7 +111,7 @@ public class ModItems {
                 static class ColorRegisterHandler
                 {
                     @SubscribeEvent(priority = EventPriority.HIGHEST)
-                    public static void registerFluteColors(RegisterColorHandlersEvent.Item event)
+                    public static void registerSatchelColors(RegisterColorHandlersEvent.Item event)
                     {
                         SatchelItem.ItemHandlerConsumer items = event.getItemColors()::register;
                         // s = stack, t = tint-layer
@@ -145,7 +145,7 @@ public class ModItems {
                 static class ColorRegisterHandler
                 {
                     @SubscribeEvent(priority = EventPriority.HIGHEST)
-                    public static void registerFluteColors(RegisterColorHandlersEvent.Item event)
+                    public static void registerSatchelColors(RegisterColorHandlersEvent.Item event)
                     {
                         SatchelItem.ItemHandlerConsumer items = event.getItemColors()::register;
                         // s = stack, t = tint-layer
@@ -433,21 +433,7 @@ public class ModItems {
             () -> new HerbJarItem(ModBlocks.HERB_JAR.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
     public static final RegistryObject<Item> COFFER = ITEMS.register("coffer",
-            () -> new CofferItem(ModBlocks.COFFER.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)){
-
-                @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = "hexerei", bus = Mod.EventBusSubscriber.Bus.MOD)
-                static class ColorRegisterHandler
-                {
-                    @SubscribeEvent(priority = EventPriority.HIGHEST)
-                    public static void registerFluteColors(RegisterColorHandlersEvent.Item event)
-                    {
-                        CofferItem.ItemHandlerConsumer items = event.getItemColors()::register;
-                        // s = stack, t = tint-layer
-                        items.register((s, t) -> t == 1 ? getColorValue(CofferItem.getDyeColorNamed(s), s) : -1, COFFER.get());
-
-                    }
-                }
-            });
+            () -> new CofferItem(ModBlocks.COFFER.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
 
     public static final RegistryObject<Item> SEED_MIXTURE = ITEMS.register("seed_mixture",
