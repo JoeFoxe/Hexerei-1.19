@@ -253,14 +253,15 @@ public class ModItems {
     public static final RegistryObject<Item> ARMOR_SCRAP = ITEMS.register("armor_scrap",
             () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
+
     public static final RegistryObject<Item> BLOOD_BUCKET = ITEMS.register("blood_bucket",
-            () -> new BucketItem(() -> ModFluids.BLOOD_FLUID.get(), new Item.Properties().stacksTo(1).tab(ModItemGroup.HEXEREI_GROUP)));
+            () -> new BucketItem(ModFluids.BLOOD_FLUID, new Item.Properties().stacksTo(1).tab(ModItemGroup.HEXEREI_GROUP)));
 
     public static final RegistryObject<Item> TALLOW_BUCKET = ITEMS.register("tallow_bucket",
-            () -> new BucketItem(() -> ModFluids.TALLOW_FLUID.get(), new Item.Properties().stacksTo(1).tab(ModItemGroup.HEXEREI_GROUP)));
+            () -> new BucketItem(ModFluids.TALLOW_FLUID, new Item.Properties().stacksTo(1).tab(ModItemGroup.HEXEREI_GROUP)));
 
     public static final RegistryObject<Item> QUICKSILVER_BUCKET = ITEMS.register("quicksilver_bucket",
-            () -> new BucketItem(() -> ModFluids.QUICKSILVER_FLUID.get(), new Item.Properties().stacksTo(1).tab(ModItemGroup.HEXEREI_GROUP)));
+            () -> new BucketItem(ModFluids.QUICKSILVER_FLUID, new Item.Properties().stacksTo(1).tab(ModItemGroup.HEXEREI_GROUP)));
 
     public static final RegistryObject<Item> QUICKSILVER_BOTTLE = ITEMS.register("quicksilver_bottle",
             () -> new BottleQuicksilverItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));

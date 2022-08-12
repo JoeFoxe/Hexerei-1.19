@@ -55,12 +55,12 @@ public class PestleAndMortarRecipeCategory implements IRecipeCategory<PestleAndM
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, PestleAndMortarRecipe recipe, IFocusGroup focuses) {
         builder.setShapeless();
-        builder.addSlot(RecipeIngredientRole.INPUT, 10, 13).addIngredients(recipe.getIngredients().get(0));//.getItemStacks().init(0, true, 10, 13);
-        builder.addSlot(RecipeIngredientRole.INPUT, 19, 35).addIngredients(recipe.getIngredients().get(1));
-        builder.addSlot(RecipeIngredientRole.INPUT, 41, 44).addIngredients(recipe.getIngredients().get(2));
-        builder.addSlot(RecipeIngredientRole.INPUT, 63, 35).addIngredients(recipe.getIngredients().get(3));
-        builder.addSlot(RecipeIngredientRole.INPUT, 72, 13).addIngredients(recipe.getIngredients().get(4));
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 116, 30).addIngredients(recipe.getIngredients().get(5));
+        builder.addSlot(RecipeIngredientRole.INPUT, 11, 14).addIngredients(recipe.getIngredients().get(0));//.getItemStacks().init(0, true, 10, 13);
+        builder.addSlot(RecipeIngredientRole.INPUT, 20, 36).addIngredients(recipe.getIngredients().get(1));
+        builder.addSlot(RecipeIngredientRole.INPUT, 42, 45).addIngredients(recipe.getIngredients().get(2));
+        builder.addSlot(RecipeIngredientRole.INPUT, 64, 36).addIngredients(recipe.getIngredients().get(3));
+        builder.addSlot(RecipeIngredientRole.INPUT, 73, 14).addIngredients(recipe.getIngredients().get(4));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 117, 31).addItemStack(recipe.getResultItem());
 
 //        builder.getItemStacks().set(ingredients);
     }

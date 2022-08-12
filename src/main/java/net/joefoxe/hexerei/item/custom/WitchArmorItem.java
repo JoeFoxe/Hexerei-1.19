@@ -152,7 +152,11 @@ public class WitchArmorItem extends DyeableArmorItem {
                 float netHeadPitch = Mth.lerp(pticks, entity.xRotO, entity.getXRot());
                 model.slot = slot;
                 model.copyFromDefault(_default);
-                model.setupAnim(entity, entity.animationPosition, entity.animationSpeed, entity.tickCount + pticks, netHeadYaw, netHeadPitch);
+                model.entity = entity;
+                model.entityClass = entity.getClass();
+                model.crouching = entity.isCrouching();
+                model.young = entity.isBaby();
+//                model.setupAnim(entity, entity.animationPosition, entity.animationSpeed, entity.tickCount, netHeadYaw, netHeadPitch);
                 return model;
             }
         });

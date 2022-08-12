@@ -79,6 +79,9 @@ public class MushroomWitchArmorItem extends WitchArmorItem {
                 float netHeadPitch = Mth.lerp(pticks, entity.xRotO, entity.getXRot());
                 model.slot = slot;
                 model.copyFromDefault(_default);
+                model.entity = entity;
+                model.crouching = entity.isCrouching();
+                model.young = entity.isBaby();
                 model.setupAnim(entity, entity.animationPosition, entity.animationSpeed, entity.tickCount + pticks, netHeadYaw, netHeadPitch);
                 return model;
             }

@@ -2563,64 +2563,44 @@ public class PageDrawing {
     public void onClickEvent(InputEvent.MouseButton event) {
 
         Player playerIn = Hexerei.proxy.getPlayer();
-        if(event.getButton() == 1 && playerIn != null){
-            if(event.getAction() == 0) {
-                this.isRightPressedOld = false;
-                Hexerei.entityClicked = false;
+        if(event.getButton() == 1 && playerIn != null)
+        {
+            this.isRightPressedOld = false;
+            Hexerei.entityClicked = false;
 
-                if(Minecraft.getInstance().screen != null)
-                    return;
-
-
-                double reach = playerIn.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
+            if(Minecraft.getInstance().screen != null)
+                return;
 
 
-                    for(int j = 0; j < 6; j++){
-                        BlockHitResult raytrace = getPlayerPOVHitResult(j, playerIn.level, playerIn, ClipContext.Fluid.NONE);
-                        if(raytrace.getType() != HitResult.Type.MISS) {
-                            BlockPos pos = raytrace.getBlockPos();
+            double reach = playerIn.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
 
 
-                            BlockEntity blockEntity = playerIn.level.getBlockEntity(pos);
+                for(int j = 0; j < 6; j++){
+                    BlockHitResult raytrace = getPlayerPOVHitResult(j, playerIn.level, playerIn, ClipContext.Fluid.NONE);
+                    if(raytrace.getType() != HitResult.Type.MISS) {
+                        BlockPos pos = raytrace.getBlockPos();
 
 
-                            if(blockEntity instanceof BookOfShadowsAltarTile altarTile && altarTile.turnPage == 0){
+                        BlockEntity blockEntity = playerIn.level.getBlockEntity(pos);
 
-                                if(altarTile.slotClicked != -1){
-                                    if(++altarTile.slotClickedTick > 0) {
-                                        playerIn.swinging = false;
-                                        event.setCanceled(true);
-                                        event.setResult(Event.Result.DENY);
-                                    }
+
+                        if(blockEntity instanceof BookOfShadowsAltarTile altarTile && altarTile.turnPage == 0 && event.getAction() == 1){
+
+                            if(altarTile.slotClicked != -1){
+                                if(++altarTile.slotClickedTick > 0) {
+                                    playerIn.swinging = false;
+                                    event.setCanceled(true);
+                                    event.setResult(Event.Result.DENY);
                                 }
+                            }
 
-                                CompoundTag tag = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
+                            CompoundTag tag = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
 
-                                if(tag.contains("opened") && tag.getBoolean("opened")) {
-                                    int clicked = checkClick(playerIn, altarTile);
+                            if(tag.contains("opened") && tag.getBoolean("opened")) {
+                                int clicked = checkClick(playerIn, altarTile);
 //                            System.out.println(clicked);
-                                    if (clicked == 1) {
-                                        if (altarTile.slotClicked == -1 && clickedNext(altarTile)) {
-                                            altarTile.setTurnPage(clicked);
-
-                                            playerIn.swing(InteractionHand.MAIN_HAND);
-                                            event.setCanceled(true);
-                                            event.setResult(Event.Result.DENY);
-                                            break;
-                                        }
-                                    }
-                                    if (clicked == 2) {
-                                        if (altarTile.slotClicked == -1 && clickedBack(altarTile)) {
-                                            altarTile.setTurnPage(clicked);
-
-                                            playerIn.swing(InteractionHand.MAIN_HAND);
-                                            event.setCanceled(true);
-                                            event.setResult(Event.Result.DENY);
-                                            break;
-                                        }
-                                    }
-                                    if (clicked == -2) {
-                                        //close
+                                if (clicked == 1) {
+                                    if (altarTile.slotClicked == -1 && clickedNext(altarTile)) {
                                         altarTile.setTurnPage(clicked);
 
                                         playerIn.swing(InteractionHand.MAIN_HAND);
@@ -2628,217 +2608,236 @@ public class PageDrawing {
                                         event.setResult(Event.Result.DENY);
                                         break;
                                     }
-                                    if (clicked == -1) {
+                                }
+                                if (clicked == 2) {
+                                    if (altarTile.slotClicked == -1 && clickedBack(altarTile)) {
+                                        altarTile.setTurnPage(clicked);
 
                                         playerIn.swing(InteractionHand.MAIN_HAND);
-                                        event.setCanceled(true);
-                                        event.setResult(Event.Result.DENY);
-                                        break;
-                                    }
-                                    if (clicked == -3) {
-                                        //close
-
-                                        playerIn.swing(InteractionHand.MAIN_HAND);
-                                        event.setCanceled(true);
-                                        event.setResult(Event.Result.DENY);
-                                        break;
-                                    }
-                                    if (clicked == 3) {
-                                        // clicked bookmark
-                                        if(tag.getInt("chapter") != 0) {
-                                            altarTile.clickPageBookmark(tag.getInt("chapter"), tag.getInt("page"));
-
-                                            playerIn.swing(InteractionHand.MAIN_HAND);
-                                            event.setCanceled(true);
-                                            event.setResult(Event.Result.DENY);
-                                            break;
-                                        }
-                                    }
-                                    if (clicked == -5){
-                                        playerIn.swinging = false;
                                         event.setCanceled(true);
                                         event.setResult(Event.Result.DENY);
                                         break;
                                     }
                                 }
-                            }
+                                if (clicked == -2) {
+                                    //close
+                                    altarTile.setTurnPage(clicked);
 
-                            if(blockEntity instanceof BookOfShadowsAltarTile altarTile && altarTile.turnPage == 0 && altarTile.slotClicked != -1){
-
-
-                                Vec3 planeNormalRight = planeNormal(altarTile, PageOn.RIGHT_PAGE);
-                                Vec3 planeNormalLeft = planeNormal(altarTile, PageOn.LEFT_PAGE);
-
-                                CompoundTag tag = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
-
-
-
-                                if(tag.contains("bookmarks")){
-
-                                    int bookmark_color = 0;
-                                    int bookmark_chapter = 0;
-                                    int bookmark_page = 0;
-                                    boolean flag = false;
-                                    int int_slot = 0;
-                                    CompoundTag bookmarks = tag.getCompound("bookmarks");
-
-
-                                    if(altarTile.slotClicked != -1){
-                                        Vec3 intersectionVec = intersectPoint(0, 7.05f, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalLeft, altarTile, PageOn.MIDDLE_BUTTON);
-                                        AABB aabb = getpositionAABBClose(altarTile);
-                                        if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
-                                            //send signal to server that you deleted your bookmark.
-                                            altarTile.deleteBookmark(altarTile.slotClicked);
-                                        }
-                                    }
-
-
-
-
-                                    for(int i = 0; i < 20; i++){
-                                        boolean flag2 = false;
-                                        if(bookmarks.contains("slot_" + i)){
-
-                                            CompoundTag slot = bookmarks.getCompound("slot_" + i);
-                                            bookmark_color = slot.getInt("color");
-                                            bookmark_chapter = slot.getInt("chapter");
-                                            bookmark_page = slot.getInt("page");
-
-
-                                        }
-
-                                        ArrayList<BookImageEffect> effectsBookmark = new ArrayList<>();
-                                        if(i < 5){
-
-                                            float xIn = -0.4f - altarTile.buttonScale - 0.15f;
-                                            float yIn = i * 1.5f;
-                                            Vector3f vector3f = new Vector3f(0, 0, 0);
-                                            Vector3f vector3f_1 = new Vector3f(0.35f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
-
-                                            BlockPos blockPos = altarTile.getBlockPos();
-                                            vector3f_1.transform(Vector3f.YP.rotationDegrees((10 + altarTile.degreesOpened / 1.12f)));
-                                            vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
-                                            vector3f.add(vector3f_1);
-                                            vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
-
-                                            Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
-                                                    vector3f.y() + blockPos.getY() + 18 / 16f,
-                                                    vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
-
-                                            AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
-
-                                            Vec3 intersectionVec = intersectPoint(xIn, yIn, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalLeft, altarTile, PageOn.LEFT_PAGE);
-                                            if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
-                                                flag2 = true;
-                                            }
-                                        }
-                                        if(i >= 5 && i < 10){
-
-                                            float xIn = -5.5f + i * 1.15f;
-                                            float yIn = -0.95f - altarTile.buttonScale - 0.25f;
-                                            Vector3f vector3f = new Vector3f(0, 0, 0);
-                                            Vector3f vector3f_1 = new Vector3f(0.35f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
-
-                                            BlockPos blockPos = altarTile.getBlockPos();
-                                            vector3f_1.transform(Vector3f.YP.rotationDegrees((10 + altarTile.degreesOpened / 1.12f)));
-                                            vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
-                                            vector3f.add(vector3f_1);
-                                            vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
-
-                                            Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
-                                                    vector3f.y() + blockPos.getY() + 18 / 16f,
-                                                    vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
-
-                                            AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
-
-                                            Vec3 intersectionVec = intersectPoint(xIn, yIn, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalLeft, altarTile, PageOn.LEFT_PAGE);
-                                            if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
-                                                flag2 = true;
-                                            }
-                                        }
-                                        if(i >= 10 && i < 15){
-
-                                            float xIn = -11.25f + i * 1.15f;
-                                            float yIn = -0.95f - altarTile.buttonScale - 0.25f;
-                                            Vector3f vector3f = new Vector3f(0, 0, 0);
-                                            Vector3f vector3f_1 = new Vector3f(-0.05f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
-
-                                            BlockPos blockPos = altarTile.getBlockPos();
-                                            vector3f_1.transform(Vector3f.YP.rotationDegrees(-(10 + altarTile.degreesOpened / 1.12f)));
-                                            vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
-                                            vector3f.add(vector3f_1);
-                                            vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
-
-                                            Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
-                                                    vector3f.y() + blockPos.getY() + 18 / 16f,
-                                                    vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
-
-                                            AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
-
-                                            Vec3 intersectionVec = intersectPoint(xIn, yIn, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalRight, altarTile, PageOn.RIGHT_PAGE);
-                                            if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
-                                                flag2 = true;
-                                            }
-                                        }
-                                        if(i >= 15){
-
-                                            float xIn = 5.5f + altarTile.buttonScale + 0.15f;
-                                            float yIn = (i - 15) * 1.5f;
-                                            Vector3f vector3f = new Vector3f(0, 0, 0);
-                                            Vector3f vector3f_1 = new Vector3f(-0.05f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
-
-                                            BlockPos blockPos = altarTile.getBlockPos();
-                                            vector3f_1.transform(Vector3f.YP.rotationDegrees(-(10 + altarTile.degreesOpened / 1.12f)));
-                                            vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
-                                            vector3f.add(vector3f_1);
-                                            vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
-
-                                            Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
-                                                    vector3f.y() + blockPos.getY() + 18 / 16f,
-                                                    vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
-
-                                            AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
-
-                                            Vec3 intersectionVec = intersectPoint(xIn, yIn, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalRight, altarTile, PageOn.RIGHT_PAGE);
-                                            if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
-                                                flag2 = true;
-                                            }
-                                        }
-                                        if(flag2){
-                                            if(altarTile.slotClicked == i){
-                                                if(altarTile.slotClickedTick < 20){
-                                                    //click the same bookmark
-                                                    altarTile.setTurnPage(-1, bookmark_chapter, bookmark_page);
-                                                }
-                                            }
-                                            else {
-                                                //drag the bookmark to another slot
-                                                altarTile.swapBookmarks(altarTile.slotClicked, i);
-                                                altarTile.bookmarkHoverAmount[i] = 0;
-                                                altarTile.bookmarkHoverAmount[altarTile.slotClicked] = 0;
-                                            }
-
-                                            int_slot = i;
-                                            break;
-                                        }
-
-                                    }
-                                    if(int_slot != altarTile.slotClicked || altarTile.slotClickedTick > 5)
-                                        playerIn.swing(InteractionHand.MAIN_HAND);
-                                    altarTile.slotClicked = -1;
-                                    altarTile.slotClickedTick = 0;
+                                    playerIn.swing(InteractionHand.MAIN_HAND);
+                                    event.setCanceled(true);
+                                    event.setResult(Event.Result.DENY);
                                     break;
                                 }
+                                if (clicked == -1) {
 
+                                    playerIn.swing(InteractionHand.MAIN_HAND);
+                                    event.setCanceled(true);
+                                    event.setResult(Event.Result.DENY);
+                                    break;
+                                }
+                                if (clicked == -3) {
+                                    //close
+
+                                    playerIn.swing(InteractionHand.MAIN_HAND);
+                                    event.setCanceled(true);
+                                    event.setResult(Event.Result.DENY);
+                                    break;
+                                }
+                                if (clicked == 3) {
+                                    // clicked bookmark
+                                    if(tag.getInt("chapter") != 0) {
+                                        altarTile.clickPageBookmark(tag.getInt("chapter"), tag.getInt("page"));
+
+                                        playerIn.swing(InteractionHand.MAIN_HAND);
+                                        event.setCanceled(true);
+                                        event.setResult(Event.Result.DENY);
+                                        break;
+                                    }
+                                }
+                                if (clicked == -5){
+                                    playerIn.swinging = false;
+                                    event.setCanceled(true);
+                                    event.setResult(Event.Result.DENY);
+                                    break;
+                                }
                             }
+                        }
+
+                        if(blockEntity instanceof BookOfShadowsAltarTile altarTile && altarTile.turnPage == 0 && altarTile.slotClicked != -1 && event.getAction() == 0 ){
+
+
+                            Vec3 planeNormalRight = planeNormal(altarTile, PageOn.RIGHT_PAGE);
+                            Vec3 planeNormalLeft = planeNormal(altarTile, PageOn.LEFT_PAGE);
+
+                            CompoundTag tag = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
+
+
+
+                            if(tag.contains("bookmarks")){
+
+                                int bookmark_color = 0;
+                                int bookmark_chapter = 0;
+                                int bookmark_page = 0;
+                                boolean flag = false;
+                                int int_slot = 0;
+                                CompoundTag bookmarks = tag.getCompound("bookmarks");
+
+
+                                if(altarTile.slotClicked != -1){
+                                    Vec3 intersectionVec = intersectPoint(0, 7.05f, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalLeft, altarTile, PageOn.MIDDLE_BUTTON);
+                                    AABB aabb = getpositionAABBClose(altarTile);
+                                    if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
+                                        //send signal to server that you deleted your bookmark.
+                                        altarTile.deleteBookmark(altarTile.slotClicked);
+                                    }
+                                }
+
+
+
+
+                                for(int i = 0; i < 20; i++){
+                                    boolean flag2 = false;
+                                    if(bookmarks.contains("slot_" + i)){
+
+                                        CompoundTag slot = bookmarks.getCompound("slot_" + i);
+                                        bookmark_color = slot.getInt("color");
+                                        bookmark_chapter = slot.getInt("chapter");
+                                        bookmark_page = slot.getInt("page");
+
+
+                                    }
+
+                                    ArrayList<BookImageEffect> effectsBookmark = new ArrayList<>();
+                                    if(i < 5){
+
+                                        float xIn = -0.4f - altarTile.buttonScale - 0.15f;
+                                        float yIn = i * 1.5f;
+                                        Vector3f vector3f = new Vector3f(0, 0, 0);
+                                        Vector3f vector3f_1 = new Vector3f(0.35f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
+
+                                        BlockPos blockPos = altarTile.getBlockPos();
+                                        vector3f_1.transform(Vector3f.YP.rotationDegrees((10 + altarTile.degreesOpened / 1.12f)));
+                                        vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
+                                        vector3f.add(vector3f_1);
+                                        vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
+
+                                        Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
+                                                vector3f.y() + blockPos.getY() + 18 / 16f,
+                                                vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
+
+                                        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
+
+                                        Vec3 intersectionVec = intersectPoint(xIn, yIn, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalLeft, altarTile, PageOn.LEFT_PAGE);
+                                        if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
+                                            flag2 = true;
+                                        }
+                                    }
+                                    if(i >= 5 && i < 10){
+
+                                        float xIn = -5.5f + i * 1.15f;
+                                        float yIn = -0.95f - altarTile.buttonScale - 0.25f;
+                                        Vector3f vector3f = new Vector3f(0, 0, 0);
+                                        Vector3f vector3f_1 = new Vector3f(0.35f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
+
+                                        BlockPos blockPos = altarTile.getBlockPos();
+                                        vector3f_1.transform(Vector3f.YP.rotationDegrees((10 + altarTile.degreesOpened / 1.12f)));
+                                        vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
+                                        vector3f.add(vector3f_1);
+                                        vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
+
+                                        Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
+                                                vector3f.y() + blockPos.getY() + 18 / 16f,
+                                                vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
+
+                                        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
+
+                                        Vec3 intersectionVec = intersectPoint(xIn, yIn, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalLeft, altarTile, PageOn.LEFT_PAGE);
+                                        if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
+                                            flag2 = true;
+                                        }
+                                    }
+                                    if(i >= 10 && i < 15){
+
+                                        float xIn = -11.25f + i * 1.15f;
+                                        float yIn = -0.95f - altarTile.buttonScale - 0.25f;
+                                        Vector3f vector3f = new Vector3f(0, 0, 0);
+                                        Vector3f vector3f_1 = new Vector3f(-0.05f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
+
+                                        BlockPos blockPos = altarTile.getBlockPos();
+                                        vector3f_1.transform(Vector3f.YP.rotationDegrees(-(10 + altarTile.degreesOpened / 1.12f)));
+                                        vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
+                                        vector3f.add(vector3f_1);
+                                        vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
+
+                                        Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
+                                                vector3f.y() + blockPos.getY() + 18 / 16f,
+                                                vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
+
+                                        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
+
+                                        Vec3 intersectionVec = intersectPoint(xIn, yIn, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalRight, altarTile, PageOn.RIGHT_PAGE);
+                                        if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
+                                            flag2 = true;
+                                        }
+                                    }
+                                    if(i >= 15){
+
+                                        float xIn = 5.5f + altarTile.buttonScale + 0.15f;
+                                        float yIn = (i - 15) * 1.5f;
+                                        Vector3f vector3f = new Vector3f(0, 0, 0);
+                                        Vector3f vector3f_1 = new Vector3f(-0.05f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
+
+                                        BlockPos blockPos = altarTile.getBlockPos();
+                                        vector3f_1.transform(Vector3f.YP.rotationDegrees(-(10 + altarTile.degreesOpened / 1.12f)));
+                                        vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
+                                        vector3f.add(vector3f_1);
+                                        vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
+
+                                        Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
+                                                vector3f.y() + blockPos.getY() + 18 / 16f,
+                                                vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
+
+                                        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
+
+                                        Vec3 intersectionVec = intersectPoint(xIn, yIn, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalRight, altarTile, PageOn.RIGHT_PAGE);
+                                        if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
+                                            flag2 = true;
+                                        }
+                                    }
+                                    if(flag2){
+                                        if(altarTile.slotClicked == i){
+                                            if(altarTile.slotClickedTick < 20){
+                                                //click the same bookmark
+                                                altarTile.setTurnPage(-1, bookmark_chapter, bookmark_page);
+                                            }
+                                        }
+                                        else {
+                                            //drag the bookmark to another slot
+                                            altarTile.swapBookmarks(altarTile.slotClicked, i);
+                                            altarTile.bookmarkHoverAmount[i] = 0;
+                                            altarTile.bookmarkHoverAmount[altarTile.slotClicked] = 0;
+                                        }
+
+                                        int_slot = i;
+                                        break;
+                                    }
+
+                                }
+                                if(int_slot != altarTile.slotClicked || altarTile.slotClickedTick > 5)
+                                    playerIn.swing(InteractionHand.MAIN_HAND);
+                                altarTile.slotClicked = -1;
+                                altarTile.slotClickedTick = 0;
+                                break;
+                            }
+
+                        }
 
 //                            playerIn.swing(InteractionHand.MAIN_HAND);
 
-                        }
-                }
+                    }
             }
-
         }
+
         else if(event.getButton() == 0){
             this.isLeftPressedOld = event.getAction() == 1;
         }
@@ -3464,7 +3463,9 @@ public class PageDrawing {
                 BookPage page2 = BookManager.getBookPages(new ResourceLocation(Hexerei.MOD_ID, location2));
 
                 if (page1 != null) {
-                    if (!this.isRightPressedOld) {
+
+                    if (!this.isRightPressedOld)
+
                         for (int i = 0; i < page1.nonItemTooltipList.size(); i++) {
 
                             BookNonItemTooltip bookNonItemTooltip = ((BookNonItemTooltip) (page1.nonItemTooltipList.toArray()[i]));
@@ -3532,9 +3533,9 @@ public class PageDrawing {
                                 String itemRegistryName;
 
                                 if (bookItemStackInSlot.item != null)
-                                    itemRegistryName = bookItemStackInSlot.item.getItem().getDescriptionId();
+                                    itemRegistryName = Registry.ITEM.getKey(bookItemStackInSlot.item.getItem()).toString();
                                 else
-                                    itemRegistryName = bookItemStackInSlot.fluid.getFluid().getFluidType().getDescriptionId();
+                                    itemRegistryName = Registry.FLUID.getKey(bookItemStackInSlot.fluid.getFluid()).toString();
 
                                 boolean flag = false;
                                 if (BookManager.getBookItemHyperlinks().containsKey(itemRegistryName)) {
@@ -3599,7 +3600,7 @@ public class PageDrawing {
                                 break;
                             }
                         }
-                    }
+
 
                     if (altarTile.slotClicked == -1) {
                         for (int i = 0; i < page1.entityList.size(); i++) {
@@ -3706,9 +3707,9 @@ public class PageDrawing {
                                 String itemRegistryName;
 
                                 if (bookItemStackInSlot.item != null)
-                                    itemRegistryName = bookItemStackInSlot.item.getItem().getDescriptionId();
+                                    itemRegistryName = Registry.ITEM.getKey(bookItemStackInSlot.item.getItem()).toString();
                                 else
-                                    itemRegistryName = bookItemStackInSlot.fluid.getFluid().getFluidType().getDescriptionId();
+                                    itemRegistryName = Registry.FLUID.getKey(bookItemStackInSlot.fluid.getFluid()).toString();
 
                                 boolean flag = false;
                                 if (BookManager.getBookItemHyperlinks().containsKey(itemRegistryName)) {

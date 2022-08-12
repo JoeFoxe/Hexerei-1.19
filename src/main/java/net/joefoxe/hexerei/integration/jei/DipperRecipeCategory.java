@@ -64,8 +64,8 @@ public class DipperRecipeCategory implements IRecipeCategory<DipperRecipe> {
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, DipperRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 14, 13).addIngredients(recipe.getIngredients().get(0));
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 68, 22).addIngredients(recipe.getIngredients().get(1));
+        builder.addSlot(RecipeIngredientRole.INPUT, 15, 14).addIngredients(recipe.getIngredients().get(0));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 69, 23).addItemStack(recipe.getResultItem());
 
         FluidStack input = recipe.getLiquid();
         if(recipe.getFluidLevelsConsumed() != 0) {
@@ -74,7 +74,7 @@ public class DipperRecipeCategory implements IRecipeCategory<DipperRecipe> {
         }
 
         if(!input.isEmpty()) {
-            builder.addSlot(RecipeIngredientRole.INPUT, 17, 36).addFluidStack(recipe.getLiquid().getFluid(), recipe.getFluidLevelsConsumed()).setFluidRenderer(2000, false, 12, 10);
+            builder.addSlot(RecipeIngredientRole.INPUT, 18, 37).addFluidStack(recipe.getLiquid().getFluid(), recipe.getFluidLevelsConsumed()).setFluidRenderer(2000, false, 12, 10);
         }
     }
 

@@ -3,12 +3,15 @@ package net.joefoxe.hexerei.client.renderer.entity.model;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
@@ -16,6 +19,8 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 public class ArmorModel <T extends LivingEntity> extends HumanoidModel<T> implements IClientItemExtensions {
 
     public EquipmentSlot slot;
+    public LivingEntity entity;
+    public Class entityClass;
     ModelPart root, modelHead, modelBody, modelLeft_arm, modelRight_arm, modelBelt, modelLeft_leg, modelRight_leg, modelLeft_foot, modelRight_foot;
 
     public ArmorModel(ModelPart root) {
@@ -71,30 +76,42 @@ public class ArmorModel <T extends LivingEntity> extends HumanoidModel<T> implem
     public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
 //        super.renderToBuffer(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         matrixStack.pushPose();
+
+        if(entity != null) {
+            EntityModel entityModel =  ((LivingEntityRenderer) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity)).getModel();
+            if(entityModel instanceof HumanoidModel livingModel){
+                this.attackTime = livingModel.attackTime;
+                this.riding = livingModel.riding;
+                this.young = livingModel.young;
+                this.leftArmPose = livingModel.leftArmPose;
+                this.rightArmPose = livingModel.rightArmPose;
+                this.crouching = livingModel.crouching;
+                this.head.copyFrom(livingModel.head);
+                this.body.copyFrom(livingModel.body);
+                this.rightArm.copyFrom(livingModel.rightArm);
+                this.leftArm.copyFrom(livingModel.leftArm);
+                this.rightLeg.copyFrom(livingModel.rightLeg);
+                this.leftLeg.copyFrom(livingModel.leftLeg);
+            }
+
+
+        }
+
         if (this.slot == EquipmentSlot.HEAD) {
-            this.modelHead.copyFrom(this.head);
             this.modelHead.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         }
         else if (this.slot == EquipmentSlot.CHEST) {
-            this.modelBody.copyFrom(this.body);
             this.modelBody.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            this.modelRight_arm.copyFrom(this.rightArm);
             this.modelRight_arm.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            this.modelLeft_arm.copyFrom(this.leftArm);
             this.modelLeft_arm.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 
         } else if (this.slot == EquipmentSlot.LEGS) {
-            this.modelBelt.copyFrom(this.body);
             this.modelBelt.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            this.modelRight_leg.copyFrom(this.rightLeg);
             this.modelRight_leg.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            this.modelLeft_leg.copyFrom(this.leftLeg);
             this.modelLeft_leg.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 
         } else if (this.slot == EquipmentSlot.FEET) {
-            this.modelRight_foot.copyFrom(this.rightLeg);
             this.modelRight_foot.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            this.modelLeft_foot.copyFrom(this.leftLeg);
             this.modelLeft_foot.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         }
         matrixStack.popPose();
@@ -110,6 +127,10 @@ public class ArmorModel <T extends LivingEntity> extends HumanoidModel<T> implem
         modelRight_leg.copyFrom(rightLeg);
         modelLeft_foot.copyFrom(leftLeg);
         modelRight_foot.copyFrom(rightLeg);
+        this.riding = model.riding;
+        this.leftArmPose = model.leftArmPose;
+        this.rightArmPose = model.rightArmPose;
+        this.attackTime = model.attackTime;
     }
 
 }

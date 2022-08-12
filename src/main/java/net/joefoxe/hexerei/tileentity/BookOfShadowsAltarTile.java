@@ -26,6 +26,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -297,6 +298,24 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                 player.setItemInHand(InteractionHand.MAIN_HAND ,this.itemHandler.getStackInSlot(0).copy());
             else
                 player.inventory.placeItemBackInInventory(this.itemHandler.getStackInSlot(0).copy());
+
+            this.degreesFlopped = 90;
+            this.degreesFloppedRender = 90;
+            this.degreesOpened = 90; // reversed because the model is made so the book is opened from the start so offseting 90 degrees from the start will close the book
+            this.degreesOpenedRender = 90;
+            this.degreesSpun = 0;
+            this.degreesSpunRender = 0;
+            this.degreesSpunTo = 0;
+            this.pageOneRotation = 0;
+            this.pageOneRotationTo = 0;
+            this.pageOneRotationRender = 0;
+            this.pageTwoRotation = 0;
+            this.pageTwoRotationTo = 0;
+            this.pageTwoRotationRender = 0;
+            this.turnPage = 0;
+            this.turnToPage = 0;
+            this.turnToChapter = 0;
+
             level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
             this.itemHandler.setStackInSlot(0, ItemStack.EMPTY);
 
@@ -579,13 +598,6 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                 this.buttonScaleSpeed = 0.15f * (this.buttonScale + 0.25f);
                 this.buttonScaleTo = 1;
             }
-            this.buttonScale = moveTo(this.buttonScale, this.buttonScaleTo, this.buttonScaleSpeed);
-            this.buttonScaleRender = this.buttonScale;
-
-            if(this.slotClicked != -1 && this.slotClickedTick > 5)
-                this.bookmarkSelectorScale = moveTo(this.bookmarkSelectorScale, 1, 0.15f * (this.bookmarkSelectorScale + 0.25f));
-            else
-                this.bookmarkSelectorScale = 0;
 
 
 
@@ -853,7 +865,9 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
 
 
         closestDist = maxDist;
-        if(this.itemHandler.getStackInSlot(0).getItem() instanceof HexereiBookItem){
+        Item item = this.itemHandler.getStackInSlot(0).getItem();
+//        System.out.println(level.isClientSide ? "Client - " + item : "Server - " + item);
+        if(item instanceof HexereiBookItem){
             Player playerEntity = this.level.getNearestPlayer(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), maxDist, false);
             if (playerEntity != null) {
                 double dist = (getDistanceToEntity(playerEntity, this.worldPosition));
@@ -867,10 +881,29 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
             }
 
 
+//            System.out.println(level.isClientSide ? "Client - " + this.turnPage : "Server - " + this.turnPage);
+//            System.out.println(level.isClientSide ? "Client - " + this.pageOneRotation : "Server - " + this.pageOneRotation);
+//            System.out.println(this.pageOneRotation);
+//            System.out.println(this.pageTwoRotation);
+//            System.out.println("---");
+//            System.out.println(this.slotClickedTick);
+
+            if(slotClicked != -1)
+                this.slotClickedTick++;
 
             CompoundTag tag = this.itemHandler.getStackInSlot(0).getOrCreateTag();
 
             if(tag.getBoolean("opened")){
+
+
+                this.buttonScale = moveTo(this.buttonScale, this.buttonScaleTo, this.buttonScaleSpeed);
+                this.buttonScaleRender = this.buttonScale;
+
+                if(this.slotClicked != -1 && this.slotClickedTick > 5)
+                    this.bookmarkSelectorScale = moveTo(this.bookmarkSelectorScale, 1, 0.15f * (this.bookmarkSelectorScale + 0.25f));
+                else
+                    this.bookmarkSelectorScale = 0;
+
                 if (this.closestPlayerPos != null) {
                     if (this.degreesFlopped == 0) {
                         this.degreesSpunTo = 270 - getAngle(this.closestPlayerPos);
@@ -907,9 +940,9 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                         this.pageOneRotationRender = 0;
                         this.pageOneRotation = 0;
                         this.pageOneRotationTo = 0;
-                        this.pageOneRotationSpeed = 0;
+//                        this.pageOneRotationSpeed = 0;
                         this.turnPage = 0;
-                        setChanged();
+//                        setChanged();
                     }else{
                         if (this.pageOneRotation == 0 && !level.isClientSide)
                             level.playSound(null, this.worldPosition.above(), ModSounds.BOOK_TURN_PAGE_SLOW.get(), SoundSource.BLOCKS, (level.random.nextFloat() * 0.25f + 0.5f), (level.random.nextFloat() * 0.25f + 0.75f));
@@ -919,6 +952,8 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                         this.pageOneRotation = moveTo(this.pageOneRotation, this.pageOneRotationTo, this.pageOneRotationSpeed);
                     }
                 }
+                if(pageOneRotationTo == 0)
+                    this.pageOneRotation = moveTo(this.pageOneRotation, this.pageOneRotationTo, this.pageOneRotationSpeed);
                 if(this.turnPage == 2)
                 {
                     if(this.pageTwoRotation == 180)
@@ -927,9 +962,9 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                         this.pageTwoRotationRender = 0;
                         this.pageTwoRotation = 0;
                         this.pageTwoRotationTo = 0;
-                        this.pageTwoRotationSpeed = 0;
+//                        this.pageTwoRotationSpeed = 0;
                         this.turnPage = 0;
-                        setChanged();
+//                        setChanged();
                     }
                     else {
 
@@ -941,6 +976,8 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                         this.pageTwoRotation = moveTo(this.pageTwoRotation, this.pageTwoRotationTo, this.pageTwoRotationSpeed);
                     }
                 }
+                if(pageTwoRotationTo == 0)
+                    this.pageTwoRotation = moveTo(this.pageTwoRotation, this.pageTwoRotationTo, this.pageTwoRotationSpeed);
                 if(this.turnPage == -1)
                 {
 
@@ -1010,7 +1047,7 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                             this.pageOneRotationTo = 0;
                             this.pageOneRotationRender = 0;
                             this.pageOneRotationSpeed = 0.01f;
-                            setChanged();
+//                            setChanged();
                         }
 
                     }
@@ -1042,9 +1079,9 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
             this.pageTwoRotation = 0;
             this.pageTwoRotationTo = 0;
             this.pageTwoRotationRender = 0;
-            this.turnPage = 0;
-            this.turnToPage = 0;
-            this.turnToChapter = 0;
+//            this.turnPage = 0;
+//            this.turnToPage = 0;
+//            this.turnToChapter = 0;
         }
 
 

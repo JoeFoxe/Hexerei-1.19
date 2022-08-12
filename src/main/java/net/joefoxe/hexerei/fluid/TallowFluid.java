@@ -1,11 +1,13 @@
 package net.joefoxe.hexerei.fluid;
 
 import net.joefoxe.hexerei.item.ModItems;
+import net.joefoxe.hexerei.particle.ModParticleTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -33,12 +35,12 @@ public abstract class TallowFluid extends ForgeFlowingFluid {
 
 	@Override
 	public Fluid getFlowing() {
-		return ModFluids.BLOOD_FLOWING.get();
+		return ModFluids.TALLOW_FLOWING.get();
 	}
 
 	@Override
 	public Fluid getSource() {
-		return ModFluids.BLOOD_FLUID.get();
+		return ModFluids.TALLOW_FLUID.get();
 	}
 
 	@Override
@@ -54,7 +56,7 @@ public abstract class TallowFluid extends ForgeFlowingFluid {
 
 	@Override
 	protected int getSlopeFindDistance(LevelReader worldIn) {
-		return 4;
+		return 3;
 	}
 
 	@Override
@@ -64,7 +66,7 @@ public abstract class TallowFluid extends ForgeFlowingFluid {
 
 	@Override
 	public Item getBucket() {
-		return ModItems.BLOOD_BUCKET.get();
+		return ModItems.TALLOW_BUCKET.get();
 	}
 
 	@Override
@@ -84,7 +86,7 @@ public abstract class TallowFluid extends ForgeFlowingFluid {
 
 	@Override
 	protected BlockState createLegacyBlock(FluidState state) {
-		return ModFluids.BLOOD_BLOCK.get().defaultBlockState().setValue(LiquidBlock.LEVEL, Integer.valueOf(getLegacyLevel(state)));
+		return ModFluids.TALLOW_BLOCK.get().defaultBlockState().setValue(LiquidBlock.LEVEL, Integer.valueOf(getLegacyLevel(state)));
 	}
 
 	@Override
@@ -98,15 +100,12 @@ public abstract class TallowFluid extends ForgeFlowingFluid {
 	}
 
 
-//    public boolean isEquivalentTo(Fluid fluidIn) {
-//        return fluidIn == Fluids.WATER || fluidIn == Fluids.FLOWING_WATER;
-//    }
-//
-
-
-	public static class Flowing extends ForgeFlowingFluid {
-		protected Flowing(Properties properties) {
+	public static class Flowing extends ForgeFlowingFluid
+	{
+		public Flowing(Properties properties)
+		{
 			super(properties);
+			registerDefaultState(getStateDefinition().any().setValue(LEVEL, 7));
 		}
 
 		protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> builder) {
@@ -114,55 +113,49 @@ public abstract class TallowFluid extends ForgeFlowingFluid {
 			builder.add(LEVEL);
 		}
 
-		public boolean isSource(@Nonnull FluidState state) {
+		public int getAmount(FluidState state) {
+			return state.getValue(LEVEL);
+		}
+
+		public boolean isSource(FluidState state) {
 			return false;
 		}
 
 		@OnlyIn(Dist.CLIENT)
-		public void animateTick(Level worldIn, BlockPos pos, FluidState state, Random random) {
+		public void animateTick(Level worldIn, BlockPos pos, FluidState state, RandomSource random) {
 			if (!state.isSource() && !state.getValue(FALLING)) {
 				if (random.nextInt(64) == 0) {
 					worldIn.playSound(null, (double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, SoundEvents.WATER_AMBIENT, SoundSource.BLOCKS, random.nextFloat() * 0.25F + 0.75F, random.nextFloat() + 0.5F);
 				}
 			}
-//            else if (random.nextInt(20) == 0) {
-//                worldIn.addParticle(ModParticleTypes.BLOOD.get(), (double)pos.getX() + random.nextDouble(), (double)pos.getY() + (random.nextDouble() * (state.getValue(LEVEL) / 8)), (double)pos.getZ() + random.nextDouble(), -0.01D+(random.nextDouble()*0.02), -0.01D+(random.nextDouble()*0.02), -0.01D+(random.nextDouble()*0.02));
-//            }
-			//worldIn.addParticle(ModParticleTypes.BLOOD.get(), (double)pos.getX() + random.nextDouble(), (double)pos.getY() + (random.nextDouble() * (state.getValue(LEVEL) / 8)), (double)pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
-		}
-
-		@Override
-		public int getAmount(FluidState state) {
-			return state.getValue(LEVEL);
+			//worldIn.addParticle(ModParticleTypes.TALLOW.get(), (double)pos.getX() + random.nextDouble(), (double)pos.getY() + (random.nextDouble() * (state.getValue(LEVEL) / 8)), (double)pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
 		}
 	}
 
-	public static class Source extends ForgeFlowingFluid {
-		protected Source(Properties properties) {
+	public static class Source extends ForgeFlowingFluid
+	{
+		public Source(Properties properties)
+		{
 			super(properties);
 		}
 
-		public int getAmount(@Nonnull FluidState state) {
+		public int getAmount(FluidState state) {
 			return 8;
 		}
 
-		public boolean isSource(@Nonnull FluidState state) {
+		public boolean isSource(FluidState state) {
 			return true;
 		}
 
 		@OnlyIn(Dist.CLIENT)
-		public void animateTick(Level worldIn, BlockPos pos, FluidState state, Random random) {
+		public void animateTick(Level worldIn, BlockPos pos, FluidState state, RandomSource random) {
 			if (!state.isSource() && !state.getValue(FALLING)) {
 				if (random.nextInt(64) == 0) {
 					worldIn.playSound(null, (double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, SoundEvents.WATER_AMBIENT, SoundSource.BLOCKS, random.nextFloat() * 0.25F + 0.75F, random.nextFloat() + 0.5F);
 				}
 			}
-//            else if (random.nextInt(10) == 0) {
-//                worldIn.addParticle(ModParticleTypes.BLOOD.get(), (double)pos.getX() + random.nextDouble(), (double)pos.getY() + random.nextDouble(), (double)pos.getZ() + random.nextDouble(), -0.01D+(random.nextDouble()*0.02), -0.01D+(random.nextDouble()*0.02), -0.01D+(random.nextDouble()*0.02));
-//            }
-			//worldIn.addParticle(ModParticleTypes.BLOOD.get(), (double)pos.getX() + random.nextDouble(), (double)pos.getY() + random.nextDouble(), (double)pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
+			//worldIn.addParticle(ModParticleTypes.TALLOW.get(), (double)pos.getX() + random.nextDouble(), (double)pos.getY() + random.nextDouble(), (double)pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
 		}
-
 	}
 
 }

@@ -177,7 +177,8 @@ public class MixingCauldronTransferInfo implements IRecipeTransferHandler<Mixing
                 };
             }
         }
-        return this.transferHandlerHelper.createUserErrorWithTooltip(Component.translatable("no space"));
+        return null;
+//        return this.transferHandlerHelper.createUserErrorWithTooltip(Component.translatable("no space"));
 //        return IRecipeTransferHandler.super.transferRecipe(container, recipe, recipeSlots, pPlayer, pMaxTransfer, pDoTransfer);
     }
 
@@ -187,13 +188,13 @@ public class MixingCauldronTransferInfo implements IRecipeTransferHandler<Mixing
             items.add(ItemStack.EMPTY);
         int j = 0;
         for (IRecipeSlotView slotView : guiIngredients) {
-            j++;
             Optional<ItemStack> stack = slotView.getAllIngredients()
                     .filter(t -> t.getType()==VanillaTypes.ITEM_STACK)
                     .map(t -> (ItemStack)t.getIngredient())
                     .findFirst();
             if(stack.isPresent() && j != 8)
                 items.set(j, stack.get());
+            j++;
 //            int recipeSlot = entry.getKey();
 //            if(recipeSlot != 8){
 //                List<ItemStack> allIngredients = entry.getValue().getAllIngredients();
@@ -239,13 +240,13 @@ public class MixingCauldronTransferInfo implements IRecipeTransferHandler<Mixing
             items.add(ItemStack.EMPTY);
         int j = 0;
         for (IRecipeSlotView slotView : IRecipeSlotViews) {
-            j++;
             Optional<ItemStack> stack = slotView.getAllIngredients()
                     .filter(t -> t.getType()==VanillaTypes.ITEM_STACK)
                     .map(t -> (ItemStack)t.getIngredient())
                     .findFirst();
             if(stack.isPresent() && j != 8)
                 items.set(j, stack.get());
+            j++;
 //            int recipeSlot = entry.getKey();
 //            if(recipeSlot != 8){
 //                List<ItemStack> allIngredients = entry.getValue().getAllIngredients();

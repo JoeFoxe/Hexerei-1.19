@@ -63,15 +63,15 @@ public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauld
         builder.moveRecipeTransferButton(160, 90);
         builder.setShapeless();
 
-        builder.addSlot(RecipeIngredientRole.INPUT,79, 13).addIngredients(recipe.getIngredients().get(0));
-        builder.addSlot(RecipeIngredientRole.INPUT,101, 22).addIngredients(recipe.getIngredients().get(1));
-        builder.addSlot(RecipeIngredientRole.INPUT,110, 44).addIngredients(recipe.getIngredients().get(2));
-        builder.addSlot(RecipeIngredientRole.INPUT,101, 66).addIngredients(recipe.getIngredients().get(3));
-        builder.addSlot(RecipeIngredientRole.INPUT,79, 75).addIngredients(recipe.getIngredients().get(4));
-        builder.addSlot(RecipeIngredientRole.INPUT,57, 66).addIngredients(recipe.getIngredients().get(5));
-        builder.addSlot(RecipeIngredientRole.INPUT,48, 44).addIngredients(recipe.getIngredients().get(6));
-        builder.addSlot(RecipeIngredientRole.INPUT,57, 22).addIngredients(recipe.getIngredients().get(7));
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 141, 36).addIngredients(recipe.getIngredients().get(8));
+        builder.addSlot(RecipeIngredientRole.INPUT,80, 14).addIngredients(recipe.getIngredients().get(0));
+        builder.addSlot(RecipeIngredientRole.INPUT,102, 23).addIngredients(recipe.getIngredients().get(1));
+        builder.addSlot(RecipeIngredientRole.INPUT,111, 45).addIngredients(recipe.getIngredients().get(2));
+        builder.addSlot(RecipeIngredientRole.INPUT,102, 67).addIngredients(recipe.getIngredients().get(3));
+        builder.addSlot(RecipeIngredientRole.INPUT,80, 76).addIngredients(recipe.getIngredients().get(4));
+        builder.addSlot(RecipeIngredientRole.INPUT,58, 67).addIngredients(recipe.getIngredients().get(5));
+        builder.addSlot(RecipeIngredientRole.INPUT,49, 45).addIngredients(recipe.getIngredients().get(6));
+        builder.addSlot(RecipeIngredientRole.INPUT,58, 23).addIngredients(recipe.getIngredients().get(7));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 142, 37).addItemStack(recipe.getResultItem());
 
         FluidStack input = recipe.getLiquid();
         FluidStack output = recipe.getLiquidOutput();
