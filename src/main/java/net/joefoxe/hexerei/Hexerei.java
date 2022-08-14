@@ -11,6 +11,7 @@ import net.joefoxe.hexerei.container.ModContainers;
 import net.joefoxe.hexerei.data.books.PageDrawing;
 import net.joefoxe.hexerei.data.recipes.HexereiRecipeProvider;
 import net.joefoxe.hexerei.data.recipes.ModRecipeTypes;
+import net.joefoxe.hexerei.data.tags.ModBiomeTagsProvider;
 import net.joefoxe.hexerei.event.ModLootModifiers;
 import net.joefoxe.hexerei.events.CrowFluteEvent;
 import net.joefoxe.hexerei.events.GlassesZoomKeyPressEvent;
@@ -42,7 +43,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ComposterBlock;
@@ -53,8 +53,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.data.ForgeBlockTagsProvider;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -153,11 +155,12 @@ public class Hexerei {
 		// Register ourselves for server and other game events we are interested in
 		MinecraftForge.EVENT_BUS.register(this);
 
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::gatherData);
 	}
 
 	public void gatherData(GatherDataEvent event) {
 		DataGenerator gen = event.getGenerator();
-
+		gen.addProvider(event.includeServer(), new ModBiomeTagsProvider(gen, event.getExistingFileHelper()));
 		gen.addProvider(event.includeServer(), new HexereiRecipeProvider(gen));
 	}
 
