@@ -30,6 +30,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -613,14 +614,14 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
             for(int k = -1; k <= 1; ++k) {
                 for(int l = -1; l <= 1; ++l) {
                     if ((k != 0 || l != 0) && level.isEmptyBlock(worldPosition.offset(l, 0, k)) && level.isEmptyBlock(worldPosition.offset(l, 1, k))) {
-                        if(getCandle(level, worldPosition.offset(l * 2, 0, k * 2)) && numberOfCandles < maxCandles)
+                        if((level.getBlockEntity(worldPosition.offset(l * 2, 0, k * 2))) instanceof CandleTile candleTile && numberOfCandles < maxCandles)
                         {
-                            for(int i = 0; i < ((CandleTile)level.getBlockEntity(worldPosition.offset(l * 2, 0, k * 2))).numberOfCandles; i++) {
+                                for (int i = 0; i < candleTile.numberOfCandles; i++) {
 
-                                if ((i == 0 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l * 2, 0, k * 2))).candleLit1 == 1)
-                                        || (i == 1 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l * 2, 0, k * 2))).candleLit2 == 1)
-                                        || (i == 2 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l * 2, 0, k * 2))).candleLit3 == 1)
-                                        || (i == 3 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l * 2, 0, k * 2))).candleLit4 == 1)) {
+                                if ((i == 0 && candleTile.candles.get(0).lit)
+                                        || (i == 1 && candleTile.candles.get(1).lit)
+                                        || (i == 2 && candleTile.candles.get(2).lit)
+                                        || (i == 3 && candleTile.candles.get(3).lit)) {
                                     if (numberOfCandles == 0) {
                                         candlePos1 = worldPosition.offset(l * 2, 0, k * 2);
                                         candlePos1Slot = i;
@@ -638,15 +639,15 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                             }
 
                         }
-                        if(getCandle(level, worldPosition.offset(l * 2, 1, k * 2)) && numberOfCandles < maxCandles)
+                        if((level.getBlockEntity(worldPosition.offset(l * 2, 1, k * 2))) instanceof CandleTile candleTile && numberOfCandles < maxCandles)
                         {
 
-                            for(int i = 0; i < ((CandleTile)level.getBlockEntity(worldPosition.offset(l * 2, 1, k * 2))).numberOfCandles; i++) {
+                            for(int i = 0; i < candleTile.numberOfCandles; i++) {
 
-                                if ((i == 0 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l * 2, 1, k * 2))).candleLit1 == 1)
-                                        || (i == 1 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l * 2, 1, k * 2))).candleLit2 == 1)
-                                        || (i == 2 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l * 2, 1, k * 2))).candleLit3 == 1)
-                                        || (i == 3 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l * 2, 1, k * 2))).candleLit4 == 1)) {
+                                if ((i == 0 && candleTile.candles.get(0).lit)
+                                        || (i == 1 && candleTile.candles.get(1).lit)
+                                        || (i == 2 && candleTile.candles.get(2).lit)
+                                        || (i == 3 && candleTile.candles.get(3).lit)) {
                                     if (numberOfCandles == 0) {
                                         candlePos1 = worldPosition.offset(l * 2, 1, k * 2);
                                         candlePos1Slot = i;
@@ -666,15 +667,15 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
 
                         if (l != 0 && k != 0) {
 
-                            if(getCandle(level, worldPosition.offset(l * 2, 0, k)) && numberOfCandles < maxCandles)
+                            if((level.getBlockEntity(worldPosition.offset(l * 2, 0, k))) instanceof CandleTile candleTile && numberOfCandles < maxCandles)
                             {
 
-                                for(int i = 0; i < ((CandleTile)level.getBlockEntity(worldPosition.offset(l * 2, 0, k))).numberOfCandles; i++) {
+                                for(int i = 0; i < candleTile.numberOfCandles; i++) {
 
-                                    if ((i == 0 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l * 2, 0, k))).candleLit1 == 1)
-                                            || (i == 1 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l * 2, 0, k))).candleLit2 == 1)
-                                            || (i == 2 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l * 2, 0, k))).candleLit3 == 1)
-                                            || (i == 3 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l * 2, 0, k))).candleLit4 == 1)) {
+                                    if ((i == 0 && candleTile.candles.get(0).lit)
+                                            || (i == 1 && candleTile.candles.get(1).lit)
+                                            || (i == 2 && candleTile.candles.get(2).lit)
+                                            || (i == 3 && candleTile.candles.get(3).lit)) {
                                         if (numberOfCandles == 0) {
                                             candlePos1 = worldPosition.offset(l * 2, 0, k);
                                             candlePos1Slot = i;
@@ -691,15 +692,15 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                                     }
                                 }
                             }
-                            if(getCandle(level, worldPosition.offset(l * 2, 1, k)) && numberOfCandles < maxCandles)
+                            if((level.getBlockEntity(worldPosition.offset(l * 2, 1, k))) instanceof CandleTile candleTile && numberOfCandles < maxCandles)
                             {
 
-                                for(int i = 0; i < ((CandleTile)level.getBlockEntity(worldPosition.offset(l * 2, 1, k))).numberOfCandles; i++) {
+                                for(int i = 0; i < candleTile.numberOfCandles; i++) {
 
-                                    if ((i == 0 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l * 2, 1, k))).candleLit1 == 1)
-                                            || (i == 1 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l * 2, 1, k))).candleLit2 == 1)
-                                            || (i == 2 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l * 2, 1, k))).candleLit3 == 1)
-                                            || (i == 3 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l * 2, 1, k))).candleLit4 == 1)) {
+                                    if ((i == 0 && candleTile.candles.get(0).lit)
+                                            || (i == 1 && candleTile.candles.get(1).lit)
+                                            || (i == 2 && candleTile.candles.get(2).lit)
+                                            || (i == 3 && candleTile.candles.get(3).lit)) {
                                         if (numberOfCandles == 0) {
                                             candlePos1 = worldPosition.offset(l * 2, 1, k);
                                             candlePos1Slot = i;
@@ -717,15 +718,15 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                                 }
 
                             }
-                            if(getCandle(level, worldPosition.offset(l, 0, k * 2)) && numberOfCandles < maxCandles)
+                            if((level.getBlockEntity(worldPosition.offset(l, 0, k * 2))) instanceof CandleTile candleTile && numberOfCandles < maxCandles)
                             {
 
-                                for(int i = 0; i < ((CandleTile)level.getBlockEntity(worldPosition.offset(l, 0, k * 2))).numberOfCandles; i++) {
+                                for(int i = 0; i < candleTile.numberOfCandles; i++) {
 
-                                    if ((i == 0 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l, 0, k * 2))).candleLit1 == 1)
-                                            || (i == 1 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l, 0, k * 2))).candleLit2 == 1)
-                                            || (i == 2 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l, 0, k * 2))).candleLit3 == 1)
-                                            || (i == 3 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l, 0, k * 2))).candleLit4 == 1)) {
+                                    if ((i == 0 && candleTile.candles.get(0).lit)
+                                            || (i == 1 && candleTile.candles.get(1).lit)
+                                            || (i == 2 && candleTile.candles.get(2).lit)
+                                            || (i == 3 && candleTile.candles.get(3).lit)) {
                                         if (numberOfCandles == 0) {
                                             candlePos1 = worldPosition.offset(l, 0, k * 2);
                                             candlePos1Slot = i;
@@ -742,15 +743,15 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                                     }
                                 }
                             }
-                            if(getCandle(level, worldPosition.offset(l, 1, k * 2)) && numberOfCandles < maxCandles)
+                            if((level.getBlockEntity(worldPosition.offset(l, 1, k * 2))) instanceof CandleTile candleTile && numberOfCandles < maxCandles)
                             {
 
-                                for(int i = 0; i < ((CandleTile)level.getBlockEntity(worldPosition.offset(l, 1, k * 2))).numberOfCandles; i++) {
+                                for(int i = 0; i < candleTile.numberOfCandles; i++) {
 
-                                    if ((i == 0 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l, 1, k * 2))).candleLit1 == 1)
-                                            || (i == 1 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l, 1, k * 2))).candleLit2 == 1)
-                                            || (i == 2 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l, 1, k * 2))).candleLit3 == 1)
-                                            || (i == 3 && ((CandleTile) level.getBlockEntity(worldPosition.offset(l, 1, k * 2))).candleLit4 == 1)) {
+                                    if ((i == 0 && candleTile.candles.get(0).lit)
+                                            || (i == 1 && candleTile.candles.get(1).lit)
+                                            || (i == 2 && candleTile.candles.get(2).lit)
+                                            || (i == 3 && candleTile.candles.get(3).lit)) {
                                         if (numberOfCandles == 0) {
                                             candlePos1 = worldPosition.offset(l, 1, k * 2);
                                             candlePos1Slot = i;
@@ -779,82 +780,82 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
 
                 if(candlePos1Slot == 0) {
 
-                    ((CandleTile) level.getBlockEntity(candlePos1)).candleReturn1 = false;
-                    ((CandleTile) level.getBlockEntity(candlePos1)).candlePosX1 = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candlePosX1, (worldPosition.getX() - candlePos1.getX() + (float)Math.sin(degreesSpunCandles) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos1.getX() + (float)Math.sin(degreesSpunCandles) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos1)).candlePosX1) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos1)).candlePosY1 = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candlePosY1, (worldPosition.getY() - candlePos1.getY() + 1f + (float)Math.sin(Hexerei.getClientTicks()/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos1.getY() + 1f + (float)Math.sin(Hexerei.getClientTicks()/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos1)).candlePosY1) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos1)).candlePosZ1 = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candlePosZ1, (worldPosition.getZ() - candlePos1.getZ() + (float)Math.cos(degreesSpunCandles) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos1.getZ() + (float)Math.cos(degreesSpunCandles) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos1)).candlePosZ1) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(0).returnToBlock = false;
+                    ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(0).x = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candles.get(0).x, (worldPosition.getX() - candlePos1.getX() + (float)Math.sin(degreesSpunCandles) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos1.getX() + (float)Math.sin(degreesSpunCandles) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(0).x) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(0).y = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candles.get(0).y, (worldPosition.getY() - candlePos1.getY() + 1f + (float)Math.sin(Hexerei.getClientTicks()/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos1.getY() + 1f + (float)Math.sin(Hexerei.getClientTicks()/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(0).y) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(0).z = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candles.get(0).z, (worldPosition.getZ() - candlePos1.getZ() + (float)Math.cos(degreesSpunCandles) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos1.getZ() + (float)Math.cos(degreesSpunCandles) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(0).z) / 3f));
                 }
                 if(candlePos1Slot == 1) {
-                    ((CandleTile) level.getBlockEntity(candlePos1)).candleReturn2 = false;
-                    ((CandleTile) level.getBlockEntity(candlePos1)).candlePosX2 = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candlePosX2, (worldPosition.getX() - candlePos1.getX() + (float)Math.sin(degreesSpunCandles) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos1.getX() + (float)Math.sin(degreesSpunCandles) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos1)).candlePosX2) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos1)).candlePosY2 = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candlePosY2, (worldPosition.getY() - candlePos1.getY() + 1f + (float)Math.sin(Hexerei.getClientTicks()/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos1.getY() + 1f + (float)Math.sin(Hexerei.getClientTicks()/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos1)).candlePosY2) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos1)).candlePosZ2 = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candlePosZ2, (worldPosition.getZ() - candlePos1.getZ() + (float)Math.cos(degreesSpunCandles) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos1.getZ() + (float)Math.cos(degreesSpunCandles) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos1)).candlePosZ2) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(1).returnToBlock = false;
+                    ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(1).x = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candles.get(1).x, (worldPosition.getX() - candlePos1.getX() + (float)Math.sin(degreesSpunCandles) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos1.getX() + (float)Math.sin(degreesSpunCandles) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(1).x) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(1).y = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candles.get(1).y, (worldPosition.getY() - candlePos1.getY() + 1f + (float)Math.sin(Hexerei.getClientTicks()/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos1.getY() + 1f + (float)Math.sin(Hexerei.getClientTicks()/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(1).y) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(1).z = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candles.get(1).z, (worldPosition.getZ() - candlePos1.getZ() + (float)Math.cos(degreesSpunCandles) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos1.getZ() + (float)Math.cos(degreesSpunCandles) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(1).z) / 3f));
                 }
                 if(candlePos1Slot == 2) {
-                    ((CandleTile) level.getBlockEntity(candlePos1)).candleReturn3 = false;
-                    ((CandleTile) level.getBlockEntity(candlePos1)).candlePosX3 = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candlePosX3, (worldPosition.getX() - candlePos1.getX() + (float)Math.sin(degreesSpunCandles) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos1.getX() + (float)Math.sin(degreesSpunCandles) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos1)).candlePosX3) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos1)).candlePosY3 = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candlePosY3, (worldPosition.getY() - candlePos1.getY() + 1f + (float)Math.sin(Hexerei.getClientTicks()/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos1.getY() + 1f + (float)Math.sin(Hexerei.getClientTicks()/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos1)).candlePosY3) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos1)).candlePosZ3 = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candlePosZ3, (worldPosition.getZ() - candlePos1.getZ() + (float)Math.cos(degreesSpunCandles) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos1.getZ() + (float)Math.cos(degreesSpunCandles) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos1)).candlePosZ3) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(2).returnToBlock = false;
+                    ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(2).x = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candles.get(2).x, (worldPosition.getX() - candlePos1.getX() + (float)Math.sin(degreesSpunCandles) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos1.getX() + (float)Math.sin(degreesSpunCandles) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(2).x) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(2).y = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candles.get(2).y, (worldPosition.getY() - candlePos1.getY() + 1f + (float)Math.sin(Hexerei.getClientTicks()/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos1.getY() + 1f + (float)Math.sin(Hexerei.getClientTicks()/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(2).y) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(2).z = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candles.get(2).z, (worldPosition.getZ() - candlePos1.getZ() + (float)Math.cos(degreesSpunCandles) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos1.getZ() + (float)Math.cos(degreesSpunCandles) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(2).z) / 3f));
                 }
                 if(candlePos1Slot == 3) {
-                    ((CandleTile) level.getBlockEntity(candlePos1)).candleReturn4 = false;
-                    ((CandleTile) level.getBlockEntity(candlePos1)).candlePosX4 = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candlePosX4, (worldPosition.getX() - candlePos1.getX() + (float)Math.sin(degreesSpunCandles) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos1.getX() + (float)Math.sin(degreesSpunCandles) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos1)).candlePosX4) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos1)).candlePosY4 = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candlePosY4, (worldPosition.getY() - candlePos1.getY() + 1f + (float)Math.sin(Hexerei.getClientTicks()/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos1.getY() + 1f + (float)Math.sin(Hexerei.getClientTicks()/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos1)).candlePosY4) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos1)).candlePosZ4 = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candlePosZ4, (worldPosition.getZ() - candlePos1.getZ() + (float)Math.cos(degreesSpunCandles) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos1.getZ() + (float)Math.cos(degreesSpunCandles) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos1)).candlePosZ4) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(3).returnToBlock = false;
+                    ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(3).x = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candles.get(3).x, (worldPosition.getX() - candlePos1.getX() + (float)Math.sin(degreesSpunCandles) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos1.getX() + (float)Math.sin(degreesSpunCandles) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(3).x) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(3).y = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candles.get(3).y, (worldPosition.getY() - candlePos1.getY() + 1f + (float)Math.sin(Hexerei.getClientTicks()/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos1.getY() + 1f + (float)Math.sin(Hexerei.getClientTicks()/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(3).y) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(3).z = moveTo(((CandleTile) level.getBlockEntity(candlePos1)).candles.get(3).z, (worldPosition.getZ() - candlePos1.getZ() + (float)Math.cos(degreesSpunCandles) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos1.getZ() + (float)Math.cos(degreesSpunCandles) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos1)).candles.get(3).z) / 3f));
                 }
             }
             if(numberOfCandles >= 2)
             {
                 if(candlePos2Slot == 0) {
-                    ((CandleTile) level.getBlockEntity(candlePos2)).candleReturn1 = false;
-                    ((CandleTile) level.getBlockEntity(candlePos2)).candlePosX1 = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candlePosX1, (worldPosition.getX() - candlePos2.getX() + (float)Math.sin(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos2.getX() + (float)Math.sin(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos2)).candlePosX1) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos2)).candlePosY1 = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candlePosY1, (worldPosition.getY() - candlePos2.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 10)/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos2.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 10)/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos2)).candlePosY1) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos2)).candlePosZ1 = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candlePosZ1, (worldPosition.getZ() - candlePos2.getZ() + (float)Math.cos(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos2.getZ() + (float)Math.cos(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos2)).candlePosZ1) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(0).returnToBlock = false;
+                    ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(0).x = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candles.get(0).x, (worldPosition.getX() - candlePos2.getX() + (float)Math.sin(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos2.getX() + (float)Math.sin(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(0).x) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(0).y = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candles.get(0).y, (worldPosition.getY() - candlePos2.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 10)/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos2.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 10)/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(0).y) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(0).z = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candles.get(0).z, (worldPosition.getZ() - candlePos2.getZ() + (float)Math.cos(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos2.getZ() + (float)Math.cos(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(0).z) / 3f));
                 }
                 if(candlePos2Slot == 1) {
-                    ((CandleTile) level.getBlockEntity(candlePos2)).candleReturn2 = false;
-                    ((CandleTile) level.getBlockEntity(candlePos2)).candlePosX2 = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candlePosX2, (worldPosition.getX() - candlePos2.getX() + (float)Math.sin(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos2.getX() + (float)Math.sin(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos2)).candlePosX2) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos2)).candlePosY2 = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candlePosY2, (worldPosition.getY() - candlePos2.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 10)/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos2.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 10)/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos2)).candlePosY2) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos2)).candlePosZ2 = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candlePosZ2, (worldPosition.getZ() - candlePos2.getZ() + (float)Math.cos(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos2.getZ() + (float)Math.cos(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos2)).candlePosZ2) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(1).returnToBlock = false;
+                    ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(1).x = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candles.get(1).x, (worldPosition.getX() - candlePos2.getX() + (float)Math.sin(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos2.getX() + (float)Math.sin(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(1).x) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(1).y = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candles.get(1).y, (worldPosition.getY() - candlePos2.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 10)/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos2.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 10)/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(1).y) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(1).z = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candles.get(1).z, (worldPosition.getZ() - candlePos2.getZ() + (float)Math.cos(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos2.getZ() + (float)Math.cos(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(1).z) / 3f));
                 }
                 if(candlePos2Slot == 2) {
-                    ((CandleTile) level.getBlockEntity(candlePos2)).candleReturn3 = false;
-                    ((CandleTile) level.getBlockEntity(candlePos2)).candlePosX3 = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candlePosX3, (worldPosition.getX() - candlePos2.getX() + (float)Math.sin(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos2.getX() + (float)Math.sin(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos2)).candlePosX3) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos2)).candlePosY3 = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candlePosY3, (worldPosition.getY() - candlePos2.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 10)/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos2.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 10)/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos2)).candlePosY3) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos2)).candlePosZ3 = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candlePosZ3, (worldPosition.getZ() - candlePos2.getZ() + (float)Math.cos(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos2.getZ() + (float)Math.cos(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos2)).candlePosZ3) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(2).returnToBlock = false;
+                    ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(2).x = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candles.get(2).x, (worldPosition.getX() - candlePos2.getX() + (float)Math.sin(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos2.getX() + (float)Math.sin(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(2).x) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(2).y = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candles.get(2).y, (worldPosition.getY() - candlePos2.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 10)/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos2.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 10)/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(2).y) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(2).z = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candles.get(2).z, (worldPosition.getZ() - candlePos2.getZ() + (float)Math.cos(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos2.getZ() + (float)Math.cos(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(2).z) / 3f));
                 }
                 if(candlePos2Slot == 3) {
-                    ((CandleTile) level.getBlockEntity(candlePos2)).candleReturn4 = false;
-                    ((CandleTile) level.getBlockEntity(candlePos2)).candlePosX4 = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candlePosX4, (worldPosition.getX() - candlePos2.getX() + (float)Math.sin(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos2.getX() + (float)Math.sin(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos2)).candlePosX4) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos2)).candlePosY4 = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candlePosY4, (worldPosition.getY() - candlePos2.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 10)/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos2.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 10)/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos2)).candlePosY4) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos2)).candlePosZ4 = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candlePosZ4, (worldPosition.getZ() - candlePos2.getZ() + (float)Math.cos(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos2.getZ() + (float)Math.cos(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos2)).candlePosZ4) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(3).returnToBlock = false;
+                    ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(3).x = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candles.get(3).x, (worldPosition.getX() - candlePos2.getX() + (float)Math.sin(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos2.getX() + (float)Math.sin(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(3).x) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(3).y = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candles.get(3).y, (worldPosition.getY() - candlePos2.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 10)/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos2.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 10)/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(3).y) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(3).z = moveTo(((CandleTile) level.getBlockEntity(candlePos2)).candles.get(3).z, (worldPosition.getZ() - candlePos2.getZ() + (float)Math.cos(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos2.getZ() + (float)Math.cos(degreesSpunCandles + (numberOfCandles == 2 ? Math.PI : Math.PI*2f/3f)) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos2)).candles.get(3).z) / 3f));
                 }
             }
             if(numberOfCandles >= 3)
             {
                 if(candlePos3Slot == 0) {
-                    ((CandleTile) level.getBlockEntity(candlePos3)).candleReturn1 = false;
-                    ((CandleTile) level.getBlockEntity(candlePos3)).candlePosX1 = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candlePosX1, (worldPosition.getX() - candlePos3.getX() + (float)Math.sin(degreesSpunCandles + Math.PI*2f/3f*2f) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos3.getX() + (float)Math.sin(degreesSpunCandles + (Math.PI*2f/3f*2f) * 1.25f) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos3)).candlePosX1) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos3)).candlePosY1 = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candlePosY1, (worldPosition.getY() - candlePos3.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 20)/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos3.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 20)/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos3)).candlePosY1) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos3)).candlePosZ1 = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candlePosZ1, (worldPosition.getZ() - candlePos3.getZ() + (float)Math.cos(degreesSpunCandles + Math.PI*2f/3f*2f) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos3.getZ() + (float)Math.cos(degreesSpunCandles + (Math.PI*2f/3f*2f) * 1.25f) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos3)).candlePosZ1) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(0).returnToBlock = false;
+                    ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(0).x = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candles.get(0).x, (worldPosition.getX() - candlePos3.getX() + (float)Math.sin(degreesSpunCandles + Math.PI*2f/3f*2f) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos3.getX() + (float)Math.sin(degreesSpunCandles + (Math.PI*2f/3f*2f) * 1.25f) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(0).x) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(0).y = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candles.get(0).y, (worldPosition.getY() - candlePos3.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 20)/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos3.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 20)/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(0).y) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(0).z = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candles.get(0).z, (worldPosition.getZ() - candlePos3.getZ() + (float)Math.cos(degreesSpunCandles + Math.PI*2f/3f*2f) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos3.getZ() + (float)Math.cos(degreesSpunCandles + (Math.PI*2f/3f*2f) * 1.25f) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(0).z) / 3f));
                 }
                 if(candlePos3Slot == 1) {
-                    ((CandleTile) level.getBlockEntity(candlePos3)).candleReturn2 = false;
-                    ((CandleTile) level.getBlockEntity(candlePos3)).candlePosX2 = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candlePosX2, (worldPosition.getX() - candlePos3.getX() + (float)Math.sin(degreesSpunCandles + Math.PI*2f/3f*2f) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos3.getX() + (float)Math.sin(degreesSpunCandles + (Math.PI*2f/3f*2f) * 1.25f) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos3)).candlePosX2) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos3)).candlePosY2 = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candlePosY2, (worldPosition.getY() - candlePos3.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 20)/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos3.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 20)/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos3)).candlePosY2) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos3)).candlePosZ2 = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candlePosZ2, (worldPosition.getZ() - candlePos3.getZ() + (float)Math.cos(degreesSpunCandles + Math.PI*2f/3f*2f) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos3.getZ() + (float)Math.cos(degreesSpunCandles + (Math.PI*2f/3f*2f) * 1.25f) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos3)).candlePosZ2) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(1).returnToBlock = false;
+                    ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(1).x = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candles.get(1).x, (worldPosition.getX() - candlePos3.getX() + (float)Math.sin(degreesSpunCandles + Math.PI*2f/3f*2f) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos3.getX() + (float)Math.sin(degreesSpunCandles + (Math.PI*2f/3f*2f) * 1.25f) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(1).x) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(1).y = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candles.get(1).y, (worldPosition.getY() - candlePos3.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 20)/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos3.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 20)/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(1).y) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(1).z = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candles.get(1).z, (worldPosition.getZ() - candlePos3.getZ() + (float)Math.cos(degreesSpunCandles + Math.PI*2f/3f*2f) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos3.getZ() + (float)Math.cos(degreesSpunCandles + (Math.PI*2f/3f*2f) * 1.25f) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(1).z) / 3f));
                 }
                 if(candlePos3Slot == 2) {
-                    ((CandleTile) level.getBlockEntity(candlePos3)).candleReturn3 = false;
-                    ((CandleTile) level.getBlockEntity(candlePos3)).candlePosX3 = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candlePosX3, (worldPosition.getX() - candlePos3.getX() + (float)Math.sin(degreesSpunCandles + Math.PI*2f/3f*2f) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos3.getX() + (float)Math.sin(degreesSpunCandles + (Math.PI*2f/3f*2f) * 1.25f) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos3)).candlePosX3) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos3)).candlePosY3 = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candlePosY3, (worldPosition.getY() - candlePos3.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 20)/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos3.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 20)/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos3)).candlePosY3) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos3)).candlePosZ3 = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candlePosZ3, (worldPosition.getZ() - candlePos3.getZ() + (float)Math.cos(degreesSpunCandles + Math.PI*2f/3f*2f) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos3.getZ() + (float)Math.cos(degreesSpunCandles + (Math.PI*2f/3f*2f) * 1.25f) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos3)).candlePosZ3) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(2).returnToBlock = false;
+                    ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(2).x = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candles.get(2).x, (worldPosition.getX() - candlePos3.getX() + (float)Math.sin(degreesSpunCandles + Math.PI*2f/3f*2f) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos3.getX() + (float)Math.sin(degreesSpunCandles + (Math.PI*2f/3f*2f) * 1.25f) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(2).x) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(2).y = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candles.get(2).y, (worldPosition.getY() - candlePos3.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 20)/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos3.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 20)/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(2).y) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(2).z = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candles.get(2).z, (worldPosition.getZ() - candlePos3.getZ() + (float)Math.cos(degreesSpunCandles + Math.PI*2f/3f*2f) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos3.getZ() + (float)Math.cos(degreesSpunCandles + (Math.PI*2f/3f*2f) * 1.25f) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(2).z) / 3f));
                 }
                 if(candlePos3Slot == 3) {
-                    ((CandleTile) level.getBlockEntity(candlePos3)).candleReturn4 = false;
-                    ((CandleTile) level.getBlockEntity(candlePos3)).candlePosX4 = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candlePosX4, (worldPosition.getX() - candlePos3.getX() + (float)Math.sin(degreesSpunCandles + Math.PI*2f/3f*2f) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos3.getX() + (float)Math.sin(degreesSpunCandles + (Math.PI*2f/3f*2f) * 1.25f) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos3)).candlePosX4) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos3)).candlePosY4 = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candlePosY4, (worldPosition.getY() - candlePos3.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 20)/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos3.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 20)/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos3)).candlePosY4) / 3f));
-                    ((CandleTile) level.getBlockEntity(candlePos3)).candlePosZ4 = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candlePosZ4, (worldPosition.getZ() - candlePos3.getZ() + (float)Math.cos(degreesSpunCandles + Math.PI*2f/3f*2f) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos3.getZ() + (float)Math.cos(degreesSpunCandles + (Math.PI*2f/3f*2f) * 1.25f) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos3)).candlePosZ4) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(3).returnToBlock = false;
+                    ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(3).x = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candles.get(3).x, (worldPosition.getX() - candlePos3.getX() + (float)Math.sin(degreesSpunCandles + Math.PI*2f/3f*2f) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getX() - candlePos3.getX() + (float)Math.sin(degreesSpunCandles + (Math.PI*2f/3f*2f) * 1.25f) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(3).x) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(3).y = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candles.get(3).y, (worldPosition.getY() - candlePos3.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 20)/20f)/10), 0.02f + 0.08f * (Math.abs((worldPosition.getY() - candlePos3.getY() + 1f + (float)Math.sin((Hexerei.getClientTicks() + 20)/20f)/10) - ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(3).y) / 3f));
+                    ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(3).z = moveTo(((CandleTile) level.getBlockEntity(candlePos3)).candles.get(3).z, (worldPosition.getZ() - candlePos3.getZ() + (float)Math.cos(degreesSpunCandles + Math.PI*2f/3f*2f) * 1.25f), 0.02f + 0.20f * (Math.abs((worldPosition.getZ() - candlePos3.getZ() + (float)Math.cos(degreesSpunCandles + (Math.PI*2f/3f*2f) * 1.25f) * 1.25f) - ((CandleTile) level.getBlockEntity(candlePos3)).candles.get(3).z) / 3f));
                 }
             }
 

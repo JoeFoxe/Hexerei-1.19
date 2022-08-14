@@ -46,6 +46,7 @@ import java.util.function.Consumer;
 public class ClientProxy implements SidedProxy {
     public static KeyMapping[] keys = null;
 
+    public static final ModelLayerLocation CANDLE_HERB_LAYER = new ModelLayerLocation(new ResourceLocation(Hexerei.MOD_ID, "candle_herb_layer"), "main");
     public static final ModelLayerLocation WITCH_ARMOR_LAYER = new ModelLayerLocation(new ResourceLocation(Hexerei.MOD_ID, "witch_armor"), "main");
     public static final ModelLayerLocation MUSHROOM_WITCH_ARMOR_LAYER = new ModelLayerLocation(new ResourceLocation(Hexerei.MOD_ID, "mushroom_witch_armor"), "main");
 
@@ -132,6 +133,8 @@ public class ClientProxy implements SidedProxy {
         event.registerLayerDefinition(BroomWaterproofTipModel.LAYER_LOCATION, BroomWaterproofTipModel::createBodyLayer);
         event.registerLayerDefinition(ClientProxy.WITCH_ARMOR_LAYER, WitchArmorModel::createBodyLayer);
         event.registerLayerDefinition(ClientProxy.MUSHROOM_WITCH_ARMOR_LAYER, MushroomWitchArmorModel::createBodyLayer);
+        event.registerLayerDefinition(ClientProxy.CANDLE_HERB_LAYER, CandleHerbLayer::createBodyLayer);
+        event.registerLayerDefinition(CandleModel.CANDLE_LAYER, CandleModel::createBodyLayer);
 
     }
 

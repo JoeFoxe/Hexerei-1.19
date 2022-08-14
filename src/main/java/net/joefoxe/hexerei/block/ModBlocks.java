@@ -81,7 +81,7 @@ public class ModBlocks {
 	public static final RegistryObject<Candelabra> CANDELABRA = registerBlock("candelabra",
 					() -> new Candelabra(BlockBehaviour.Properties.of(Material.METAL).strength(1).explosionResistance(2f).lightLevel(state -> state.getValue(Candelabra.LIT) ? 15 : 0)));
 
-	public static final RegistryObject<Candle> CANDLE = registerBlock("candle",
+	public static final RegistryObject<Candle> CANDLE = registerBlockNoItem("candle",
 					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).noCollission().noOcclusion().strength(1).explosionResistance(0.5f).lightLevel(state -> Math.min(state.getValue(Candle.CANDLES_LIT) * 12, 15))));
 
 	public static final RegistryObject<Candle> CANDLE_BLUE = registerBlock("candle_blue",

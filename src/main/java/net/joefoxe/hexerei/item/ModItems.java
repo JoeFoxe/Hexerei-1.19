@@ -436,6 +436,9 @@ public class ModItems {
     public static final RegistryObject<Item> COFFER = ITEMS.register("coffer",
             () -> new CofferItem(ModBlocks.COFFER.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
+    public static final RegistryObject<Item> CANDLE = ITEMS.register("candle",
+            () -> new CandleItem(ModBlocks.CANDLE.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+
 
     public static final RegistryObject<Item> SEED_MIXTURE = ITEMS.register("seed_mixture",
             () -> new SeedMixtureItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));

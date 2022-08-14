@@ -1,12 +1,19 @@
 package net.joefoxe.hexerei.tileentity;
 
 import net.joefoxe.hexerei.block.custom.Candle;
+import net.joefoxe.hexerei.data.candle.BonemealingCandleEffect;
+import net.joefoxe.hexerei.data.candle.CandleData;
+import net.joefoxe.hexerei.util.HexereiPacketHandler;
+import net.joefoxe.hexerei.util.message.TESyncPacket;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.entity.Entity;
@@ -21,8 +28,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.function.Function;
 
@@ -30,76 +39,18 @@ public class CandleTile extends BlockEntity {
 
 //    public final ItemStackHandler itemHandler = createHandler();
 //    private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
-//    protected NonNullList<ItemStack> items = NonNullList.withSize(8, ItemStack.EMPTY);
+    public NonNullList<CandleData> candles = NonNullList.withSize(4, new CandleData(0, false,0,0, 0, 0, CandleData.meltTimerMAX, new BonemealingCandleEffect()));
 
-    public int candleType1;
-    public int candleType2;
-    public int candleType3;
-    public int candleType4;
-    public boolean candleReturn1;
-    public boolean candleReturn2;
-    public boolean candleReturn3;
-    public boolean candleReturn4;
     public int numberOfCandles;
-    public float candlePosX1;
-    public float candlePosY1;
-    public float candlePosZ1;
-    public float candlePosX2;
-    public float candlePosY2;
-    public float candlePosZ2;
-    public float candlePosX3;
-    public float candlePosY3;
-    public float candlePosZ3;
-    public float candlePosX4;
-    public float candlePosY4;
-    public float candlePosZ4;
-    public int candleHeight1;
-    public int candleHeight2;
-    public int candleHeight3;
-    public int candleHeight4;
-    public int candleLit1;
-    public int candleLit2;
-    public int candleLit3;
-    public int candleLit4;
-    public int candleMeltTimer1;
-    public int candleMeltTimer2;
-    public int candleMeltTimer3;
-    public int candleMeltTimer4;
     public int candleMeltTimerMAX = 6000;
     private boolean startupFlag;
 
     public CandleTile(BlockEntityType<?> tileEntityTypeIn, BlockPos blockPos, BlockState blockState) {
         super(tileEntityTypeIn, blockPos, blockState);
+        for(int i = 0; i < candles.size(); i++)
+            candles.set(i, new CandleData(0, false,0,0, 0, 0, CandleData.meltTimerMAX, new BonemealingCandleEffect()));
         startupFlag = false;
-        candleType1 = 0;
-        candleType2 = 0;
-        candleType3 = 0;
-        candleType4 = 0;
         numberOfCandles = 0;
-        candlePosX1 = 0;
-        candlePosY1 = 0;
-        candlePosZ1 = 0;
-        candlePosX2 = 0;
-        candlePosY2 = 0;
-        candlePosZ2 = 0;
-        candlePosX3 = 0;
-        candlePosY3 = 0;
-        candlePosZ3 = 0;
-        candlePosX4 = 0;
-        candlePosY4 = 0;
-        candlePosZ4 = 0;
-        candleLit1 = 0;
-        candleLit2 = 0;
-        candleLit3 = 0;
-        candleLit4 = 0;
-        candleMeltTimer1 = candleMeltTimerMAX;
-        candleMeltTimer2 = candleMeltTimerMAX;
-        candleMeltTimer3 = candleMeltTimerMAX;
-        candleMeltTimer4 = candleMeltTimerMAX;
-        candleReturn1 = false;
-        candleReturn2 = false;
-        candleReturn3 = false;
-        candleReturn4 = false;
     }
 
     public CandleTile(BlockPos blockPos, BlockState blockState) {
@@ -114,75 +65,79 @@ public class CandleTile extends BlockEntity {
     public void load(CompoundTag nbt) {
 
         if (nbt.contains("candleType1",  Tag.TAG_INT))
-            candleType1 = nbt.getInt("candleType1");
+            candles.get(0).type = nbt.getInt("candleType1");
         if (nbt.contains("candleType2",  Tag.TAG_INT))
-            candleType2 = nbt.getInt("candleType2");
+            candles.get(1).type = nbt.getInt("candleType2");
         if (nbt.contains("candleType3",  Tag.TAG_INT))
-            candleType3 = nbt.getInt("candleType3");
+            candles.get(2).type = nbt.getInt("candleType3");
         if (nbt.contains("candleType4",  Tag.TAG_INT))
-            candleType4 = nbt.getInt("candleType4");
+            candles.get(3).type = nbt.getInt("candleType4");
         if (nbt.contains("candleHeight1",  Tag.TAG_INT))
-            candleHeight1 = nbt.getInt("candleHeight1");
+            candles.get(0).height = nbt.getInt("candleHeight1");
         if (nbt.contains("candleHeight2",  Tag.TAG_INT))
-            candleHeight2 = nbt.getInt("candleHeight2");
+            candles.get(1).height = nbt.getInt("candleHeight2");
         if (nbt.contains("candleHeight3",  Tag.TAG_INT))
-            candleHeight3 = nbt.getInt("candleHeight3");
+            candles.get(2).height = nbt.getInt("candleHeight3");
         if (nbt.contains("candleHeight4",  Tag.TAG_INT))
-            candleHeight4 = nbt.getInt("candleHeight4");
-        if (nbt.contains("candleLit1",  Tag.TAG_INT))
-            candleLit1 = nbt.getInt("candleLit1");
-        if (nbt.contains("candleLit2",  Tag.TAG_INT))
-            candleLit2 = nbt.getInt("candleLit2");
-        if (nbt.contains("candleLit3",  Tag.TAG_INT))
-            candleLit3 = nbt.getInt("candleLit3");
-        if (nbt.contains("candleLit4",  Tag.TAG_INT))
-            candleLit4 = nbt.getInt("candleLit4");
-        if (nbt.contains("candleMeltTimer1",  Tag.TAG_INT))
-            candleMeltTimer1 = nbt.getInt("candleMeltTimer1");
-        if (nbt.contains("candleMeltTimer2",  Tag.TAG_INT))
-            candleMeltTimer2 = nbt.getInt("candleMeltTimer2");
-        if (nbt.contains("candleMeltTimer3",  Tag.TAG_INT))
-            candleMeltTimer3 = nbt.getInt("candleMeltTimer3");
-        if (nbt.contains("candleMeltTimer4",  Tag.TAG_INT))
-            candleMeltTimer4 = nbt.getInt("candleMeltTimer4");
+            candles.get(3).height = nbt.getInt("candleHeight4");
+        if (nbt.contains("candleLit1",  Tag.TAG_BYTE))
+            candles.get(0).lit = nbt.getBoolean("candleLit1");
+        else
+            candles.get(0).lit = false;
+        if (nbt.contains("candleLit2",  Tag.TAG_BYTE))
+            candles.get(1).lit = nbt.getBoolean("candleLit2");
+        else
+            candles.get(1).lit = false;
+        if (nbt.contains("candleLit3",  Tag.TAG_BYTE))
+            candles.get(2).lit = nbt.getBoolean("candleLit3");
+        else
+            candles.get(2).lit = false;
+        if (nbt.contains("candleLit4",  Tag.TAG_BYTE))
+            candles.get(3).lit = nbt.getBoolean("candleLit4");
+        else
+            candles.get(3).lit = false;
+        if (nbt.contains("c1andleMeltTimer1",  Tag.TAG_INT))
+            candles.get(0).meltTimer = nbt.getInt("c1andleMeltTimer1");
+        if (nbt.contains("c1andleMeltTimer2",  Tag.TAG_INT))
+            candles.get(1).meltTimer = nbt.getInt("c1andleMeltTimer2");
+        if (nbt.contains("c1andleMeltTimer3",  Tag.TAG_INT))
+            candles.get(2).meltTimer = nbt.getInt("c1andleMeltTimer3");
+        if (nbt.contains("c1andleMeltTimer4",  Tag.TAG_INT))
+            candles.get(3).meltTimer = nbt.getInt("c1andleMeltTimer4");
         super.load(nbt);
 
     }
 
     @Override
     public void saveAdditional(CompoundTag compound) {
-        if(candleType1 != 0)
-            compound.putInt("candleType1", candleType1);
-        if(candleType2 != 0)
-            compound.putInt("candleType2", candleType2);
-        if(candleType3 != 0)
-            compound.putInt("candleType3", candleType3);
-        if(candleType4 != 0)
-            compound.putInt("candleType4", candleType4);
-        if(candleHeight1 != 0)
-            compound.putInt("candleHeight1", candleHeight1);
-        if(candleHeight2 != 0)
-            compound.putInt("candleHeight2", candleHeight2);
-        if(candleHeight3 != 0)
-            compound.putInt("candleHeight3", candleHeight3);
-        if(candleHeight4 != 0)
-            compound.putInt("candleHeight4", candleHeight4);
-        if(candleLit1 != 0)
-            compound.putInt("candleLit1", candleLit1);
-        if(candleLit2 != 0)
-            compound.putInt("candleLit2", candleLit2);
-        if(candleLit3 != 0)
-            compound.putInt("candleLit3", candleLit3);
-        if(candleLit4 != 0)
-            compound.putInt("candleLit4", candleLit4);
-        if(candleMeltTimer1 != 0)
-            compound.putInt("candleMeltTimer1", candleMeltTimer1);
-        if(candleMeltTimer2 != 0)
-            compound.putInt("candleMeltTimer2", candleMeltTimer2);
-        if(candleMeltTimer3 != 0)
-            compound.putInt("candleMeltTimer3", candleMeltTimer3);
-        if(candleMeltTimer4 != 0)
-            compound.putInt("candleMeltTimer4", candleMeltTimer4);
+        if(candles.get(0).type != 0)
+            compound.putInt("candleType1", candles.get(0).type);
+        if(candles.get(1).type != 0)
+            compound.putInt("candleType2", candles.get(1).type);
+        if(candles.get(2).type != 0)
+            compound.putInt("candleType3", candles.get(2).type);
+        if(candles.get(3).type != 0)
+            compound.putInt("candleType4", candles.get(3).type);
+        if(candles.get(0).height != 0)
+            compound.putInt("candleHeight1", candles.get(0).height);
+        if(candles.get(1).height != 0)
+            compound.putInt("candleHeight2", candles.get(1).height);
+        if(candles.get(2).height != 0)
+            compound.putInt("candleHeight3", candles.get(2).height);
+        if(candles.get(3).height != 0)
+            compound.putInt("candleHeight4", candles.get(3).height);
+        compound.putBoolean("candleLit1", candles.get(0).lit);
+        compound.putBoolean("candleLit2", candles.get(1).lit);
+        compound.putBoolean("candleLit3", candles.get(2).lit);
+        compound.putBoolean("candleLit4", candles.get(3).lit);
+        if(candles.get(0).meltTimer != 0)
+            compound.putInt("candleMeltTimer1", candles.get(0).meltTimer);
+        if(candles.get(1).meltTimer != 0)
+            compound.putInt("candleMeltTimer2", candles.get(1).meltTimer);
+        if(candles.get(2).meltTimer != 0)
+            compound.putInt("candleMeltTimer3", candles.get(2).meltTimer);
+        if(candles.get(3).meltTimer != 0)
+            compound.putInt("candleMeltTimer4", candles.get(3).meltTimer);
 
     }
 
@@ -191,38 +146,34 @@ public class CandleTile extends BlockEntity {
         super.saveAdditional(tag);
 //        ContainerHelper.saveAllItems(tag, this.items);
 //        tag.put("inv", itemHandler.serializeNBT());
-        if(candleType1 != 0)
-            tag.putInt("candleType1", candleType1);
-        if(candleType2 != 0)
-            tag.putInt("candleType2", candleType2);
-        if(candleType3 != 0)
-            tag.putInt("candleType3", candleType3);
-        if(candleType4 != 0)
-            tag.putInt("candleType4", candleType4);
-        if(candleHeight1 != 0)
-            tag.putInt("candleHeight1", candleHeight1);
-        if(candleHeight2 != 0)
-            tag.putInt("candleHeight2", candleHeight2);
-        if(candleHeight3 != 0)
-            tag.putInt("candleHeight3", candleHeight3);
-        if(candleHeight4 != 0)
-            tag.putInt("candleHeight4", candleHeight4);
-        if(candleLit1 != 0)
-            tag.putInt("candleLit1", candleLit1);
-        if(candleLit2 != 0)
-            tag.putInt("candleLit2", candleLit2);
-        if(candleLit3 != 0)
-            tag.putInt("candleLit3", candleLit3);
-        if(candleLit4 != 0)
-            tag.putInt("candleLit4", candleLit4);
-        if(candleMeltTimer1 != 0)
-            tag.putInt("candleMeltTimer1", candleMeltTimer1);
-        if(candleMeltTimer2 != 0)
-            tag.putInt("candleMeltTimer2", candleMeltTimer2);
-        if(candleMeltTimer3 != 0)
-            tag.putInt("candleMeltTimer3", candleMeltTimer3);
-        if(candleMeltTimer4 != 0)
-            tag.putInt("candleMeltTimer4", candleMeltTimer4);
+        if(candles.get(0).type != 0)
+            tag.putInt("candleType1", candles.get(0).type);
+        if(candles.get(1).type != 0)
+            tag.putInt("candleType2", candles.get(1).type);
+        if(candles.get(2).type != 0)
+            tag.putInt("candleType3", candles.get(2).type);
+        if(candles.get(3).type != 0)
+            tag.putInt("candleType4", candles.get(3).type);
+        if(candles.get(0).height != 0)
+            tag.putInt("candleHeight1", candles.get(0).height);
+        if(candles.get(1).height != 0)
+            tag.putInt("candleHeight2", candles.get(1).height);
+        if(candles.get(2).height != 0)
+            tag.putInt("candleHeight3", candles.get(2).height);
+        if(candles.get(3).height != 0)
+            tag.putInt("candleHeight4", candles.get(3).height);
+        tag.putBoolean("candleLit1", candles.get(0).lit);
+        tag.putBoolean("candleLit2", candles.get(1).lit);
+        tag.putBoolean("candleLit3", candles.get(2).lit);
+        tag.putBoolean("candleLit4", candles.get(3).lit);
+        if(candles.get(0).meltTimer != 0)
+            tag.putInt("candleMeltTimer1", candles.get(0).meltTimer);
+        if(candles.get(1).meltTimer != 0)
+            tag.putInt("candleMeltTimer2", candles.get(1).meltTimer);
+        if(candles.get(2).meltTimer != 0)
+            tag.putInt("candleMeltTimer3", candles.get(2).meltTimer);
+        if(candles.get(3).meltTimer != 0)
+            tag.putInt("candleMeltTimer4", candles.get(3).meltTimer);
 
         return tag;
     }
@@ -286,75 +237,98 @@ public class CandleTile extends BlockEntity {
         return aabb;
     }
 
+    public void sync() {
+
+        if(level != null){
+            if (!level.isClientSide)
+                HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new TESyncPacket(worldPosition, save(new CompoundTag())));
+
+//            if (this.level != null)
+//                this.level.sendBlockUpdated(this.worldPosition, this.level.getBlockState(this.worldPosition), this.level.getBlockState(this.worldPosition),
+//                        Block.UPDATE_CLIENTS);
+        }
+    }
+
+
+    public void setDyeColor(int dyeColor){
+        this.candles.get(0).dyeColor = dyeColor;
+    }
+    public void setDyeColor(int candle, int dyeColor){
+        this.candles.get(Math.max(0, Math.min(candle, 3))).dyeColor = dyeColor;
+    }
+
+
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        sync();
+    }
+
 //    @Override
     public void tick() {
         Random random = new Random();
 
+        int candlesLit = 0;
 
-            int candlesLit = 0;
+        if(level != null && level.getBlockEntity(worldPosition) instanceof CandleTile)
+        {
+            if (candles.get(0).getEffect() != null)
+                candles.get(0).getEffect().tick(level, this, candles.get(0));
+            if (candles.get(1).getEffect() != null)
+                candles.get(1).getEffect().tick(level, this, candles.get(0));
+            if (candles.get(2).getEffect() != null)
+                candles.get(2).getEffect().tick(level, this, candles.get(0));
+            if (candles.get(3).getEffect() != null)
+                candles.get(3).getEffect().tick(level, this, candles.get(0));
+            if(candles.get(0).lit)
+                candlesLit++;
+            if(candles.get(1).lit)
+                candlesLit++;
+            if(candles.get(2).lit)
+                candlesLit++;
+            if(candles.get(3).lit)
+                candlesLit++;
+        }
 
-            if(level.getBlockEntity(worldPosition) instanceof CandleTile)
-            {
-                if(candleLit1 == 1)
-                    candlesLit++;
-                if(candleLit2 == 1)
-                    candlesLit++;
-                if(candleLit3 == 1)
-                    candlesLit++;
-                if(candleLit4 == 1)
-                    candlesLit++;
-            }
-
-            if(level.getBlockState(worldPosition).hasProperty(Candle.CANDLES_LIT))
-                level.setBlock(worldPosition, level.getBlockState(worldPosition).setValue(Candle.CANDLES_LIT, candlesLit), 3);
+        if(level.getBlockState(worldPosition).hasProperty(Candle.CANDLES_LIT))
+            level.setBlock(worldPosition, level.getBlockState(worldPosition).setValue(Candle.CANDLES_LIT, candlesLit).setValue(Candle.LIT, candlesLit > 0), 3);
 
 
         if(level.isClientSide) {
-            if (candleReturn1) {
-                candlePosX1 = moveTo(candlePosX1, 0, 0.125f);
-                candlePosY1 = moveTo(candlePosY1, 0, 0.025f);
-                candlePosZ1 = moveTo(candlePosZ1, 0, 0.125f);
-            }
-            if (candleReturn2) {
-                candlePosX2 = moveTo(candlePosX2, 0, 0.125f);
-                candlePosY2 = moveTo(candlePosY2, 0, 0.025f);
-                candlePosZ2 = moveTo(candlePosZ2, 0, 0.125f);
-            }
-            if (candleReturn3) {
-                candlePosX3 = moveTo(candlePosX3, 0, 0.125f);
-                candlePosY3 = moveTo(candlePosY3, 0, 0.025f);
-                candlePosZ3 = moveTo(candlePosZ3, 0, 0.125f);
-            }
-            if (candleReturn4) {
-                candlePosX4 = moveTo(candlePosX4, 0, 0.125f);
-                candlePosY4 = moveTo(candlePosY4, 0, 0.025f);
-                candlePosZ4 = moveTo(candlePosZ4, 0, 0.125f);
+            for(CandleData candleData : candles){
+
+                if (candleData.returnToBlock) {
+                    candleData.x = moveTo(candleData.x, 0, 0.125f);
+                    candleData.y = moveTo(candleData.y, 0, 0.025f);
+                    candleData.z = moveTo(candleData.z, 0, 0.125f);
+                }
             }
         }
-        if(this.getBlockState().getValue(Candle.SLOT_ONE_TYPE) != null && !startupFlag) {
-            candleType1 = this.getBlockState().getValue(Candle.SLOT_ONE_TYPE);
-            candleHeight1 = 7;
-            candleMeltTimer1 = candleMeltTimerMAX;
+
+        if(!startupFlag) {
+            candles.get(0).type = this.getBlockState().getValue(Candle.SLOT_ONE_TYPE);
+            candles.get(0).height = 7;
+            candles.get(0).meltTimer = candleMeltTimerMAX;
             startupFlag = true;
         }
 
 
         numberOfCandles = 0;
 
-        if(candleType1 != 0)
+        if(candles.get(0).type != 0)
             numberOfCandles++;
-        if(candleType2 != 0)
+        if(candles.get(1).type != 0)
             numberOfCandles++;
-        if(candleType3 != 0)
+        if(candles.get(2).type != 0)
             numberOfCandles++;
-        if(candleType4 != 0)
+        if(candles.get(3).type != 0)
             numberOfCandles++;
 
 
-        if(candleType1 != 0)
+        if(candles.get(0).type != 0)
         {
 
-            if(candleLit1 != 0) {
+            if(candles.get(0).lit) {
                 float xOffset = 0;
                 float zOffset = 0;
 
@@ -409,60 +383,60 @@ public class CandleTile extends BlockEntity {
                     zOffset = 0;
                 }
 
-                if(!(candlePosX1 != 0 || candlePosY1 != 0 || candlePosZ1 != 0)) {
+                if(!(candles.get(0).x != 0 || candles.get(0).y != 0 || candles.get(0).z != 0)) {
 
 
                     if (random.nextInt(10) == 0)
-                        level.addParticle(ParticleTypes.FLAME, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candleHeight1 / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.FLAME, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candles.get(0).height / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
                     if (random.nextInt(10) == 0)
-                        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candleHeight1 / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candles.get(0).height / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
 
                 } else
                 {
                     if (random.nextInt(10) == 0)
-                        level.addParticle(ParticleTypes.FLAME, worldPosition.getX() + 0.5f + candlePosX1, worldPosition.getY() + 3f / 16f + (float) candleHeight1 / 16f + candlePosY1, worldPosition.getZ() + 0.5f + candlePosZ1, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.FLAME, worldPosition.getX() + 0.5f + candles.get(0).x, worldPosition.getY() + 3f / 16f + (float) candles.get(0).height / 16f + candles.get(0).y, worldPosition.getZ() + 0.5f + candles.get(0).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
                     if (random.nextInt(10) == 0)
-                        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + candlePosX1, worldPosition.getY() + 3f / 16f + (float) candleHeight1 / 16f + candlePosY1, worldPosition.getZ() + 0.5f + candlePosZ1, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + candles.get(0).x, worldPosition.getY() + 3f / 16f + (float) candles.get(0).height / 16f + candles.get(0).y, worldPosition.getZ() + 0.5f + candles.get(0).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                 }
-                candleMeltTimer1--;
-                if (candleMeltTimer1 <= 0) {
-                    candleMeltTimer1 = candleMeltTimerMAX;
-                    candleHeight1--;
+                candles.get(0).meltTimer--;
+                if (candles.get(0).meltTimer <= 0) {
+                    candles.get(0).meltTimer = candleMeltTimerMAX;
+                    candles.get(0).height--;
 
-                    if(!(candlePosX1 != 0 || candlePosY1 != 0 || candlePosZ1 != 0)) {
-                        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candleHeight1 / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
+                    if(!(candles.get(0).x != 0 || candles.get(0).y != 0 || candles.get(0).z != 0)) {
+                        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candles.get(0).height / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
                     } else
                     {
-                        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + candlePosX1, worldPosition.getY() + 3f / 16f + (float) candleHeight1 / 16f + candlePosY1, worldPosition.getZ() + 0.5f + candlePosZ1, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + candles.get(0).x, worldPosition.getY() + 3f / 16f + (float) candles.get(0).height / 16f + candles.get(0).y, worldPosition.getZ() + 0.5f + candles.get(0).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
                     }
 
 
-                    if (candleHeight1 <= 0) {
-                        candleType1 = 0;
+                    if (candles.get(0).height <= 0) {
+                        candles.get(0).type = 0;
                         updateCandleSlots();
                         BlockState blockstate = this.getLevel().getBlockState(this.getBlockPos());
                         if (!level.isClientSide())
                             this.getLevel().setBlock(this.getBlockPos(), this.getBlockState().setValue(Candle.CANDLES, Integer.valueOf(Math.max(1, blockstate.getValue(Candle.CANDLES) - 1))),1);
                         level.playSound((Player) null, worldPosition, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
 
-                        if(!(candlePosX1 != 0 || candlePosY1 != 0 || candlePosZ1 != 0)) {
+                        if(!(candles.get(0).x != 0 || candles.get(0).y != 0 || candles.get(0).z != 0)) {
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                         } else
                         {
-                            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candlePosX1, worldPosition.getY() + 3f / 16f + (float) candleHeight1 / 16f + candlePosY1, worldPosition.getZ() + 0.5f + candlePosZ1, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
-                            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candlePosX1, worldPosition.getY() + 3f / 16f + (float) candleHeight1 / 16f + candlePosY1, worldPosition.getZ() + 0.5f + candlePosZ1, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
+                            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candles.get(0).x, worldPosition.getY() + 3f / 16f + (float) candles.get(0).height / 16f + candles.get(0).y, worldPosition.getZ() + 0.5f + candles.get(0).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
+                            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candles.get(0).x, worldPosition.getY() + 3f / 16f + (float) candles.get(0).height / 16f + candles.get(0).y, worldPosition.getZ() + 0.5f + candles.get(0).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                         }
 
-                        //candleHeight1 = 0;
+                        //candles.get(0).height = 0;
                     }
                 }
             }
         }
-        if(candleType2 != 0)
+        if(candles.get(1).type != 0)
         {
 
-            if(candleLit2 != 0) {
+            if(candles.get(1).lit) {
                 float xOffset = 0;
                 float zOffset = 0;
 
@@ -524,58 +498,58 @@ public class CandleTile extends BlockEntity {
                     zOffset = 0;
                 }
 
-                if(!(candlePosX2 != 0 || candlePosY2 != 0 || candlePosZ2 != 0)) {
+                if(!(candles.get(1).x != 0 || candles.get(1).y != 0 || candles.get(1).z != 0)) {
 
 
                     if (random.nextInt(10) == 0)
-                        level.addParticle(ParticleTypes.FLAME, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candleHeight2 / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.FLAME, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candles.get(1).height / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
                     if (random.nextInt(10) == 0)
-                        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candleHeight2 / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candles.get(1).height / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
 
                 } else
                 {
                     if (random.nextInt(10) == 0)
-                        level.addParticle(ParticleTypes.FLAME, worldPosition.getX() + 0.5f + candlePosX2, worldPosition.getY() + 3f / 16f + (float) candleHeight2 / 16f + candlePosY2, worldPosition.getZ() + 0.5f + candlePosZ2, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.FLAME, worldPosition.getX() + 0.5f + candles.get(1).x, worldPosition.getY() + 3f / 16f + (float) candles.get(1).height / 16f + candles.get(1).y, worldPosition.getZ() + 0.5f + candles.get(1).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
                     if (random.nextInt(10) == 0)
-                        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + candlePosX2, worldPosition.getY() + 3f / 16f + (float) candleHeight2 / 16f + candlePosY2, worldPosition.getZ() + 0.5f + candlePosZ2, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + candles.get(1).x, worldPosition.getY() + 3f / 16f + (float) candles.get(1).height / 16f + candles.get(1).y, worldPosition.getZ() + 0.5f + candles.get(1).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                 }
-                candleMeltTimer2--;
-                if (candleMeltTimer2 <= 0) {
-                    candleMeltTimer2 = candleMeltTimerMAX;
-                    candleHeight2--;
+                candles.get(1).meltTimer--;
+                if (candles.get(1).meltTimer <= 0) {
+                    candles.get(1).meltTimer = candleMeltTimerMAX;
+                    candles.get(1).height--;
 
-                    if(!(candlePosX2 != 0 || candlePosY2 != 0 || candlePosZ2 != 0)) {
-                        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candleHeight2 / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
+                    if(!(candles.get(1).x != 0 || candles.get(1).y != 0 || candles.get(1).z != 0)) {
+                        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candles.get(1).height / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
                     } else
                     {
-                        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + candlePosX2, worldPosition.getY() + 3f / 16f + (float) candleHeight2 / 16f + candlePosY2, worldPosition.getZ() + 0.5f + candlePosZ2, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + candles.get(1).x, worldPosition.getY() + 3f / 16f + (float) candles.get(1).height / 16f + candles.get(1).y, worldPosition.getZ() + 0.5f + candles.get(1).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
                     }
 
 
-                    if (candleHeight2 <= 0) {
-                        candleType2 = 0;
+                    if (candles.get(1).height <= 0) {
+                        candles.get(1).type = 0;
                         updateCandleSlots();
                         BlockState blockstate = this.getLevel().getBlockState(this.getBlockPos());
                         if (!level.isClientSide())
                             this.getLevel().setBlock(this.getBlockPos(), this.getBlockState().setValue(Candle.CANDLES, Integer.valueOf(Math.max(1, blockstate.getValue(Candle.CANDLES) - 1))), 1);
                         level.playSound((Player) null, worldPosition, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
-                        if(!(candlePosX2 != 0 || candlePosY2 != 0 || candlePosZ2 != 0)) {
+                        if(!(candles.get(1).x != 0 || candles.get(1).y != 0 || candles.get(1).z != 0)) {
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                         } else
                         {
-                            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candlePosX2, worldPosition.getY() + 3f / 16f + (float) candleHeight2 / 16f + candlePosY2, worldPosition.getZ() + 0.5f + candlePosZ2, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
-                            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candlePosX2, worldPosition.getY() + 3f / 16f + (float) candleHeight2 / 16f + candlePosY2, worldPosition.getZ() + 0.5f + candlePosZ2, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
+                            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candles.get(1).x, worldPosition.getY() + 3f / 16f + (float) candles.get(1).height / 16f + candles.get(1).y, worldPosition.getZ() + 0.5f + candles.get(1).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
+                            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candles.get(1).x, worldPosition.getY() + 3f / 16f + (float) candles.get(1).height / 16f + candles.get(1).y, worldPosition.getZ() + 0.5f + candles.get(1).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                         }
-                        //candleHeight1 = 0;
+                        //candles.get(0).height = 0;
                     }
                 }
             }
         }
-        if(candleType3 != 0)
+        if(candles.get(2).type != 0)
         {
 
-            if(candleLit3 != 0) {
+            if(candles.get(2).lit) {
                 float xOffset = 0;
                 float zOffset = 0;
 
@@ -611,58 +585,58 @@ public class CandleTile extends BlockEntity {
                     }
                 }
 
-                if(!(candlePosX3 != 0 || candlePosY3 != 0 || candlePosZ3 != 0)) {
+                if(!(candles.get(2).x != 0 || candles.get(2).y != 0 || candles.get(2).z != 0)) {
 
 
                     if (random.nextInt(10) == 0)
-                        level.addParticle(ParticleTypes.FLAME, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candleHeight3 / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.FLAME, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candles.get(2).height / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
                     if (random.nextInt(10) == 0)
-                        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candleHeight3 / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candles.get(2).height / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
 
                 } else
                 {
                     if (random.nextInt(10) == 0)
-                        level.addParticle(ParticleTypes.FLAME, worldPosition.getX() + 0.5f + candlePosX3, worldPosition.getY() + 3f / 16f + (float) candleHeight3 / 16f + candlePosY3, worldPosition.getZ() + 0.5f + candlePosZ3, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.FLAME, worldPosition.getX() + 0.5f + candles.get(2).x, worldPosition.getY() + 3f / 16f + (float) candles.get(2).height / 16f + candles.get(2).y, worldPosition.getZ() + 0.5f + candles.get(2).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
                     if (random.nextInt(10) == 0)
-                        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + candlePosX3, worldPosition.getY() + 3f / 16f + (float) candleHeight3 / 16f + candlePosY3, worldPosition.getZ() + 0.5f + candlePosZ3, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + candles.get(2).x, worldPosition.getY() + 3f / 16f + (float) candles.get(2).height / 16f + candles.get(2).y, worldPosition.getZ() + 0.5f + candles.get(2).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                 }
-                candleMeltTimer3--;
-                if (candleMeltTimer3 <= 0) {
-                    candleMeltTimer3 = candleMeltTimerMAX;
-                    candleHeight3--;
+                candles.get(2).meltTimer--;
+                if (candles.get(2).meltTimer <= 0) {
+                    candles.get(2).meltTimer = candleMeltTimerMAX;
+                    candles.get(2).height--;
 
-                    if(!(candlePosX3 != 0 || candlePosY3 != 0 || candlePosZ3 != 0)) {
-                        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candleHeight3 / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
+                    if(!(candles.get(2).x != 0 || candles.get(2).y != 0 || candles.get(2).z != 0)) {
+                        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candles.get(2).height / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
                     } else
                     {
-                        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + candlePosX3, worldPosition.getY() + 3f / 16f + (float) candleHeight3 / 16f + candlePosY3, worldPosition.getZ() + 0.5f + candlePosZ3, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + candles.get(2).x, worldPosition.getY() + 3f / 16f + (float) candles.get(2).height / 16f + candles.get(2).y, worldPosition.getZ() + 0.5f + candles.get(2).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
                     }
 
 
-                    if (candleHeight3 <= 0) {
-                        candleType3 = 0;
+                    if (candles.get(2).height <= 0) {
+                        candles.get(2).type = 0;
                         updateCandleSlots();
                         BlockState blockstate = this.getLevel().getBlockState(this.getBlockPos());
                         if (!level.isClientSide())
                             this.getLevel().setBlock(this.getBlockPos(), this.getBlockState().setValue(Candle.CANDLES, Integer.valueOf(Math.max(1, blockstate.getValue(Candle.CANDLES) - 1))), 1);
                         level.playSound((Player) null, worldPosition, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
-                        if(!(candlePosX3 != 0 || candlePosY3 != 0 || candlePosZ3 != 0)) {
+                        if(!(candles.get(2).x != 0 || candles.get(2).y != 0 || candles.get(2).z != 0)) {
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                         } else
                         {
-                            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candlePosX3, worldPosition.getY() + 3f / 16f + (float) candleHeight3 / 16f + candlePosY3, worldPosition.getZ() + 0.5f + candlePosZ3, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
-                            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candlePosX3, worldPosition.getY() + 3f / 16f + (float) candleHeight3 / 16f + candlePosY3, worldPosition.getZ() + 0.5f + candlePosZ3, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
+                            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candles.get(2).x, worldPosition.getY() + 3f / 16f + (float) candles.get(2).height / 16f + candles.get(2).y, worldPosition.getZ() + 0.5f + candles.get(2).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
+                            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candles.get(2).x, worldPosition.getY() + 3f / 16f + (float) candles.get(2).height / 16f + candles.get(2).y, worldPosition.getZ() + 0.5f + candles.get(2).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                         }
-                        //candleHeight1 = 0;
+                        //candles.get(0).height = 0;
                     }
                 }
             }
         }
-        if(candleType4 != 0)
+        if(candles.get(3).type != 0)
         {
 
-            if(candleLit4 != 0) {
+            if(candles.get(3).lit) {
                 float xOffset = 0;
                 float zOffset = 0;
 
@@ -683,62 +657,62 @@ public class CandleTile extends BlockEntity {
                     }
                 }
 
-                if(!(candlePosX4 != 0 || candlePosY4 != 0 || candlePosZ4 != 0)) {
+                if(!(candles.get(3).x != 0 || candles.get(3).y != 0 || candles.get(3).z != 0)) {
 
 
                     if (random.nextInt(10) == 0)
-                        level.addParticle(ParticleTypes.FLAME, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candleHeight4 / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.FLAME, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candles.get(3).height / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
                     if (random.nextInt(10) == 0)
-                        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candleHeight4 / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candles.get(3).height / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
 
                 } else
                 {
                     if (random.nextInt(10) == 0)
-                        level.addParticle(ParticleTypes.FLAME, worldPosition.getX() + 0.5f + candlePosX4, worldPosition.getY() + 3f / 16f + (float) candleHeight4 / 16f + candlePosY4, worldPosition.getZ() + 0.5f + candlePosZ4, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.FLAME, worldPosition.getX() + 0.5f + candles.get(3).x, worldPosition.getY() + 3f / 16f + (float) candles.get(3).height / 16f + candles.get(3).y, worldPosition.getZ() + 0.5f + candles.get(3).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
                     if (random.nextInt(10) == 0)
-                        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + candlePosX4, worldPosition.getY() + 3f / 16f + (float) candleHeight4 / 16f + candlePosY4, worldPosition.getZ() + 0.5f + candlePosZ4, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + candles.get(3).x, worldPosition.getY() + 3f / 16f + (float) candles.get(3).height / 16f + candles.get(3).y, worldPosition.getZ() + 0.5f + candles.get(3).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                 }
-                candleMeltTimer4--;
-                if (candleMeltTimer4 <= 0) {
-                    candleMeltTimer4 = candleMeltTimerMAX;
-                    candleHeight4--;
+                candles.get(3).meltTimer--;
+                if (candles.get(3).meltTimer <= 0) {
+                    candles.get(3).meltTimer = candleMeltTimerMAX;
+                    candles.get(3).height--;
 
-                    if(!(candlePosX4 != 0 || candlePosY4 != 0 || candlePosZ4 != 0)) {
-                        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candleHeight4 / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
+                    if(!(candles.get(3).x != 0 || candles.get(3).y != 0 || candles.get(3).z != 0)) {
+                        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 3f / 16f + (float) candles.get(3).height / 16f, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
                     } else
                     {
-                        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + candlePosX4, worldPosition.getY() + 3f / 16f + (float) candleHeight4 / 16f + candlePosY4, worldPosition.getZ() + 0.5f + candlePosZ4, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
+                        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + candles.get(3).x, worldPosition.getY() + 3f / 16f + (float) candles.get(3).height / 16f + candles.get(3).y, worldPosition.getZ() + 0.5f + candles.get(3).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.015d, (random.nextDouble() - 0.5d) / 50d);
                     }
 
 
-                    if (candleHeight4 <= 0) {
-                        candleType4 = 0;
+                    if (candles.get(3).height <= 0) {
+                        candles.get(3).type = 0;
                         updateCandleSlots();
                         BlockState blockstate = this.getLevel().getBlockState(this.getBlockPos());
                         if (!level.isClientSide())
                             this.getLevel().setBlock(this.getBlockPos(), this.getBlockState().setValue(Candle.CANDLES, Integer.valueOf(Math.max(1, blockstate.getValue(Candle.CANDLES) - 1))), 1);
                         level.playSound((Player) null, worldPosition, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
-                        if(!(candlePosX4 != 0 || candlePosY4 != 0 || candlePosZ4 != 0)) {
+                        if(!(candles.get(3).x != 0 || candles.get(3).y != 0 || candles.get(3).z != 0)) {
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                         } else
                         {
-                            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candlePosX4, worldPosition.getY() + 3f / 16f + (float) candleHeight4 / 16f + candlePosY4, worldPosition.getZ() + 0.5f + candlePosZ4, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
-                            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candlePosX4, worldPosition.getY() + 3f / 16f + (float) candleHeight4 / 16f + candlePosY4, worldPosition.getZ() + 0.5f + candlePosZ4, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
+                            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candles.get(3).x, worldPosition.getY() + 3f / 16f + (float) candles.get(3).height / 16f + candles.get(3).y, worldPosition.getZ() + 0.5f + candles.get(3).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
+                            level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candles.get(3).x, worldPosition.getY() + 3f / 16f + (float) candles.get(3).height / 16f + candles.get(3).y, worldPosition.getZ() + 0.5f + candles.get(3).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                         }
-                        //candleHeight1 = 0;
+                        //candles.get(0).height = 0;
                     }
                 }
             }
         }
 
-        candleReturn1 = true;
-        candleReturn2 = true;
-        candleReturn3 = true;
-        candleReturn4 = true;
+        candles.get(0).returnToBlock = true;
+        candles.get(1).returnToBlock = true;
+        candles.get(2).returnToBlock = true;
+        candles.get(3).returnToBlock = true;
 
 
-        if(candleType1 == 0 && candleType2 == 0 && candleType3 == 0 && candleType4 == 0)
+        if(candles.get(0).type == 0 && candles.get(1).type == 0 && candles.get(2).type == 0 && candles.get(3).type == 0)
             this.getLevel().destroyBlock(this.getBlockPos(), false);
 
         if(level.isClientSide) {
@@ -749,39 +723,39 @@ public class CandleTile extends BlockEntity {
     }
 
     public void updateCandleSlots() {
-        if(candleType1 == 0)
-        {
-            candleType1 = candleType2;
-            candleHeight1 = candleHeight2;
-            candleMeltTimer1 = candleMeltTimer2;
-            candleLit1 = candleLit2;
-            candleType2 = 0;
-            candleLit2 = 0;
-            candleHeight2 = 7;
-            candleMeltTimer2 = candleMeltTimerMAX;
-        }
-        if(candleType2 == 0)
-        {
-            candleType2 = candleType3;
-            candleHeight2 = candleHeight3;
-            candleMeltTimer2 = candleMeltTimer3;
-            candleLit2 = candleLit3;
-            candleType3 = 0;
-            candleLit3 = 0;
-            candleHeight3 = 7;
-            candleMeltTimer3 = candleMeltTimerMAX;
-        }
-        if(candleType3 == 0)
-        {
-            candleType3 = candleType4;
-            candleHeight3 = candleHeight4;
-            candleMeltTimer3 = candleMeltTimer4;
-            candleLit3 = candleLit4;
-            candleType4 = 0;
-            candleLit4 = 0;
-            candleHeight4 = 7;
-            candleMeltTimer4 = candleMeltTimerMAX;
-        }
+//        if(candles.get(0).type == 0)
+//        {
+//            candles.get(0).type = candles.get(1).type;
+//            candles.get(0).height = candles.get(1).height;
+//            candles.get(0).meltTimer = candles.get(1).meltTimer;
+//            candles.get(0).lit = candles.get(1).lit;
+//            candles.get(1).type = 0;
+//            candles.get(1).lit = 0;
+//            candles.get(1).height = 7;
+//            candles.get(1).meltTimer = candleMeltTimerMAX;
+//        }
+//        if(candles.get(1).type == 0)
+//        {
+//            candles.get(1).type = candles.get(2).type;
+//            candles.get(1).height = candles.get(2).height;
+//            candles.get(1).meltTimer = candles.get(2).meltTimer;
+//            candles.get(1).lit = candles.get(2).lit;
+//            candles.get(2).type = 0;
+//            candles.get(2).lit = 0;
+//            candles.get(2).height = 7;
+//            candles.get(2).meltTimer = candleMeltTimerMAX;
+//        }
+//        if(candles.get(2).type == 0)
+//        {
+//            candles.get(2).type = candles.get(3).type;
+//            candles.get(2).height = candles.get(3).height;
+//            candles.get(2).meltTimer = candles.get(3).meltTimer;
+//            candles.get(2).lit = candles.get(3).lit;
+//            candles.get(3).type = 0;
+//            candles.get(3).lit = 0;
+//            candles.get(3).height = 7;
+//            candles.get(3).meltTimer = candleMeltTimerMAX;
+//        }
     }
 
 

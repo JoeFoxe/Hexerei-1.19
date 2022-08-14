@@ -124,6 +124,14 @@ public class HexereiPacketHandler {
 
         instance.registerMessage(
                 ++ id,
+                CandleExtinguishPacket.class,
+                CandleExtinguishPacket::encode,
+                CandleExtinguishPacket::decode,
+                CandleExtinguishPacket::consume
+        );
+
+        instance.registerMessage(
+                ++ id,
                 CrowStartRidingPacket.class,
                 CrowStartRidingPacket::encode,
                 CrowStartRidingPacket::decode,

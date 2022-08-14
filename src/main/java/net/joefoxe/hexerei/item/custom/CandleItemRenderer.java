@@ -2,26 +2,67 @@ package net.joefoxe.hexerei.item.custom;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
+import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.block.ModBlocks;
+import net.joefoxe.hexerei.block.custom.Candle;
+import net.joefoxe.hexerei.block.custom.HerbJar;
+import net.joefoxe.hexerei.client.renderer.entity.model.CandleHerbLayer;
+import net.joefoxe.hexerei.client.renderer.entity.model.CandleModel;
 import net.joefoxe.hexerei.item.ModItems;
+import net.joefoxe.hexerei.tileentity.CandleTile;
+import net.joefoxe.hexerei.tileentity.HerbJarTile;
 import net.joefoxe.hexerei.tileentity.renderer.HerbJarRenderer;
+import net.joefoxe.hexerei.util.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.client.model.data.ModelData;
+import org.apache.commons.codec.binary.Hex;
 
-import javax.annotation.Nullable;
+public class CandleItemRenderer extends CustomItemRenderer {
 
-public class BroomKeychainItemRenderer extends CustomItemRenderer {
+    CandleHerbLayer herbLayer;
+    CandleModel candleModel;
+    public CandleItemRenderer() {
+        super();
+
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static CandleTile loadBlockEntityFromItem(CompoundTag tag, ItemStack item) {
+        if (item.getItem() instanceof BlockItem blockItem) {
+            Block block = blockItem.getBlock();
+            if (block instanceof Candle candle) {
+                CandleTile te = (CandleTile)candle.newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
+                te.setDyeColor(getCustomColor(tag));
+//                if(item.hasCustomHoverName())
+//                    te.customName = item.getHoverName();
+////                if (te != null) te.load(tag);
+                return te;
+            }
+        }
+        return null;
+    }
 
     @Override
     public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
@@ -56,39 +97,29 @@ public class BroomKeychainItemRenderer extends CustomItemRenderer {
     public void renderTileStuff(CompoundTag tag, ItemStack stack, ItemTransforms.TransformType transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
 
 
+        CandleTile tileEntityIn = loadBlockEntityFromItem(tag, stack);
+        if (tileEntityIn == null) return;
 
         matrixStackIn.pushPose();
+        matrixStackIn.translate(0.2, -0.1, -0.10);
+        matrixStackIn.translate( 8/16f, 28f/16f, 8/16f);
+        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
 
 //        matrixStackIn.translate(0.2, -0.1, -0.10);
 //        matrixStackIn.scale(0.30f, 0.30f, 0.30f);
-
-        matrixStackIn.translate(0.2, -0.1, -0.10);
-        matrixStackIn.translate(0.5, 0.5, 0.5);
-//        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
-        renderItem(new ItemStack(ModItems.BROOM_KEYCHAIN_BASE.get(), 1), matrixStackIn, bufferIn, combinedLightIn);
+//        renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.CANDLE_7_OF_7.get().defaultBlockState().setValue(Candle.SLOT_ONE_TYPE, tileEntityIn.candles.get(0).type), tileEntityIn.candles.get(0).dyeColor);
 
 
-        CompoundTag tag2 = stack.getOrCreateTag();
-        if(tag2.contains("Items")){
-            ListTag list = tag2.getList("Items", 10);
-            ItemStack ammo = ItemStack.of(list.getCompound(0));
-            if (!ammo.isEmpty()) {
+        if(herbLayer == null) herbLayer = new CandleHerbLayer(Minecraft.getInstance().getEntityModels().bakeLayer(ClientProxy.CANDLE_HERB_LAYER));
+        if(candleModel == null) candleModel = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_LAYER));
 
-                matrixStackIn.pushPose();
+        VertexConsumer vertexConsumer = bufferIn.getBuffer(RenderType.entityCutout(new ResourceLocation(Hexerei.MOD_ID, "textures/block/candle.png")));
+        candleModel.renderToBuffer(matrixStackIn, vertexConsumer, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(new ResourceLocation(Hexerei.MOD_ID, "textures/block/candle_herb_layer.png")));
+        herbLayer.renderToBuffer(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 0.75F);
 
-
-                matrixStackIn.translate((16.0F * (-0.25D))/ 16f,
-                        -(16.0F * (0.25D + 0.035))/ 16f,
-                        0);
-                matrixStackIn.scale(0.4f, 0.4f, 0.4f);
-
-                //0.4 scale
-
-                renderItem(ammo, matrixStackIn, bufferIn, combinedLightIn);
-
-                matrixStackIn.popPose();
-            }
-        }
+//        VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entitySmoothCutout(new ResourceLocation(Hexerei.MOD_ID, "textures/block/candle_herb_layer.png")));
+//        herbLayer.renderToBuffer(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 0.75F);
 
         matrixStackIn.popPose();
 
@@ -96,10 +127,9 @@ public class BroomKeychainItemRenderer extends CustomItemRenderer {
 
     private void renderBlock(PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, BlockState state, int color) {
         renderSingleBlock(state, matrixStackIn, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, color);
-
     }
 
-    public void renderSingleBlock(BlockState p_110913_, PoseStack p_110914_, MultiBufferSource p_110915_, int p_110916_, int p_110917_, net.minecraftforge.client.model.data.ModelData modelData, int color) {
+    public void renderSingleBlock(BlockState p_110913_, PoseStack p_110914_, MultiBufferSource p_110915_, int p_110916_, int p_110917_, ModelData modelData, int color) {
         RenderShape rendershape = p_110913_.getRenderShape();
         if (rendershape != RenderShape.INVISIBLE) {
             switch(rendershape) {

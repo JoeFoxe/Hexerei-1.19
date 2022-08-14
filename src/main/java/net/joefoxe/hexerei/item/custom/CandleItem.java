@@ -4,32 +4,54 @@ import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.animal.Sheep;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Consumer;
 
-public class CofferItem extends BlockItem implements DyeableLeatherItem {
+public class CandleItem extends BlockItem implements DyeableLeatherItem {
 
-    public CofferItem(Block block, Properties properties) {
+    public CandleItem(Block block, Properties properties) {
         super(block, properties);
     }
+
+
+    @Override
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        super.initializeClient(consumer);
+        CustomItemRenderer renderer = createItemRenderer();
+        if (renderer != null) {
+            consumer.accept(new IClientItemExtensions() {
+                @Override
+                public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                    return renderer.getRenderer();
+                }
+            });
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public CustomItemRenderer createItemRenderer() {
+        return new CandleItemRenderer();
+    }
+
 
     public interface ItemHandlerConsumer {
         void register(ItemColor handler, ItemLike... items);
@@ -39,10 +61,10 @@ public class CofferItem extends BlockItem implements DyeableLeatherItem {
     static class ColorRegisterHandler
     {
         @SubscribeEvent(priority = EventPriority.HIGHEST)
-        public static void registerCofferColors(RegisterColorHandlersEvent.Item event)
+        public static void registerCandleColors(RegisterColorHandlersEvent.Item event)
         {
-            CofferItem.ItemHandlerConsumer items = event.getItemColors()::register;
-            items.register((s, t) -> t == 1 ? getColorValue(CofferItem.getDyeColorNamed(s), s) : -1, ModItems.COFFER.get());
+            CandleItem.ItemHandlerConsumer items = event.getItemColors()::register;
+            items.register((s, t) -> t == 1 ? getColorValue(CandleItem.getDyeColorNamed(s), s) : -1, ModItems.CANDLE.get());
 
         }
     }
@@ -103,50 +125,25 @@ public class CofferItem extends BlockItem implements DyeableLeatherItem {
         return super.place(context);
     }
 
-    public ItemStackHandler createHandler() {
-        return new ItemStackHandler(36) {
-
-            @Override
-            public int getSlotLimit(int slot) {
-                return 64;
-            }
-        };
-    }
-
-
-    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        ItemStackHandler handler = createHandler();
-        handler.deserializeNBT(stack.getOrCreateTag().getCompound("Inventory"));
-
-        return Optional.of(new CofferItem.CofferItemToolTip(handler, stack));
-    }
-
-    public record CofferItemToolTip(ItemStackHandler handler, ItemStack self) implements TooltipComponent {
-    }
-
-    private static ItemStack[] getContents(ItemStack p_150783_) {
-        CompoundTag compoundtag = p_150783_.getTag();
-        if (compoundtag == null) {
-            return new ItemStack[0];
-        } else {
-            ItemStack[]stacks = new ItemStack[36];
-            for(int i = 0; i < stacks.length; i++)
-                stacks[i] = ItemStack.of(compoundtag.getCompound("Inventory").getList("Items", 10).getCompound(i));
-            return stacks;
-        }
-    }
-
-    private static int[] getContentsSlot(ItemStack p_150783_) {
-        CompoundTag compoundtag = p_150783_.getTag();
-        if (compoundtag == null) {
-            return new int[0];
-        } else {
-            int[]slots = new int[36];
-            for(int i = 0; i < compoundtag.getCompound("Inventory").getList("Items", 10).size(); i++)
-                slots[i] = compoundtag.getCompound("Inventory").getList("Items", 10).getCompound(i).getInt("Slot");
-//            ListTag listtag = ;
-            return slots;
-        }
-    }
+//    public ItemStackHandler createHandler() {
+//        return new ItemStackHandler(36) {
+//
+//            @Override
+//            public int getSlotLimit(int slot) {
+//                return 64;
+//            }
+//        };
+//    }
+//
+//
+//    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+//        ItemStackHandler handler = createHandler();
+//        handler.deserializeNBT(stack.getOrCreateTag().getCompound("Inventory"));
+//
+//        return Optional.of(new CandleItem.CofferItemToolTip(handler, stack));
+//    }
+//
+//    public record CofferItemToolTip(ItemStackHandler handler, ItemStack self) implements TooltipComponent {
+//    }
 
 }
