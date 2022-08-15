@@ -135,6 +135,7 @@ public class ClientProxy implements SidedProxy {
         event.registerLayerDefinition(ClientProxy.MUSHROOM_WITCH_ARMOR_LAYER, MushroomWitchArmorModel::createBodyLayer);
         event.registerLayerDefinition(ClientProxy.CANDLE_HERB_LAYER, CandleHerbLayer::createBodyLayer);
         event.registerLayerDefinition(CandleModel.CANDLE_LAYER, CandleModel::createBodyLayer);
+        event.registerLayerDefinition(CandleModel.CANDLE_HERB_LAYER, CandleModel::createBodyLayerEnlarge);
 
     }
 

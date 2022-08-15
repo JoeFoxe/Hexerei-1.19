@@ -1,9 +1,11 @@
 package net.joefoxe.hexerei.data.candle;
 
+import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.tileentity.CandleTile;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
@@ -13,11 +15,12 @@ import java.util.Random;
 
 public interface CandleEffect {
 
+
     Random random = new Random();
     List<BlockPos> area = Util.make(() -> {
         List<BlockPos> list = new ArrayList<>();
 
-        for (BlockPos pos : BlockPos.betweenClosed(-2, 0, -2, 2, 2, 2)) {
+        for (BlockPos pos : BlockPos.betweenClosed(-3, 0, -3, 3, 3, 3)) {
             list.add(pos.immutable());
         }
 

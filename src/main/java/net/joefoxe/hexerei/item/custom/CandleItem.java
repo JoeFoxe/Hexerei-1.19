@@ -74,6 +74,16 @@ public class CandleItem extends BlockItem implements DyeableLeatherItem {
         DyeableLeatherItem.super.setColor(p_41116_, p_41117_);
     }
 
+
+    public void setHeight(ItemStack p_41116_, int p_41117_) {
+        p_41116_.getOrCreateTagElement("display").putInt("height", p_41117_);
+    }
+
+    public static int getHeight(ItemStack p_41122_) {
+        CompoundTag compoundtag = p_41122_.getTagElement("display");
+        return compoundtag != null && compoundtag.contains("height", 99) ? compoundtag.getInt("height") : 7;
+    }
+
     public static int getColorValue(DyeColor color, ItemStack stack) {
         int dyeCol = getColorStatic(stack);
         if(color == null && dyeCol != -1)

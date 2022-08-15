@@ -9,11 +9,13 @@ import net.joefoxe.hexerei.block.custom.Candle;
 import net.joefoxe.hexerei.block.custom.HerbJar;
 import net.joefoxe.hexerei.client.renderer.entity.model.CandleHerbLayer;
 import net.joefoxe.hexerei.client.renderer.entity.model.CandleModel;
+import net.joefoxe.hexerei.data.candle.CandleData;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.tileentity.CandleTile;
 import net.joefoxe.hexerei.tileentity.HerbJarTile;
 import net.joefoxe.hexerei.tileentity.renderer.HerbJarRenderer;
 import net.joefoxe.hexerei.util.ClientProxy;
+import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -27,6 +29,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FrameTimer;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -41,7 +44,7 @@ import org.apache.commons.codec.binary.Hex;
 
 public class CandleItemRenderer extends CustomItemRenderer {
 
-    CandleHerbLayer herbLayer;
+    CandleModel herbLayer;
     CandleModel candleModel;
     public CandleItemRenderer() {
         super();
@@ -55,6 +58,7 @@ public class CandleItemRenderer extends CustomItemRenderer {
             if (block instanceof Candle candle) {
                 CandleTile te = (CandleTile)candle.newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
                 te.setDyeColor(getCustomColor(tag));
+                te.setHeight(CandleItem.getHeight(item));
 //                if(item.hasCustomHoverName())
 //                    te.customName = item.getHoverName();
 ////                if (te != null) te.load(tag);
@@ -105,18 +109,35 @@ public class CandleItemRenderer extends CustomItemRenderer {
         matrixStackIn.translate( 8/16f, 28f/16f, 8/16f);
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
 
-//        matrixStackIn.translate(0.2, -0.1, -0.10);
-//        matrixStackIn.scale(0.30f, 0.30f, 0.30f);
-//        renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.CANDLE_7_OF_7.get().defaultBlockState().setValue(Candle.SLOT_ONE_TYPE, tileEntityIn.candles.get(0).type), tileEntityIn.candles.get(0).dyeColor);
+        CandleData candleData = tileEntityIn.candles.get(0);
 
-
-        if(herbLayer == null) herbLayer = new CandleHerbLayer(Minecraft.getInstance().getEntityModels().bakeLayer(ClientProxy.CANDLE_HERB_LAYER));
+        if(herbLayer == null) herbLayer = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_HERB_LAYER));
         if(candleModel == null) candleModel = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_LAYER));
 
+        float[] col = HexereiUtil.rgbIntToFloatArray(candleData.dyeColor);
+
         VertexConsumer vertexConsumer = bufferIn.getBuffer(RenderType.entityCutout(new ResourceLocation(Hexerei.MOD_ID, "textures/block/candle.png")));
-        candleModel.renderToBuffer(matrixStackIn, vertexConsumer, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-        VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(new ResourceLocation(Hexerei.MOD_ID, "textures/block/candle_herb_layer.png")));
-        herbLayer.renderToBuffer(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 0.75F);
+        if(candleData.height != 0 && candleData.height <= 7) {
+            candleModel.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer, combinedLightIn, OverlayTexture.NO_OVERLAY, col[0], col[1], col[2], 1.0F);
+        }
+        candleModel.base.render(matrixStackIn, vertexConsumer, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+
+        matrixStackIn.pushPose();
+        matrixStackIn.translate( 0, (7 - candleData.height)/16f, 0);
+        candleModel.wick.render(matrixStackIn, vertexConsumer, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        matrixStackIn.popPose();
+        VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.effect.herbLayer));
+        if(candleData.height != 0 && candleData.height <= 7) {
+            herbLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
+        }
+
+        float offset = Hexerei.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTime();
+        vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(new ResourceLocation(Hexerei.MOD_ID, "textures/entity/power_layer_light.png"), (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
+        if(candleData.height != 0 && candleData.height <= 7) {
+            herbLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,col[0], col[1], col[2], 0.75F);
+        }
+//        VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(new ResourceLocation(Hexerei.MOD_ID, "textures/block/candle_herb_layer.png")));
+//        herbLayer.renderToBuffer(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 0.75F);
 
 //        VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entitySmoothCutout(new ResourceLocation(Hexerei.MOD_ID, "textures/block/candle_herb_layer.png")));
 //        herbLayer.renderToBuffer(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 0.75F);

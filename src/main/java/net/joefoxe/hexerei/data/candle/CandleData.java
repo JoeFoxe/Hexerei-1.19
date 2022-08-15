@@ -13,9 +13,9 @@ public class CandleData {
     public static int meltTimerMAX = 6000;
     public int dyeColor = 0x422F1E;
 
-    public CandleEffect effect;
+    public AbstractCandleEffect effect;
 
-    public CandleData(int type, boolean returnToBlock, float x, float y, float z, int height, int meltTimer, CandleEffect effect){
+    public CandleData(int type, boolean returnToBlock, float x, float y, float z, int height, int meltTimer, AbstractCandleEffect effect){
         this.type = type;
         this.returnToBlock = returnToBlock;
         this.x = x;

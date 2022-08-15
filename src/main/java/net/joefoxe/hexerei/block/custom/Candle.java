@@ -126,24 +126,27 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
             {
                 if(tile.candles.get(1).type == 0) {
                     tile.candles.get(1).type = candleType;
-                    tile.candles.get(1).height = 7;
                     tile.candles.get(1).meltTimer = tile.candleMeltTimerMAX;
-                    if(context.getItemInHand().getItem() instanceof CandleItem candleItem)
+                    if(context.getItemInHand().getItem() instanceof CandleItem candleItem) {
                         tile.candles.get(1).dyeColor = candleItem.getColor(context.getItemInHand());
+                        tile.candles.get(1).height = CandleItem.getHeight(context.getItemInHand());
+                    }
                 }
                 else if(tile.candles.get(2).type == 0) {
                     tile.candles.get(2).type = candleType;
-                    tile.candles.get(2).height = 7;
                     tile.candles.get(2).meltTimer = tile.candleMeltTimerMAX;
-                    if(context.getItemInHand().getItem() instanceof CandleItem candleItem)
+                    if(context.getItemInHand().getItem() instanceof CandleItem candleItem) {
                         tile.candles.get(2).dyeColor = candleItem.getColor(context.getItemInHand());
+                        tile.candles.get(2).height = CandleItem.getHeight(context.getItemInHand());
+                    }
                 }
                 else if(tile.candles.get(3).type == 0) {
                     tile.candles.get(3).type = candleType;
-                    tile.candles.get(3).height = 7;
                     tile.candles.get(3).meltTimer = tile.candleMeltTimerMAX;
-                    if(context.getItemInHand().getItem() instanceof CandleItem candleItem)
+                    if(context.getItemInHand().getItem() instanceof CandleItem candleItem) {
                         tile.candles.get(3).dyeColor = candleItem.getColor(context.getItemInHand());
+                        tile.candles.get(3).height = CandleItem.getHeight(context.getItemInHand());
+                    }
                 }
             }
             return blockstate.setValue(CANDLES, Integer.valueOf(Math.min(4, blockstate.getValue(CANDLES) + 1)));
@@ -183,149 +186,31 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
         BlockEntity entity = world.getBlockEntity(pos);
         if(entity instanceof CandleTile && !world.isClientSide()) {
             CandleTile candleTile = (CandleTile) entity;
-            ItemStack itemStack = new ItemStack(ModBlocks.CANDLE.get());
-            if(7 - candleTile.candles.get(0).height < 1) {
-                if (candleTile.candles.get(0).type == 1) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE.get());
-                    ((CandleItem)itemStack.getItem()).setColor(itemStack, candleTile.candles.get(0).dyeColor);
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(0).type == 2) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_BLUE.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(0).type == 3) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_BLACK.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(0).type == 4) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_LIME.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(0).type == 5) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_ORANGE.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(0).type == 6) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_PINK.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(0).type == 7) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_PURPLE.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(0).type == 8) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_RED.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(0).type == 9) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_CYAN.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(0).type == 10) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_YELLOW.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                }
+            if (candleTile.candles.get(0).type != 0) {
+                ItemStack itemStack = new ItemStack(ModBlocks.CANDLE.get());
+                ((CandleItem)itemStack.getItem()).setColor(itemStack, candleTile.candles.get(0).dyeColor);
+                ((CandleItem)itemStack.getItem()).setHeight(itemStack, candleTile.candles.get(0).height);
+                popResource((ServerLevel) world, pos, itemStack);
+            }
+            if (candleTile.candles.get(1).type != 0) {
+                ItemStack itemStack = new ItemStack(ModBlocks.CANDLE.get());
+                ((CandleItem)itemStack.getItem()).setColor(itemStack, candleTile.candles.get(1).dyeColor);
+                ((CandleItem)itemStack.getItem()).setHeight(itemStack, candleTile.candles.get(1).height);
+                popResource((ServerLevel) world, pos, itemStack);
+            }
+            if (candleTile.candles.get(2).type != 0) {
+                ItemStack itemStack = new ItemStack(ModBlocks.CANDLE.get());
+                ((CandleItem)itemStack.getItem()).setColor(itemStack, candleTile.candles.get(2).dyeColor);
+                ((CandleItem)itemStack.getItem()).setHeight(itemStack, candleTile.candles.get(2).height);
+                popResource((ServerLevel) world, pos, itemStack);
+            }
+            if (candleTile.candles.get(3).type != 0) {
+                ItemStack itemStack = new ItemStack(ModBlocks.CANDLE.get());
+                ((CandleItem)itemStack.getItem()).setColor(itemStack, candleTile.candles.get(3).dyeColor);
+                ((CandleItem)itemStack.getItem()).setHeight(itemStack, candleTile.candles.get(3).height);
+                popResource((ServerLevel) world, pos, itemStack);
             }
 
-
-            if(7 - candleTile.candles.get(1).height < 1) {
-                if (candleTile.candles.get(1).type == 1) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE.get());
-                    ((CandleItem)itemStack.getItem()).setColor(itemStack, candleTile.candles.get(1).dyeColor);
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(1).type == 2) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_BLUE.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(1).type == 3) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_BLACK.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(1).type == 4) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_LIME.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(1).type == 5) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_ORANGE.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(1).type == 6) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_PINK.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(1).type == 7) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_PURPLE.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(1).type == 8) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_RED.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(1).type == 9) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_CYAN.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(1).type == 10) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_YELLOW.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                }
-            }
-
-
-            if(7 - candleTile.candles.get(2).height < 1) {
-                if (candleTile.candles.get(2).type == 1) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE.get());
-                    ((CandleItem)itemStack.getItem()).setColor(itemStack, candleTile.candles.get(2).dyeColor);
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(2).type == 2) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_BLUE.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(2).type == 3) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_BLACK.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(2).type == 4) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_LIME.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(2).type == 5) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_ORANGE.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(2).type == 6) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_PINK.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(2).type == 7) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_PURPLE.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(2).type == 8) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_RED.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(2).type == 9) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_CYAN.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(2).type == 10) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_YELLOW.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                }
-            }
-
-
-            if(7 - candleTile.candles.get(3).height < 1) {
-                if (candleTile.candles.get(3).type == 1) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE.get());
-                    ((CandleItem)itemStack.getItem()).setColor(itemStack, candleTile.candles.get(3).dyeColor);
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(3).type == 2) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_BLUE.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(3).type == 3) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_BLACK.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(3).type == 4) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_LIME.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(3).type == 5) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_ORANGE.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(3).type == 6) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_PINK.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(3).type == 7) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_PURPLE.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(3).type == 8) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_RED.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(3).type == 9) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_CYAN.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                } else if (candleTile.candles.get(3).type == 10) {
-                    itemStack = new ItemStack(ModBlocks.CANDLE_YELLOW.get());
-                    popResource((ServerLevel) world, pos, itemStack);
-                }
-            }
         }
     }
 
@@ -485,30 +370,39 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
             return;
         withTileEntityDo(worldIn, pos, te -> {
             if(te.candles.get(0).type == 0) {
-                if(stack.getItem() instanceof CandleItem candleItem)
+                if(stack.getItem() instanceof CandleItem candleItem) {
                     te.candles.get(0).dyeColor = candleItem.getColor(stack);
+                    te.candles.get(0).height = CandleItem.getHeight(stack);
+                }
             }
             else if(te.candles.get(1).type == 0) {
-                if(stack.getItem() instanceof CandleItem candleItem)
+                if(stack.getItem() instanceof CandleItem candleItem) {
                     te.candles.get(1).dyeColor = candleItem.getColor(stack);
+                    te.candles.get(1).height = candleItem.getHeight(stack);
+                }
             }
             else if(te.candles.get(2).type == 0) {
-                if(stack.getItem() instanceof CandleItem candleItem)
+                if(stack.getItem() instanceof CandleItem candleItem) {
                     te.candles.get(2).dyeColor = candleItem.getColor(stack);
+                    te.candles.get(2).height = candleItem.getHeight(stack);
+                }
             }
             else if(te.candles.get(3).type == 0) {
-                if(stack.getItem() instanceof CandleItem candleItem)
+                if(stack.getItem() instanceof CandleItem candleItem) {
                     te.candles.get(3).dyeColor = candleItem.getColor(stack);
+                    te.candles.get(3).height = candleItem.getHeight(stack);
+                }
             }
+            te.sync();
 //            if(te.candles.get(0).type != 0)
 //            te.setDyeColor(Coffer.getColorStatic(stack));
         });
         super.setPlacedBy(worldIn, pos, state, placer, stack);
 
-        if (stack.hasCustomHoverName()) {
-            BlockEntity tileentity = worldIn.getBlockEntity(pos);
-            ((CofferTile)tileentity).customName = stack.getHoverName();
-        }
+//        if (stack.hasCustomHoverName()) {
+//            BlockEntity tileentity = worldIn.getBlockEntity(pos);
+//            ((CandleTile)tileentity).customName = stack.getHoverName();
+//        }
 
     }
 

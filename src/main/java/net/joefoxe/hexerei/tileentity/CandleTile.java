@@ -12,8 +12,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.entity.Entity;
@@ -22,7 +20,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.client.renderer.texture.Tickable;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
@@ -31,14 +28,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Random;
-import java.util.function.Function;
 
 public class CandleTile extends BlockEntity {
 
-//    public final ItemStackHandler itemHandler = createHandler();
-//    private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
     public NonNullList<CandleData> candles = NonNullList.withSize(4, new CandleData(0, false,0,0, 0, 0, CandleData.meltTimerMAX, new BonemealingCandleEffect()));
 
     public int numberOfCandles;
@@ -57,10 +50,6 @@ public class CandleTile extends BlockEntity {
         this(ModTileEntities.CANDLE_TILE.get(),blockPos, blockState);
     }
 
-//    public CandleTile() {
-//        this(ModTileEntities.CANDLE_TILE.get());
-//    }
-
     @Override
     public void load(CompoundTag nbt) {
 
@@ -72,6 +61,14 @@ public class CandleTile extends BlockEntity {
             candles.get(2).type = nbt.getInt("candleType3");
         if (nbt.contains("candleType4",  Tag.TAG_INT))
             candles.get(3).type = nbt.getInt("candleType4");
+        if (nbt.contains("dyeColor1",  Tag.TAG_INT))
+            candles.get(0).dyeColor = nbt.getInt("dyeColor1");
+        if (nbt.contains("dyeColor2",  Tag.TAG_INT))
+            candles.get(1).dyeColor = nbt.getInt("dyeColor2");
+        if (nbt.contains("dyeColor3",  Tag.TAG_INT))
+            candles.get(2).dyeColor = nbt.getInt("dyeColor3");
+        if (nbt.contains("dyeColor4",  Tag.TAG_INT))
+            candles.get(3).dyeColor = nbt.getInt("dyeColor4");
         if (nbt.contains("candleHeight1",  Tag.TAG_INT))
             candles.get(0).height = nbt.getInt("candleHeight1");
         if (nbt.contains("candleHeight2",  Tag.TAG_INT))
@@ -96,20 +93,28 @@ public class CandleTile extends BlockEntity {
             candles.get(3).lit = nbt.getBoolean("candleLit4");
         else
             candles.get(3).lit = false;
-        if (nbt.contains("c1andleMeltTimer1",  Tag.TAG_INT))
-            candles.get(0).meltTimer = nbt.getInt("c1andleMeltTimer1");
-        if (nbt.contains("c1andleMeltTimer2",  Tag.TAG_INT))
-            candles.get(1).meltTimer = nbt.getInt("c1andleMeltTimer2");
-        if (nbt.contains("c1andleMeltTimer3",  Tag.TAG_INT))
-            candles.get(2).meltTimer = nbt.getInt("c1andleMeltTimer3");
-        if (nbt.contains("c1andleMeltTimer4",  Tag.TAG_INT))
-            candles.get(3).meltTimer = nbt.getInt("c1andleMeltTimer4");
+        if (nbt.contains("candleMeltTimer1",  Tag.TAG_INT))
+            candles.get(0).meltTimer = nbt.getInt("candleMeltTimer1");
+        if (nbt.contains("candleMeltTimer2",  Tag.TAG_INT))
+            candles.get(1).meltTimer = nbt.getInt("candleMeltTimer2");
+        if (nbt.contains("candleMeltTimer3",  Tag.TAG_INT))
+            candles.get(2).meltTimer = nbt.getInt("candleMeltTimer3");
+        if (nbt.contains("candleMeltTimer4",  Tag.TAG_INT))
+            candles.get(3).meltTimer = nbt.getInt("candleMeltTimer4");
         super.load(nbt);
 
     }
 
     @Override
     public void saveAdditional(CompoundTag compound) {
+        if(candles.get(0).dyeColor != 0)
+            compound.putInt("dyeColor1", candles.get(0).dyeColor);
+        if(candles.get(1).dyeColor != 0)
+            compound.putInt("dyeColor2", candles.get(1).dyeColor);
+        if(candles.get(2).dyeColor != 0)
+            compound.putInt("dyeColor3", candles.get(2).dyeColor);
+        if(candles.get(3).dyeColor != 0)
+            compound.putInt("dyeColor4", candles.get(3).dyeColor);
         if(candles.get(0).type != 0)
             compound.putInt("candleType1", candles.get(0).type);
         if(candles.get(1).type != 0)
@@ -144,8 +149,14 @@ public class CandleTile extends BlockEntity {
 //    @Override
     public CompoundTag save(CompoundTag tag) {
         super.saveAdditional(tag);
-//        ContainerHelper.saveAllItems(tag, this.items);
-//        tag.put("inv", itemHandler.serializeNBT());
+        if(candles.get(0).dyeColor != 0)
+            tag.putInt("dyeColor1", candles.get(0).dyeColor);
+        if(candles.get(1).dyeColor != 0)
+            tag.putInt("dyeColor2", candles.get(1).dyeColor);
+        if(candles.get(2).dyeColor != 0)
+            tag.putInt("dyeColor3", candles.get(2).dyeColor);
+        if(candles.get(3).dyeColor != 0)
+            tag.putInt("dyeColor4", candles.get(3).dyeColor);
         if(candles.get(0).type != 0)
             tag.putInt("candleType1", candles.get(0).type);
         if(candles.get(1).type != 0)
@@ -253,8 +264,14 @@ public class CandleTile extends BlockEntity {
     public void setDyeColor(int dyeColor){
         this.candles.get(0).dyeColor = dyeColor;
     }
+    public void setHeight(int height){
+        this.candles.get(0).height = height;
+    }
     public void setDyeColor(int candle, int dyeColor){
         this.candles.get(Math.max(0, Math.min(candle, 3))).dyeColor = dyeColor;
+    }
+    public void setHeight(int candle, int height){
+        this.candles.get(Math.max(0, Math.min(candle, 3))).height = height;
     }
 
 
@@ -307,7 +324,6 @@ public class CandleTile extends BlockEntity {
 
         if(!startupFlag) {
             candles.get(0).type = this.getBlockState().getValue(Candle.SLOT_ONE_TYPE);
-            candles.get(0).height = 7;
             candles.get(0).meltTimer = candleMeltTimerMAX;
             startupFlag = true;
         }
