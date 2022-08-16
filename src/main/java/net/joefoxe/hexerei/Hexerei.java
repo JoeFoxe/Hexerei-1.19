@@ -3,6 +3,7 @@ package net.joefoxe.hexerei;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tterrag.registrate.Registrate;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.client.renderer.CrowPerchRenderer;
 import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
@@ -54,6 +55,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.ForgeBlockTagsProvider;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -77,12 +79,18 @@ import java.util.LinkedList;
 @Mod(Hexerei.MOD_ID)
 public class Hexerei {
 
+	public static final String MOD_ID = "hexerei";
+	private static final Lazy<Registrate> REGISTRATE = Lazy.of(() -> Registrate.create(MOD_ID));
+
 	public static SidedProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
-	public static final String MOD_ID = "hexerei";
 
 	public static GlassesZoomKeyPressEvent glassesZoomKeyPressEvent;
 	public static boolean entityClicked = false;
+
+	public static Registrate registrate() {
+		return REGISTRATE.get();
+	}
 
 	public static final Gson GSON = new GsonBuilder().setPrettyPrinting()
 					.disableHtmlEscaping()
@@ -161,7 +169,7 @@ public class Hexerei {
 	public void gatherData(GatherDataEvent event) {
 		DataGenerator gen = event.getGenerator();
 		gen.addProvider(event.includeServer(), new ModBiomeTagsProvider(gen, event.getExistingFileHelper()));
-		gen.addProvider(event.includeServer(), new HexereiRecipeProvider(gen));
+//		gen.addProvider(event.includeServer(), new HexereiRecipeProvider(gen));
 	}
 
 
