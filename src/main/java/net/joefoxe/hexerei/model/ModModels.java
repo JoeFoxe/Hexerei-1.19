@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 public class ModModels {
 
     // for rendering the transparency for the mixing cauldron when containing water
+    @SuppressWarnings("removal") //the renderLayer needs to be dynamic
     public static void setupRenderLayers() {
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MIXING_CAULDRON.get(), ModModels::isMixingCauldronValidLayer);
     }
