@@ -19,14 +19,8 @@ public class AbstractCandleEffect implements CandleEffect{
     private static final int MAX_TIME = 8 * 20;
 
     public int checkCooldown;
-    public ResourceLocation herbLayer;
-    public ResourceLocation swirlLayer;
 
     public AbstractCandleEffect(){
-
-        herbLayer = new ResourceLocation(Hexerei.MOD_ID, "textures/block/candle_herb_layer.png");
-
-        swirlLayer = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/power_layer_light.png");
     }
 
 

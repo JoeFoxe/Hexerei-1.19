@@ -1,16 +1,34 @@
 {
   "type": "hexerei:dipper",
   "liquid": {
-    "fluid": "hexerei:blood_fluid"
-  },
-  "ingredients": [
-    {
-      "item": "hexerei:candle"
+    "fluid": "hexerei:potion",
+    "nbt": {
+      "Bottle": "REGULAR",
+      "Potion": "minecraft:strength"
     }
-  ],
-  "output": {
-    "item": "hexerei:candle_red"
   },
+  "input": {
+    "item": "hexerei:candle",
+    "nbt": {
+      "display": {
+      }
+    }
+  },
+  "output": {
+    "item": "hexerei:candle",
+    "nbt": {
+      "display": {
+        "color": 11546150
+
+      },
+      "layers": {
+        "glowLayer": null,
+        "swirlLayer": null,
+        "herbLayer": "hexerei:textures/block/belladonna_flower_stage0.png",
+        "baseLayer": "hexerei:textures/block/selenite_block.png"}
+    }
+  },
+  "useInputItemAsOutput": true,
   "fluidLevelsConsumed": 100,
   "dippingTimeInTicks": 50,
   "dryingTimeInTicks": 100,

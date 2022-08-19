@@ -20,6 +20,9 @@ public class CandleModel<T extends Entity> extends EntityModel<T> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation CANDLE_LAYER = new ModelLayerLocation(new ResourceLocation(Hexerei.MOD_ID, "candle_layer"), "main");
     public static final ModelLayerLocation CANDLE_HERB_LAYER = new ModelLayerLocation(new ResourceLocation(Hexerei.MOD_ID, "candle_herb_layer"), "main");
+    public static final ModelLayerLocation CANDLE_BASE_LAYER = new ModelLayerLocation(new ResourceLocation(Hexerei.MOD_ID, "candle_base_layer"), "main");
+    public static final ModelLayerLocation CANDLE_GLOW_LAYER = new ModelLayerLocation(new ResourceLocation(Hexerei.MOD_ID, "candle_glow_layer"), "main");
+    public static final ModelLayerLocation CANDLE_SWIRL_LAYER = new ModelLayerLocation(new ResourceLocation(Hexerei.MOD_ID, "candle_swirl_layer"), "main");
     public final ModelPart wick;
     public final ModelPart wax1;
     public final ModelPart wax2;
@@ -44,11 +47,14 @@ public class CandleModel<T extends Entity> extends EntityModel<T> {
         this.wax = new ModelPart[]{wax1, wax2, wax3, wax4, wax5, wax6, wax7};
     }
 
-    public static LayerDefinition createBodyLayerNone() {
-        return createBodyLayer(CubeDeformation.NONE);
+    public static LayerDefinition createBodyLayerHerb() {
+        return createBodyLayer(new CubeDeformation(0.1f));
     }
-    public static LayerDefinition createBodyLayerEnlarge() {
+    public static LayerDefinition createBodyLayerGlow() {
         return createBodyLayer(new CubeDeformation(0.15f));
+    }
+    public static LayerDefinition createBodyLayerSwirl() {
+        return createBodyLayer(new CubeDeformation(0.20f));
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -78,6 +84,32 @@ public class CandleModel<T extends Entity> extends EntityModel<T> {
         PartDefinition base = partdefinition.addOrReplaceChild("base", CubeListBuilder.create().texOffs(5, 6).addBox(-1.5F, -0.5F, -1.5F, 3.0F, 1.0F, 3.0F, cube), PartPose.offset(0.0F, 23.5F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 32, 32);
+    }
+    public static LayerDefinition createBaseLayer() {
+        CubeDeformation cube = CubeDeformation.NONE;
+        MeshDefinition meshdefinition = new MeshDefinition();
+        PartDefinition partdefinition = meshdefinition.getRoot();
+
+        PartDefinition wick = partdefinition.addOrReplaceChild("wick", CubeListBuilder.create().texOffs(0, 0).addBox(-0.5F, 7.0F, 0.0F, 1.0F, 1.0F, 0.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 0).addBox(0.0F, 7.0F, -0.5F, 0.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 8.0F, 0.0F));
+
+        PartDefinition wax1 = partdefinition.addOrReplaceChild("wax1", CubeListBuilder.create().texOffs(0, 0).addBox(-1.0F, 15.0F, -1.0F, 2.0F, 1.0F, 2.0F, cube), PartPose.offset(0.0F, 7.0F, 0.0F));
+
+        PartDefinition wax2 = partdefinition.addOrReplaceChild("wax2", CubeListBuilder.create().texOffs(0, 0).addBox(-1.0F, 14.0F, -1.0F, 2.0F, 2.0F, 2.0F, cube), PartPose.offset(0.0F, 7.0F, 0.0F));
+
+        PartDefinition wax3 = partdefinition.addOrReplaceChild("wax3", CubeListBuilder.create().texOffs(0, 0).addBox(-1.0F, 13.0F, -1.0F, 2.0F, 3.0F, 2.0F, cube), PartPose.offset(0.0F, 7.0F, 0.0F));
+
+        PartDefinition wax4 = partdefinition.addOrReplaceChild("wax4", CubeListBuilder.create().texOffs(0, 0).addBox(-1.0F, 12.0F, -1.0F, 2.0F, 4.0F, 2.0F, cube), PartPose.offset(0.0F, 7.0F, 0.0F));
+
+        PartDefinition wax5 = partdefinition.addOrReplaceChild("wax5", CubeListBuilder.create().texOffs(0, 0).addBox(-1.0F, 11.0F, -1.0F, 2.0F, 5.0F, 2.0F, cube), PartPose.offset(0.0F, 7.0F, 0.0F));
+
+        PartDefinition wax6 = partdefinition.addOrReplaceChild("wax6", CubeListBuilder.create().texOffs(0, 0).addBox(-1.0F, 10.0F, -1.0F, 2.0F, 6.0F, 2.0F, cube), PartPose.offset(0.0F, 7.0F, 0.0F));
+
+        PartDefinition wax7 = partdefinition.addOrReplaceChild("wax7", CubeListBuilder.create().texOffs(0, 0).addBox(-1.0F, 9.0F, -1.0F, 2.0F, 7.0F, 2.0F,  cube), PartPose.offset(0.0F, 7.0F, 0.0F));
+
+        PartDefinition base = partdefinition.addOrReplaceChild("base", CubeListBuilder.create().texOffs(0, 0).addBox(-1.5F, -0.5F, -1.5F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 23.5F, 0.0F));
+
+        return LayerDefinition.create(meshdefinition, 16, 16);
     }
 
     @Override

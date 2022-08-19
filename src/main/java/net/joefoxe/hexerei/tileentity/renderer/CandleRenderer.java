@@ -37,8 +37,11 @@ import net.minecraftforge.client.model.data.ModelData;
 public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
 
-    public CandleModel herbLayer;
-    public CandleModel candleModel;
+    CandleModel herbLayer;
+    CandleModel glowLayer;
+    CandleModel swirlLayer;
+    CandleModel candleModel;
+    CandleModel baseModel;
     public CandleRenderer() {
         super();
 
@@ -53,8 +56,152 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             return;
 
         if(herbLayer == null) herbLayer = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_HERB_LAYER));
+        if(glowLayer == null) glowLayer = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_GLOW_LAYER));
+        if(swirlLayer == null) swirlLayer = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_SWIRL_LAYER));
         if(candleModel == null) candleModel = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_LAYER));
-        if(tileEntityIn.candles.get(0).type != 0) {
+        if(baseModel == null) baseModel = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_BASE_LAYER));
+
+
+
+
+        // base layer
+        if(tileEntityIn.candles.get(0).hasCandle) {
+
+            matrixStackIn.pushPose();
+            matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
+            matrixStackIn.translate(tileEntityIn.candles.get(0).x , tileEntityIn.candles.get(0).y, tileEntityIn.candles.get(0).z);
+            if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90f));
+
+            if(tileEntityIn.candles.get(0).x == 0 && tileEntityIn.candles.get(0).y == 0 && tileEntityIn.candles.get(0).z == 0) {
+                if (tileEntityIn.numberOfCandles == 4)
+                    matrixStackIn.translate(3f / 16f, 0f / 16f, 2f / 16f);
+                else if (tileEntityIn.numberOfCandles == 3)
+                    matrixStackIn.translate(-1f / 16f, 0f / 16f, 3f / 16f);
+                else if (tileEntityIn.numberOfCandles == 2)
+                    matrixStackIn.translate(3f / 16f, 0f / 16f, -2f / 16f);
+            }
+
+            matrixStackIn.translate( 0/16f, 24f/16f, 0/16f);
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
+
+
+            int candle = 0;
+            CandleData candleData = tileEntityIn.candles.get(candle);
+            if(candleData.hasBase()){
+                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.baseLayer));
+                baseModel.base.render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+            }
+
+            matrixStackIn.popPose();
+        }
+        if(tileEntityIn.candles.get(1).hasCandle) {
+
+            matrixStackIn.pushPose();
+            matrixStackIn.translate(tileEntityIn.candles.get(1).x , tileEntityIn.candles.get(1).y, tileEntityIn.candles.get(1).z);
+            matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
+            if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90f));
+
+            if(tileEntityIn.candles.get(1).x == 0 && tileEntityIn.candles.get(1).y == 0 && tileEntityIn.candles.get(1).z == 0) {
+                if(tileEntityIn.numberOfCandles == 4)
+                    matrixStackIn.translate(-2f/16f , 0f/16f, -3f/16f);
+                else if(tileEntityIn.numberOfCandles == 3)
+                    matrixStackIn.translate(3f/16f , 0f/16f, 1f/16f);
+                else if(tileEntityIn.numberOfCandles == 2)
+                    matrixStackIn.translate(-3f/16f , 0f/16f, 3f/16f);
+            }
+
+            matrixStackIn.translate( 0/16f, 24f/16f, 0/16f);
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
+
+
+            int candle = 1;
+            CandleData candleData = tileEntityIn.candles.get(candle);
+            if(candleData.hasBase()) {
+                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.baseLayer));
+                baseModel.base.render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+            }
+
+            matrixStackIn.popPose();
+        }
+        if(tileEntityIn.candles.get(2).hasCandle) {
+
+            matrixStackIn.pushPose();
+            matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
+            matrixStackIn.translate(tileEntityIn.candles.get(2).x , tileEntityIn.candles.get(2).y, tileEntityIn.candles.get(2).z);
+            if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90f));
+
+            if(tileEntityIn.candles.get(2).x == 0 && tileEntityIn.candles.get(2).y == 0 && tileEntityIn.candles.get(2).z == 0) {
+                if (tileEntityIn.numberOfCandles == 4)
+                    matrixStackIn.translate(-2f / 16f, 0f / 16f, 2f / 16f);
+                else if (tileEntityIn.numberOfCandles == 3)
+                    matrixStackIn.translate(-2f / 16f, 0f / 16f, -3f / 16f);
+            }
+
+            matrixStackIn.translate( 0/16f, 24f/16f, 0/16f);
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
+
+
+            int candle = 2;
+            CandleData candleData = tileEntityIn.candles.get(candle);
+            if(candleData.hasBase()) {
+                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.baseLayer));
+                baseModel.base.render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+            }
+
+
+            matrixStackIn.popPose();
+        }
+        if(tileEntityIn.candles.get(3).hasCandle) {
+
+            matrixStackIn.pushPose();
+            matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);;
+            matrixStackIn.translate(tileEntityIn.candles.get(3).x , tileEntityIn.candles.get(3).y, tileEntityIn.candles.get(3).z);
+            if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90f));
+
+            if(tileEntityIn.candles.get(3).x == 0 && tileEntityIn.candles.get(3).y == 0 && tileEntityIn.candles.get(3).z == 0)
+                matrixStackIn.translate(3f / 16f, 0f / 16f, -2f / 16f);
+
+            matrixStackIn.translate( 0/16f, 24f/16f, 0/16f);
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
+
+
+            int candle = 3;
+            CandleData candleData = tileEntityIn.candles.get(candle);
+            if(candleData.hasBase()) {
+                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.baseLayer));
+                baseModel.base.render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+            }
+
+
+            matrixStackIn.popPose();
+        }
+
+
+
+
+
+        // Candle and wick layer
+        if(tileEntityIn.candles.get(0).hasCandle) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
@@ -83,11 +230,13 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             CandleData candleData = tileEntityIn.candles.get(candle);
             float[] col = HexereiUtil.rgbIntToFloatArray(candleData.dyeColor);
 
+            if(!candleData.hasBase())
+                matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
             VertexConsumer vertexConsumer = bufferIn.getBuffer(RenderType.entityCutout(new ResourceLocation(Hexerei.MOD_ID, "textures/block/candle.png")));
             if(candleData.height != 0 && candleData.height <= 7) {
                 candleModel.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer, combinedLightIn, OverlayTexture.NO_OVERLAY, col[0], col[1], col[2], 1.0F);
             }
-            candleModel.base.render(matrixStackIn, vertexConsumer, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+
 
             matrixStackIn.pushPose();
             matrixStackIn.translate( 0, (7 - candleData.height)/16f, 0);
@@ -96,7 +245,7 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
             matrixStackIn.popPose();
         }
-        if(tileEntityIn.candles.get(1).type != 0) {
+        if(tileEntityIn.candles.get(1).hasCandle) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(tileEntityIn.candles.get(1).x , tileEntityIn.candles.get(1).y, tileEntityIn.candles.get(1).z);
@@ -125,11 +274,13 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             CandleData candleData = tileEntityIn.candles.get(candle);
             float[] col = HexereiUtil.rgbIntToFloatArray(candleData.dyeColor);
 
+
+            if(!candleData.hasBase())
+                matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
             VertexConsumer vertexConsumer = bufferIn.getBuffer(RenderType.entityCutout(new ResourceLocation(Hexerei.MOD_ID, "textures/block/candle.png")));
             if(candleData.height != 0 && candleData.height <= 7) {
                 candleModel.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer, combinedLightIn, OverlayTexture.NO_OVERLAY, col[0], col[1], col[2], 1.0F);
             }
-            candleModel.base.render(matrixStackIn, vertexConsumer, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
             matrixStackIn.pushPose();
             matrixStackIn.translate( 0, (7 - candleData.height)/16f, 0);
@@ -138,7 +289,7 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
             matrixStackIn.popPose();
         }
-        if(tileEntityIn.candles.get(2).type != 0) {
+        if(tileEntityIn.candles.get(2).hasCandle) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
@@ -165,11 +316,13 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             CandleData candleData = tileEntityIn.candles.get(candle);
             float[] col = HexereiUtil.rgbIntToFloatArray(candleData.dyeColor);
 
+
+            if(!candleData.hasBase())
+                matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
             VertexConsumer vertexConsumer = bufferIn.getBuffer(RenderType.entityCutout(new ResourceLocation(Hexerei.MOD_ID, "textures/block/candle.png")));
             if(candleData.height != 0 && candleData.height <= 7) {
                 candleModel.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer, combinedLightIn, OverlayTexture.NO_OVERLAY, col[0], col[1], col[2], 1.0F);
             }
-            candleModel.base.render(matrixStackIn, vertexConsumer, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
             matrixStackIn.pushPose();
             matrixStackIn.translate( 0, (7 - candleData.height)/16f, 0);
@@ -178,7 +331,7 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
             matrixStackIn.popPose();
         }
-        if(tileEntityIn.candles.get(3).type != 0) {
+        if(tileEntityIn.candles.get(3).hasCandle) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);;
@@ -201,11 +354,13 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             CandleData candleData = tileEntityIn.candles.get(candle);
             float[] col = HexereiUtil.rgbIntToFloatArray(candleData.dyeColor);
 
+
+            if(!candleData.hasBase())
+                matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
             VertexConsumer vertexConsumer = bufferIn.getBuffer(RenderType.entityCutout(new ResourceLocation(Hexerei.MOD_ID, "textures/block/candle.png")));
             if(candleData.height != 0 && candleData.height <= 7) {
                 candleModel.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer, combinedLightIn, OverlayTexture.NO_OVERLAY, col[0], col[1], col[2], 1.0F);
             }
-            candleModel.base.render(matrixStackIn, vertexConsumer, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
             matrixStackIn.pushPose();
             matrixStackIn.translate( 0, (7 - candleData.height)/16f, 0);
@@ -217,9 +372,9 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
 
 
-        //herb layer
+        //herb layer//////////////////////
 
-        if(tileEntityIn.candles.get(0).type != 0) {
+        if(tileEntityIn.candles.get(0).hasCandle && tileEntityIn.candles.get(0).herbLayer != null) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
@@ -249,14 +404,17 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             float[] col = HexereiUtil.rgbIntToFloatArray(candleData.dyeColor);
 
 
-            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.effect.herbLayer));
+            if(!candleData.hasBase())
+                matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
+
+            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.herbLayer));
             if(candleData.height != 0 && candleData.height <= 7) {
                 herbLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
             }
 
             matrixStackIn.popPose();
         }
-        if(tileEntityIn.candles.get(1).type != 0) {
+        if(tileEntityIn.candles.get(1).hasCandle && tileEntityIn.candles.get(1).herbLayer != null) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(tileEntityIn.candles.get(1).x , tileEntityIn.candles.get(1).y, tileEntityIn.candles.get(1).z);
@@ -284,14 +442,17 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             int candle = 1;
             CandleData candleData = tileEntityIn.candles.get(candle);
 
-            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.effect.herbLayer));
+
+            if(!candleData.hasBase())
+                matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
+            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.herbLayer));
             if(candleData.height != 0 && candleData.height <= 7) {
                 herbLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
             }
 
             matrixStackIn.popPose();
         }
-        if(tileEntityIn.candles.get(2).type != 0) {
+        if(tileEntityIn.candles.get(2).hasCandle && tileEntityIn.candles.get(2).herbLayer != null) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
@@ -317,14 +478,17 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             int candle = 2;
             CandleData candleData = tileEntityIn.candles.get(candle);
 
-            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.effect.herbLayer));
+
+            if(!candleData.hasBase())
+                matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
+            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.herbLayer));
             if(candleData.height != 0 && candleData.height <= 7) {
                 herbLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
             }
 
             matrixStackIn.popPose();
         }
-        if(tileEntityIn.candles.get(3).type != 0) {
+        if(tileEntityIn.candles.get(3).hasCandle && tileEntityIn.candles.get(3).herbLayer != null) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);;
@@ -346,9 +510,324 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             int candle = 3;
             CandleData candleData = tileEntityIn.candles.get(candle);
 
-            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.effect.herbLayer));
+
+            if(!candleData.hasBase())
+                matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
+            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.herbLayer));
             if(candleData.height != 0 && candleData.height <= 7) {
                 herbLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
+            }
+
+            matrixStackIn.popPose();
+        }
+
+        //glow layer//////////////////////
+
+        if(tileEntityIn.candles.get(0).hasCandle && tileEntityIn.candles.get(0).glowLayer != null) {
+
+            matrixStackIn.pushPose();
+            matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
+            matrixStackIn.translate(tileEntityIn.candles.get(0).x , tileEntityIn.candles.get(0).y, tileEntityIn.candles.get(0).z);
+            if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90f));
+
+            if(tileEntityIn.candles.get(0).x == 0 && tileEntityIn.candles.get(0).y == 0 && tileEntityIn.candles.get(0).z == 0) {
+                if (tileEntityIn.numberOfCandles == 4)
+                    matrixStackIn.translate(3f / 16f, 0f / 16f, 2f / 16f);
+                else if (tileEntityIn.numberOfCandles == 3)
+                    matrixStackIn.translate(-1f / 16f, 0f / 16f, 3f / 16f);
+                else if (tileEntityIn.numberOfCandles == 2)
+                    matrixStackIn.translate(3f / 16f, 0f / 16f, -2f / 16f);
+            }
+
+            matrixStackIn.translate( 0/16f, 24f/16f, 0/16f);
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
+
+
+            int candle = 0;
+            CandleData candleData = tileEntityIn.candles.get(candle);
+            float[] col = HexereiUtil.rgbIntToFloatArray(candleData.dyeColor);
+
+
+            if(!candleData.hasBase())
+                matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
+
+            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.glowLayer));
+            if(candleData.height != 0 && candleData.height <= 7) {
+                glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
+            }
+
+            matrixStackIn.popPose();
+        }
+        if(tileEntityIn.candles.get(1).hasCandle && tileEntityIn.candles.get(1).glowLayer != null) {
+
+            matrixStackIn.pushPose();
+            matrixStackIn.translate(tileEntityIn.candles.get(1).x , tileEntityIn.candles.get(1).y, tileEntityIn.candles.get(1).z);
+            matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
+            if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90f));
+
+            if(tileEntityIn.candles.get(1).x == 0 && tileEntityIn.candles.get(1).y == 0 && tileEntityIn.candles.get(1).z == 0) {
+                if(tileEntityIn.numberOfCandles == 4)
+                    matrixStackIn.translate(-2f/16f , 0f/16f, -3f/16f);
+                else if(tileEntityIn.numberOfCandles == 3)
+                    matrixStackIn.translate(3f/16f , 0f/16f, 1f/16f);
+                else if(tileEntityIn.numberOfCandles == 2)
+                    matrixStackIn.translate(-3f/16f , 0f/16f, 3f/16f);
+            }
+
+            matrixStackIn.translate( 0/16f, 24f/16f, 0/16f);
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
+
+
+            int candle = 1;
+            CandleData candleData = tileEntityIn.candles.get(candle);
+
+
+            if(!candleData.hasBase())
+                matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
+            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.glowLayer));
+            if(candleData.height != 0 && candleData.height <= 7) {
+                glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
+            }
+
+            matrixStackIn.popPose();
+        }
+        if(tileEntityIn.candles.get(2).hasCandle && tileEntityIn.candles.get(2).glowLayer != null) {
+
+            matrixStackIn.pushPose();
+            matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
+            matrixStackIn.translate(tileEntityIn.candles.get(2).x , tileEntityIn.candles.get(2).y, tileEntityIn.candles.get(2).z);
+            if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90f));
+
+            if(tileEntityIn.candles.get(2).x == 0 && tileEntityIn.candles.get(2).y == 0 && tileEntityIn.candles.get(2).z == 0) {
+                if (tileEntityIn.numberOfCandles == 4)
+                    matrixStackIn.translate(-2f / 16f, 0f / 16f, 2f / 16f);
+                else if (tileEntityIn.numberOfCandles == 3)
+                    matrixStackIn.translate(-2f / 16f, 0f / 16f, -3f / 16f);
+            }
+
+            matrixStackIn.translate( 0/16f, 24f/16f, 0/16f);
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
+
+
+            int candle = 2;
+            CandleData candleData = tileEntityIn.candles.get(candle);
+
+
+            if(!candleData.hasBase())
+                matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
+            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.glowLayer));
+            if(candleData.height != 0 && candleData.height <= 7) {
+                glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
+            }
+
+            matrixStackIn.popPose();
+        }
+        if(tileEntityIn.candles.get(3).hasCandle && tileEntityIn.candles.get(3).glowLayer != null) {
+
+            matrixStackIn.pushPose();
+            matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
+            matrixStackIn.translate(tileEntityIn.candles.get(3).x , tileEntityIn.candles.get(3).y, tileEntityIn.candles.get(3).z);
+            if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90f));
+
+            if(tileEntityIn.candles.get(3).x == 0 && tileEntityIn.candles.get(3).y == 0 && tileEntityIn.candles.get(3).z == 0)
+                matrixStackIn.translate(3f / 16f, 0f / 16f, -2f / 16f);
+
+            matrixStackIn.translate( 0/16f, 24f/16f, 0/16f);
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
+
+
+            int candle = 3;
+            CandleData candleData = tileEntityIn.candles.get(candle);
+
+
+            if(!candleData.hasBase())
+                matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
+            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.glowLayer));
+            if(candleData.height != 0 && candleData.height <= 7) {
+                glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
+            }
+
+            matrixStackIn.popPose();
+        }
+
+        //swirl layer//////////////////////
+
+        if(tileEntityIn.candles.get(0).hasCandle && tileEntityIn.candles.get(0).swirlLayer != null) {
+
+            matrixStackIn.pushPose();
+            matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
+            matrixStackIn.translate(tileEntityIn.candles.get(0).x , tileEntityIn.candles.get(0).y, tileEntityIn.candles.get(0).z);
+            if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90f));
+
+            if(tileEntityIn.candles.get(0).x == 0 && tileEntityIn.candles.get(0).y == 0 && tileEntityIn.candles.get(0).z == 0) {
+                if (tileEntityIn.numberOfCandles == 4)
+                    matrixStackIn.translate(3f / 16f, 0f / 16f, 2f / 16f);
+                else if (tileEntityIn.numberOfCandles == 3)
+                    matrixStackIn.translate(-1f / 16f, 0f / 16f, 3f / 16f);
+                else if (tileEntityIn.numberOfCandles == 2)
+                    matrixStackIn.translate(3f / 16f, 0f / 16f, -2f / 16f);
+            }
+
+            matrixStackIn.translate( 0/16f, 24f/16f, 0/16f);
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
+
+
+            int candle = 0;
+            CandleData candleData = tileEntityIn.candles.get(candle);
+
+
+            if(!candleData.hasBase())
+                matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
+            float[] col = HexereiUtil.rgbIntToFloatArray(candleData.dyeColor);
+            if(candleData.swirlLayer != null){
+                float offset = Hexerei.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTime();
+                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(candleData.swirlLayer, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
+                if (candleData.height != 0 && candleData.height <= 7) {
+                    swirlLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, col[0], col[1], col[2], 0.75F);
+                }
+            }
+
+            matrixStackIn.popPose();
+        }
+        if(tileEntityIn.candles.get(1).hasCandle && tileEntityIn.candles.get(1).swirlLayer != null) {
+
+            matrixStackIn.pushPose();
+            matrixStackIn.translate(tileEntityIn.candles.get(1).x , tileEntityIn.candles.get(1).y, tileEntityIn.candles.get(1).z);
+            matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
+            if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90f));
+
+            if(tileEntityIn.candles.get(1).x == 0 && tileEntityIn.candles.get(1).y == 0 && tileEntityIn.candles.get(1).z == 0) {
+                if(tileEntityIn.numberOfCandles == 4)
+                    matrixStackIn.translate(-2f/16f , 0f/16f, -3f/16f);
+                else if(tileEntityIn.numberOfCandles == 3)
+                    matrixStackIn.translate(3f/16f , 0f/16f, 1f/16f);
+                else if(tileEntityIn.numberOfCandles == 2)
+                    matrixStackIn.translate(-3f/16f , 0f/16f, 3f/16f);
+            }
+
+            matrixStackIn.translate( 0/16f, 24f/16f, 0/16f);
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
+
+
+            int candle = 1;
+            CandleData candleData = tileEntityIn.candles.get(candle);
+
+
+            if(!candleData.hasBase())
+                matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
+            float[] col = HexereiUtil.rgbIntToFloatArray(candleData.dyeColor);
+            if(candleData.swirlLayer != null){
+                float offset = Hexerei.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTime();
+                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(candleData.swirlLayer, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
+                if (candleData.height != 0 && candleData.height <= 7) {
+                    swirlLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, col[0], col[1], col[2], 0.75F);
+                }
+            }
+
+            matrixStackIn.popPose();
+        }
+        if(tileEntityIn.candles.get(2).hasCandle && tileEntityIn.candles.get(2).swirlLayer != null) {
+
+            matrixStackIn.pushPose();
+            matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
+            matrixStackIn.translate(tileEntityIn.candles.get(2).x , tileEntityIn.candles.get(2).y, tileEntityIn.candles.get(2).z);
+            if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90f));
+
+            if(tileEntityIn.candles.get(2).x == 0 && tileEntityIn.candles.get(2).y == 0 && tileEntityIn.candles.get(2).z == 0) {
+                if (tileEntityIn.numberOfCandles == 4)
+                    matrixStackIn.translate(-2f / 16f, 0f / 16f, 2f / 16f);
+                else if (tileEntityIn.numberOfCandles == 3)
+                    matrixStackIn.translate(-2f / 16f, 0f / 16f, -3f / 16f);
+            }
+
+            matrixStackIn.translate( 0/16f, 24f/16f, 0/16f);
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
+
+
+            int candle = 2;
+            CandleData candleData = tileEntityIn.candles.get(candle);
+
+
+            if(!candleData.hasBase())
+                matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
+            float[] col = HexereiUtil.rgbIntToFloatArray(candleData.dyeColor);
+            if(candleData.swirlLayer != null){
+                float offset = Hexerei.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTime();
+                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(candleData.swirlLayer, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
+                if (candleData.height != 0 && candleData.height <= 7) {
+                    swirlLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, col[0], col[1], col[2], 0.75F);
+                }
+            }
+
+            matrixStackIn.popPose();
+        }
+        if(tileEntityIn.candles.get(3).hasCandle && tileEntityIn.candles.get(3).swirlLayer != null) {
+
+            matrixStackIn.pushPose();
+            matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);;
+            matrixStackIn.translate(tileEntityIn.candles.get(3).x , tileEntityIn.candles.get(3).y, tileEntityIn.candles.get(3).z);
+            if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180f));
+            else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST)
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90f));
+
+            if(tileEntityIn.candles.get(3).x == 0 && tileEntityIn.candles.get(3).y == 0 && tileEntityIn.candles.get(3).z == 0)
+                matrixStackIn.translate(3f / 16f, 0f / 16f, -2f / 16f);
+
+            matrixStackIn.translate( 0/16f, 24f/16f, 0/16f);
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
+
+
+            int candle = 3;
+            CandleData candleData = tileEntityIn.candles.get(candle);
+
+
+            if(!candleData.hasBase())
+                matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
+            float[] col = HexereiUtil.rgbIntToFloatArray(candleData.dyeColor);
+            if(candleData.swirlLayer != null){
+                float offset = Hexerei.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTime();
+                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(candleData.swirlLayer, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
+                if (candleData.height != 0 && candleData.height <= 7) {
+                    swirlLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, col[0], col[1], col[2], 0.75F);
+                }
             }
 
             matrixStackIn.popPose();

@@ -74,14 +74,74 @@ public class CandleItem extends BlockItem implements DyeableLeatherItem {
         DyeableLeatherItem.super.setColor(p_41116_, p_41117_);
     }
 
+    public static void setColorStatic(ItemStack stack, int color) {
+        stack.getOrCreateTagElement("display").putInt("color", color);
+    }
 
-    public void setHeight(ItemStack p_41116_, int p_41117_) {
+
+    public static void setHeight(ItemStack p_41116_, int p_41117_) {
         p_41116_.getOrCreateTagElement("display").putInt("height", p_41117_);
     }
 
     public static int getHeight(ItemStack p_41122_) {
         CompoundTag compoundtag = p_41122_.getTagElement("display");
         return compoundtag != null && compoundtag.contains("height", 99) ? compoundtag.getInt("height") : 7;
+    }
+
+    public static void setLayers(ItemStack stack, String herbLayer, String baseLayer, String glowLayer, String swirlLayer) {
+        CompoundTag tag = stack.getOrCreateTagElement("layers");
+        if(herbLayer != null)
+            tag.putString("herbLayer", herbLayer);
+        if(baseLayer != null)
+            tag.putString("baseLayer", baseLayer);
+        if(glowLayer != null)
+            tag.putString("glowLayer", glowLayer);
+        if(swirlLayer != null)
+            tag.putString("swirlLayer", swirlLayer);
+    }
+
+    public static void setHerbLayer(ItemStack stack, String herbLayer) {
+        CompoundTag tag = stack.getOrCreateTagElement("layers");
+        if(herbLayer != null)
+            tag.putString("herbLayer", herbLayer);
+    }
+
+    public static void setBaseLayer(ItemStack stack, String baseLayer) {
+        CompoundTag tag = stack.getOrCreateTagElement("layers");
+        if(baseLayer != null)
+            tag.putString("baseLayer", baseLayer);
+    }
+
+    public static void setGlowLayer(ItemStack stack, String glowLayer) {
+        CompoundTag tag = stack.getOrCreateTagElement("layers");
+        if(glowLayer != null)
+            tag.putString("glowLayer", glowLayer);
+    }
+
+    public static void setSwirlLayer(ItemStack stack, String swirlLayer) {
+        CompoundTag tag = stack.getOrCreateTagElement("layers");
+        if(swirlLayer != null)
+            tag.putString("swirlLayer", swirlLayer);
+    }
+
+    public static String getHerbLayer(ItemStack stack) {
+        CompoundTag tag = stack.getTagElement("layers");
+        return tag != null && tag.contains("herbLayer") ? tag.getString("herbLayer") : null;
+    }
+
+    public static String getBaseLayer(ItemStack stack) {
+        CompoundTag tag = stack.getTagElement("layers");
+        return tag != null && tag.contains("baseLayer") ? tag.getString("baseLayer") : null;
+    }
+
+    public static String getGlowLayer(ItemStack stack) {
+        CompoundTag tag = stack.getTagElement("layers");
+        return tag != null && tag.contains("glowLayer") ? tag.getString("glowLayer") : null;
+    }
+
+    public static String getSwirlLayer(ItemStack stack) {
+        CompoundTag tag = stack.getTagElement("layers");
+        return tag != null && tag.contains("swirlLayer") ? tag.getString("swirlLayer") : null;
     }
 
     public static int getColorValue(DyeColor color, ItemStack stack) {
@@ -97,7 +157,7 @@ public class CandleItem extends BlockItem implements DyeableLeatherItem {
 
     public static int getColorStatic(ItemStack p_41122_) {
         CompoundTag compoundtag = p_41122_.getTagElement("display");
-        return compoundtag != null && compoundtag.contains("color", 99) ? compoundtag.getInt("color") : 0x422F1E;
+        return compoundtag != null && compoundtag.contains("color", 99) ? compoundtag.getInt("color") : 0xCCC398;
     }
 
     public static int getDyeColorNamed(String name) {

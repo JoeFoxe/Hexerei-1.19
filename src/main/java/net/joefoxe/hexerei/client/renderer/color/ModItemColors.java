@@ -2,6 +2,8 @@ package net.joefoxe.hexerei.client.renderer.color;
 
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.item.ModItems;
+import net.joefoxe.hexerei.item.custom.CofferItem;
+import net.joefoxe.hexerei.item.custom.MixingCauldronItem;
 import net.joefoxe.hexerei.item.custom.WitchArmorItem;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.world.item.DyeColor;
@@ -35,6 +37,12 @@ public class ModItemColors {
             }
             return 0;
         }, ModBlocks.LILY_PAD_BLOCK.get());
+
+        CofferItem.ItemHandlerConsumer items = event.getItemColors()::register;
+        items.register((s, t) -> t == 1 ? CofferItem.getColorValue(CofferItem.getDyeColorNamed(s), s) : -1, ModItems.COFFER.get());
+
+        items.register((s, t) -> t == 0 ? MixingCauldronItem.getColorValue(MixingCauldronItem.getDyeColorNamed(s), s) : -1, ModItems.MIXING_CAULDRON.get());
+
 
     }
 

@@ -3,11 +3,9 @@
   "liquid": {
     "fluid": "hexerei:tallow_fluid"
   },
-  "ingredients": [
-    {
+  "input": {
       "item": "minecraft:string"
-    }
-  ],
+  },
   "output": {
     "item": "hexerei:candle"
   },

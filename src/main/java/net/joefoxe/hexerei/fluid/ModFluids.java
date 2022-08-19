@@ -1,9 +1,12 @@
 package net.joefoxe.hexerei.fluid;
 
 import com.tterrag.registrate.Registrate;
+import com.tterrag.registrate.builders.FluidBuilder;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.item.ModItems;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -16,6 +19,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.codec.binary.Hex;
+import com.tterrag.registrate.util.entry.FluidEntry;
 
 public class ModFluids {
 
@@ -24,16 +28,27 @@ public class ModFluids {
 
 	// TODO implement potion fluid based on this, then run genData
 //	public static final FluidEntry<PotionFluid> POTION =
-//					REGISTRATE.fluid("potion", PotionFluidType::new, PotionFluid::new)
-//									.lang("Potion")
-//									.register();
+//			REGISTRATE.fluid("potion", PotionFluidType::new, PotionFluid::new)
+//					.lang("Potion")
+//					.register();
 	// Better example form Ender IO since Create has their own extensions for virtual fluids
-//	REGISTRATE.fluid(name, new ResourceLocation(Hexerei.MOD_ID, "texture_still")),
-//					new ResourceLocation(Hexerei.MOD_ID, "texture_flowing"))
-//					.renderType(RenderType::translucent)
-//            .source(ForgeFlowingFluid.Source::new)
-//            .block()
-//            .build();
+	public static final FluidEntry<PotionFluid> POTION = REGISTRATE.fluid("potion", new ResourceLocation(Hexerei.MOD_ID, "block/potion_still"),
+					new ResourceLocation(Hexerei.MOD_ID, "block/potion_flow"), PotionFluidType::new, PotionFluid::new)
+					.renderType(RenderType::translucent)
+            .source(PotionFluid::new)
+			.lang("Potion")
+            .noBlock()
+			.noBucket()
+			.register();
+
+
+//
+//	public <T extends ForgeFlowingFluid> FluidBuilder<T, CreateRegistrate> virtualFluid(String name,
+//																						FluidBuilder.FluidTypeFactory typeFactory, NonNullFunction<ForgeFlowingFluid.Properties, T> factory) {
+//		return entry(name,
+//				c -> new VirtualFluidBuilder<>(self(), self(), name, c, Create.asResource("fluid/" + name + "_still"),
+//						Create.asResource("fluid/" + name + "_flow"), typeFactory, factory));
+//	}
 
 	public static final Material BLOOD = (new Material.Builder(MaterialColor.WATER)).noCollider().nonSolid().replaceable().liquid().build();
 	public static final Material TALLOW = (new Material.Builder(MaterialColor.WATER)).noCollider().nonSolid().replaceable().liquid().build();

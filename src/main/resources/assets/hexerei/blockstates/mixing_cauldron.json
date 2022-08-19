@@ -1,6 +1,16 @@
+
 {
   "variants": {
-    "": {
+    "gui_render=false,dyed=true": {
+      "model": "hexerei:block/blank"
+    },
+    "gui_render=true,dyed=true": {
+      "model": "hexerei:block/mixing_cauldron"
+    },
+    "gui_render=false,dyed=false": {
+      "model": "hexerei:block/blank"
+    },
+    "gui_render=true,dyed=false": {
       "model": "hexerei:block/mixing_cauldron"
     }
   }

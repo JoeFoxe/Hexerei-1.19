@@ -19,10 +19,6 @@ public class BonemealingCandleEffect extends AbstractCandleEffect{
     private static final int MAX_TIME = 8 * 20;
 
     public BonemealingCandleEffect(){
-
-        herbLayer = new ResourceLocation(Hexerei.MOD_ID, "textures/block/candle_herb_layer.png");
-
-        swirlLayer = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/power_layer_light.png");
     }
 
 

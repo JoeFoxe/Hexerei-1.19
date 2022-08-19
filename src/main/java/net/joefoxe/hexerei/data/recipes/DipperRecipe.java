@@ -34,12 +34,13 @@ public class DipperRecipe implements Recipe<SimpleContainer> {
     private final int dippingTime;
     private final int dryingTime;
     private final int numberOfDips;
+    private final boolean useInputItemAsOutput;
     protected static final List<Boolean> itemMatchesSlot = new ArrayList<>();
 
 
     public DipperRecipe(ResourceLocation id, NonNullList<Ingredient> inputs,
                         ItemStack output, FluidStack liquid, int fluidLevelsConsumed,
-                        int dippingTime, int dryingTime, int numberOfDips) {
+                        int dippingTime, int dryingTime, int numberOfDips, boolean useInputItemAsOutput) {
         this.id = id;
         this.output = output;
         this.recipeItems = inputs;
@@ -48,6 +49,7 @@ public class DipperRecipe implements Recipe<SimpleContainer> {
         this.dippingTime = dippingTime;
         this.dryingTime = dryingTime;
         this.numberOfDips = numberOfDips;
+        this.useInputItemAsOutput = useInputItemAsOutput;
 
         for(int i = 0; i < 8; i++) {
             itemMatchesSlot.add(false);
@@ -99,6 +101,8 @@ public class DipperRecipe implements Recipe<SimpleContainer> {
 
     public int getNumberOfDips() { return this.numberOfDips; }
 
+    public boolean getUseInputItemAsOutput() { return this.useInputItemAsOutput; }
+
     public ItemStack getToastSymbol() {
         return new ItemStack(ModBlocks.CANDLE_DIPPER.get());
     }
@@ -133,19 +137,21 @@ public class DipperRecipe implements Recipe<SimpleContainer> {
 
         @Override
         public DipperRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-            JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
+//            JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
             NonNullList<Ingredient> inputs = NonNullList.withSize(1, Ingredient.EMPTY);
+            ItemStack input = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "input"));
             ItemStack output = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "output"));
             FluidStack liquid = deserializeFluidStack(GsonHelper.getAsJsonObject(json, "liquid"));
+            boolean useInputItemAsOutput = GsonHelper.getAsBoolean(json, "useInputItemAsOutput", false);
             int fluidLevelsConsumed = GsonHelper.getAsInt(json, "fluidLevelsConsumed");
             int dippingTime = GsonHelper.getAsInt(json, "dippingTimeInTicks");
             int dryingTime = GsonHelper.getAsInt(json, "dryingTimeInTicks");
             int numberOfDips = GsonHelper.getAsInt(json, "numberOfDips");
 
-            inputs.set(0, Ingredient.fromJson(ingredients.get(0)));
+            inputs.set(0, Ingredient.of(input));
 
             return new DipperRecipe(recipeId, inputs,
-                    output, liquid, fluidLevelsConsumed, dippingTime, dryingTime, numberOfDips);
+                    output, liquid, fluidLevelsConsumed, dippingTime, dryingTime, numberOfDips, useInputItemAsOutput);
         }
 
         @Nullable
@@ -159,7 +165,7 @@ public class DipperRecipe implements Recipe<SimpleContainer> {
 
             ItemStack output = buffer.readItem();
             return new DipperRecipe(recipeId, inputs, output,
-                    buffer.readFluidStack(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt());
+                    buffer.readFluidStack(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readBoolean());
         }
 
         @Override
@@ -175,6 +181,7 @@ public class DipperRecipe implements Recipe<SimpleContainer> {
             buffer.writeInt(recipe.getDippingTime());
             buffer.writeInt(recipe.getDryingTime());
             buffer.writeInt(recipe.getNumberOfDips());
+            buffer.writeBoolean(recipe.getUseInputItemAsOutput());
         }
 
         public static FluidStack deserializeFluidStack(JsonObject json) {

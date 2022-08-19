@@ -1,5 +1,9 @@
 package net.joefoxe.hexerei.util;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.netty.buffer.Unpooled;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.tileentity.CofferTile;
@@ -12,8 +16,11 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.TagParser;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
@@ -29,12 +36,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -85,6 +95,62 @@ public class HexereiUtil {
         String[] tens = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
         String[] units = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
         return thousands[number / 1000] + hundreds[(number % 1000) / 100] + tens[(number % 100) / 10] + units[number % 10];
+    }
+
+
+
+    public static <T extends Enum<?>> T readEnum(CompoundTag nbt, String key, Class<T> enumClass) {
+        T[] enumConstants = enumClass.getEnumConstants();
+        if (enumConstants == null)
+            throw new IllegalArgumentException("Non-Enum class passed to readEnum: " + enumClass.getName());
+        if (nbt.contains(key, Tag.TAG_STRING)) {
+            String name = nbt.getString(key);
+            for (T t : enumConstants) {
+                if (t.name()
+                        .equals(name))
+                    return t;
+            }
+        }
+        return enumConstants[0];
+    }
+
+    public static <T extends Enum<?>> void writeEnum(CompoundTag nbt, String key, T enumConstant) {
+        nbt.putString(key, enumConstant.name());
+    }
+
+
+
+    public static FluidStack deserializeFluidStack(JsonObject json) {
+        ResourceLocation id = new ResourceLocation(GsonHelper.getAsString(json, "fluid"));
+        Fluid fluid = ForgeRegistries.FLUIDS.getValue(id);
+        if (fluid == null)
+            throw new JsonSyntaxException("Unknown fluid '" + id + "'");
+        int amount = GsonHelper.getAsInt(json, "amount");
+        FluidStack stack = new FluidStack(fluid, amount);
+
+        if (!json.has("nbt"))
+            return stack;
+
+        try {
+            JsonElement element = json.get("nbt");
+            stack.setTag(TagParser.parseTag(
+                    element.isJsonObject() ? Hexerei.GSON.toJson(element) : GsonHelper.convertToString(element, "nbt")));
+
+        } catch (CommandSyntaxException e) {
+            e.printStackTrace();
+        }
+
+        return stack;
+    }
+
+    public static FluidStack copyStackWithAmount(FluidStack fs, int amount) {
+        if (amount <= 0)
+            return FluidStack.EMPTY;
+        if (fs.isEmpty())
+            return FluidStack.EMPTY;
+        FluidStack copy = fs.copy();
+        copy.setAmount(amount);
+        return copy;
     }
 
     public static float getAngle(Vec3 pos2, Vec3 pos) {

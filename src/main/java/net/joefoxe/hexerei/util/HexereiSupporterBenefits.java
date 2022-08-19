@@ -16,8 +16,9 @@ public class HexereiSupporterBenefits {
     public static final UUID ALEC = getUuid("490255a6-f8e3-402a-8e22-22ee95c4b9f6");
     public static final UUID SAPHRYM = getUuid("71b78099-ad3d-42bd-ae79-7cc51fd51860");
     public static final UUID GWEN_WAV = getUuid("476facfc-a8eb-452d-a8a2-7ccd50eae6cd");
+    public static final UUID HOWL = getUuid("af47ed24-0e01-43e4-9c8b-b9cec037a333");
 
-    public static final Collection<UUID> supporters = new ArrayList<>(Arrays.asList(JOE, DEV, KAUPENJOE, WILLTARAX, ALEC, SAPHRYM, GWEN_WAV));
+    public static final Collection<UUID> supporters = new ArrayList<>(Arrays.asList(JOE, DEV, KAUPENJOE, WILLTARAX, ALEC, SAPHRYM, GWEN_WAV, HOWL));
 
     public static boolean matchesSupporterUUID(UUID uuid){
 

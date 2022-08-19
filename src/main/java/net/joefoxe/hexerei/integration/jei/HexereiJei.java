@@ -79,8 +79,21 @@ public class HexereiJei implements IModPlugin {
     }
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addRecipeClickArea(MixingCauldronScreen.class, 66, 30, 28, 26, new RecipeType<>(MixingCauldronRecipeCategory.UID, MixingCauldronRecipe.class));
+        registration.addRecipeClickArea(MixingCauldronScreen.class, 101, 41, 24, 24, new RecipeType<>(MixingCauldronRecipeCategory.UID, MixingCauldronRecipe.class));
 
+        registration.addGuiContainerHandler(MixingCauldronScreen.class, new IGuiContainerHandler<>() {
+            @Override
+            public List<Rect2i> getGuiExtraAreas(MixingCauldronScreen gui) {
+                List<Rect2i> ret = new ArrayList<>();
+                Rect2i rect2i = new Rect2i(gui.getGuiLeft() + 23, gui.getGuiTop(), 142, 97);
+                ret.add(rect2i);
+                rect2i = new Rect2i(gui.getGuiLeft() + 160, gui.getGuiTop() + 32, 49, 48);
+                ret.add(rect2i);
+                rect2i = new Rect2i(gui.getGuiLeft(), gui.getGuiTop() + 97, 188, 30);
+                ret.add(rect2i);
+                return ret;
+            }
+        });
         registration.addGuiContainerHandler(CofferScreen.class, new IGuiContainerHandler<>() {
             @Override
             public List<Rect2i> getGuiExtraAreas(CofferScreen gui) {

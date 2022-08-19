@@ -32,7 +32,7 @@ import java.util.Random;
 
 public class CandleTile extends BlockEntity {
 
-    public NonNullList<CandleData> candles = NonNullList.withSize(4, new CandleData(0, false,0,0, 0, 0, CandleData.meltTimerMAX, new BonemealingCandleEffect()));
+    public NonNullList<CandleData> candles = NonNullList.withSize(4, new CandleData(0xCCC398, false,0,0, 0, 0, CandleData.meltTimerMAX, new BonemealingCandleEffect()));
 
     public int numberOfCandles;
     public int candleMeltTimerMAX = 6000;
@@ -41,7 +41,7 @@ public class CandleTile extends BlockEntity {
     public CandleTile(BlockEntityType<?> tileEntityTypeIn, BlockPos blockPos, BlockState blockState) {
         super(tileEntityTypeIn, blockPos, blockState);
         for(int i = 0; i < candles.size(); i++)
-            candles.set(i, new CandleData(0, false,0,0, 0, 0, CandleData.meltTimerMAX, new BonemealingCandleEffect()));
+            candles.set(i, new CandleData(0xCCC398, false,0,0, 0, 0, CandleData.meltTimerMAX, new BonemealingCandleEffect()));
         startupFlag = false;
         numberOfCandles = 0;
     }
@@ -53,138 +53,162 @@ public class CandleTile extends BlockEntity {
     @Override
     public void load(CompoundTag nbt) {
 
-        if (nbt.contains("candleType1",  Tag.TAG_INT))
-            candles.get(0).type = nbt.getInt("candleType1");
-        if (nbt.contains("candleType2",  Tag.TAG_INT))
-            candles.get(1).type = nbt.getInt("candleType2");
-        if (nbt.contains("candleType3",  Tag.TAG_INT))
-            candles.get(2).type = nbt.getInt("candleType3");
-        if (nbt.contains("candleType4",  Tag.TAG_INT))
-            candles.get(3).type = nbt.getInt("candleType4");
-        if (nbt.contains("dyeColor1",  Tag.TAG_INT))
-            candles.get(0).dyeColor = nbt.getInt("dyeColor1");
-        if (nbt.contains("dyeColor2",  Tag.TAG_INT))
-            candles.get(1).dyeColor = nbt.getInt("dyeColor2");
-        if (nbt.contains("dyeColor3",  Tag.TAG_INT))
-            candles.get(2).dyeColor = nbt.getInt("dyeColor3");
-        if (nbt.contains("dyeColor4",  Tag.TAG_INT))
-            candles.get(3).dyeColor = nbt.getInt("dyeColor4");
-        if (nbt.contains("candleHeight1",  Tag.TAG_INT))
-            candles.get(0).height = nbt.getInt("candleHeight1");
-        if (nbt.contains("candleHeight2",  Tag.TAG_INT))
-            candles.get(1).height = nbt.getInt("candleHeight2");
-        if (nbt.contains("candleHeight3",  Tag.TAG_INT))
-            candles.get(2).height = nbt.getInt("candleHeight3");
-        if (nbt.contains("candleHeight4",  Tag.TAG_INT))
-            candles.get(3).height = nbt.getInt("candleHeight4");
-        if (nbt.contains("candleLit1",  Tag.TAG_BYTE))
-            candles.get(0).lit = nbt.getBoolean("candleLit1");
+
+        if(nbt.contains("candle0")){
+            if (nbt.contains("candle0"))
+                candles.get(0).load(nbt.getCompound("candle0"));
+            if (nbt.contains("candle1"))
+                candles.get(1).load(nbt.getCompound("candle1"));
+            if (nbt.contains("candle2"))
+                candles.get(2).load(nbt.getCompound("candle2"));
+            if (nbt.contains("candle3"))
+                candles.get(3).load(nbt.getCompound("candle3"));
+        }
         else
-            candles.get(0).lit = false;
-        if (nbt.contains("candleLit2",  Tag.TAG_BYTE))
-            candles.get(1).lit = nbt.getBoolean("candleLit2");
-        else
-            candles.get(1).lit = false;
-        if (nbt.contains("candleLit3",  Tag.TAG_BYTE))
-            candles.get(2).lit = nbt.getBoolean("candleLit3");
-        else
-            candles.get(2).lit = false;
-        if (nbt.contains("candleLit4",  Tag.TAG_BYTE))
-            candles.get(3).lit = nbt.getBoolean("candleLit4");
-        else
-            candles.get(3).lit = false;
-        if (nbt.contains("candleMeltTimer1",  Tag.TAG_INT))
-            candles.get(0).meltTimer = nbt.getInt("candleMeltTimer1");
-        if (nbt.contains("candleMeltTimer2",  Tag.TAG_INT))
-            candles.get(1).meltTimer = nbt.getInt("candleMeltTimer2");
-        if (nbt.contains("candleMeltTimer3",  Tag.TAG_INT))
-            candles.get(2).meltTimer = nbt.getInt("candleMeltTimer3");
-        if (nbt.contains("candleMeltTimer4",  Tag.TAG_INT))
-            candles.get(3).meltTimer = nbt.getInt("candleMeltTimer4");
+        {
+            /// Legacy loading
+            if (nbt.contains("candleType1", Tag.TAG_INT))
+                candles.get(0).type = nbt.getInt("candleType1");
+            if (nbt.contains("candleType2", Tag.TAG_INT))
+                candles.get(1).type = nbt.getInt("candleType2");
+            if (nbt.contains("candleType3", Tag.TAG_INT))
+                candles.get(2).type = nbt.getInt("candleType3");
+            if (nbt.contains("candleType4", Tag.TAG_INT))
+                candles.get(3).type = nbt.getInt("candleType4");
+            if (nbt.contains("dyeColor1", Tag.TAG_INT))
+                candles.get(0).dyeColor = nbt.getInt("dyeColor1");
+            if (nbt.contains("dyeColor2", Tag.TAG_INT))
+                candles.get(1).dyeColor = nbt.getInt("dyeColor2");
+            if (nbt.contains("dyeColor3", Tag.TAG_INT))
+                candles.get(2).dyeColor = nbt.getInt("dyeColor3");
+            if (nbt.contains("dyeColor4", Tag.TAG_INT))
+                candles.get(3).dyeColor = nbt.getInt("dyeColor4");
+            if (nbt.contains("candleHeight1", Tag.TAG_INT))
+                candles.get(0).height = nbt.getInt("candleHeight1");
+            if (nbt.contains("candleHeight2", Tag.TAG_INT))
+                candles.get(1).height = nbt.getInt("candleHeight2");
+            if (nbt.contains("candleHeight3", Tag.TAG_INT))
+                candles.get(2).height = nbt.getInt("candleHeight3");
+            if (nbt.contains("candleHeight4", Tag.TAG_INT))
+                candles.get(3).height = nbt.getInt("candleHeight4");
+            if (nbt.contains("candleLit1", Tag.TAG_BYTE))
+                candles.get(0).lit = nbt.getBoolean("candleLit1");
+            else
+                candles.get(0).lit = false;
+            if (nbt.contains("candleLit2", Tag.TAG_BYTE))
+                candles.get(1).lit = nbt.getBoolean("candleLit2");
+            else
+                candles.get(1).lit = false;
+            if (nbt.contains("candleLit3", Tag.TAG_BYTE))
+                candles.get(2).lit = nbt.getBoolean("candleLit3");
+            else
+                candles.get(2).lit = false;
+            if (nbt.contains("candleLit4", Tag.TAG_BYTE))
+                candles.get(3).lit = nbt.getBoolean("candleLit4");
+            else
+                candles.get(3).lit = false;
+            if (nbt.contains("candleMeltTimer1", Tag.TAG_INT))
+                candles.get(0).meltTimer = nbt.getInt("candleMeltTimer1");
+            if (nbt.contains("candleMeltTimer2", Tag.TAG_INT))
+                candles.get(1).meltTimer = nbt.getInt("candleMeltTimer2");
+            if (nbt.contains("candleMeltTimer3", Tag.TAG_INT))
+                candles.get(2).meltTimer = nbt.getInt("candleMeltTimer3");
+            if (nbt.contains("candleMeltTimer4", Tag.TAG_INT))
+                candles.get(3).meltTimer = nbt.getInt("candleMeltTimer4");
+        }
         super.load(nbt);
 
     }
 
     @Override
     public void saveAdditional(CompoundTag compound) {
-        if(candles.get(0).dyeColor != 0)
-            compound.putInt("dyeColor1", candles.get(0).dyeColor);
-        if(candles.get(1).dyeColor != 0)
-            compound.putInt("dyeColor2", candles.get(1).dyeColor);
-        if(candles.get(2).dyeColor != 0)
-            compound.putInt("dyeColor3", candles.get(2).dyeColor);
-        if(candles.get(3).dyeColor != 0)
-            compound.putInt("dyeColor4", candles.get(3).dyeColor);
-        if(candles.get(0).type != 0)
-            compound.putInt("candleType1", candles.get(0).type);
-        if(candles.get(1).type != 0)
-            compound.putInt("candleType2", candles.get(1).type);
-        if(candles.get(2).type != 0)
-            compound.putInt("candleType3", candles.get(2).type);
-        if(candles.get(3).type != 0)
-            compound.putInt("candleType4", candles.get(3).type);
-        if(candles.get(0).height != 0)
-            compound.putInt("candleHeight1", candles.get(0).height);
-        if(candles.get(1).height != 0)
-            compound.putInt("candleHeight2", candles.get(1).height);
-        if(candles.get(2).height != 0)
-            compound.putInt("candleHeight3", candles.get(2).height);
-        if(candles.get(3).height != 0)
-            compound.putInt("candleHeight4", candles.get(3).height);
-        compound.putBoolean("candleLit1", candles.get(0).lit);
-        compound.putBoolean("candleLit2", candles.get(1).lit);
-        compound.putBoolean("candleLit3", candles.get(2).lit);
-        compound.putBoolean("candleLit4", candles.get(3).lit);
-        if(candles.get(0).meltTimer != 0)
-            compound.putInt("candleMeltTimer1", candles.get(0).meltTimer);
-        if(candles.get(1).meltTimer != 0)
-            compound.putInt("candleMeltTimer2", candles.get(1).meltTimer);
-        if(candles.get(2).meltTimer != 0)
-            compound.putInt("candleMeltTimer3", candles.get(2).meltTimer);
-        if(candles.get(3).meltTimer != 0)
-            compound.putInt("candleMeltTimer4", candles.get(3).meltTimer);
+        compound.put("candle0", candles.get(0).save());
+        compound.put("candle1", candles.get(1).save());
+        compound.put("candle2", candles.get(2).save());
+        compound.put("candle3", candles.get(3).save());
+//
+//        if(candles.get(0).dyeColor != 0)
+//            compound.putInt("dyeColor1", candles.get(0).dyeColor);
+//        if(candles.get(1).dyeColor != 0)
+//            compound.putInt("dyeColor2", candles.get(1).dyeColor);
+//        if(candles.get(2).dyeColor != 0)
+//            compound.putInt("dyeColor3", candles.get(2).dyeColor);
+//        if(candles.get(3).dyeColor != 0)
+//            compound.putInt("dyeColor4", candles.get(3).dyeColor);
+//        if(candles.get(0).hasCandle)
+//            compound.putInt("candleType1", candles.get(0).type);
+//        if(candles.get(1).hasCandle)
+//            compound.putInt("candleType2", candles.get(1).type);
+//        if(candles.get(2).hasCandle)
+//            compound.putInt("candleType3", candles.get(2).type);
+//        if(candles.get(3).hasCandle)
+//            compound.putInt("candleType4", candles.get(3).type);
+//        if(candles.get(0).height != 0)
+//            compound.putInt("candleHeight1", candles.get(0).height);
+//        if(candles.get(1).height != 0)
+//            compound.putInt("candleHeight2", candles.get(1).height);
+//        if(candles.get(2).height != 0)
+//            compound.putInt("candleHeight3", candles.get(2).height);
+//        if(candles.get(3).height != 0)
+//            compound.putInt("candleHeight4", candles.get(3).height);
+//        compound.putBoolean("candleLit1", candles.get(0).lit);
+//        compound.putBoolean("candleLit2", candles.get(1).lit);
+//        compound.putBoolean("candleLit3", candles.get(2).lit);
+//        compound.putBoolean("candleLit4", candles.get(3).lit);
+//        if(candles.get(0).meltTimer != 0)
+//            compound.putInt("candleMeltTimer1", candles.get(0).meltTimer);
+//        if(candles.get(1).meltTimer != 0)
+//            compound.putInt("candleMeltTimer2", candles.get(1).meltTimer);
+//        if(candles.get(2).meltTimer != 0)
+//            compound.putInt("candleMeltTimer3", candles.get(2).meltTimer);
+//        if(candles.get(3).meltTimer != 0)
+//            compound.putInt("candleMeltTimer4", candles.get(3).meltTimer);
 
     }
 
 //    @Override
     public CompoundTag save(CompoundTag tag) {
         super.saveAdditional(tag);
-        if(candles.get(0).dyeColor != 0)
-            tag.putInt("dyeColor1", candles.get(0).dyeColor);
-        if(candles.get(1).dyeColor != 0)
-            tag.putInt("dyeColor2", candles.get(1).dyeColor);
-        if(candles.get(2).dyeColor != 0)
-            tag.putInt("dyeColor3", candles.get(2).dyeColor);
-        if(candles.get(3).dyeColor != 0)
-            tag.putInt("dyeColor4", candles.get(3).dyeColor);
-        if(candles.get(0).type != 0)
-            tag.putInt("candleType1", candles.get(0).type);
-        if(candles.get(1).type != 0)
-            tag.putInt("candleType2", candles.get(1).type);
-        if(candles.get(2).type != 0)
-            tag.putInt("candleType3", candles.get(2).type);
-        if(candles.get(3).type != 0)
-            tag.putInt("candleType4", candles.get(3).type);
-        if(candles.get(0).height != 0)
-            tag.putInt("candleHeight1", candles.get(0).height);
-        if(candles.get(1).height != 0)
-            tag.putInt("candleHeight2", candles.get(1).height);
-        if(candles.get(2).height != 0)
-            tag.putInt("candleHeight3", candles.get(2).height);
-        if(candles.get(3).height != 0)
-            tag.putInt("candleHeight4", candles.get(3).height);
-        tag.putBoolean("candleLit1", candles.get(0).lit);
-        tag.putBoolean("candleLit2", candles.get(1).lit);
-        tag.putBoolean("candleLit3", candles.get(2).lit);
-        tag.putBoolean("candleLit4", candles.get(3).lit);
-        if(candles.get(0).meltTimer != 0)
-            tag.putInt("candleMeltTimer1", candles.get(0).meltTimer);
-        if(candles.get(1).meltTimer != 0)
-            tag.putInt("candleMeltTimer2", candles.get(1).meltTimer);
-        if(candles.get(2).meltTimer != 0)
-            tag.putInt("candleMeltTimer3", candles.get(2).meltTimer);
-        if(candles.get(3).meltTimer != 0)
-            tag.putInt("candleMeltTimer4", candles.get(3).meltTimer);
+        tag.put("candle0", candles.get(0).save());
+        tag.put("candle1", candles.get(1).save());
+        tag.put("candle2", candles.get(2).save());
+        tag.put("candle3", candles.get(3).save());
+//        if(candles.get(0).dyeColor != 0)
+//            tag.putInt("dyeColor1", candles.get(0).dyeColor);
+//        if(candles.get(1).dyeColor != 0)
+//            tag.putInt("dyeColor2", candles.get(1).dyeColor);
+//        if(candles.get(2).dyeColor != 0)
+//            tag.putInt("dyeColor3", candles.get(2).dyeColor);
+//        if(candles.get(3).dyeColor != 0)
+//            tag.putInt("dyeColor4", candles.get(3).dyeColor);
+//        if(candles.get(0).hasCandle)
+//            tag.putInt("candleType1", candles.get(0).type);
+//        if(candles.get(1).hasCandle)
+//            tag.putInt("candleType2", candles.get(1).type);
+//        if(candles.get(2).hasCandle)
+//            tag.putInt("candleType3", candles.get(2).type);
+//        if(candles.get(3).hasCandle)
+//            tag.putInt("candleType4", candles.get(3).type);
+//        if(candles.get(0).height != 0)
+//            tag.putInt("candleHeight1", candles.get(0).height);
+//        if(candles.get(1).height != 0)
+//            tag.putInt("candleHeight2", candles.get(1).height);
+//        if(candles.get(2).height != 0)
+//            tag.putInt("candleHeight3", candles.get(2).height);
+//        if(candles.get(3).height != 0)
+//            tag.putInt("candleHeight4", candles.get(3).height);
+//        tag.putBoolean("candleLit1", candles.get(0).lit);
+//        tag.putBoolean("candleLit2", candles.get(1).lit);
+//        tag.putBoolean("candleLit3", candles.get(2).lit);
+//        tag.putBoolean("candleLit4", candles.get(3).lit);
+//        if(candles.get(0).meltTimer != 0)
+//            tag.putInt("candleMeltTimer1", candles.get(0).meltTimer);
+//        if(candles.get(1).meltTimer != 0)
+//            tag.putInt("candleMeltTimer2", candles.get(1).meltTimer);
+//        if(candles.get(2).meltTimer != 0)
+//            tag.putInt("candleMeltTimer3", candles.get(2).meltTimer);
+//        if(candles.get(3).meltTimer != 0)
+//            tag.putInt("candleMeltTimer4", candles.get(3).meltTimer);
 
         return tag;
     }
@@ -323,7 +347,7 @@ public class CandleTile extends BlockEntity {
         }
 
         if(!startupFlag) {
-            candles.get(0).type = this.getBlockState().getValue(Candle.SLOT_ONE_TYPE);
+            candles.get(0).hasCandle = true;
             candles.get(0).meltTimer = candleMeltTimerMAX;
             startupFlag = true;
         }
@@ -331,17 +355,17 @@ public class CandleTile extends BlockEntity {
 
         numberOfCandles = 0;
 
-        if(candles.get(0).type != 0)
+        if(candles.get(0).hasCandle)
             numberOfCandles++;
-        if(candles.get(1).type != 0)
+        if(candles.get(1).hasCandle)
             numberOfCandles++;
-        if(candles.get(2).type != 0)
+        if(candles.get(2).hasCandle)
             numberOfCandles++;
-        if(candles.get(3).type != 0)
+        if(candles.get(3).hasCandle)
             numberOfCandles++;
 
 
-        if(candles.get(0).type != 0)
+        if(candles.get(0).hasCandle)
         {
 
             if(candles.get(0).lit) {
@@ -428,7 +452,7 @@ public class CandleTile extends BlockEntity {
 
 
                     if (candles.get(0).height <= 0) {
-                        candles.get(0).type = 0;
+                        candles.get(0).hasCandle = false;
                         updateCandleSlots();
                         BlockState blockstate = this.getLevel().getBlockState(this.getBlockPos());
                         if (!level.isClientSide())
@@ -449,7 +473,7 @@ public class CandleTile extends BlockEntity {
                 }
             }
         }
-        if(candles.get(1).type != 0)
+        if(candles.get(1).hasCandle)
         {
 
             if(candles.get(1).lit) {
@@ -543,7 +567,7 @@ public class CandleTile extends BlockEntity {
 
 
                     if (candles.get(1).height <= 0) {
-                        candles.get(1).type = 0;
+                        candles.get(1).hasCandle = false;
                         updateCandleSlots();
                         BlockState blockstate = this.getLevel().getBlockState(this.getBlockPos());
                         if (!level.isClientSide())
@@ -562,7 +586,7 @@ public class CandleTile extends BlockEntity {
                 }
             }
         }
-        if(candles.get(2).type != 0)
+        if(candles.get(2).hasCandle)
         {
 
             if(candles.get(2).lit) {
@@ -630,7 +654,7 @@ public class CandleTile extends BlockEntity {
 
 
                     if (candles.get(2).height <= 0) {
-                        candles.get(2).type = 0;
+                        candles.get(2).hasCandle = false;
                         updateCandleSlots();
                         BlockState blockstate = this.getLevel().getBlockState(this.getBlockPos());
                         if (!level.isClientSide())
@@ -649,7 +673,7 @@ public class CandleTile extends BlockEntity {
                 }
             }
         }
-        if(candles.get(3).type != 0)
+        if(candles.get(3).hasCandle)
         {
 
             if(candles.get(3).lit) {
@@ -702,7 +726,7 @@ public class CandleTile extends BlockEntity {
 
 
                     if (candles.get(3).height <= 0) {
-                        candles.get(3).type = 0;
+                        candles.get(3).hasCandle = false;
                         updateCandleSlots();
                         BlockState blockstate = this.getLevel().getBlockState(this.getBlockPos());
                         if (!level.isClientSide())
@@ -728,50 +752,46 @@ public class CandleTile extends BlockEntity {
         candles.get(3).returnToBlock = true;
 
 
-        if(candles.get(0).type == 0 && candles.get(1).type == 0 && candles.get(2).type == 0 && candles.get(3).type == 0)
-            this.getLevel().destroyBlock(this.getBlockPos(), false);
-
-        if(level.isClientSide) {
-
-            return;
-        }
+        if(!candles.get(0).hasCandle && !candles.get(1).hasCandle && !candles.get(2).hasCandle && !candles.get(3).hasCandle)
+            if(this.getLevel() != null)
+                this.getLevel().destroyBlock(this.getBlockPos(), false);
 
     }
 
     public void updateCandleSlots() {
-//        if(candles.get(0).type == 0)
-//        {
-//            candles.get(0).type = candles.get(1).type;
-//            candles.get(0).height = candles.get(1).height;
-//            candles.get(0).meltTimer = candles.get(1).meltTimer;
-//            candles.get(0).lit = candles.get(1).lit;
-//            candles.get(1).type = 0;
-//            candles.get(1).lit = 0;
-//            candles.get(1).height = 7;
-//            candles.get(1).meltTimer = candleMeltTimerMAX;
-//        }
-//        if(candles.get(1).type == 0)
-//        {
-//            candles.get(1).type = candles.get(2).type;
-//            candles.get(1).height = candles.get(2).height;
-//            candles.get(1).meltTimer = candles.get(2).meltTimer;
-//            candles.get(1).lit = candles.get(2).lit;
-//            candles.get(2).type = 0;
-//            candles.get(2).lit = 0;
-//            candles.get(2).height = 7;
-//            candles.get(2).meltTimer = candleMeltTimerMAX;
-//        }
-//        if(candles.get(2).type == 0)
-//        {
-//            candles.get(2).type = candles.get(3).type;
-//            candles.get(2).height = candles.get(3).height;
-//            candles.get(2).meltTimer = candles.get(3).meltTimer;
-//            candles.get(2).lit = candles.get(3).lit;
-//            candles.get(3).type = 0;
-//            candles.get(3).lit = 0;
-//            candles.get(3).height = 7;
-//            candles.get(3).meltTimer = candleMeltTimerMAX;
-//        }
+        if(candles.get(0).type == 0)
+        {
+            candles.get(0).type = candles.get(1).type;
+            candles.get(0).height = candles.get(1).height;
+            candles.get(0).meltTimer = candles.get(1).meltTimer;
+            candles.get(0).lit = candles.get(1).lit;
+            candles.get(1).hasCandle = false;
+            candles.get(1).lit = false;
+            candles.get(1).height = 7;
+            candles.get(1).meltTimer = candleMeltTimerMAX;
+        }
+        if(candles.get(1).type == 0)
+        {
+            candles.get(1).type = candles.get(2).type;
+            candles.get(1).height = candles.get(2).height;
+            candles.get(1).meltTimer = candles.get(2).meltTimer;
+            candles.get(1).lit = candles.get(2).lit;
+            candles.get(2).hasCandle = false;
+            candles.get(2).lit = false;
+            candles.get(2).height = 7;
+            candles.get(2).meltTimer = candleMeltTimerMAX;
+        }
+        if(candles.get(2).type == 0)
+        {
+            candles.get(2).type = candles.get(3).type;
+            candles.get(2).height = candles.get(3).height;
+            candles.get(2).meltTimer = candles.get(3).meltTimer;
+            candles.get(2).lit = candles.get(3).lit;
+            candles.get(3).hasCandle = false;
+            candles.get(3).lit = false;
+            candles.get(3).height = 7;
+            candles.get(3).meltTimer = candleMeltTimerMAX;
+        }
     }
 
 

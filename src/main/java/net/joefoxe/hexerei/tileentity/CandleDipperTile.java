@@ -8,6 +8,7 @@ import net.joefoxe.hexerei.util.message.EmitParticlesPacket;
 import net.joefoxe.hexerei.util.message.TESyncPacket;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -270,15 +271,24 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
                 .getRecipeFor(DipperRecipe.Type.INSTANCE, inv, level);
 
         BlockEntity blockEntity = level.getBlockEntity(this.worldPosition.below());
-        if(blockEntity instanceof MixingCauldronTile) {
+        if(blockEntity instanceof MixingCauldronTile mixingCauldronTile) {
             recipe.ifPresent(iRecipe -> {
                 ItemStack output = iRecipe.getResultItem();
                 ItemStack input = iRecipe.getIngredients().get(0).getItems()[0];
-                boolean matchesFluid = iRecipe.getLiquid().getFluid().isSame(((MixingCauldronTile) blockEntity).getFluidStack().getFluid()) && iRecipe.getFluidLevelsConsumed() <= ((MixingCauldronTile) blockEntity).getFluidStack().getAmount();
+                boolean matchesFluid = iRecipe.getLiquid().getFluid().isSame(mixingCauldronTile.getFluidStack().getFluid()) && iRecipe.getFluidLevelsConsumed() <= mixingCauldronTile.getFluidStack().getAmount();
+                boolean hasFluidTag = iRecipe.getLiquid().hasTag();
+                if(hasFluidTag && !mixingCauldronTile.getFluidStack().isEmpty() && !mixingCauldronTile.getFluidStack().getOrCreateTag().equals(iRecipe.getLiquid().getOrCreateTag()))
+                    matchesFluid = false;
+                boolean useInputItemAsOutput = iRecipe.getUseInputItemAsOutput();
+                CompoundTag tag = input.getOrCreateTag();
+                CompoundTag tag2 = this.items.get(0).getOrCreateTag();
 
 
 
-                if (input.getItem() == this.items.get(0).getItem()) {
+                boolean hasTag = input.hasTag();
+                boolean compare = NbtUtils.compareNbt(tag, tag2, true);
+
+                if (input.getItem() == this.items.get(0).getItem() && compare) {
                     // FIRST SLOT MATCHES
 
                     if(matchesFluid){
@@ -287,6 +297,11 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
                         if (!candle1Crafting) {
                             candle1Crafting = true;
                             candle1Output = output.copy();
+                            if(useInputItemAsOutput) {
+                                ItemStack stack = this.items.get(0).copy();
+                                stack.getOrCreateTag().merge(output.getOrCreateTag());
+                                candle1Output = stack;
+                            }
                             candle1DecreaseAmount = iRecipe.getFluidLevelsConsumed();
                             candle1DippedTimesMax = iRecipe.getNumberOfDips();
                             candle1DryingTimeMax = iRecipe.getDryingTime();

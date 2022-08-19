@@ -6,6 +6,7 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
+import net.joefoxe.hexerei.block.custom.HerbJar;
 import net.joefoxe.hexerei.block.custom.MixingCauldron;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.tileentity.MixingCauldronTile;
@@ -13,14 +14,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -33,7 +38,7 @@ import java.util.Objects;
 
 public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldronTile> {
 
-    public static final float CORNERS = (float)MixingCauldron.SHAPE.min(Direction.Axis.X) + 0.01f + 3 / 16f;
+    public static final float CORNERS = (float)MixingCauldron.SHAPE.min(Direction.Axis.X) + 3 / 16f;
     public static final float MIN_Y = 3f / 16f;
     public static final float MAX_Y = 15f/ 16f;
 
@@ -52,14 +57,20 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
         }
         else return;
 
+
+        renderBlock(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, ModBlocks.MIXING_CAULDRON.get().defaultBlockState().setValue(HerbJar.GUI_RENDER, true).setValue(HerbJar.DYED, tileEntityIn.dyeColor != 0x422F1E && tileEntityIn.dyeColor != 0), null, tileEntityIn.getDyeColor());
+
         float fillPercentage = 0;
         FluidStack fluidStack = tileEntityIn.getFluidInTank(0);
         if(!fluidStack.isEmpty()) {
+            matrixStackIn.pushPose();
             fillPercentage = Math.min(1, (float) fluidStack.getAmount() / tileEntityIn.getTankCapacity(0));
+//            matrixStackIn.scale(1.05f, 1, 1.05f);
             if (fluidStack.getFluid().is(Tags.Fluids.GASEOUS))
                 renderFluid(matrixStackIn, bufferIn, fluidStack, fillPercentage, 1, combinedLightIn, tileEntityIn);
             else
                 renderFluid(matrixStackIn, bufferIn, fluidStack, 1, fillPercentage, combinedLightIn, tileEntityIn);
+            matrixStackIn.popPose();
         }
         float height = MIN_Y + (MAX_Y - MIN_Y) * fillPercentage;
 
@@ -139,6 +150,8 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
         int color = IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor(fluidStack);
 
         alpha *= (color >> 24 & 255) / 255f;
+
+
         float red = (color >> 16 & 255) / 255f;
         float green = (color >> 8 & 255) / 255f;
         float blue = (color & 255) / 255f;
@@ -174,6 +187,33 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
     private void renderBlock(PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, BlockState state) {
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, matrixStackIn, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, null);
 
+    }
+
+    private void renderBlock(PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, BlockState state, RenderType renderType, int color) {
+        renderSingleBlock(state, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, ModelData.EMPTY, renderType, color);
+
+    }
+
+    public void renderSingleBlock(BlockState p_110913_, PoseStack p_110914_, MultiBufferSource p_110915_, int p_110916_, int p_110917_, net.minecraftforge.client.model.data.ModelData modelData, net.minecraft.client.renderer.RenderType renderType, int color) {
+        RenderShape rendershape = p_110913_.getRenderShape();
+        if (rendershape != RenderShape.INVISIBLE) {
+            switch (rendershape) {
+                case MODEL:
+                    BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
+                    BakedModel bakedmodel = dispatcher.getBlockModel(p_110913_);
+                    int i = color;
+                    float f = (float)(i >> 16 & 255) / 255.0F;
+                    float f1 = (float)(i >> 8 & 255) / 255.0F;
+                    float f2 = (float)(i & 255) / 255.0F;
+                    for (net.minecraft.client.renderer.RenderType rt : bakedmodel.getRenderTypes(p_110913_, RandomSource.create(42), modelData))
+                        dispatcher.getModelRenderer().renderModel(p_110914_.last(), p_110915_.getBuffer(renderType != null ? renderType : net.minecraftforge.client.RenderTypeHelper.getEntityRenderType(rt, false)), p_110913_, bakedmodel, f, f1, f2, p_110916_, p_110917_, modelData, rt);
+                    break;
+                case ENTITYBLOCK_ANIMATED:
+                    ItemStack stack = new ItemStack(p_110913_.getBlock());
+                    net.minecraftforge.client.extensions.common.IClientItemExtensions.of(stack).getCustomRenderer().renderByItem(stack, ItemTransforms.TransformType.NONE, p_110914_, p_110915_, p_110916_, p_110917_);
+            }
+
+        }
     }
 
 

@@ -12,6 +12,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -22,6 +23,7 @@ public class MixingCauldronContainer extends AbstractContainerMenu {
     public final BlockEntity tileEntity;
     private final Player playerEntity;
     private final IItemHandler playerInventory;
+    private FluidStack fluid;
 
     public MixingCauldronContainer(int windowId, Level world, BlockPos pos, Inventory playerInventory, Player player) {
         super(ModContainers.MIXING_CAULDRON_CONTAINER.get(), windowId);
@@ -29,24 +31,27 @@ public class MixingCauldronContainer extends AbstractContainerMenu {
         playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
 
-        layoutPlayerInventorySlots(8, 86);
+        layoutPlayerInventorySlots(14, 120);
 
         //add slots for mixing cauldron
         if(tileEntity != null) {
             tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-                this.addSlot(new SlotItemHandler(h, 9, -4, 36));
-                this.addSlot(new SlotItemHandler(h, 0, 80, 5));
-                this.addSlot(new SlotItemHandler(h, 1, 102, 14));
-                this.addSlot(new SlotItemHandler(h, 2, 111, 36));
-                this.addSlot(new SlotItemHandler(h, 3, 102, 58));
-                this.addSlot(new SlotItemHandler(h, 4, 80, 67));
-                this.addSlot(new SlotItemHandler(h, 5, 58, 58));
-                this.addSlot(new SlotItemHandler(h, 6, 49, 36));
-                this.addSlot(new SlotItemHandler(h, 7, 58, 14));
-                this.addSlot(new SlotItemHandler(h, 8, 164, 36));
+                this.addSlot(new SlotItemHandler(h, 9, 42, 24));
+                this.addSlot(new SlotItemHandler(h, 0, 105, 17));
+                this.addSlot(new SlotItemHandler(h, 1, 127, 26));
+                this.addSlot(new SlotItemHandler(h, 2, 136, 48));
+                this.addSlot(new SlotItemHandler(h, 3, 127, 70));
+                this.addSlot(new SlotItemHandler(h, 4, 105, 79));
+                this.addSlot(new SlotItemHandler(h, 5, 83, 70));
+                this.addSlot(new SlotItemHandler(h, 6, 74, 48));
+                this.addSlot(new SlotItemHandler(h, 7, 83, 26));
+                this.addSlot(new SlotItemHandler(h, 8, 178, 48));
             });
-
         }
+
+        if(tileEntity instanceof MixingCauldronTile mixingTile)
+            this.fluid = mixingTile.getFluidStack();
+
 
         addDataSlot(new DataSlot() {
             @Override
@@ -61,8 +66,15 @@ public class MixingCauldronContainer extends AbstractContainerMenu {
 
     }
 
-    public boolean isLightningStorm() {
-        return tileEntity.getLevel().isThundering();
+    public void setFluid(FluidStack fluidStack) {
+        this.fluid = fluidStack;
+    }
+
+    public FluidStack getFluid() {
+//        return fluid;
+        if(tileEntity instanceof MixingCauldronTile mixingTile)
+            return mixingTile.getFluidStack();
+        return fluid;
     }
 
     public float getCraftPercent() {
@@ -71,7 +83,21 @@ public class MixingCauldronContainer extends AbstractContainerMenu {
             MixingCauldronTile cauldronTile = (MixingCauldronTile) tileEntity;
             if(!cauldronTile.getCrafted())
             {
-                return (float)cauldronTile.craftDelay / (float)cauldronTile.craftDelayMax;
+                return (float)cauldronTile.craftDelay / (float) MixingCauldronTile.craftDelayMax;
+            }
+        }
+        return 0;
+    }
+
+    public float getCraftPercentHalf() {
+        if(tileEntity instanceof MixingCauldronTile)
+        {
+            MixingCauldronTile cauldronTile = (MixingCauldronTile) tileEntity;
+            float delayHalf = cauldronTile.craftDelay - MixingCauldronTile.craftDelayMax / 2f;
+            if(!cauldronTile.getCrafted())
+            {
+
+                return delayHalf / (float) MixingCauldronTile.craftDelayMax;
             }
         }
         return 0;

@@ -2,6 +2,7 @@ package net.joefoxe.hexerei.client.renderer.color;
 
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.custom.Coffer;
+import net.joefoxe.hexerei.block.custom.MixingCauldron;
 import net.joefoxe.hexerei.item.custom.SatchelItem;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.block.BlockColors;
@@ -48,10 +49,6 @@ public class ModBlockColors {
         blockColors.register((state, reader, pos, color) -> {
             return reader != null && pos != null ? BiomeColors.getAverageGrassColor(reader, pos) : GrassColor.get(0.5D, 0.5D);
         }, ModBlocks.LILY_PAD_BLOCK.get());
-
-        blockColors.register(WATER_COLOR,
-                ModBlocks.MIXING_CAULDRON.get()
-        );
 
         blockColors.register((state, reader, pos, color) -> {
                     return reader != null && pos != null ? Coffer.getColorValue(state, pos, reader) : 0x442013;

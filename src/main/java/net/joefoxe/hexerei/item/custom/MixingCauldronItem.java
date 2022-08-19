@@ -1,7 +1,6 @@
 package net.joefoxe.hexerei.item.custom;
 
 import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.nbt.CompoundTag;
@@ -14,38 +13,17 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class CofferItem extends BlockItem implements DyeableLeatherItem {
+public class MixingCauldronItem extends BlockItem implements DyeableLeatherItem {
 
-    public CofferItem(Block block, Properties properties) {
+    public MixingCauldronItem(Block block, Properties properties) {
         super(block, properties);
     }
-
-    public interface ItemHandlerConsumer {
-        void register(ItemColor handler, ItemLike... items);
-    }
-
-//    @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = "hexerei", bus = Mod.EventBusSubscriber.Bus.MOD)
-//    static class ColorRegisterHandler
-//    {
-//        @SubscribeEvent(priority = EventPriority.HIGHEST)
-//        public static void registerCofferColors(RegisterColorHandlersEvent.Item event)
-//        {
-//            CofferItem.ItemHandlerConsumer items = event.getItemColors()::register;
-//            items.register((s, t) -> t == 1 ? getColorValue(CofferItem.getDyeColorNamed(s), s) : -1, ModItems.COFFER.get());
-//
-//        }
-//    }
 
     @Override
     public void setColor(ItemStack p_41116_, int p_41117_) {
@@ -65,7 +43,7 @@ public class CofferItem extends BlockItem implements DyeableLeatherItem {
 
     public static int getColorStatic(ItemStack p_41122_) {
         CompoundTag compoundtag = p_41122_.getTagElement("display");
-        return compoundtag != null && compoundtag.contains("color", 99) ? compoundtag.getInt("color") : 0x422F1E;
+        return compoundtag != null && compoundtag.contains("color", 99) ? compoundtag.getInt("color") : 0xFFBE1C;
     }
 
     public static int getDyeColorNamed(String name) {
@@ -111,42 +89,6 @@ public class CofferItem extends BlockItem implements DyeableLeatherItem {
                 return 64;
             }
         };
-    }
-
-
-    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        ItemStackHandler handler = createHandler();
-        handler.deserializeNBT(stack.getOrCreateTag().getCompound("Inventory"));
-
-        return Optional.of(new CofferItem.CofferItemToolTip(handler, stack));
-    }
-
-    public record CofferItemToolTip(ItemStackHandler handler, ItemStack self) implements TooltipComponent {
-    }
-
-    private static ItemStack[] getContents(ItemStack p_150783_) {
-        CompoundTag compoundtag = p_150783_.getTag();
-        if (compoundtag == null) {
-            return new ItemStack[0];
-        } else {
-            ItemStack[]stacks = new ItemStack[36];
-            for(int i = 0; i < stacks.length; i++)
-                stacks[i] = ItemStack.of(compoundtag.getCompound("Inventory").getList("Items", 10).getCompound(i));
-            return stacks;
-        }
-    }
-
-    private static int[] getContentsSlot(ItemStack p_150783_) {
-        CompoundTag compoundtag = p_150783_.getTag();
-        if (compoundtag == null) {
-            return new int[0];
-        } else {
-            int[]slots = new int[36];
-            for(int i = 0; i < compoundtag.getCompound("Inventory").getList("Items", 10).size(); i++)
-                slots[i] = compoundtag.getCompound("Inventory").getList("Items", 10).getCompound(i).getInt("Slot");
-//            ListTag listtag = ;
-            return slots;
-        }
     }
 
 }

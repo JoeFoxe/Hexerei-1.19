@@ -10,6 +10,7 @@ import net.joefoxe.hexerei.particle.ModParticleTypes;
 import net.joefoxe.hexerei.tileentity.renderer.MixingCauldronRenderer;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
 import net.joefoxe.hexerei.util.HexereiTags;
+import net.joefoxe.hexerei.util.HexereiUtil;
 import net.joefoxe.hexerei.util.message.EmitParticlesPacket;
 import net.joefoxe.hexerei.util.message.TESyncPacket;
 import net.minecraft.core.BlockPos;
@@ -35,6 +36,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -82,6 +84,9 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
     private int isColliding = 0;  // 15 is colliding, 0 is no longer colliding
     public static final int craftDelayMax = 100;
     private long tickedGameTime;
+    public int dyeColor = 0x422F1E;
+
+    public Component customName;
     public NonNullList<ItemStack> items = NonNullList.withSize(10, ItemStack.EMPTY);
     private FluidStack fluidStack = FluidStack.EMPTY;
 
@@ -89,7 +94,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
     private static final int[] SLOTS_OUTPUT = new int[]{8};
 
     VoxelShape BLOOD_SIGIL_SHAPE = Block.box(2.0D, 3.0D, 2.0D, 14.0D, 4.0D, 14.0D);
-    VoxelShape HOPPER_SHAPE = Block.box(2.0D, 3.0D, 2.0D, 14.0D, 4.0D, 14.0D);
+    VoxelShape HOPPER_SHAPE = Block.box(2.0D, 3.0D, 2.0D, 14.0D, 6.0D, 14.0D);
 
 
 
@@ -115,6 +120,32 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
         this.items = itemsIn;
     }
 
+    @Override
+    public Component getDisplayName() {
+        return customName != null ? customName
+                : Component.literal("");
+    }
+
+    @Override
+    public Component getCustomName() {
+        return this.customName;
+    }
+
+    @Override
+    public boolean hasCustomName() {
+        return customName != null;
+    }
+
+    public void setDyeColor(int dyeColor){
+        this.dyeColor = dyeColor;
+    }
+
+    public int getDyeColor(){
+        DyeColor dye = HexereiUtil.getDyeColorNamed(this.getDisplayName().getString());
+        if(dye != null)
+            return HexereiUtil.getColorValue(dye);
+        return this.dyeColor;
+    }
     @Override
     public void setChanged() {
         super.setChanged();
@@ -289,7 +320,11 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
 
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         this.fluidStack = FluidStack.loadFluidStackFromNBT(compoundTag.getCompound("fluid"));
+        if (compoundTag.contains("CustomName", 8))
+            this.customName = Component.Serializer.fromJson(compoundTag.getString("CustomName"));
 
+        if(compoundTag.contains("DyeColor"))
+            this.dyeColor = compoundTag.getInt("DyeColor");
         if (!this.tryLoadLootTable(compoundTag)) {
             ContainerHelper.loadAllItems(compoundTag, this.items);
         }
@@ -300,6 +335,9 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
         super.saveAdditional(compound);
         ContainerHelper.saveAllItems(compound, this.items);
         compound.put("fluid", this.fluidStack.writeToNBT(new CompoundTag()));
+        compound.putInt("DyeColor", this.dyeColor);
+        if (this.customName != null)
+            compound.putString("CustomName", Component.Serializer.toJson(this.customName));
     }
 
 //    @Override
@@ -307,6 +345,9 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
         super.saveAdditional(tag);
         ContainerHelper.saveAllItems(tag, this.items);
         tag.put("fluid", this.fluidStack.writeToNBT(new CompoundTag()));
+        tag.putInt("DyeColor", this.dyeColor);
+        if (this.customName != null)
+            tag.putString("CustomName", Component.Serializer.toJson(this.customName));
         return tag;
     }
 
@@ -513,7 +554,6 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
                 if(this.craftDelay >= this.craftDelayMax) {
                     Random rand = new Random();
                     craftTheItem(output);
-                    setChanged();
                     int temp = this.getFluidStack().getAmount();
                     this.getFluidStack().shrink(this.getTankCapacity(0));
                     this.fill(new FluidStack(iRecipe.getLiquidOutput(), temp), FluidAction.EXECUTE);
@@ -526,6 +566,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
                         this.getFluidStack().shrink(1);
                     if (this.getFluidStack().getAmount() % 10 == 9)
                         this.getFluidStack().grow(1);
+                    setChanged();
 
                }
             }
@@ -660,11 +701,6 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
         }
 
         return true;
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        return super.hasCustomName();
     }
 
 

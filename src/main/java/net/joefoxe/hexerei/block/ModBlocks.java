@@ -42,7 +42,7 @@ public class ModBlocks {
 //    public static final RegistryObject<Block> SCRAP_BLOCK = registerBlock("scrap_block",
 //            () -> new Block(BlockBehaviour.Properties.of(Material.STONE).strength(2).setRequiresTool().explosionResistance(5f)));
 
-	public static final RegistryObject<MixingCauldron> MIXING_CAULDRON = registerBlock("mixing_cauldron",
+	public static final RegistryObject<MixingCauldron> MIXING_CAULDRON = registerBlockNoItem("mixing_cauldron",
 					() -> new MixingCauldron(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).lightLevel(state -> 12)));
 
 	public static final RegistryObject<CandleDipper> CANDLE_DIPPER = registerBlock("candle_dipper",
