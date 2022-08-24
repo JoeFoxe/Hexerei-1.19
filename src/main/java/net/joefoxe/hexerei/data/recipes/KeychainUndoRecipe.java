@@ -14,7 +14,6 @@ import net.minecraft.world.level.Level;
 
 
 public class KeychainUndoRecipe extends CustomRecipe {
-    public static final SimpleRecipeSerializer<KeychainUndoRecipe> SERIALIZER = new SimpleRecipeSerializer<>(KeychainUndoRecipe::new);
 
     public KeychainUndoRecipe(ResourceLocation registryName) {
         super(registryName);
@@ -91,6 +90,6 @@ public class KeychainUndoRecipe extends CustomRecipe {
     }
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return SERIALIZER;
+        return ModRecipeTypes.KEYCHAIN_UNDO_SERIALIZER.get();
     }
 }
