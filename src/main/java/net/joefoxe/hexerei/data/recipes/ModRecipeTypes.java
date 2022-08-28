@@ -45,22 +45,17 @@ public class ModRecipeTypes {
             RECIPE_SERIALIZERS.register("pestle_and_mortar", () -> PestleAndMortarRecipe.Serializer.INSTANCE);
 
 
-    public static final RegistryObject<RecipeType<CrowFluteRecipe>> CROW_FLUTE_DYE_TYPE = RECIPE_TYPES.register("crow_flute_dye", () -> new ModRecipeType());
-    public static final RegistryObject<RecipeSerializer<CrowFluteRecipe>> CROW_FLUTE_DYE_RECIPE = RECIPE_SERIALIZERS.register("crow_flute_dye", () -> new CrowFluteRecipe.Serializer());
+    public static final RegistryObject<RecipeType<CrowFluteRecipe>> CROW_FLUTE_DYE_TYPE = RECIPE_TYPES.register("crow_flute_dye", () -> new ModRecipeType<>());
+    public static final RegistryObject<RecipeSerializer<CrowFluteRecipe>> CROW_FLUTE_DYE_SERIALIZER = RECIPE_SERIALIZERS.register("crow_flute_dye", () -> new CrowFluteRecipe.Serializer());
 
-    public static final RegistryObject<RecipeType<BookOfShadowsRecipe>> BOOK_OF_SHADOWS_DYE_TYPE = RECIPE_TYPES.register("book_of_shadows_dye", () -> new ModRecipeType());
-    public static final RegistryObject<RecipeSerializer<BookOfShadowsRecipe>> BOOK_OF_SHADOWS_DYE_RECIPE = RECIPE_SERIALIZERS.register("book_of_shadows_dye", () -> new BookOfShadowsRecipe.Serializer());
+    public static final RegistryObject<RecipeType<BookOfShadowsRecipe>> BOOK_OF_SHADOWS_DYE_TYPE = RECIPE_TYPES.register("book_of_shadows_dye", () -> new ModRecipeType<>());
+    public static final RegistryObject<RecipeSerializer<BookOfShadowsRecipe>> BOOK_OF_SHADOWS_DYE_SERIALIZER = RECIPE_SERIALIZERS.register("book_of_shadows_dye", () -> new BookOfShadowsRecipe.Serializer());
 
-    public static final RegistryObject<RecipeType<KeychainRecipe>> KEYCHAIN_APPLY_TYPE = RECIPE_TYPES.register("keychain_apply", () -> new ModRecipeType());
-    public static final RegistryObject<RecipeSerializer<KeychainRecipe>> KEYCHAIN_APPLY_RECIPE = RECIPE_SERIALIZERS.register("keychain_apply", () -> new SimpleRecipeSerializer<>(KeychainRecipe::new));
+    public static final RegistryObject<RecipeType<KeychainRecipe>> KEYCHAIN_APPLY_TYPE = RECIPE_TYPES.register("keychain_apply", () -> new ModRecipeType<>());
+    public static final RegistryObject<RecipeSerializer<KeychainRecipe>> KEYCHAIN_APPLY_SERIALIZER = RECIPE_SERIALIZERS.register("keychain_apply", () -> new SimpleRecipeSerializer<>(KeychainRecipe::new));
 
-    public static final RegistryObject<RecipeType<KeychainUndoRecipe>> KEYCHAIN_UNDO_TYPE = RECIPE_TYPES.register("keychain_undo", () -> new ModRecipeType());
-    public static final RegistryObject<RecipeSerializer<KeychainUndoRecipe>> KEYCHAIN_UNDO_RECIPE = RECIPE_SERIALIZERS.register("keychain_undo", () -> new SimpleRecipeSerializer<>(KeychainUndoRecipe::new));
-
-//        registry.register(CrowFluteRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Hexerei.MOD_ID, "crow_flute_dye")));
-//        registry.register(BookOfShadowsRecipe.SERIALIZER.setRegistryName(new ResourceLocation(Hexerei.MOD_ID, "book_of_shadows_dye")));
-//        registry.register(KeychainRecipe.SERIALIZER.setRegistryName(Hexerei.MOD_ID, "keychain_apply"));
-//        registry.register(KeychainUndoRecipe.SERIALIZER.setRegistryName(Hexerei.MOD_ID, "keychain_undo"));
+    public static final RegistryObject<RecipeType<KeychainUndoRecipe>> KEYCHAIN_UNDO_TYPE = RECIPE_TYPES.register("keychain_undo", () -> new ModRecipeType<>());
+    public static final RegistryObject<RecipeSerializer<KeychainUndoRecipe>> KEYCHAIN_UNDO_SERIALIZER = RECIPE_SERIALIZERS.register("keychain_undo", () -> new SimpleRecipeSerializer<>(KeychainUndoRecipe::new));
 
     private static class ModRecipeType<T extends Recipe<?>> implements RecipeType<T> {
         @Override

@@ -15,7 +15,6 @@ import javax.annotation.Nonnull;
 
 
 public class CrowFluteRecipe extends ShapedRecipe {
-    public static final RecipeSerializer<CrowFluteRecipe> SERIALIZER = new Serializer();
 
     public CrowFluteRecipe(ShapedRecipe compose) {
         super(compose.getId(), compose.getGroup(), compose.getWidth(), compose.getHeight(), compose.getIngredients(), compose.getResultItem());
@@ -71,6 +70,6 @@ public class CrowFluteRecipe extends ShapedRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return SERIALIZER;
+        return ModRecipeTypes.CROW_FLUTE_DYE_SERIALIZER.get();
     }
 }

@@ -16,7 +16,6 @@ import javax.annotation.Nonnull;
 
 
 public class BookOfShadowsRecipe extends ShapedRecipe {
-    public static final RecipeSerializer<BookOfShadowsRecipe> SERIALIZER = new Serializer();
 
     public BookOfShadowsRecipe(ShapedRecipe compose) {
         super(compose.getId(), compose.getGroup(), compose.getWidth(), compose.getHeight(), compose.getIngredients(), compose.getResultItem());
@@ -65,6 +64,6 @@ public class BookOfShadowsRecipe extends ShapedRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return SERIALIZER;
+        return ModRecipeTypes.BOOK_OF_SHADOWS_DYE_SERIALIZER.get();
     }
 }

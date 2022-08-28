@@ -93,6 +93,6 @@ public class KeychainRecipe extends CustomRecipe {
     }
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return SERIALIZER;
+        return ModRecipeTypes.KEYCHAIN_APPLY_SERIALIZER.get();
     }
 }

@@ -34,7 +34,7 @@ public class ModFluids {
 	// Better example form Ender IO since Create has their own extensions for virtual fluids
 	public static final FluidEntry<PotionFluid> POTION = REGISTRATE.fluid("potion", new ResourceLocation(Hexerei.MOD_ID, "block/potion_still"),
 					new ResourceLocation(Hexerei.MOD_ID, "block/potion_flow"), PotionFluidType::new, PotionFluid::new)
-					.renderType(RenderType::translucent)
+					//.renderType(RenderType::translucent) //TODO it will crash servers if called here apparently
             .source(PotionFluid::new)
 			.lang("Potion")
             .noBlock()
@@ -101,7 +101,6 @@ public class ModFluids {
 	public static void register(IEventBus eventBus) {
 		FLUIDS.register(eventBus);
 	}
-
 
 }
 
