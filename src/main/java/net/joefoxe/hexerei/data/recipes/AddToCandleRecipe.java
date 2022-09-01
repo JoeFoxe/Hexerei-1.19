@@ -89,8 +89,8 @@ public class AddToCandleRecipe extends CustomRecipe {
                 } else {
 
 
-                    CompoundTag tag = itemstack1.getOrCreateTag();
-                    CompoundTag tag2 = newInputs.get(1).getItems()[0].getOrCreateTag();
+                    CompoundTag tag = itemstack1.getTag();
+                    CompoundTag tag2 = newInputs.get(1).getItems()[0].getTag();
                     boolean compare = NbtUtils.compareNbt(tag2, tag, true);
 
                     if (!itemstack1.is(this.newInputs.get(1).getItems()[0].getItem()) && compare) {
