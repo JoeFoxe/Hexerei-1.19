@@ -18,6 +18,7 @@ public class KeychainRecipe extends CustomRecipe {
     public KeychainRecipe(ResourceLocation registryName) {
         super(registryName);
 
+
     }
 
     @Override

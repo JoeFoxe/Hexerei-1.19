@@ -7,6 +7,7 @@ import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
+import net.joefoxe.hexerei.fluid.FluidIngredient;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.FriendlyByteBuf;
@@ -57,6 +58,13 @@ public class DipperRecipe implements Recipe<SimpleContainer> {
 
     }
 
+
+    public List<FluidIngredient> getFluidIngredients(){
+        return new ArrayList<>(List.of(FluidIngredient.fromFluidStack(this.liquid)));
+    }
+    public FluidIngredient getFluidIngredient(){
+        return FluidIngredient.fromFluidStack(this.liquid);
+    }
 
     @Override
     public boolean matches(SimpleContainer inv, Level worldIn) {

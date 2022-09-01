@@ -1,5 +1,6 @@
 {
 	"credit": "Made with Blockbench",
+	"render_type": "translucent",
 	"parent": "minecraft:block/cube_all",
 	"textures": {
 		"5": "hexerei:block/selenite_cluster_3d",

@@ -47,8 +47,10 @@ import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CandleDipperTile extends RandomizableContainerBlockEntity implements WorldlyContainer, Clearable, MenuProvider {
 
@@ -267,149 +269,170 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
         }
 
 
-        Optional<DipperRecipe> recipe = level.getRecipeManager()
-                .getRecipeFor(DipperRecipe.Type.INSTANCE, inv, level);
+//        Optional<DipperRecipe> recipe = level.getRecipeManager()
+//                .getRecipeFor(DipperRecipe.Type.INSTANCE, inv, level);
+
+
 
         BlockEntity blockEntity = level.getBlockEntity(this.worldPosition.below());
+        AtomicBoolean matchesRecipe1 = new AtomicBoolean(false);
+        AtomicBoolean matchesRecipe2 = new AtomicBoolean(false);
+        AtomicBoolean matchesRecipe3 = new AtomicBoolean(false);
         if(blockEntity instanceof MixingCauldronTile mixingCauldronTile) {
-            recipe.ifPresent(iRecipe -> {
-                ItemStack output = iRecipe.getResultItem();
-                ItemStack input = iRecipe.getIngredients().get(0).getItems()[0];
-                boolean matchesFluid = iRecipe.getLiquid().getFluid().isSame(mixingCauldronTile.getFluidStack().getFluid()) && iRecipe.getFluidLevelsConsumed() <= mixingCauldronTile.getFluidStack().getAmount();
-                boolean hasFluidTag = iRecipe.getLiquid().hasTag();
-                if(hasFluidTag && !mixingCauldronTile.getFluidStack().isEmpty() && !mixingCauldronTile.getFluidStack().getOrCreateTag().equals(iRecipe.getLiquid().getOrCreateTag()))
-                    matchesFluid = false;
-                boolean useInputItemAsOutput = iRecipe.getUseInputItemAsOutput();
-                CompoundTag tag = input.getOrCreateTag();
-                CompoundTag tag2 = this.items.get(0).getOrCreateTag();
+
+            List<DipperRecipe> recipes = level.getRecipeManager().getRecipesFor(DipperRecipe.Type.INSTANCE, inv, level).stream().filter((dipperRecipe) -> {
+                FluidStack tileFluid = mixingCauldronTile.getFluidStack();
+                FluidStack recipeFluid = dipperRecipe.getLiquid();
+
+                CompoundTag tag = tileFluid.hasTag() ? tileFluid.getOrCreateTag() : new CompoundTag();
+                CompoundTag tag2 = recipeFluid.hasTag() ? recipeFluid.getOrCreateTag() : new CompoundTag();
+
+                return NbtUtils.compareNbt(tag2, tag, true);
+            }).toList();
+
+            recipes.forEach((iRecipe -> {
+
+                    ItemStack output = iRecipe.getResultItem();
+                    ItemStack input = iRecipe.getIngredients().get(0).getItems()[0];
+                    boolean matchesFluid = iRecipe.getLiquid().getFluid().isSame(mixingCauldronTile.getFluidStack().getFluid()) && iRecipe.getFluidLevelsConsumed() <= mixingCauldronTile.getFluidStack().getAmount();
+                    boolean hasFluidTag = iRecipe.getLiquid().hasTag();
+                    if(hasFluidTag && !mixingCauldronTile.getFluidStack().isEmpty() && !mixingCauldronTile.getFluidStack().getOrCreateTag().equals(iRecipe.getLiquid().getOrCreateTag()))
+                        matchesFluid = false;
+                    boolean useInputItemAsOutput = iRecipe.getUseInputItemAsOutput();
+                    CompoundTag tag = input.getOrCreateTag();
+                    CompoundTag tag2 = this.items.get(0).getOrCreateTag();
+
+                    boolean compare = NbtUtils.compareNbt(tag, tag2, true);
+
+                    if (input.getItem() == this.items.get(0).getItem() && compare && !matchesRecipe1.get()) {
+                        // FIRST SLOT MATCHES
 
 
+                        if(matchesFluid){
 
-                boolean hasTag = input.hasTag();
-                boolean compare = NbtUtils.compareNbt(tag, tag2, true);
+                            matchesRecipe1.set(true);
 
-                if (input.getItem() == this.items.get(0).getItem() && compare) {
-                    // FIRST SLOT MATCHES
-
-                    if(matchesFluid){
-
-
-                        if (!candle1Crafting) {
-                            candle1Crafting = true;
-                            candle1Output = output.copy();
-                            if(useInputItemAsOutput) {
-                                ItemStack stack = this.items.get(0).copy();
-                                stack.getOrCreateTag().merge(output.getOrCreateTag());
-                                candle1Output = stack;
+                            if (!candle1Crafting && !candle1Crafted) {
+                                candle1Crafting = true;
+                                candle1Output = output.copy();
+                                if(useInputItemAsOutput) {
+                                    ItemStack stack = this.items.get(0).copy();
+                                    stack.getOrCreateTag().merge(output.getOrCreateTag());
+                                    candle1Output = stack;
+                                }
+                                candle1DecreaseAmount = iRecipe.getFluidLevelsConsumed();
+                                candle1DippedTimesMax = iRecipe.getNumberOfDips();
+                                candle1DryingTimeMax = iRecipe.getDryingTime();
+                                candle1DryingTime = candleDryingTimeStart;
+                                candle1DippingTimeMax = iRecipe.getDippingTime();
+                                candle1DippingTime = candle1DippingTimeMax;
+                                setChanged();
                             }
-                            candle1DecreaseAmount = iRecipe.getFluidLevelsConsumed();
-                            candle1DippedTimesMax = iRecipe.getNumberOfDips();
-                            candle1DryingTimeMax = iRecipe.getDryingTime();
-                            candle1DryingTime = candleDryingTimeStart;
-                            candle1DippingTimeMax = iRecipe.getDippingTime();
-                            candle1DippingTime = candle1DippingTimeMax;
-                            setChanged();
+
+                        } else
+                        {
+
+
                         }
 
-                    } else
-                    {
-                        if(candle1Dunking) {
-                            candle1Crafting = false;
-                            candle1Dunking = false;
-                            candle1DryingTime = candleDryingTimeStart;
-                            setChanged();
-                        }
 
-                    }
-
-
-                } else {
-                    if(matchesFluid){
-                        if (candle1Crafting) {
-                            candle1Crafting = false;
-                            setChanged();
+                    } else {
+                        if(matchesFluid){
+                            if (candle1Crafting) {
+                                candle1Crafting = false;
+                                setChanged();
+                            }
                         }
                     }
-                }
+                    tag2 = this.items.get(1).getOrCreateTag();
 
-                if (input.getItem() == this.items.get(1).getItem()) {
-                    // SECOND SLOT MATCHES
+                    compare = NbtUtils.compareNbt(tag, tag2, true);
 
-                    if(matchesFluid){
+                    if (input.getItem() == this.items.get(1).getItem() && compare && !matchesRecipe2.get()) {
+                        // SECOND SLOT MATCHES
+
+                        if(matchesFluid){
+
+                            matchesRecipe2.set(true);
 
 
 
-                        if (!candle2Crafting) {
-                            candle2Crafting = true;
-                            candle2Output = output.copy();
-                            candle2DecreaseAmount = iRecipe.getFluidLevelsConsumed();
-                            candle2DippedTimesMax = iRecipe.getNumberOfDips();
-                            candle2DryingTimeMax = iRecipe.getDryingTime();
-                            candle2DryingTime = candleDryingTimeStart;
-                            candle2DippingTimeMax = iRecipe.getDippingTime();
-                            candle2DippingTime = candle2DippingTimeMax;
-                            setChanged();
+                            if (!candle2Crafting && !candle2Crafted) {
+                                candle2Crafting = true;
+                                candle2Output = output.copy();
+                                candle2DecreaseAmount = iRecipe.getFluidLevelsConsumed();
+                                candle2DippedTimesMax = iRecipe.getNumberOfDips();
+                                candle2DryingTimeMax = iRecipe.getDryingTime();
+                                candle2DryingTime = candleDryingTimeStart;
+                                candle2DippingTimeMax = iRecipe.getDippingTime();
+                                candle2DippingTime = candle2DippingTimeMax;
+                                setChanged();
+                            }
+
+                        } else
+                        {
+                            if(candle2Dunking) {
+                                candle2Crafting = false;
+                                candle2Dunking = false;
+                                candle2DryingTime = candleDryingTimeStart;
+                                setChanged();
+                            }
+
                         }
 
-                    } else
-                    {
-                        if(candle2Dunking) {
-                            candle2Crafting = false;
-                            candle2Dunking = false;
-                            candle2DryingTime = candleDryingTimeStart;
-                            setChanged();
-                        }
-
-                    }
-
-                } else {
-                    if(matchesFluid){
-                        if (candle2Crafting) {
-                            candle2Crafting = false;
-                            setChanged();
-                        }
-                    }
-                }
-
-                if (input.getItem() == this.items.get(2).getItem()) {
-                    // THIRD SLOT MATCHES
-
-                    if(matchesFluid){
-
-
-                        if (!candle3Crafting) {
-                            candle3Crafting = true;
-                            candle3Output = output.copy();
-                            candle3DecreaseAmount = iRecipe.getFluidLevelsConsumed();
-                            candle3DippedTimesMax = iRecipe.getNumberOfDips();
-                            candle3DryingTimeMax = iRecipe.getDryingTime();
-                            candle3DryingTime = candleDryingTimeStart;
-                            candle3DippingTimeMax = iRecipe.getDippingTime();
-                            candle3DippingTime = candle3DippingTimeMax;
-                            setChanged();
-                        }
-
-
-                    } else
-                    {
-                        if(candle3Dunking) {
-                            candle3Crafting = false;
-                            candle3Dunking = false;
-                            candle3DryingTime = candleDryingTimeStart;
-                            setChanged();
-                        }
-
-                    }
-
-
-                } else {
-                    if(matchesFluid){
-                        if (candle3Crafting) {
-                            candle3Crafting = false;
-                            setChanged();
+                    } else {
+                        if(matchesFluid){
+                            if (candle2Crafting) {
+                                candle2Crafting = false;
+                                setChanged();
+                            }
                         }
                     }
-                }
+
+                    tag2 = this.items.get(2).getOrCreateTag();
+
+                    compare = NbtUtils.compareNbt(tag, tag2, true);
+                    if (input.getItem() == this.items.get(2).getItem() && compare && !matchesRecipe3.get()) {
+                        // THIRD SLOT MATCHES
+
+                        if(matchesFluid){
+
+                            matchesRecipe3.set(true);
+
+
+                            if (!candle3Crafting && !candle3Crafted) {
+                                candle3Crafting = true;
+                                candle3Output = output.copy();
+                                candle3DecreaseAmount = iRecipe.getFluidLevelsConsumed();
+                                candle3DippedTimesMax = iRecipe.getNumberOfDips();
+                                candle3DryingTimeMax = iRecipe.getDryingTime();
+                                candle3DryingTime = candleDryingTimeStart;
+                                candle3DippingTimeMax = iRecipe.getDippingTime();
+                                candle3DippingTime = candle3DippingTimeMax;
+                                setChanged();
+                            }
+
+
+                        } else
+                        {
+                            if(candle3Dunking) {
+                                candle3Crafting = false;
+                                candle3Dunking = false;
+                                candle3DryingTime = candleDryingTimeStart;
+                                setChanged();
+                            }
+
+                        }
+
+
+                    } else {
+                        if(matchesFluid){
+                            if (candle3Crafting) {
+                                candle3Crafting = false;
+                                setChanged();
+                            }
+                        }
+                    }
 
 //                if(this.craftDelay >= this.craftDelayMax) {
 //                    Random rand = new Random();
@@ -449,7 +472,197 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
 //                }
 
 
-            });
+
+            }));
+
+            if(!matchesRecipe1.get()){
+                if(candle1Dunking) {
+                    candle1Crafting = false;
+                    candle1Dunking = false;
+                    candle1DryingTime = candleDryingTimeStart;
+                    setChanged();
+                }
+            }
+
+
+//            recipe.ifPresent(iRecipe -> {
+//                ItemStack output = iRecipe.getResultItem();
+//                ItemStack input = iRecipe.getIngredients().get(0).getItems()[0];
+//                boolean matchesFluid = iRecipe.getLiquid().getFluid().isSame(mixingCauldronTile.getFluidStack().getFluid()) && iRecipe.getFluidLevelsConsumed() <= mixingCauldronTile.getFluidStack().getAmount();
+//                boolean hasFluidTag = iRecipe.getLiquid().hasTag();
+//                if(hasFluidTag && !mixingCauldronTile.getFluidStack().isEmpty() && !mixingCauldronTile.getFluidStack().getOrCreateTag().equals(iRecipe.getLiquid().getOrCreateTag()))
+//                    matchesFluid = false;
+//                boolean useInputItemAsOutput = iRecipe.getUseInputItemAsOutput();
+//                CompoundTag tag = input.getOrCreateTag();
+//                CompoundTag tag2 = this.items.get(0).getOrCreateTag();
+//
+//
+//
+//                boolean hasTag = input.hasTag();
+//                boolean compare = NbtUtils.compareNbt(tag, tag2, true);
+//
+//                if (input.getItem() == this.items.get(0).getItem() && compare) {
+//                    // FIRST SLOT MATCHES
+//
+//                    if(matchesFluid){
+//
+//
+//                        if (!candle1Crafting && !candle1Crafted) {
+//                            candle1Crafting = true;
+//                            candle1Output = output.copy();
+//                            if(useInputItemAsOutput) {
+//                                ItemStack stack = this.items.get(0).copy();
+//                                stack.getOrCreateTag().merge(output.getOrCreateTag());
+//                                candle1Output = stack;
+//                            }
+//                            candle1DecreaseAmount = iRecipe.getFluidLevelsConsumed();
+//                            candle1DippedTimesMax = iRecipe.getNumberOfDips();
+//                            candle1DryingTimeMax = iRecipe.getDryingTime();
+//                            candle1DryingTime = candleDryingTimeStart;
+//                            candle1DippingTimeMax = iRecipe.getDippingTime();
+//                            candle1DippingTime = candle1DippingTimeMax;
+//                            setChanged();
+//                        }
+//
+//                    } else
+//                    {
+//                        if(candle1Dunking) {
+//                            candle1Crafting = false;
+//                            candle1Dunking = false;
+//                            candle1DryingTime = candleDryingTimeStart;
+//                            setChanged();
+//                        }
+//
+//                    }
+//
+//
+//                } else {
+//                    if(matchesFluid){
+//                        if (candle1Crafting) {
+//                            candle1Crafting = false;
+//                            setChanged();
+//                        }
+//                    }
+//                }
+//
+//                if (input.getItem() == this.items.get(1).getItem()) {
+//                    // SECOND SLOT MATCHES
+//
+//                    if(matchesFluid){
+//
+//
+//
+//                        if (!candle2Crafting && !candle2Crafted) {
+//                            candle2Crafting = true;
+//                            candle2Output = output.copy();
+//                            candle2DecreaseAmount = iRecipe.getFluidLevelsConsumed();
+//                            candle2DippedTimesMax = iRecipe.getNumberOfDips();
+//                            candle2DryingTimeMax = iRecipe.getDryingTime();
+//                            candle2DryingTime = candleDryingTimeStart;
+//                            candle2DippingTimeMax = iRecipe.getDippingTime();
+//                            candle2DippingTime = candle2DippingTimeMax;
+//                            setChanged();
+//                        }
+//
+//                    } else
+//                    {
+//                        if(candle2Dunking) {
+//                            candle2Crafting = false;
+//                            candle2Dunking = false;
+//                            candle2DryingTime = candleDryingTimeStart;
+//                            setChanged();
+//                        }
+//
+//                    }
+//
+//                } else {
+//                    if(matchesFluid){
+//                        if (candle2Crafting) {
+//                            candle2Crafting = false;
+//                            setChanged();
+//                        }
+//                    }
+//                }
+//
+//                if (input.getItem() == this.items.get(2).getItem()) {
+//                    // THIRD SLOT MATCHES
+//
+//                    if(matchesFluid){
+//
+//
+//                        if (!candle3Crafting && !candle3Crafted) {
+//                            candle3Crafting = true;
+//                            candle3Output = output.copy();
+//                            candle3DecreaseAmount = iRecipe.getFluidLevelsConsumed();
+//                            candle3DippedTimesMax = iRecipe.getNumberOfDips();
+//                            candle3DryingTimeMax = iRecipe.getDryingTime();
+//                            candle3DryingTime = candleDryingTimeStart;
+//                            candle3DippingTimeMax = iRecipe.getDippingTime();
+//                            candle3DippingTime = candle3DippingTimeMax;
+//                            setChanged();
+//                        }
+//
+//
+//                    } else
+//                    {
+//                        if(candle3Dunking) {
+//                            candle3Crafting = false;
+//                            candle3Dunking = false;
+//                            candle3DryingTime = candleDryingTimeStart;
+//                            setChanged();
+//                        }
+//
+//                    }
+//
+//
+//                } else {
+//                    if(matchesFluid){
+//                        if (candle3Crafting) {
+//                            candle3Crafting = false;
+//                            setChanged();
+//                        }
+//                    }
+//                }
+//
+////                if(this.craftDelay >= this.craftDelayMax) {
+////                    Random rand = new Random();
+////                    craftTheItem(output);
+////                    setChanged();();
+////                    int temp = this.getFluidStack().getAmount();
+////                    this.getFluidStack().shrink(this.getTankCapacity(0));
+////                    this.fill(new FluidStack(iRecipe.getLiquidOutput(), temp), IFluidHandler.FluidAction.EXECUTE);
+////
+////                    //for setting a cooldown on crafting so the animations can take place
+////                    this.crafted = true;
+////
+////                    this.getFluidStack().shrink(iRecipe.getFluidLevelsConsumed());
+////                    if (this.getFluidStack().getAmount() % 10 == 1)
+////                        this.getFluidStack().shrink(1);
+////                    if (this.getFluidStack().getAmount() % 10 == 9)
+////                        this.getFluidStack().grow(1);
+////
+////                }
+////
+////                else
+////                {
+////                    if(candle3Dunking || candle2Dunking || candle3Dunking) {
+////                        System.out.println("SET FALSE");
+////                        candle1Crafting = false;
+////                        candle2Crafting = false;
+////                        candle3Crafting = false;
+////                        candle1Dunking = false;
+////                        candle2Dunking = false;
+////                        candle3Dunking = false;
+////                        candle3DryingTime = candleDryingTimeStart;
+////                        candle2DryingTime = candleDryingTimeStart;
+////                        candle1DryingTime = candleDryingTimeStart;
+////                        setChanged();();
+////                    }
+////
+////                }
+//
+//
+//            });
         }
 
         if (candle1DippedTimes >= candle1DippedTimesMax) {
@@ -1016,8 +1229,10 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
             }
 
             if (candle1Dunking) {
-                if (((MixingCauldronTile) blockEntity).getFluidStack().getAmount() > 0 )
+                targetPos1 = new Vec3(targetPos1.x(), height + Math.sin((this.level.getGameTime()) / 16f) / 32f, 8f / 16f);
+                if (((MixingCauldronTile) blockEntity).getFluidStack().getAmount() > 0 ) {
                     candle1DippingTime--;
+                }
                 candle1DryingTime = candle1DryingTimeMax;
                 if (candle1DippingTime <= 0) {
                     candle1DippingTime = candle1DippingTimeMax;
@@ -1027,7 +1242,6 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
                     chanceDecreaseLevel(candle1DecreaseAmount);
                 }
 
-                targetPos1 = new Vec3(targetPos1.x(), height + Math.sin((this.level.getGameTime()) / 16f) / 32f, 8f / 16f);
             }
             if (candle2Dunking) {
                 if (((MixingCauldronTile) blockEntity).getFluidStack().getAmount() > 0)

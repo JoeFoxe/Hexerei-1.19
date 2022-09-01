@@ -7,6 +7,7 @@ import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
+import net.joefoxe.hexerei.fluid.FluidIngredient;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.FriendlyByteBuf;
@@ -22,6 +23,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
@@ -34,6 +36,8 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
     private final int fluidLevelsConsumed;
     protected static final List<Boolean> itemMatchesSlot = new ArrayList<>();
 
+    private final FluidMixingRecipe.HeatCondition heatCondition;
+
 
     public MixingCauldronRecipe(ResourceLocation id, ItemStack output,
                                 NonNullList<Ingredient> recipeItems, FluidStack liquid, FluidStack liquidOutput, int fluidLevelsConsumed) {
@@ -43,11 +47,34 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
         this.liquid = liquid;
         this.liquidOutput = liquidOutput;
         this.fluidLevelsConsumed = fluidLevelsConsumed;
+        this.heatCondition = FluidMixingRecipe.HeatCondition.NONE;
 
         for(int i = 0; i < 8; i++) {
             itemMatchesSlot.add(false);
         }
 
+    }
+    public MixingCauldronRecipe(ResourceLocation id, ItemStack output,
+                                NonNullList<Ingredient> recipeItems, FluidStack liquid, FluidStack liquidOutput, int fluidLevelsConsumed, FluidMixingRecipe.HeatCondition heatCondition) {
+        this.id = id;
+        this.output = output;
+        this.recipeItems = recipeItems;
+        this.liquid = liquid;
+        this.liquidOutput = liquidOutput;
+        this.fluidLevelsConsumed = fluidLevelsConsumed;
+        this.heatCondition = heatCondition;
+
+        for(int i = 0; i < 8; i++) {
+            itemMatchesSlot.add(false);
+        }
+
+    }
+
+    public List<FluidIngredient> getFluidIngredients(){
+        return new ArrayList<>(List.of(FluidIngredient.fromFluidStack(this.liquid)));
+    }
+    public FluidIngredient getFluidIngredient(){
+        return FluidIngredient.fromFluidStack(this.liquid);
     }
 
 
@@ -128,6 +155,7 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
         return output.copy();
     }
 
+    public FluidMixingRecipe.HeatCondition getHeatCondition() { return this.heatCondition; }
     public FluidStack getLiquid() { return this.liquid; }
 
     public FluidStack getLiquidOutput() { return this.liquidOutput; }
@@ -156,14 +184,11 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
     public static class Type implements RecipeType<MixingCauldronRecipe> {
         private Type() { }
         public static final Type INSTANCE = new Type();
-        public static final String ID = "mixingcauldron";
     }
 
     // for Serializing the recipe into/from a json
     public static class Serializer implements RecipeSerializer<MixingCauldronRecipe> {
             public static final Serializer INSTANCE = new Serializer();
-            public static final ResourceLocation ID =
-                    new ResourceLocation(Hexerei.MOD_ID,"mixingcauldron");
 
         @Override
         public MixingCauldronRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
@@ -173,6 +198,9 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
 
             int fluidLevelsConsumed = GsonHelper.getAsInt(json, "fluidLevelsConsumed");
 
+            String heatRequirement = GsonHelper.getAsString(json, "heatRequirement", "none");
+            FluidMixingRecipe.HeatCondition heatCondition = FluidMixingRecipe.HeatCondition.getHeated(heatRequirement);
+
             JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
             NonNullList<Ingredient> inputs = NonNullList.withSize(8, Ingredient.EMPTY);
 
@@ -181,7 +209,7 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
             }
 
             return new MixingCauldronRecipe(recipeId, output,
-                    inputs, liquid, liquidOutput, fluidLevelsConsumed);
+                    inputs, liquid, liquidOutput, fluidLevelsConsumed, heatCondition);
         }
 
         @Nullable
@@ -194,7 +222,7 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
             }
 
             return new MixingCauldronRecipe(recipeId, buffer.readItem(),
-                    inputs, buffer.readFluidStack(), buffer.readFluidStack(), buffer.readInt());
+                    inputs, buffer.readFluidStack(), buffer.readFluidStack(), buffer.readInt(), buffer.readEnum(FluidMixingRecipe.HeatCondition.class));
         }
 
         @Override
@@ -207,6 +235,7 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
             buffer.writeFluidStack(recipe.getLiquid());
             buffer.writeFluidStack(recipe.getLiquidOutput());
             buffer.writeInt(recipe.getFluidLevelsConsumed());
+            buffer.writeEnum(recipe.getHeatCondition());
         }
 
         public static FluidStack deserializeFluidStack(JsonObject json) {

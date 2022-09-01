@@ -206,6 +206,8 @@ public class FluidStackRenderer implements IIngredientRenderer<FluidStack> {
         }
 
         Component displayName = fluidStack.getDisplayName();
+        if(fluidStack.isEmpty())
+            displayName = Component.translatable("book.hexerei.tooltip.empty");
         tooltip.add(displayName);
 
         int amount = fluidStack.getAmount();

@@ -10,6 +10,8 @@ import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
 import net.joefoxe.hexerei.config.HexConfig;
 import net.joefoxe.hexerei.container.ModContainers;
 import net.joefoxe.hexerei.data.books.PageDrawing;
+import net.joefoxe.hexerei.data.candle.CandleEffects;
+import net.joefoxe.hexerei.data.datagen.ModRecipeProvider;
 import net.joefoxe.hexerei.data.recipes.HexereiRecipeProvider;
 import net.joefoxe.hexerei.data.recipes.ModRecipeTypes;
 import net.joefoxe.hexerei.data.tags.ModBiomeTagsProvider;
@@ -29,11 +31,15 @@ import net.joefoxe.hexerei.sounds.ModSounds;
 import net.joefoxe.hexerei.tileentity.ModTileEntities;
 import net.joefoxe.hexerei.util.*;
 import net.joefoxe.hexerei.world.biome.ModBiomes;
+import net.joefoxe.hexerei.world.biomemods.ModBiomeModifiers;
+import net.joefoxe.hexerei.world.gen.ModConfiguredFeatures;
 import net.joefoxe.hexerei.world.gen.ModFeatures;
+import net.joefoxe.hexerei.world.gen.ModPlacedFeatures;
 import net.joefoxe.hexerei.world.processor.DarkCovenLegProcessor;
 import net.joefoxe.hexerei.world.processor.MangroveTreeLegProcessor;
 import net.joefoxe.hexerei.world.processor.WitchHutLegProcessor;
 import net.joefoxe.hexerei.world.structure.ModStructures;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -137,6 +143,8 @@ public class Hexerei {
 		ModBiomes.register(eventBus);
 		ModSounds.register(eventBus);
 		ModEntityTypes.register(eventBus);
+		ModBiomeModifiers.register(eventBus);
+		ModPlacedFeatures.register(eventBus);
 
 		HexereiJeiCompat.init();
 		ModLootModifiers.init();
@@ -168,6 +176,8 @@ public class Hexerei {
 
 	public void gatherData(GatherDataEvent event) {
 		DataGenerator gen = event.getGenerator();
+
+		gen.addProvider(true, new ModRecipeProvider(gen));
 		gen.addProvider(event.includeServer(), new ModBiomeTagsProvider(gen, event.getExistingFileHelper()));
 //		gen.addProvider(event.includeServer(), new HexereiRecipeProvider(gen));
 	}
@@ -244,50 +254,12 @@ public class Hexerei {
 		setupCrowPerchRenderer();
 		event.enqueueWork(() -> {
 
-
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.QUICKSILVER_FLUID.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.QUICKSILVER_FLOWING.get(), RenderType.translucent());
-
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.BLOOD_FLUID.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.BLOOD_FLOWING.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.TALLOW_FLUID.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.TALLOW_FLOWING.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.MAHOGANY_DOOR.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.MAHOGANY_TRAPDOOR.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.MAHOGANY_TRAPDOOR.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.WILLOW_DOOR.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.WILLOW_TRAPDOOR.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.MIXING_CAULDRON.get(), RenderType.cutoutMipped());
-
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSTAL_BALL.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSTAL_BALL_ORB.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSTAL_BALL_LARGE_RING.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSTAL_BALL_SMALL_RING.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.HERB_DRYING_RACK_FULL.get(), RenderType.cutout());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.HERB_DRYING_RACK.get(), RenderType.cutout());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.MAHOGANY_SAPLING.get(), RenderType.cutout());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.WILLOW_SAPLING.get(), RenderType.cutout());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.MANDRAKE_FLOWER.get(), RenderType.cutout());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.POTTED_MANDRAKE_FLOWER.get(), RenderType.cutout());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.BELLADONNA_FLOWER.get(), RenderType.cutout());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.POTTED_BELLADONNA_FLOWER.get(), RenderType.cutout());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.MUGWORT_BUSH.get(), RenderType.cutout());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.POTTED_MUGWORT_BUSH.get(), RenderType.cutout());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.YELLOW_DOCK_BUSH.get(), RenderType.cutout());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.POTTED_YELLOW_DOCK_BUSH.get(), RenderType.cutout());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.CANDELABRA.get(), RenderType.cutout());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.SAGE.get(), RenderType.cutout());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.LILY_PAD_BLOCK.get(), RenderType.cutout());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.WILLOW_VINES.get(), RenderType.cutout());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.WILLOW_VINES_PLANT.get(), RenderType.cutout());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.COFFER.get(), RenderType.cutout());
-
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.SELENITE_BLOCK.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.SELENITE_CLUSTER.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.BUDDING_SELENITE.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.LARGE_SELENITE_BUD.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.MEDIUM_SELENITE_BUD.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(ModBlocks.SMALL_SELENITE_BUD.get(), RenderType.translucent());
 
 			MenuScreens.register(ModContainers.MIXING_CAULDRON_CONTAINER.get(), MixingCauldronScreen::new);
 			MenuScreens.register(ModContainers.COFFER_CONTAINER.get(), CofferScreen::new);
@@ -319,8 +291,10 @@ public class Hexerei {
 	}
 
 
+	@OnlyIn(Dist.CLIENT)
 	public static float getClientTicks() {
-		return clientTicks + clientTicksPartial;
+		Minecraft mc = Minecraft.getInstance();
+		return clientTicks + mc.getFrameTime();
 	}
 
 	public static float getClientTicksWithoutPartial() {

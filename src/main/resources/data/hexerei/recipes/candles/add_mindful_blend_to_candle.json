@@ -1,0 +1,19 @@
+{
+  "type": "hexerei:add_to_candle",
+  "input": {
+    "item": "hexerei:mindful_trance_blend"
+  },
+  "output": {
+    "item": "hexerei:candle",
+    "nbt": {
+      "herb": {
+        "layer": "hexerei:textures/block/candle_herb_layer.png",
+        "meltingSpeedMultiplier": 1,
+        "radiusMultiplier": 1,
+        "effectAmplifierMultiplier": 1,
+        "effectCooldownMultiplier": 1,
+        "effectDurationMultiplier": 1
+      }
+    }
+  }
+}

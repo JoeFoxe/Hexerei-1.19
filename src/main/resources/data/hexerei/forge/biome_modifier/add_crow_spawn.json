@@ -1,0 +1,10 @@
+{
+  "type": "hexerei:entities",
+  "biomes": "#minecraft:is_forest",
+  "entity": {
+    "type": "hexerei:crow",
+    "weight": 20,
+    "minCount": 2,
+    "maxCount": 5
+  }
+}

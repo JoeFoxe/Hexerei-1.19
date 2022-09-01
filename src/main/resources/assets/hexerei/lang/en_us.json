@@ -767,6 +767,8 @@
 
   "book.hexerei.tooltip.liquid.amount": "%s mB",
   "book.hexerei.tooltip.liquid.amount.with.capacity": "%s / %s mB",
+  "hexerei.generic.unit.millibuckets": "%1$smB",
+  "book.hexerei.tooltip.empty": "Empty",
 
   "book.hexerei.tooltip.accepts_any": "Accepts any: %s",
 
@@ -780,6 +782,21 @@
   "entity.hexerei.broom": "Broom",
 
   "fluid.hexerei.potion": "Potion",
+
+  "tooltip.hexerei.heat_source": "Heat Source",
+  "tooltip.hexerei.recipe_heated": "This recipe must be Heated",
+  "tooltip.hexerei.recipe_heated_1": "To heat the cauldron the block below",
+  "tooltip.hexerei.recipe_heated_2": "must be tagged as a heated block",
+  "tooltip.hexerei.recipe_heated_3": "that block must be lit if it can be lit",
+  "tooltip.hexerei.recipe_heated_4": "can be any of the cycled heat blocks shown",
+  "tooltip.hexerei.recipe_superheated": "This recipe must be Super-Heated",
+  "tooltip.hexerei.recipe_superheated_2": "The block below can be any block tagged as a Super-Heated source",
+  "gui.jei.category.mixing_cauldron.convert_fluid": "Converts Fluid",
+
+  "fluid_type.hexerei.tallow_fluid": "Tallow",
+  "fluid_type.hexerei.blood_fluid": "Blood",
+  "item.hexerei.willow_altar": "Willow Altar",
+  "block.hexerei.willow_altar": "Willow Altar",
 
   "itemGroup.hexereiModTab": "Hexerei"
 

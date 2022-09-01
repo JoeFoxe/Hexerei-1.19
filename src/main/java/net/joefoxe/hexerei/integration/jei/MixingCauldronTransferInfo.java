@@ -125,7 +125,7 @@ public class MixingCauldronTransferInfo implements IRecipeTransferHandler<Mixing
                             poseStack.pushPose();
 
                             poseStack.translate(0,0,1000);
-                            GuiComponent.fill(poseStack, recipeX + slot.x, recipeY + slot.y + 9, recipeX + slot.x + 16, recipeY + slot.y + 9 + 16, 0x66FF0000);
+                            GuiComponent.fill(poseStack, recipeX + slot.x - 22, recipeY + slot.y + 1, recipeX + slot.x + 16 - 22, recipeY + slot.y + 1 + 16, 0x66FF0000);
 
                             poseStack.popPose();
                         }
@@ -156,7 +156,7 @@ public class MixingCauldronTransferInfo implements IRecipeTransferHandler<Mixing
                             poseStack.pushPose();
 
                             poseStack.translate(0,0,1000);
-                            GuiComponent.fill(poseStack, recipeX + slot.x, recipeY + slot.y + 9, recipeX + slot.x + 16, recipeY + slot.y + 9 + 16, 0x66FF0000);
+                            GuiComponent.fill(poseStack, recipeX + slot.x - 22, recipeY + slot.y + 1, recipeX + slot.x + 16 - 22, recipeY + slot.y + 1 + 16, 0x66FF0000);
 
                             poseStack.popPose();
                         }

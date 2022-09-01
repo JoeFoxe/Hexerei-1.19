@@ -78,7 +78,7 @@ public class CandleDipperRenderer implements BlockEntityRenderer<CandleDipperTil
             }
             matrixStackIn.popPose();
         }
-        if(tileEntityIn.candle1DippedTimes > 0 && tileEntityIn.getItems().get(0).getItem() == ModBlocks.CANDLE.get().asItem() || tileEntityIn.getItems().get(0).getItem() == Items.STRING) {
+        if(tileEntityIn.getItems().get(0).getItem() == Items.STRING) {
             matrixStackIn.pushPose();
             matrixStackIn.translate(tileEntityIn.candlePos1.x(), tileEntityIn.candlePos1.y(), tileEntityIn.candlePos1.z());
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(rotation));
@@ -123,7 +123,7 @@ public class CandleDipperRenderer implements BlockEntityRenderer<CandleDipperTil
         }
 
 
-        if(tileEntityIn.candle2DippedTimes > 0 && tileEntityIn.getItems().get(1).getItem() == ModBlocks.CANDLE.get().asItem() || tileEntityIn.getItems().get(1).getItem() == Items.STRING) {
+        if(tileEntityIn.getItems().get(1).getItem() == Items.STRING) {
             matrixStackIn.pushPose();
             matrixStackIn.translate(tileEntityIn.candlePos2.x(), tileEntityIn.candlePos2.y(), tileEntityIn.candlePos2.z());
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(rotation));
@@ -166,7 +166,7 @@ public class CandleDipperRenderer implements BlockEntityRenderer<CandleDipperTil
             matrixStackIn.popPose();
         }
 
-        if(tileEntityIn.candle3DippedTimes > 0 && tileEntityIn.getItems().get(2).getItem() == ModBlocks.CANDLE.get().asItem() || tileEntityIn.getItems().get(2).getItem() == Items.STRING) {
+        if(tileEntityIn.getItems().get(2).getItem() == Items.STRING) {
             matrixStackIn.pushPose();
             matrixStackIn.translate(tileEntityIn.candlePos3.x(), tileEntityIn.candlePos3.y(), tileEntityIn.candlePos3.z());
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(rotation));

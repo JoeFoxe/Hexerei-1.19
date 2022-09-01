@@ -11,9 +11,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class BonemealingCandleEffect extends AbstractCandleEffect{
     private static final int MAX_TIME = 8 * 20;
@@ -24,23 +26,27 @@ public class BonemealingCandleEffect extends AbstractCandleEffect{
 
     @Override
     public void tick(Level level, CandleTile blockEntity, CandleData candleData) {
-        if (level.isClientSide()) return;
+//        if (level.isClientSide()) return;
         if(candleData.lit){
-            ServerLevel serverLevel = (ServerLevel) level;
 
-            if (checkCooldown >= MAX_TIME) {
+            if (candleData.cooldown >= MAX_TIME) {
                 BlockPos crop = findCrop(level, blockEntity.getBlockPos());
                 if (crop != null) {
                     Block block = level.getBlockState(crop).getBlock();
-                    if (block instanceof CropBlock cropBlock) {
+                    if ((!level.isClientSide()) && block instanceof CropBlock cropBlock) {
+                        ServerLevel serverLevel = (ServerLevel) level;
                         cropBlock.performBonemeal(serverLevel, level.random, crop, level.getBlockState(crop));
                         serverLevel.sendParticles(ParticleTypes.HAPPY_VILLAGER, crop.getX() + 0.5, crop.getY() + 0.5, crop.getZ() + 0.5, 10, 0.5, 0.5, 0.5, 0.2);
                     }
-                    checkCooldown = 0;
+
+                    candleData.cooldown = 0;
                 }
             }
-            checkCooldown = (checkCooldown + 1) % Integer.MAX_VALUE;
+            if(candleData.effectParticle != null && level.isClientSide() && candleData.effectParticle != null && candleData.effectParticle.size() > 0)
+                particle = (ParticleOptions) ForgeRegistries.PARTICLE_TYPES.getValue(candleData.effectParticle.get(new Random().nextInt(candleData.effectParticle.size())));
+            candleData.cooldown = (candleData.cooldown + 1) % Integer.MAX_VALUE;
         }
+
     }
 
     @Nullable
@@ -57,6 +63,16 @@ public class BonemealingCandleEffect extends AbstractCandleEffect{
         if(crops.isEmpty()) return null;
 
         return crops.get(level.random.nextInt(crops.size()));
+    }
+
+    @Override
+    public <T> AbstractCandleEffect getCopy() {
+        return new BonemealingCandleEffect();
+    }
+
+    @Override
+    public String getLocationName() {
+        return new ResourceLocation(Hexerei.MOD_ID, "growth_effect").toString();
     }
 
     @Override

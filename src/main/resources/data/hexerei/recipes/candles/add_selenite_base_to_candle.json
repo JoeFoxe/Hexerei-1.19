@@ -1,0 +1,15 @@
+{
+  "type": "hexerei:add_to_candle",
+  "input": {
+    "item": "hexerei:selenite_shard"
+  },
+  "output": {
+    "item": "hexerei:candle",
+    "nbt": {
+      "base": {
+        "layer": "hexerei:textures/block/selenite_block.png",
+        "layerFromBlockLocation": false
+      }
+    }
+  }
+}

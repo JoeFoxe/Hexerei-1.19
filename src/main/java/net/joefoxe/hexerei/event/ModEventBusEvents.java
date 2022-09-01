@@ -1,6 +1,10 @@
 package net.joefoxe.hexerei.event;
 
 import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.block.ModBlocks;
+import net.joefoxe.hexerei.block.custom.Candle;
+import net.joefoxe.hexerei.item.ModItems;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -15,10 +19,10 @@ public class ModEventBusEvents {
     }
 
     @SubscribeEvent
-    public static void onRegisterEntities(RegisterEvent event) {
-        if (event.getRegistryKey().equals(ForgeRegistries.Keys.ENTITY_TYPES)){
-            //example on how to replace RegistryEvent.Register<T>
-        }
+    public static void onRegisterDispenserBehaviors(RegisterEvent event) {
+//        if (event.getRegistryKey().equals(ForgeRegistries.Keys.ENTITY_TYPES)){
+//            //example on how to replace RegistryEvent.Register<T>
+//        }
 //        ModSpawnEggItem.initSpawnEggs();
     }
 

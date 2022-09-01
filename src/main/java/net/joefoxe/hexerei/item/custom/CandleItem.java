@@ -1,28 +1,51 @@
 package net.joefoxe.hexerei.item.custom;
 
 import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.block.ModBlocks;
+import net.joefoxe.hexerei.block.custom.Candle;
 import net.joefoxe.hexerei.item.ModItems;
+import net.joefoxe.hexerei.tileentity.CandleTile;
 import net.joefoxe.hexerei.util.HexereiUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockSource;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.extensions.common.IClientBlockExtensions;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -30,8 +53,104 @@ public class CandleItem extends BlockItem implements DyeableLeatherItem {
 
     public CandleItem(Block block, Properties properties) {
         super(block, properties);
+        DispenserBlock.registerBehavior(this, Candle.DISPENSE_ITEM_BEHAVIOR);
+
+        DispenserBlock.registerBehavior(Items.FLINT_AND_STEEL, new OptionalDispenseItemBehavior() {
+            /**
+             * Dispense the specified stack, play the dispense sound and spawn particles.
+             */
+            protected ItemStack execute(BlockSource p_123412_, ItemStack p_123413_) {
+                Level level = p_123412_.getLevel();
+                this.setSuccess(true);
+                Direction direction = p_123412_.getBlockState().getValue(DispenserBlock.FACING);
+                BlockPos blockpos = p_123412_.getPos().relative(direction);
+                BlockState blockstate = level.getBlockState(blockpos);
+                if (Candle.canBeLit(blockstate, blockpos, level)) {
+
+                    CandleTile tile = ((CandleTile) level.getBlockEntity(blockpos));
+                    boolean flag = false;
+
+                    if(tile != null){
+                        if (tile.candles.get(0).hasCandle && !tile.candles.get(0).lit)
+                            tile.candles.get(0).lit = true;
+                        else if (tile.candles.get(1).hasCandle && !tile.candles.get(1).lit)
+                            tile.candles.get(1).lit = true;
+                        else if (tile.candles.get(2).hasCandle && !tile.candles.get(2).lit)
+                            tile.candles.get(2).lit = true;
+                        else if (tile.candles.get(3).hasCandle && !tile.candles.get(3).lit)
+                            tile.candles.get(3).lit = true;
+                        else {
+                            flag = true;
+                        }
+                    }
+
+                    if(!flag){
+                        level.playSound((Player) null, blockpos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, RandomSource.create().nextFloat() * 0.4F + 1.0F);
+//                    p_123413_.hurtAndBreak(1, player, player1 -> player1.broadcastBreakEvent(pContext.getHand()));
+
+                        level.setBlockAndUpdate(blockpos, blockstate.setValue(BlockStateProperties.LIT, Boolean.valueOf(true)));
+                        level.gameEvent((Entity) null, GameEvent.BLOCK_CHANGE, blockpos);
+                    }
+                }
+
+                if (this.isSuccess() && p_123413_.hurt(1, level.random, (ServerPlayer)null)) {
+                    p_123413_.setCount(0);
+                }
+
+                return p_123413_;
+            }
+        });
+
+
     }
 
+    @Override
+    public void inventoryTick(ItemStack pStack, Level pLevel, Entity pEntity, int pSlotId, boolean pIsSelected) {
+        super.inventoryTick(pStack, pLevel, pEntity, pSlotId, pIsSelected);
+        if(pStack.getItem() instanceof BlockItem blockItem && blockItem != ModItems.CANDLE.get()){
+            if(blockItem.getBlock() == ModBlocks.CANDLE_BLUE.get()
+                || blockItem.getBlock() == (ModBlocks.CANDLE_BLACK.get())
+                    || blockItem.getBlock() == (ModBlocks.CANDLE_LIME.get())
+                    || blockItem.getBlock() == (ModBlocks.CANDLE_ORANGE.get())
+                    || blockItem.getBlock() == (ModBlocks.CANDLE_PINK.get())
+                    || blockItem.getBlock() == (ModBlocks.CANDLE_PURPLE.get())
+                    || blockItem.getBlock() == (ModBlocks.CANDLE_RED.get())
+                    || blockItem.getBlock() == (ModBlocks.CANDLE_CYAN.get())
+                    || blockItem.getBlock() == (ModBlocks.CANDLE_YELLOW.get())){
+                CompoundTag tag = new CompoundTag();
+                if(pStack.hasTag()){
+                    tag = pStack.getTag();
+                }
+
+                ItemStack stack = new ItemStack(ModItems.CANDLE.get());
+
+                if(tag != null && !tag.isEmpty())
+                    stack.setTag(tag);
+
+                if(blockItem.getBlock() == (ModBlocks.CANDLE_BLUE.get()))
+                    CandleItem.setColorStatic(stack, HexereiUtil.getColorValue(DyeColor.BLUE));
+                if(blockItem.getBlock() == (ModBlocks.CANDLE_BLACK.get()))
+                    CandleItem.setColorStatic(stack, HexereiUtil.getColorValue(DyeColor.BLACK));
+                if(blockItem.getBlock() == (ModBlocks.CANDLE_LIME.get()))
+                    CandleItem.setColorStatic(stack, HexereiUtil.getColorValue(DyeColor.LIME));
+                if(blockItem.getBlock() == (ModBlocks.CANDLE_ORANGE.get()))
+                    CandleItem.setColorStatic(stack, HexereiUtil.getColorValue(DyeColor.ORANGE));
+                if(blockItem.getBlock() == (ModBlocks.CANDLE_PINK.get()))
+                    CandleItem.setColorStatic(stack, HexereiUtil.getColorValue(DyeColor.PINK));
+                if(blockItem.getBlock() == (ModBlocks.CANDLE_PURPLE.get()))
+                    CandleItem.setColorStatic(stack, HexereiUtil.getColorValue(DyeColor.PURPLE));
+                if(blockItem.getBlock() == (ModBlocks.CANDLE_RED.get()))
+                    CandleItem.setColorStatic(stack, HexereiUtil.getColorValue(DyeColor.RED));
+                if(blockItem.getBlock() == (ModBlocks.CANDLE_CYAN.get()))
+                    CandleItem.setColorStatic(stack, HexereiUtil.getColorValue(DyeColor.CYAN));
+                if(blockItem.getBlock() == (ModBlocks.CANDLE_YELLOW.get()))
+                    CandleItem.setColorStatic(stack, HexereiUtil.getColorValue(DyeColor.YELLOW));
+
+                pEntity.getSlot(pSlotId).set(stack);
+
+            }
+        }
+    }
 
     @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
@@ -83,65 +202,157 @@ public class CandleItem extends BlockItem implements DyeableLeatherItem {
         p_41116_.getOrCreateTagElement("display").putInt("height", p_41117_);
     }
 
-    public static int getHeight(ItemStack p_41122_) {
-        CompoundTag compoundtag = p_41122_.getTagElement("display");
-        return compoundtag != null && compoundtag.contains("height", 99) ? compoundtag.getInt("height") : 7;
+    public static int getHeight(ItemStack stack) {
+        if(stack.hasTag()){
+            CompoundTag compoundtag = stack.getTagElement("display");
+            return compoundtag != null && compoundtag.contains("height", 99) ? compoundtag.getInt("height") : 7;
+        }
+        return 7;
     }
 
-    public static void setLayers(ItemStack stack, String herbLayer, String baseLayer, String glowLayer, String swirlLayer) {
-        CompoundTag tag = stack.getOrCreateTagElement("layers");
-        if(herbLayer != null)
-            tag.putString("herbLayer", herbLayer);
-        if(baseLayer != null)
-            tag.putString("baseLayer", baseLayer);
-        if(glowLayer != null)
-            tag.putString("glowLayer", glowLayer);
-        if(swirlLayer != null)
-            tag.putString("swirlLayer", swirlLayer);
+    public static void setCooldown(ItemStack p_41116_, int p_41117_) {
+        p_41116_.getOrCreateTag().putInt("cooldown", p_41117_);
+    }
+
+    public static int getCooldown(ItemStack stack) {
+        if(stack.hasTag()){
+            CompoundTag compoundtag = stack.getTag();
+            return compoundtag != null && compoundtag.contains("cooldown", 99) ? compoundtag.getInt("cooldown") : 0;
+        }
+        return 0;
     }
 
     public static void setHerbLayer(ItemStack stack, String herbLayer) {
-        CompoundTag tag = stack.getOrCreateTagElement("layers");
+        CompoundTag tag = stack.getOrCreateTagElement("herb");
         if(herbLayer != null)
-            tag.putString("herbLayer", herbLayer);
+            tag.putString("layer", herbLayer);
     }
 
     public static void setBaseLayer(ItemStack stack, String baseLayer) {
-        CompoundTag tag = stack.getOrCreateTagElement("layers");
+        CompoundTag tag = stack.getOrCreateTagElement("base");
         if(baseLayer != null)
-            tag.putString("baseLayer", baseLayer);
+            tag.putString("layer", baseLayer);
+    }
+
+    public static void setBaseLayerFromBlock(ItemStack stack, String baseLayer) {
+        CompoundTag tag = stack.getOrCreateTagElement("base");
+        if(baseLayer != null) {
+            tag.putString("layer", baseLayer);
+            tag.putBoolean("layerFromBlockLocation", true);
+        }
     }
 
     public static void setGlowLayer(ItemStack stack, String glowLayer) {
-        CompoundTag tag = stack.getOrCreateTagElement("layers");
+        CompoundTag tag = stack.getOrCreateTagElement("glow");
         if(glowLayer != null)
-            tag.putString("glowLayer", glowLayer);
+            tag.putString("layer", glowLayer);
     }
 
     public static void setSwirlLayer(ItemStack stack, String swirlLayer) {
-        CompoundTag tag = stack.getOrCreateTagElement("layers");
+        CompoundTag tag = stack.getOrCreateTagElement("swirl");
         if(swirlLayer != null)
-            tag.putString("swirlLayer", swirlLayer);
+            tag.putString("layer", swirlLayer);
+    }
+
+    public static void setEffectLocation(ItemStack stack, String effect) {
+        CompoundTag tag = stack.getOrCreateTag();
+        if(effect != null)
+            tag.putString("effect", effect);
+        else{
+            tag.remove("effect");
+        }
+    }
+
+    public static void setEffectParticle(ItemStack stack, List<ResourceLocation> effectParticle) {
+        CompoundTag tag = stack.getOrCreateTagElement("effectParticle");
+        for(int i = 0; i < effectParticle.size(); i++){
+            if (effectParticle.get(i) != null)
+                tag.putString("particle" + i, effectParticle.get(i).toString());
+            else {
+                tag.remove("particle");
+            }
+        }
     }
 
     public static String getHerbLayer(ItemStack stack) {
-        CompoundTag tag = stack.getTagElement("layers");
-        return tag != null && tag.contains("herbLayer") ? tag.getString("herbLayer") : null;
+        CompoundTag tag = stack.getTagElement("herb");
+        if(tag == null) return null;
+        if(tag.contains("layerFromBlockLocation") && tag.getBoolean("layerFromBlockLocation")) {
+            if(tag.contains("layer")) {
+                BlockState blockState = Registry.BLOCK.get(new ResourceLocation(tag.getString("layer"))).defaultBlockState();
+                List<BakedQuad> list = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState).getQuads(blockState, Direction.NORTH, RandomSource.create());
+                if(list.size() > 0);
+                return list.get(0).getSprite().getName().getNamespace() + ":textures/" + list.get(0).getSprite().getName().getPath() + ".png";
+            }
+            return null;
+        }
+        return tag.contains("layer") ? tag.getString("layer") : null;
     }
 
     public static String getBaseLayer(ItemStack stack) {
-        CompoundTag tag = stack.getTagElement("layers");
-        return tag != null && tag.contains("baseLayer") ? tag.getString("baseLayer") : null;
+        CompoundTag tag = stack.getTagElement("base");
+        if(tag == null) return null;
+        if(tag.contains("layerFromBlockLocation") && tag.getBoolean("layerFromBlockLocation")) {
+            if(tag.contains("layer")) {
+                BlockState blockState = Registry.BLOCK.get(new ResourceLocation(tag.getString("layer"))).defaultBlockState();
+                List<BakedQuad> list = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState).getQuads(blockState, Direction.NORTH, RandomSource.create());
+                if(!list.isEmpty())
+                    return list.get(0).getSprite().getName().getNamespace() + ":textures/" + list.get(0).getSprite().getName().getPath() + ".png";
+            }
+            return null;
+        }
+        return tag.contains("layer") ? tag.getString("layer") : null;
     }
 
     public static String getGlowLayer(ItemStack stack) {
-        CompoundTag tag = stack.getTagElement("layers");
-        return tag != null && tag.contains("glowLayer") ? tag.getString("glowLayer") : null;
+        CompoundTag tag = stack.getTagElement("glow");
+        if(tag == null) return null;
+        if(tag.contains("layerFromBlockLocation") && tag.getBoolean("layerFromBlockLocation")) {
+            if(tag.contains("layer")) {
+                BlockState blockState = Registry.BLOCK.get(new ResourceLocation(tag.getString("layer"))).defaultBlockState();
+                List<BakedQuad> list = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState).getQuads(blockState, Direction.NORTH, RandomSource.create());
+                if(list.size() > 0);
+                return list.get(0).getSprite().getName().getNamespace() + ":textures/" + list.get(0).getSprite().getName().getPath() + ".png";
+            }
+            return null;
+        }
+        return tag.contains("layer") ? tag.getString("layer") : null;
     }
 
     public static String getSwirlLayer(ItemStack stack) {
-        CompoundTag tag = stack.getTagElement("layers");
-        return tag != null && tag.contains("swirlLayer") ? tag.getString("swirlLayer") : null;
+        CompoundTag tag = stack.getTagElement("swirl");
+        if(tag == null) return null;
+        if(tag.contains("layerFromBlockLocation") && tag.getBoolean("layerFromBlockLocation")) {
+            if(tag.contains("layer")) {
+                BlockState blockState = Registry.BLOCK.get(new ResourceLocation(tag.getString("layer"))).defaultBlockState();
+                List<BakedQuad> list = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState).getQuads(blockState, Direction.NORTH, RandomSource.create());
+                if(list.size() > 0);
+                return list.get(0).getSprite().getName().getNamespace() + ":textures/" + list.get(0).getSprite().getName().getPath() + ".png";
+            }
+            return null;
+        }
+        return tag.contains("layer") ? tag.getString("layer") : null;
+    }
+
+    public static String getEffectLocation(ItemStack stack) {
+        if(stack.hasTag()){
+            return stack.getOrCreateTag().getString("effect");
+        }
+        return null;
+    }
+
+    public static List<ResourceLocation> getEffectParticle(ItemStack stack) {
+        if(stack.hasTag()){
+            List<ResourceLocation> list = new ArrayList<>();
+            CompoundTag tag = stack.getOrCreateTagElement("effectParticle");
+
+            for(int i = 0; i < tag.size(); i++){
+                list.add(new ResourceLocation(tag.getString("particle" + i)));
+            }
+
+            return list;
+        }
+        return null;
     }
 
     public static int getColorValue(DyeColor color, ItemStack stack) {
@@ -157,7 +368,7 @@ public class CandleItem extends BlockItem implements DyeableLeatherItem {
 
     public static int getColorStatic(ItemStack p_41122_) {
         CompoundTag compoundtag = p_41122_.getTagElement("display");
-        return compoundtag != null && compoundtag.contains("color", 99) ? compoundtag.getInt("color") : 0xCCC398;
+        return compoundtag != null && compoundtag.contains("color", 99) ? compoundtag.getInt("color") : Candle.BASE_COLOR;
     }
 
     public static int getDyeColorNamed(String name) {
@@ -186,7 +397,6 @@ public class CandleItem extends BlockItem implements DyeableLeatherItem {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
-
         super.appendHoverText(stack, world, tooltip, flagIn);
     }
 
@@ -194,26 +404,5 @@ public class CandleItem extends BlockItem implements DyeableLeatherItem {
     public InteractionResult place(BlockPlaceContext context) {
         return super.place(context);
     }
-
-//    public ItemStackHandler createHandler() {
-//        return new ItemStackHandler(36) {
-//
-//            @Override
-//            public int getSlotLimit(int slot) {
-//                return 64;
-//            }
-//        };
-//    }
-//
-//
-//    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-//        ItemStackHandler handler = createHandler();
-//        handler.deserializeNBT(stack.getOrCreateTag().getCompound("Inventory"));
-//
-//        return Optional.of(new CandleItem.CofferItemToolTip(handler, stack));
-//    }
-//
-//    public record CofferItemToolTip(ItemStackHandler handler, ItemStack self) implements TooltipComponent {
-//    }
 
 }

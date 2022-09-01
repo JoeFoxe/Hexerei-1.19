@@ -3,5 +3,6 @@
   "textures": {
     "bottom": "hexerei:block/mahogany_door_bottom",
     "top": "hexerei:block/mahogany_door_top"
-  }
+  },
+  "render_type": "translucent"
 }

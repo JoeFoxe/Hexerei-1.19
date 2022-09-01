@@ -2,5 +2,6 @@
   "parent": "minecraft:block/cross",
   "textures": {
     "cross": "hexerei:block/mugwort_bush_top"
-  }
+  },
+  "render_type": "cutout"
 }

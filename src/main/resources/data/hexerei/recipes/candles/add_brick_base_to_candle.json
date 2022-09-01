@@ -1,0 +1,15 @@
+{
+  "type": "hexerei:add_to_candle",
+  "input": {
+    "item": "minecraft:bricks"
+  },
+  "output": {
+    "item": "hexerei:candle",
+    "nbt": {
+      "base": {
+        "layer": "minecraft:textures/block/bricks.png",
+        "layerFromBlockLocation": false
+      }
+    }
+  }
+}

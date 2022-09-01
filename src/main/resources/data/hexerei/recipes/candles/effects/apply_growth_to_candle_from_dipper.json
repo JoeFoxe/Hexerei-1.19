@@ -1,0 +1,42 @@
+{
+  "type": "hexerei:dipper",
+  "liquid": {
+    "fluid": "hexerei:potion",
+    "nbt": {
+      "Bottle": "REGULAR",
+      "Potion": "minecraft:mundane"
+    }
+  },
+  "input": {
+    "item": "hexerei:candle",
+    "nbt": {
+      "herb": {
+      }
+    }
+  },
+  "output": {
+    "item": "hexerei:candle",
+    "nbt": {
+      "effect": "hexerei:growth_effect",
+      "effectParticle": {
+        "particle0": "hexerei:broom_particle_6",
+        "particle1": "hexerei:broom_particle_5",
+        "particle2": "hexerei:broom_particle_4",
+        "particle3": "minecraft:smoke"
+      },
+      "glow": {
+        "layer": "hexerei:textures/block/herb_jar_herbs.png",
+        "meltingSpeedMultiplier": 1,
+        "radiusMultiplier": 1,
+        "effectAmplifierMultiplier": 1,
+        "effectCooldownMultiplier": 1,
+        "effectDurationMultiplier": 1
+      }
+    }
+  },
+  "useInputItemAsOutput": true,
+  "fluidLevelsConsumed": 100,
+  "dippingTimeInTicks": 150,
+  "dryingTimeInTicks": 100,
+  "numberOfDips": 3
+}

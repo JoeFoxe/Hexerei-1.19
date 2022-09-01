@@ -35,23 +35,12 @@ public interface CandleEffect {
         return area.get(random.nextInt(area.size()));
     }
 
-    default void spawnOutlineParticles(ServerLevel serverLevel, BlockPos pos) {
-        spawnOutlineParticles(serverLevel, pos, 0, 1);
+    default <T>AbstractCandleEffect getCopy() {
+        return new AbstractCandleEffect();
     }
 
-    default void spawnOutlineParticles(ServerLevel serverLevel, BlockPos pos, float minY, float maxY) {
-        spawnParticle(serverLevel, pos, 0, maxY, 0);
-        spawnParticle(serverLevel, pos, 1, maxY, 1);
-        spawnParticle(serverLevel, pos, 1, maxY, 0);
-        spawnParticle(serverLevel, pos, 0, maxY, 1);
-
-        spawnParticle(serverLevel, pos, 0, minY, 0);
-        spawnParticle(serverLevel, pos, 1, minY, 1);
-        spawnParticle(serverLevel, pos, 1, minY, 0);
-        spawnParticle(serverLevel, pos, 0, minY, 1);
+    default String getLocationName() {
+        return "hexerei:no_effect";
     }
 
-    default void spawnParticle(ServerLevel level, BlockPos pos, double x, double y, double z) {
-        level.sendParticles(getParticleType(), pos.getX() + x, pos.getY() + y, pos.getZ() + z, 1, 0, 0, 0, 0.5f);
-    }
 }

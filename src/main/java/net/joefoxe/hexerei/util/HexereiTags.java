@@ -13,6 +13,7 @@ public class HexereiTags {
 	public static class Blocks {
 
 		public static final TagKey<Block> HERB_BLOCK = createTag("herbs");
+		public static final TagKey<Block> HEAT_SOURCES = createTag("heat_sources");
 		public static final TagKey<Block> CROW_HARVESTABLE = createTag("crow_harvestable");
 
 		private static TagKey<Block> createTag(String name) {
@@ -35,6 +36,7 @@ public class HexereiTags {
 		public static final TagKey<Item> BROOM_MISC = createTag("broom_misc");
 		public static final TagKey<Item> BROOM_BRUSH = createTag("broom_brush");
 		public static final TagKey<Item> HERB_ITEM = createTag("herbs");
+		public static final TagKey<Item> TALLOW_MELTABLE = createTag("tallow_meltable");
 		public static final TagKey<Item> CANDLES = createTag("candles");
 
 		private static TagKey<Item> createTag(String name) {

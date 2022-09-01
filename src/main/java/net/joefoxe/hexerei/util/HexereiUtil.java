@@ -29,6 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -42,6 +43,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.io.IOException;
@@ -68,6 +70,25 @@ public class HexereiUtil {
         return ForgeRegistries.ENCHANTMENTS.getKey(e);
     }
 
+
+
+    public static <V> ResourceLocation getKeyOrThrow(Potion value) {
+        IForgeRegistry<Potion> registry = ForgeRegistries.POTIONS;
+        ResourceLocation key = registry.getKey(value);
+        if (key == null) {
+            throw new IllegalArgumentException("Could not get key for value " + value + "!");
+        }
+        return key;
+    }
+
+    public static <V> ResourceLocation getKeyOrThrow(Fluid value) {
+        IForgeRegistry<Fluid> registry = ForgeRegistries.FLUIDS;
+        ResourceLocation key = registry.getKey(value);
+        if (key == null) {
+            throw new IllegalArgumentException("Could not get key for value " + value + "!");
+        }
+        return key;
+    }
 
     public static float moveTo(float input, float movedTo, float speed)
     {
@@ -108,6 +129,20 @@ public class HexereiUtil {
             for (T t : enumConstants) {
                 if (t.name()
                         .equals(name))
+                    return t;
+            }
+        }
+        return enumConstants[0];
+    }
+
+    public static <T extends Enum<?>> T readEnum(String string, Class<T> enumClass) {
+        T[] enumConstants = enumClass.getEnumConstants();
+        if (enumConstants == null)
+            throw new IllegalArgumentException("Non-Enum class passed to readEnum: " + enumClass.getName());
+        if (!string.isEmpty()) {
+            for (T t : enumConstants) {
+                if (t.name()
+                        .equals(string))
                     return t;
             }
         }

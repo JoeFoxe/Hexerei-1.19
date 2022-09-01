@@ -1,6 +1,7 @@
 package net.joefoxe.hexerei.block.custom;
 
 import net.joefoxe.hexerei.block.ITileEntity;
+import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.tileentity.BookOfShadowsAltarTile;
 import net.joefoxe.hexerei.tileentity.ModTileEntities;
 import net.minecraft.client.gui.screens.Screen;
@@ -9,6 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -23,10 +25,12 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
@@ -37,46 +41,20 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+public class Altar extends ConnectingTableEntityBase implements ITileEntity<BookOfShadowsAltarTile> {
 
-public class Altar extends BaseEntityBlock implements ITileEntity<BookOfShadowsAltarTile>, EntityBlock, SimpleWaterloggedBlock {
-
-
-    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public Altar(BlockBehaviour.Properties pProperties){
+        super(pProperties);
+    }
 
     @SuppressWarnings("deprecation")
     @Override
     public RenderShape getRenderShape(BlockState iBlockState) {
         return RenderShape.MODEL;
-    }
-
-    @Nullable
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
-        return this.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection()).setValue(WATERLOGGED, Boolean.valueOf(fluidstate.getType() == Fluids.WATER));
-    }
-
-    public static final VoxelShape SHAPE = Stream.of(
-            Block.box(0, 12, 0, 16, 16, 16),
-            Block.box(1, 0, 12, 4, 12, 15),
-            Block.box(1, 6, 4, 4, 9, 12),
-            Block.box(12, 6, 4, 15, 9, 12),
-            Block.box(4, 6, 1, 12, 9, 4),
-            Block.box(4, 6, 12, 12, 9, 15),
-            Block.box(1, 0, 1, 4, 12, 4),
-            Block.box(12, 0, 1, 15, 12, 4),
-            Block.box(12, 0, 12, 15, 12, 15)
-    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
-
-
-
-    @Override
-    public VoxelShape getShape(BlockState p_220053_1_, BlockGetter p_220053_2_, BlockPos p_220053_3_, CollisionContext p_220053_4_){
-        return SHAPE;
     }
 
     @SuppressWarnings("deprecation")
@@ -85,7 +63,7 @@ public class Altar extends BaseEntityBlock implements ITileEntity<BookOfShadowsA
 
         BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 
-        if(tileEntity instanceof BookOfShadowsAltarTile bookOfShadowsAltarTile) {
+        if(tileEntity instanceof BookOfShadowsAltarTile bookOfShadowsAltarTile && !(Block.byItem(player.getItemInHand(handIn).getItem()) instanceof ConnectingTable)) {
             int num = bookOfShadowsAltarTile.interact(player, handIn);
 
             if(num == 1)
@@ -96,10 +74,6 @@ public class Altar extends BaseEntityBlock implements ITileEntity<BookOfShadowsA
         return InteractionResult.PASS;
     }
 
-    public Altar(Properties properties) {
-
-        super(properties.noOcclusion());
-    }
     @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
@@ -118,15 +92,7 @@ public class Altar extends BaseEntityBlock implements ITileEntity<BookOfShadowsA
     @SuppressWarnings("deprecation")
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(HorizontalDirectionalBlock.FACING, WATERLOGGED);
-    }
-
-    @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos pos, BlockPos facingPos) {
-        if (state.getValue(WATERLOGGED)) {
-            world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
-        }
-        return super.updateShape(state, facing, facingState, world, pos, facingPos);
+        builder.add(WEST, EAST, NORTH, SOUTH, WATERLOGGED);
     }
 
     @Override

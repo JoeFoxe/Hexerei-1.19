@@ -132,6 +132,14 @@ public class HexereiPacketHandler {
 
         instance.registerMessage(
                 ++ id,
+                CandleEffectParticlePacket.class,
+                CandleEffectParticlePacket::encode,
+                CandleEffectParticlePacket::decode,
+                CandleEffectParticlePacket::consume
+        );
+
+        instance.registerMessage(
+                ++ id,
                 CrowStartRidingPacket.class,
                 CrowStartRidingPacket::encode,
                 CrowStartRidingPacket::decode,

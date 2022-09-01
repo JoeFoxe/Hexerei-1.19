@@ -3,5 +3,6 @@
   "textures": {
     "cross": "hexerei:block/yellow_dock_bush_top_stage3",
     "particle": "hexerei:block/yellow_dock_bush_bottom_stage3"
-  }
+  },
+  "render_type": "cutout"
 }

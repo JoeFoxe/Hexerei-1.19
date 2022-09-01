@@ -1,39 +1,37 @@
 {
-  "type": "hexerei:mixingcauldron",
-  "liquid": {
+  "type": "hexerei:fluid_mixing",
+  "input": {
     "fluid": "minecraft:water"
   },
   "ingredients": [
     {
-      "item": "hexerei:animal_fat"
+      "tag": "hexerei:tallow_meltable"
     },
     {
-      "item": "hexerei:animal_fat"
+      "tag": "hexerei:tallow_meltable"
     },
     {
-      "item": "minecraft:honeycomb"
+      "tag": "hexerei:tallow_meltable"
     },
     {
-      "item": "hexerei:animal_fat"
+      "tag": "hexerei:tallow_meltable"
     },
     {
-      "item": "hexerei:animal_fat"
+      "tag": "hexerei:tallow_meltable"
     },
     {
-      "item": "hexerei:animal_fat"
+      "tag": "hexerei:tallow_meltable"
     },
     {
-      "item": "minecraft:honeycomb"
+      "tag": "hexerei:tallow_meltable"
     },
     {
-      "item": "hexerei:animal_fat"
+      "tag": "hexerei:tallow_meltable"
     }
   ],
+
   "output": {
-    "item": "hexerei:tallow_impurity"
-  },
-  "liquidOutput": {
     "fluid": "hexerei:tallow_fluid"
   },
-  "fluidLevelsConsumed": 0
+  "heatRequirement": "heated"
 }

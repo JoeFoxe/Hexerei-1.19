@@ -2,10 +2,7 @@ package net.joefoxe.hexerei.data.recipes;
 
 import net.joefoxe.hexerei.Hexerei;
 import net.minecraft.core.Registry;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
+import net.minecraft.world.item.crafting.*;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -34,6 +31,8 @@ public class ModRecipeTypes {
 
     public static final RegistryObject<RecipeSerializer<MixingCauldronRecipe>> MIXING_SERIALIZER =
             RECIPE_SERIALIZERS.register("mixingcauldron", () -> MixingCauldronRecipe.Serializer.INSTANCE);
+    public static final RegistryObject<RecipeSerializer<FluidMixingRecipe>> FLUID_MIXING_SERIALIZER =
+            RECIPE_SERIALIZERS.register("fluid_mixing", () -> FluidMixingRecipe.Serializer.INSTANCE);
 
     public static final RegistryObject<RecipeSerializer<DipperRecipe>> DIPPER_SERIALIZER =
             RECIPE_SERIALIZERS.register("dipper", () -> DipperRecipe.Serializer.INSTANCE);
@@ -43,6 +42,12 @@ public class ModRecipeTypes {
 
     public static final RegistryObject<RecipeSerializer<PestleAndMortarRecipe>> PESTLE_AND_MORTAR_SERIALIZER =
             RECIPE_SERIALIZERS.register("pestle_and_mortar", () -> PestleAndMortarRecipe.Serializer.INSTANCE);
+
+    public static final RegistryObject<RecipeSerializer<AddToCandleRecipe>> ADD_TO_CANDLE_SERIALIZER =
+            RECIPE_SERIALIZERS.register("add_to_candle", () -> AddToCandleRecipe.Serializer.INSTANCE);
+
+    public static final RegistryObject<RecipeSerializer<CutCandleRecipe>> CUT_CANDLE_SERIALIZER =
+            RECIPE_SERIALIZERS.register("cut_candle", () -> new SimpleRecipeSerializer<>(CutCandleRecipe::new));
 
 
     public static final RegistryObject<RecipeType<CrowFluteRecipe>> CROW_FLUTE_DYE_TYPE = RECIPE_TYPES.register("crow_flute_dye", () -> new ModRecipeType<>());

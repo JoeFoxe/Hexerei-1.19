@@ -1,6 +1,7 @@
 {
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
+	"render_type": "cutout",
 	"textures": {
 		"0": "hexerei:block/candelabra",
 		"particle": "hexerei:block/candelabra"

@@ -11,26 +11,38 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AbstractCandleEffect implements CandleEffect{
+
     private static final int MAX_TIME = 8 * 20;
 
     public int checkCooldown;
 
+    public ParticleOptions particle;
+
+    public List<ResourceLocation> particleLocation;
+
+    public AbstractCandleEffect(ParticleOptions particleOptions){
+        this.particle = particleOptions;
+    }
     public AbstractCandleEffect(){
     }
 
 
     @Override
     public void tick(Level level, CandleTile blockEntity, CandleData candleData) {
-
     }
 
     @Override
     public ParticleOptions getParticleType() {
-        return ParticleTypes.COMPOSTER;
+        return particle;
     }
+
+
+
 }

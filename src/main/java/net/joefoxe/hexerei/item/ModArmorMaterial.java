@@ -15,21 +15,13 @@ import java.util.function.Supplier;
 
 public enum ModArmorMaterial implements ArmorMaterial {
 
-    ARMOR_SCRAP("armor_scrap", 7, new int[] { 2, 5, 6, 2 }, 12, SoundEvents.ARMOR_EQUIP_IRON, 1.0f, 0.0f, () -> {
-        return Ingredient.of(ModItems.ARMOR_SCRAP.get());
-    }),
-
-    INFUSED_FABRIC("infused_fabric", 7, new int[] { 3, 5, 8, 3 }, 12, SoundEvents.ARMOR_EQUIP_LEATHER, 1.0f, 0.0f, () -> {
+    INFUSED_FABRIC("infused_fabric", 25, new int[] { 3, 5, 8, 3 }, 12, SoundEvents.ARMOR_EQUIP_LEATHER, 1.0f, 0.0f, () -> {
         return Ingredient.of(ModItems.INFUSED_FABRIC.get());
-    }),
-
-    GLASS("glass", 0, new int[] { 0,0,0,0 }, 0, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0f, 0.0f, () -> {
-        return Ingredient.of(Tags.Items.GLASS);
-    }) ;
+    });
 
     private static final int[] MAX_DAMAGE_ARRAY = new int[]{13, 15, 16, 11};
     private final String name;
-    private final int maxDamageFactor;
+    private final int durabilityMultiplier;
     private final int[] damageReductionAmountArray;
     private final int enchantability;
     private final SoundEvent soundEvent;
@@ -37,9 +29,9 @@ public enum ModArmorMaterial implements ArmorMaterial {
     private final float knockbackResistance;
     private final LazyLoadedValue<Ingredient> repairMaterial;
 
-    private ModArmorMaterial(String name, int maxDamageFactor, int[] damageReductionAmountArray, int enchantability, SoundEvent soundEvent, float toughness, float knockbackResistance, Supplier<Ingredient> repairMaterial) {
+    private ModArmorMaterial(String name, int durabilityMultiplier, int[] damageReductionAmountArray, int enchantability, SoundEvent soundEvent, float toughness, float knockbackResistance, Supplier<Ingredient> repairMaterial) {
         this.name = name;
-        this.maxDamageFactor = maxDamageFactor;
+        this.durabilityMultiplier = durabilityMultiplier;
         this.damageReductionAmountArray = damageReductionAmountArray;
         this.enchantability = enchantability;
         this.soundEvent = soundEvent;
@@ -49,7 +41,7 @@ public enum ModArmorMaterial implements ArmorMaterial {
     }
 
     public int getDurabilityForSlot(EquipmentSlot slotIn) {
-        return MAX_DAMAGE_ARRAY[slotIn.getIndex()] * this.maxDamageFactor;
+        return MAX_DAMAGE_ARRAY[slotIn.getIndex()] * this.durabilityMultiplier;
     }
 
     public int getDefenseForSlot(EquipmentSlot slotIn) {

@@ -17,15 +17,24 @@ import net.joefoxe.hexerei.data.recipes.DipperRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DipperRecipeCategory implements IRecipeCategory<DipperRecipe> {
     public final static ResourceLocation UID = new ResourceLocation(Hexerei.MOD_ID, "dipper");
     public final static ResourceLocation TEXTURE =
             new ResourceLocation(Hexerei.MOD_ID, "textures/gui/dipper_jei.png");
+    public final static ResourceLocation MIX_TEXTURE =
+            new ResourceLocation(Hexerei.MOD_ID, "textures/gui/mixing_cauldron_gui_jei.png");
     public final static ResourceLocation TEXTURE_BLANK =
             new ResourceLocation(Hexerei.MOD_ID, "textures/block/blank.png");
     private final IDrawable background;
@@ -38,7 +47,7 @@ public class DipperRecipeCategory implements IRecipeCategory<DipperRecipe> {
     public DipperRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 100, 92);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.CANDLE_DIPPER.get()));
-        this.liquid = helper.createDrawable(TEXTURE_BLANK, 0, 0, 16, 16);
+        this.liquid = helper.createDrawable(MIX_TEXTURE, 182, 2, 12, 10);
         this.cauldron = helper.createDrawable(TEXTURE, 106, 3, 12, 9);
     }
 
@@ -74,7 +83,11 @@ public class DipperRecipeCategory implements IRecipeCategory<DipperRecipe> {
         }
 
         if(!input.isEmpty()) {
-            builder.addSlot(RecipeIngredientRole.INPUT, 18, 37).addFluidStack(recipe.getLiquid().getFluid(), recipe.getFluidLevelsConsumed()).setFluidRenderer(2000, false, 12, 10);
+            builder.addSlot(RecipeIngredientRole.INPUT, 17, 35)
+                    .setFluidRenderer(2000, false, 12, 10)
+                    .setOverlay(this.liquid, 0, 0)
+                    .addIngredients(ForgeTypes.FLUID_STACK, recipe.getFluidIngredient().getMatchingFluidStacks())
+                    .addTooltipCallback(HexereiJei.addFluidTooltipDipper(recipe.getFluidLevelsConsumed()));
         }
     }
 

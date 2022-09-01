@@ -1782,8 +1782,8 @@ public class PageDrawing {
                                 if(bookEntries != null){
                                     list.add(Component.translatable("%s%s - Page %s%s",
                                             Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
-                                            Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
-                                            Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
+                                            Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).name).withStyle(Style.EMPTY.withColor(10329495)),
+                                            Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).pages.get(Math.max(0, bookmark_page)).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
                                             Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
                                             .withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
                                     this.tooltipText = list;

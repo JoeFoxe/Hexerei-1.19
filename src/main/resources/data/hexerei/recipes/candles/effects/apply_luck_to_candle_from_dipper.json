@@ -1,0 +1,35 @@
+{
+  "type": "hexerei:dipper",
+  "liquid": {
+    "fluid": "hexerei:potion",
+    "nbt": {
+      "Bottle": "REGULAR",
+      "Potion": "minecraft:luck"
+    }
+  },
+  "input": {
+    "item": "hexerei:candle"
+  },
+  "output": {
+    "item": "hexerei:candle",
+    "nbt": {
+      "effect": "minecraft:luck",
+      "effectParticle": {
+        "particle0": "minecraft:happy_villager"
+      },
+      "glow": {
+        "layer": "hexerei:textures/block/potion_layer.png",
+        "meltingSpeedMultiplier": 1,
+        "radiusMultiplier": 1,
+        "effectAmplifierMultiplier": 1,
+        "effectCooldownMultiplier": 1,
+        "effectDurationMultiplier": 1
+      }
+    }
+  },
+  "useInputItemAsOutput": true,
+  "fluidLevelsConsumed": 100,
+  "dippingTimeInTicks": 150,
+  "dryingTimeInTicks": 100,
+  "numberOfDips": 3
+}

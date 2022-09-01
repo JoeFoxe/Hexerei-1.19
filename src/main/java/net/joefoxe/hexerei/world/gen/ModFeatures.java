@@ -19,10 +19,10 @@ public class ModFeatures {
 
 
     public static final RegistryObject<Feature<TreeConfiguration>> WILLOW_TREE = FEATURES.register("willow_tree",
-            () -> new HexereiAbstractTreeFeature(NoneFeatureConfiguration.CODEC));
+            () -> new HexereiAbstractTreeFeature(TreeConfiguration.CODEC));
 
     public static final RegistryObject<Feature<TreeConfiguration>> MAHOGANY_TREE = FEATURES.register("mahogany_tree",
-            () -> new HexereiMahoganyTreeFeature(NoneFeatureConfiguration.CODEC));
+            () -> new HexereiMahoganyTreeFeature(TreeConfiguration.CODEC));
 
     public static void register(IEventBus eventBus) {
         FEATURES.register(eventBus);

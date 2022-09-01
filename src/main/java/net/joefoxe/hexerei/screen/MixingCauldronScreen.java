@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.container.MixingCauldronContainer;
+import net.joefoxe.hexerei.fluid.PotionFluidHandler;
 import net.joefoxe.hexerei.screen.renderer.FluidStackRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class MixingCauldronScreen extends AbstractContainerScreen<MixingCauldronContainer> {
@@ -92,7 +94,9 @@ public class MixingCauldronScreen extends AbstractContainerScreen<MixingCauldron
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
         if(isMouseAboveArea(mouseX, mouseY, x, y, 42, 56)) {
-            renderTooltip(matrixStack, renderer.getTooltip(menu.getFluid(), TooltipFlag.Default.NORMAL),
+            ArrayList<Component> tooltip = new ArrayList<>(renderer.getTooltip(menu.getFluid(), TooltipFlag.Default.NORMAL));
+            PotionFluidHandler.addPotionTooltip(menu.getFluid(), tooltip, 1);
+            renderTooltip(matrixStack, tooltip,
                     Optional.empty(), mouseX, mouseY);
         }
     }

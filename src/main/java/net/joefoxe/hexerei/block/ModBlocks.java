@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -52,7 +53,10 @@ public class ModBlocks {
 					() -> new Coffer(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).requiresCorrectToolForDrops().explosionResistance(8f)));
 
 	public static final RegistryObject<Altar> BOOK_OF_SHADOWS_ALTAR = registerBlock("book_of_shadows_altar",
-					() -> new Altar(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).explosionResistance(2f)));
+			() -> new Altar(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).explosionResistance(2f)));
+
+	public static final RegistryObject<ConnectingTable> WILLOW_ALTAR = registerBlock("willow_altar",
+			() -> new ConnectingTable(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).explosionResistance(2f)));
 
 //    public static final RegistryObject<Block> SAGE_BUNDLE_PLATE = registerBlock("sage_bundle_plate",
 //            () -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).explosionResistance(2f)));
@@ -84,31 +88,31 @@ public class ModBlocks {
 	public static final RegistryObject<Candle> CANDLE = registerBlockNoItem("candle",
 					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).noCollission().noOcclusion().strength(1).explosionResistance(0.5f).lightLevel(state -> Math.min(state.getValue(Candle.CANDLES_LIT) * 12, 15))));
 
-	public static final RegistryObject<Candle> CANDLE_BLUE = registerBlock("candle_blue",
+	public static final RegistryObject<Candle> CANDLE_BLUE = registerBlockNoItem("candle_blue",
 					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).noCollission().noOcclusion().strength(1).explosionResistance(0.5f).lightLevel(state -> Math.min(state.getValue(Candle.CANDLES_LIT) * 12, 15))));
 
-	public static final RegistryObject<Candle> CANDLE_BLACK = registerBlock("candle_black",
+	public static final RegistryObject<Candle> CANDLE_BLACK = registerBlockNoItem("candle_black",
 					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).noCollission().noOcclusion().strength(1).explosionResistance(0.5f).lightLevel(state -> Math.min(state.getValue(Candle.CANDLES_LIT) * 12, 15))));
 
-	public static final RegistryObject<Candle> CANDLE_LIME = registerBlock("candle_lime",
+	public static final RegistryObject<Candle> CANDLE_LIME = registerBlockNoItem("candle_lime",
 					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).noCollission().noOcclusion().strength(1).explosionResistance(0.5f).lightLevel(state -> Math.min(state.getValue(Candle.CANDLES_LIT) * 12, 15))));
 
-	public static final RegistryObject<Candle> CANDLE_ORANGE = registerBlock("candle_orange",
+	public static final RegistryObject<Candle> CANDLE_ORANGE = registerBlockNoItem("candle_orange",
 					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).noCollission().noOcclusion().strength(1).explosionResistance(0.5f).lightLevel(state -> Math.min(state.getValue(Candle.CANDLES_LIT) * 12, 15))));
 
-	public static final RegistryObject<Candle> CANDLE_PINK = registerBlock("candle_pink",
+	public static final RegistryObject<Candle> CANDLE_PINK = registerBlockNoItem("candle_pink",
 					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).noCollission().noOcclusion().strength(1).explosionResistance(0.5f).lightLevel(state -> Math.min(state.getValue(Candle.CANDLES_LIT) * 12, 15))));
 
-	public static final RegistryObject<Candle> CANDLE_PURPLE = registerBlock("candle_purple",
+	public static final RegistryObject<Candle> CANDLE_PURPLE = registerBlockNoItem("candle_purple",
 					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).noCollission().noOcclusion().strength(1).explosionResistance(0.5f).lightLevel(state -> Math.min(state.getValue(Candle.CANDLES_LIT) * 12, 15))));
 
-	public static final RegistryObject<Candle> CANDLE_RED = registerBlock("candle_red",
+	public static final RegistryObject<Candle> CANDLE_RED = registerBlockNoItem("candle_red",
 					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).noCollission().noOcclusion().strength(1).explosionResistance(0.5f).lightLevel(state -> Math.min(state.getValue(Candle.CANDLES_LIT) * 12, 15))));
 
-	public static final RegistryObject<Candle> CANDLE_CYAN = registerBlock("candle_cyan",
+	public static final RegistryObject<Candle> CANDLE_CYAN = registerBlockNoItem("candle_cyan",
 					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).noCollission().noOcclusion().strength(1).explosionResistance(0.5f).lightLevel(state -> Math.min(state.getValue(Candle.CANDLES_LIT) * 12, 15))));
 
-	public static final RegistryObject<Candle> CANDLE_YELLOW = registerBlock("candle_yellow",
+	public static final RegistryObject<Candle> CANDLE_YELLOW = registerBlockNoItem("candle_yellow",
 					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).noCollission().noOcclusion().strength(1).explosionResistance(0.5f).lightLevel(state -> Math.min(state.getValue(Candle.CANDLES_LIT) * 12, 15))));
 
 
@@ -323,31 +327,6 @@ public class ModBlocks {
 
 	public static final RegistryObject<Block> CANDLE_DIPPER_CANDLE_3 = registerBlockNoItem("candle_dipper_candle_3",
 					() -> new Block(BlockBehaviour.Properties.of(Material.VEGETABLE).strength(0).noCollission().explosionResistance(1f)));
-
-	public static final RegistryObject<Block> CANDLE_0_OF_7 = registerBlockNoItem("candle_0_of_7",
-					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).strength(0).noCollission().explosionResistance(1f)));
-
-	public static final RegistryObject<Block> CANDLE_1_OF_7 = registerBlockNoItem("candle_1_of_7",
-					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).strength(0).noCollission().explosionResistance(1f)));
-
-	public static final RegistryObject<Block> CANDLE_2_OF_7 = registerBlockNoItem("candle_2_of_7",
-					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).strength(0).noCollission().explosionResistance(1f)));
-
-	public static final RegistryObject<Block> CANDLE_3_OF_7 = registerBlockNoItem("candle_3_of_7",
-					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).strength(0).noCollission().explosionResistance(1f)));
-
-	public static final RegistryObject<Block> CANDLE_4_OF_7 = registerBlockNoItem("candle_4_of_7",
-					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).strength(0).noCollission().explosionResistance(1f)));
-
-	public static final RegistryObject<Block> CANDLE_5_OF_7 = registerBlockNoItem("candle_5_of_7",
-					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).strength(0).noCollission().explosionResistance(1f)));
-
-	public static final RegistryObject<Block> CANDLE_6_OF_7 = registerBlockNoItem("candle_6_of_7",
-					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).strength(0).noCollission().explosionResistance(1f)));
-
-	public static final RegistryObject<Block> CANDLE_7_OF_7 = registerBlockNoItem("candle_7_of_7",
-					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).strength(0).noCollission().explosionResistance(1f)));
-
 	public static final RegistryObject<Block> CRYSTAL_BALL_ORB = registerBlockNoItem("crystal_ball_orb",
 					() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(0).explosionResistance(2f)));
 

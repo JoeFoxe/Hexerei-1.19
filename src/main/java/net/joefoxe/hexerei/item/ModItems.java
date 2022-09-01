@@ -4,12 +4,7 @@ import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
 import net.joefoxe.hexerei.client.renderer.entity.custom.BroomEntity;
-import net.joefoxe.hexerei.config.HexConfig;
 import net.joefoxe.hexerei.data.books.HexereiBookItem;
-import net.joefoxe.hexerei.data.recipes.BookOfShadowsRecipe;
-import net.joefoxe.hexerei.data.recipes.CrowFluteRecipe;
-import net.joefoxe.hexerei.data.recipes.KeychainRecipe;
-import net.joefoxe.hexerei.data.recipes.KeychainUndoRecipe;
 import net.joefoxe.hexerei.fluid.ModFluids;
 import net.joefoxe.hexerei.item.custom.*;
 import net.minecraft.client.gui.screens.Screen;
@@ -17,13 +12,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
@@ -36,7 +29,6 @@ import net.minecraftforge.registries.*;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Objects;
 
 public class ModItems {
 
@@ -441,6 +433,33 @@ public class ModItems {
 
     public static final RegistryObject<Item> CANDLE = ITEMS.register("candle",
             () -> new CandleItem(ModBlocks.CANDLE.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+
+    public static final RegistryObject<Item> CANDLE_BLUE = ITEMS.register("candle_blue",
+            () -> new CandleItem(ModBlocks.CANDLE_BLUE.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+
+    public static final RegistryObject<Item> CANDLE_BLACK = ITEMS.register("candle_black",
+            () -> new CandleItem(ModBlocks.CANDLE_BLACK.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+
+    public static final RegistryObject<Item> CANDLE_LIME = ITEMS.register("candle_lime",
+            () -> new CandleItem(ModBlocks.CANDLE_LIME.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+
+    public static final RegistryObject<Item> CANDLE_ORANGE = ITEMS.register("candle_orange",
+            () -> new CandleItem(ModBlocks.CANDLE_ORANGE.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+
+    public static final RegistryObject<Item> CANDLE_PINK = ITEMS.register("candle_pink",
+            () -> new CandleItem(ModBlocks.CANDLE_PINK.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+
+    public static final RegistryObject<Item> CANDLE_PURPLE = ITEMS.register("candle_purple",
+            () -> new CandleItem(ModBlocks.CANDLE_PURPLE.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+
+    public static final RegistryObject<Item> CANDLE_RED = ITEMS.register("candle_red",
+            () -> new CandleItem(ModBlocks.CANDLE_RED.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+
+    public static final RegistryObject<Item> CANDLE_CYAN = ITEMS.register("candle_cyan",
+            () -> new CandleItem(ModBlocks.CANDLE_CYAN.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+
+    public static final RegistryObject<Item> CANDLE_YELLOW = ITEMS.register("candle_yellow",
+            () -> new CandleItem(ModBlocks.CANDLE_YELLOW.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
 
     public static final RegistryObject<Item> SEED_MIXTURE = ITEMS.register("seed_mixture",

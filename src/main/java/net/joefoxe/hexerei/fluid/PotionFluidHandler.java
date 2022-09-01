@@ -27,6 +27,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -98,7 +99,10 @@ public class PotionFluidHandler {
     // Modified version of PotionUtils#addPotionTooltip
     @OnlyIn(Dist.CLIENT)
     public static void addPotionTooltip(FluidStack fs, List<Component> tooltip, float p_185182_2_) {
-        List<MobEffectInstance> list = PotionUtils.getAllEffects(fs.getOrCreateTag());
+
+        List<MobEffectInstance> list = fs.isEmpty() ? new ArrayList<>() : PotionUtils.getAllEffects(fs.getOrCreateTag());
+        if(!ForgeRegistries.FLUIDS.getKey(fs.getFluid()).getPath().equals("potion"))
+            return;
         List<Tuple<String, AttributeModifier>> list1 = Lists.newArrayList();
         if (list.isEmpty()) {
             tooltip.add((Component.translatable("effect.none")).withStyle(ChatFormatting.GRAY));

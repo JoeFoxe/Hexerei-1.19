@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "@@@",
+    "# #",
+    "# #"
+  ],
+  "key": {
+    "#": {
+      "item": "hexerei:willow_planks"
+    },
+    "@": {
+      "item": "hexerei:willow_slab"
+    }
+  },
+  "result": {
+    "item": "hexerei:willow_altar"
+  }
+}

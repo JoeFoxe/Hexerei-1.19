@@ -10,6 +10,7 @@ import net.joefoxe.hexerei.client.renderer.entity.model.CandleHerbLayer;
 import net.joefoxe.hexerei.client.renderer.entity.model.CandleModel;
 import net.joefoxe.hexerei.client.renderer.entity.model.MushroomWitchArmorModel;
 import net.joefoxe.hexerei.data.candle.CandleData;
+import net.joefoxe.hexerei.data.candle.PotionCandleEffect;
 import net.joefoxe.hexerei.tileentity.CandleTile;
 import net.joefoxe.hexerei.tileentity.CrystalBallTile;
 import net.joefoxe.hexerei.util.ClientProxy;
@@ -93,7 +94,7 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             int candle = 0;
             CandleData candleData = tileEntityIn.candles.get(candle);
             if(candleData.hasBase()){
-                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.baseLayer));
+                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.base.layer));
                 baseModel.base.render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
             }
 
@@ -127,7 +128,7 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             int candle = 1;
             CandleData candleData = tileEntityIn.candles.get(candle);
             if(candleData.hasBase()) {
-                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.baseLayer));
+                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.base.layer));
                 baseModel.base.render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
             }
 
@@ -159,7 +160,7 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             int candle = 2;
             CandleData candleData = tileEntityIn.candles.get(candle);
             if(candleData.hasBase()) {
-                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.baseLayer));
+                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.base.layer));
                 baseModel.base.render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
             }
 
@@ -188,7 +189,7 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             int candle = 3;
             CandleData candleData = tileEntityIn.candles.get(candle);
             if(candleData.hasBase()) {
-                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.baseLayer));
+                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.base.layer));
                 baseModel.base.render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
             }
 
@@ -374,7 +375,7 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
         //herb layer//////////////////////
 
-        if(tileEntityIn.candles.get(0).hasCandle && tileEntityIn.candles.get(0).herbLayer != null) {
+        if(tileEntityIn.candles.get(0).hasCandle && tileEntityIn.candles.get(0).herb.layer != null) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
@@ -407,14 +408,14 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             if(!candleData.hasBase())
                 matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
 
-            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.herbLayer));
+            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.herb.layer));
             if(candleData.height != 0 && candleData.height <= 7) {
                 herbLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
             }
 
             matrixStackIn.popPose();
         }
-        if(tileEntityIn.candles.get(1).hasCandle && tileEntityIn.candles.get(1).herbLayer != null) {
+        if(tileEntityIn.candles.get(1).hasCandle && tileEntityIn.candles.get(1).herb.layer != null) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(tileEntityIn.candles.get(1).x , tileEntityIn.candles.get(1).y, tileEntityIn.candles.get(1).z);
@@ -445,14 +446,14 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
             if(!candleData.hasBase())
                 matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
-            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.herbLayer));
+            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.herb.layer));
             if(candleData.height != 0 && candleData.height <= 7) {
                 herbLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
             }
 
             matrixStackIn.popPose();
         }
-        if(tileEntityIn.candles.get(2).hasCandle && tileEntityIn.candles.get(2).herbLayer != null) {
+        if(tileEntityIn.candles.get(2).hasCandle && tileEntityIn.candles.get(2).herb.layer != null) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
@@ -481,14 +482,14 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
             if(!candleData.hasBase())
                 matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
-            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.herbLayer));
+            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.herb.layer));
             if(candleData.height != 0 && candleData.height <= 7) {
                 herbLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
             }
 
             matrixStackIn.popPose();
         }
-        if(tileEntityIn.candles.get(3).hasCandle && tileEntityIn.candles.get(3).herbLayer != null) {
+        if(tileEntityIn.candles.get(3).hasCandle && tileEntityIn.candles.get(3).herb.layer != null) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);;
@@ -513,7 +514,7 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
             if(!candleData.hasBase())
                 matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
-            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.herbLayer));
+            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.herb.layer));
             if(candleData.height != 0 && candleData.height <= 7) {
                 herbLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
             }
@@ -523,7 +524,7 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
         //glow layer//////////////////////
 
-        if(tileEntityIn.candles.get(0).hasCandle && tileEntityIn.candles.get(0).glowLayer != null) {
+        if(tileEntityIn.candles.get(0).hasCandle && tileEntityIn.candles.get(0).glow.layer != null) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
@@ -556,14 +557,22 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             if(!candleData.hasBase())
                 matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
 
-            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.glowLayer));
-            if(candleData.height != 0 && candleData.height <= 7) {
-                glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
+            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.glow.layer));
+            if(candleData.effect instanceof PotionCandleEffect potionCandleEffect && potionCandleEffect.effect != null) {
+                int color = potionCandleEffect.effect.getColor();
+                float[] col2 = HexereiUtil.rgbIntToFloatArray(color);
+                if (candleData.height != 0 && candleData.height <= 7) {
+                    glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, col2[0], col2[1], col2[2], 0.75F);
+                }
+            }else{
+                if(candleData.height != 0 && candleData.height <= 7) {
+                    glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
+                }
             }
 
             matrixStackIn.popPose();
         }
-        if(tileEntityIn.candles.get(1).hasCandle && tileEntityIn.candles.get(1).glowLayer != null) {
+        if(tileEntityIn.candles.get(1).hasCandle && tileEntityIn.candles.get(1).glow.layer != null) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(tileEntityIn.candles.get(1).x , tileEntityIn.candles.get(1).y, tileEntityIn.candles.get(1).z);
@@ -594,14 +603,22 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
             if(!candleData.hasBase())
                 matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
-            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.glowLayer));
-            if(candleData.height != 0 && candleData.height <= 7) {
-                glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
+            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.glow.layer));
+            if(candleData.effect instanceof PotionCandleEffect potionCandleEffect && potionCandleEffect.effect != null) {
+                int color = potionCandleEffect.effect.getColor();
+                float[] col2 = HexereiUtil.rgbIntToFloatArray(color);
+                if (candleData.height != 0 && candleData.height <= 7) {
+                    glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, col2[0], col2[1], col2[2], 0.75F);
+                }
+            }else{
+                if(candleData.height != 0 && candleData.height <= 7) {
+                    glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
+                }
             }
 
             matrixStackIn.popPose();
         }
-        if(tileEntityIn.candles.get(2).hasCandle && tileEntityIn.candles.get(2).glowLayer != null) {
+        if(tileEntityIn.candles.get(2).hasCandle && tileEntityIn.candles.get(2).glow.layer != null) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
@@ -630,14 +647,22 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
             if(!candleData.hasBase())
                 matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
-            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.glowLayer));
-            if(candleData.height != 0 && candleData.height <= 7) {
-                glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
+            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.glow.layer));
+            if(candleData.effect instanceof PotionCandleEffect potionCandleEffect && potionCandleEffect.effect != null) {
+                int color = potionCandleEffect.effect.getColor();
+                float[] col2 = HexereiUtil.rgbIntToFloatArray(color);
+                if (candleData.height != 0 && candleData.height <= 7) {
+                    glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, col2[0], col2[1], col2[2], 0.75F);
+                }
+            }else{
+                if(candleData.height != 0 && candleData.height <= 7) {
+                    glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
+                }
             }
 
             matrixStackIn.popPose();
         }
-        if(tileEntityIn.candles.get(3).hasCandle && tileEntityIn.candles.get(3).glowLayer != null) {
+        if(tileEntityIn.candles.get(3).hasCandle && tileEntityIn.candles.get(3).glow.layer != null) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
@@ -662,9 +687,17 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
             if(!candleData.hasBase())
                 matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
-            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.glowLayer));
-            if(candleData.height != 0 && candleData.height <= 7) {
-                glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
+            VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.glow.layer));
+            if(candleData.effect instanceof PotionCandleEffect potionCandleEffect && potionCandleEffect.effect != null) {
+                int color = potionCandleEffect.effect.getColor();
+                float[] col2 = HexereiUtil.rgbIntToFloatArray(color);
+                if (candleData.height != 0 && candleData.height <= 7) {
+                    glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, col2[0], col2[1], col2[2], 0.75F);
+                }
+            }else{
+                if(candleData.height != 0 && candleData.height <= 7) {
+                    glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
+                }
             }
 
             matrixStackIn.popPose();
@@ -672,7 +705,7 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
         //swirl layer//////////////////////
 
-        if(tileEntityIn.candles.get(0).hasCandle && tileEntityIn.candles.get(0).swirlLayer != null) {
+        if(tileEntityIn.candles.get(0).hasCandle && tileEntityIn.candles.get(0).swirl.layer != null) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
@@ -704,9 +737,9 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             if(!candleData.hasBase())
                 matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
             float[] col = HexereiUtil.rgbIntToFloatArray(candleData.dyeColor);
-            if(candleData.swirlLayer != null){
+            if(candleData.swirl.layer != null){
                 float offset = Hexerei.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTime();
-                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(candleData.swirlLayer, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
+                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(candleData.swirl.layer, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
                 if (candleData.height != 0 && candleData.height <= 7) {
                     swirlLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, col[0], col[1], col[2], 0.75F);
                 }
@@ -714,7 +747,7 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
             matrixStackIn.popPose();
         }
-        if(tileEntityIn.candles.get(1).hasCandle && tileEntityIn.candles.get(1).swirlLayer != null) {
+        if(tileEntityIn.candles.get(1).hasCandle && tileEntityIn.candles.get(1).swirl.layer != null) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(tileEntityIn.candles.get(1).x , tileEntityIn.candles.get(1).y, tileEntityIn.candles.get(1).z);
@@ -746,9 +779,9 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             if(!candleData.hasBase())
                 matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
             float[] col = HexereiUtil.rgbIntToFloatArray(candleData.dyeColor);
-            if(candleData.swirlLayer != null){
+            if(candleData.swirl.layer != null){
                 float offset = Hexerei.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTime();
-                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(candleData.swirlLayer, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
+                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(candleData.swirl.layer, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
                 if (candleData.height != 0 && candleData.height <= 7) {
                     swirlLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, col[0], col[1], col[2], 0.75F);
                 }
@@ -756,7 +789,7 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
             matrixStackIn.popPose();
         }
-        if(tileEntityIn.candles.get(2).hasCandle && tileEntityIn.candles.get(2).swirlLayer != null) {
+        if(tileEntityIn.candles.get(2).hasCandle && tileEntityIn.candles.get(2).swirl.layer != null) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
@@ -786,9 +819,9 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             if(!candleData.hasBase())
                 matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
             float[] col = HexereiUtil.rgbIntToFloatArray(candleData.dyeColor);
-            if(candleData.swirlLayer != null){
+            if(candleData.swirl.layer != null){
                 float offset = Hexerei.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTime();
-                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(candleData.swirlLayer, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
+                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(candleData.swirl.layer, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
                 if (candleData.height != 0 && candleData.height <= 7) {
                     swirlLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, col[0], col[1], col[2], 0.75F);
                 }
@@ -796,7 +829,7 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
             matrixStackIn.popPose();
         }
-        if(tileEntityIn.candles.get(3).hasCandle && tileEntityIn.candles.get(3).swirlLayer != null) {
+        if(tileEntityIn.candles.get(3).hasCandle && tileEntityIn.candles.get(3).swirl.layer != null) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);;
@@ -822,9 +855,9 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
             if(!candleData.hasBase())
                 matrixStackIn.translate( 0/16f, 1f/16f, 0/16f);
             float[] col = HexereiUtil.rgbIntToFloatArray(candleData.dyeColor);
-            if(candleData.swirlLayer != null){
+            if(candleData.swirl.layer != null){
                 float offset = Hexerei.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTime();
-                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(candleData.swirlLayer, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
+                VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(candleData.swirl.layer, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
                 if (candleData.height != 0 && candleData.height <= 7) {
                     swirlLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, col[0], col[1], col[2], 0.75F);
                 }

@@ -436,11 +436,11 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 
         // Wing animation
         if (this.getDeltaMovement().y < -0.0075) {
-            rightWingAngle = Mth.sin(Hexerei.getClientTicks() / 5f) * 0.05f;
-            leftWingAngle = -Mth.sin(0.97f + Hexerei.getClientTicks() / 5f) * 0.05f;
+            rightWingAngle = Mth.sin(Hexerei.getClientTicksWithoutPartial() / 5f) * 0.05f;
+            leftWingAngle = -Mth.sin(0.97f + Hexerei.getClientTicksWithoutPartial() / 5f) * 0.05f;
         } else {
-            rightWingAngle = (float) Math.sin(Hexerei.getClientTicks() / 5f) * 0.8f;
-            leftWingAngle = -(float) Math.sin(Hexerei.getClientTicks() / 5f) * 0.8f;
+            rightWingAngle = (float) Math.sin(Hexerei.getClientTicksWithoutPartial() / 5f) * 0.8f;
+            leftWingAngle = -(float) Math.sin(Hexerei.getClientTicksWithoutPartial() / 5f) * 0.8f;
         }
         this.rightWingAngleActual = moveTo(this.rightWingAngleActual, rightWingAngle, 0.1f);
         this.leftWingAngleActual = moveTo(this.leftWingAngleActual, leftWingAngle, 0.1f);

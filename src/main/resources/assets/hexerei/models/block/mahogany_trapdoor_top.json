@@ -2,6 +2,7 @@
   "parent": "minecraft:block/template_trapdoor_top",
   "textures": {
     "texture": "hexerei:block/mahogany_trapdoor"
-  }
+  },
+  "render_type": "translucent"
 }
 

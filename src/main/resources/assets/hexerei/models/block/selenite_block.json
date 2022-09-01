@@ -2,5 +2,6 @@
   "parent": "minecraft:block/cube_all",
   "textures": {
     "all": "hexerei:block/selenite_block"
-  }
+  },
+  "render_type": "translucent"
 }

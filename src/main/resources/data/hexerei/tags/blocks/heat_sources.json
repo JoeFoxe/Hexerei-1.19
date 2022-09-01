@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:lava",
+    "minecraft:magma_block",
+    "minecraft:lava_cauldron",
+    "#minecraft:campfires",
+    "#minecraft:fire",
+    {
+      "id": "farmersdelight:heat_sources",
+      "required": false
+    }
+  ]
+}

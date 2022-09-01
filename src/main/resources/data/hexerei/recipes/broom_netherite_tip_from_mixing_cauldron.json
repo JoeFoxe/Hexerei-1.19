@@ -35,5 +35,6 @@
   "liquidOutput": {
     "fluid": "minecraft:lava"
   },
-  "fluidLevelsConsumed": 2000
+  "fluidLevelsConsumed": 2000,
+  "heatRequirement": "heated"
 }

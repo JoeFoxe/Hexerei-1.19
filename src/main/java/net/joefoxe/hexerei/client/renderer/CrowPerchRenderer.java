@@ -14,14 +14,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderLevelLastEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -50,7 +48,7 @@ public class CrowPerchRenderer {
     }
 
     @SubscribeEvent
-    public static void renderWorldLastEvent(RenderLevelLastEvent event) {
+    public static void renderWorldLastEvent(RenderLevelStageEvent event) {
         if(lastStackMain.getItem() instanceof CrowFluteItem){
             int command = lastStackMain.getOrCreateTag().getInt("commandMode");
             if (command == 2) { // Perch

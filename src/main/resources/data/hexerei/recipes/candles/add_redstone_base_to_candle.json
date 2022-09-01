@@ -1,0 +1,15 @@
+{
+  "type": "hexerei:add_to_candle",
+  "input": {
+    "item": "minecraft:redstone_block"
+  },
+  "output": {
+    "item": "hexerei:candle",
+    "nbt": {
+      "base": {
+        "layer": "minecraft:textures/block/redstone_block.png",
+        "layerFromBlockLocation": false
+      }
+    }
+  }
+}

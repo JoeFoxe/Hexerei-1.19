@@ -2,5 +2,6 @@
   "parent": "minecraft:block/cross",
   "textures": {
     "cross": "hexerei:block/willow_sapling"
-  }
+  },
+  "render_type": "cutout"
 }

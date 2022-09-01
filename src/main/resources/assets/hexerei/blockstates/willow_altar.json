@@ -1,0 +1,1845 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "AND": [
+          {
+            "north": "!north",
+            "south": "!south",
+            "east": "false",
+            "west": "false"
+          },
+          {
+            "north": "!north_and_north_west",
+            "south": "!south_and_south_west",
+            "east": "false",
+            "west": "false"
+          },
+          {
+            "north": "!north_and_north_east",
+            "south": "!south_and_south_east",
+            "east": "false",
+            "west": "false"
+          },
+          {
+            "north": "!all",
+            "south": "!all",
+            "east": "false",
+            "west": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top"
+      }
+    },
+    {
+      "when": {
+      "OR": [
+        {
+          "AND": [
+            {
+              "north": "north",
+              "south": "!south",
+              "east": "false",
+              "west": "false"
+            },
+            {
+              "north": "north",
+              "south": "!south_and_south_west",
+              "east": "false",
+              "west": "false"
+            },
+            {
+              "north": "north",
+              "south": "!south_and_south_east",
+              "east": "false",
+              "west": "false"
+            },
+            {
+              "north": "north",
+              "south": "!all",
+              "east": "false",
+              "west": "false"
+            }
+          ]
+        },{
+          "AND": [
+            {
+              "north": "north_and_north_east",
+              "south": "!south",
+              "east": "false",
+              "west": "false"
+            },
+            {
+              "north": "north_and_north_east",
+              "south": "!south_and_south_west",
+              "east": "false",
+              "west": "false"
+            },
+            {
+              "north": "north_and_north_east",
+              "south": "!south_and_south_east",
+              "east": "false",
+              "west": "false"
+            },
+            {
+              "north": "north_and_north_east",
+              "south": "!all",
+              "east": "false",
+              "west": "false"
+            }
+          ]
+        },{
+          "AND": [
+            {
+              "north": "north_and_north_west",
+              "south": "!south",
+              "east": "false",
+              "west": "false"
+            },
+            {
+              "north": "north_and_north_west",
+              "south": "!south_and_south_west",
+              "east": "false",
+              "west": "false"
+            },
+            {
+              "north": "north_and_north_west",
+              "south": "!south_and_south_east",
+              "east": "false",
+              "west": "false"
+            },
+            {
+              "north": "north_and_north_west",
+              "south": "!all",
+              "east": "false",
+              "west": "false"
+            }
+          ]
+        },{
+          "AND": [
+            {
+              "north": "all",
+              "south": "!south",
+              "east": "false",
+              "west": "false"
+            },
+            {
+              "north": "all",
+              "south": "!south_and_south_west",
+              "east": "false",
+              "west": "false"
+            },
+            {
+              "north": "all",
+              "south": "!south_and_south_east",
+              "east": "false",
+              "west": "false"
+            },
+            {
+              "north": "all",
+              "south": "!all",
+              "east": "false",
+              "west": "false"
+            }
+          ]
+        }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top1"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "AND": [
+              {
+                "north": "!north",
+                "south": "south",
+                "east": "false",
+                "west": "false"
+              },
+              {
+                "north": "!north_and_north_west",
+                "south": "south",
+                "east": "false",
+                "west": "false"
+              },
+              {
+                "north": "!north_and_north_east",
+                "south": "south",
+                "east": "false",
+                "west": "false"
+              },
+              {
+                "north": "!all",
+                "south": "south",
+                "east": "false",
+                "west": "false"
+              }
+            ]
+          },
+          {
+            "AND": [
+              {
+                "north": "!north",
+                "south": "south_and_south_east",
+                "east": "false",
+                "west": "false"
+              },
+              {
+                "north": "!north_and_north_west",
+                "south": "south_and_south_east",
+                "east": "false",
+                "west": "false"
+              },
+              {
+                "north": "!north_and_north_east",
+                "south": "south_and_south_east",
+                "east": "false",
+                "west": "false"
+              },
+              {
+                "north": "!all",
+                "south": "south_and_south_east",
+                "east": "false",
+                "west": "false"
+              }
+            ]
+          },
+          {
+            "AND": [
+              {
+                "north": "!north",
+                "south": "south_and_south_west",
+                "east": "false",
+                "west": "false"
+              },
+              {
+                "north": "!north_and_north_west",
+                "south": "south_and_south_west",
+                "east": "false",
+                "west": "false"
+              },
+              {
+                "north": "!north_and_north_east",
+                "south": "south_and_south_west",
+                "east": "false",
+                "west": "false"
+              },
+              {
+                "north": "!all",
+                "south": "south_and_south_west",
+                "east": "false",
+                "west": "false"
+              }
+            ]
+          },
+          {
+            "AND": [
+              {
+                "north": "!north",
+                "south": "all",
+                "east": "false",
+                "west": "false"
+              },
+              {
+                "north": "!north_and_north_west",
+                "south": "all",
+                "east": "false",
+                "west": "false"
+              },
+              {
+                "north": "!north_and_north_east",
+                "south": "all",
+                "east": "false",
+                "west": "false"
+              },
+              {
+                "north": "!all",
+                "south": "all",
+                "east": "false",
+                "west": "false"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top2"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "north": "!north_east_and_north_west",
+            "south": "!south_east_and_south_west",
+            "east": "false",
+            "west": "false"
+          },
+          {
+            "north": "!north_east",
+            "south": "!south_east",
+            "east": "false",
+            "west": "false"
+          },
+          {
+            "north": "!north_west",
+            "south": "!south_west",
+            "east": "false",
+            "west": "false"
+          },
+          {
+            "north": "!none",
+            "south": "!none",
+            "east": "false",
+            "west": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top3"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "none",
+            "south": "none",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_east",
+            "south": "none",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_west",
+            "south": "none",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "none",
+            "south": "south_east",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "none",
+            "south": "south_west",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_east",
+            "south": "south_east",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_west",
+            "south": "south_west",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_east",
+            "south": "south_west",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_west",
+            "south": "south_east",
+            "east": "false",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top4"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "north",
+            "south": "none",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "none",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north",
+            "south": "south_east",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "south_east",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north",
+            "south": "south_west",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "south_west",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north",
+            "south": "south_east_and_south_west",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "south_east_and_south_west",
+            "east": "false",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top5"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "none",
+            "south": "south",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "none",
+            "south": "south_and_south_east",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_east",
+            "south": "south",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_east",
+            "south": "south_and_south_east",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_west",
+            "south": "south",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_west",
+            "south": "south_and_south_east",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_east_and_north_west",
+            "south": "south",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_east_and_north_west",
+            "south": "south_and_south_east",
+            "east": "false",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top6"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "north",
+            "south": "south",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north",
+            "south": "south_and_south_east",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "south",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "south_and_south_east",
+            "east": "false",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top7"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "all",
+            "south": "none",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "none",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "all",
+            "south": "south_west",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "south_west",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "all",
+            "south": "south_east",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "south_east",
+            "east": "false",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top8"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "none",
+            "south": "all",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "none",
+            "south": "south_and_south_west",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_west",
+            "south": "all",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_west",
+            "south": "south_and_south_west",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_east",
+            "south": "all",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_east",
+            "south": "south_and_south_west",
+            "east": "false",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top9"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "none",
+            "south": "none",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_east",
+            "south": "none",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_west",
+            "south": "none",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "none",
+            "south": "south_east",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "none",
+            "south": "south_west",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_east",
+            "south": "south_east",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_west",
+            "south": "south_west",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_west",
+            "south": "south_east",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_east",
+            "south": "south_west",
+            "east": "true",
+            "west": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top10"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "north",
+            "south": "none",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "none",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north",
+            "south": "south_east",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "south_east",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north",
+            "south": "south_west",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "south_west",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north",
+            "south": "south_east_and_south_west",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "south_east_and_south_west",
+            "east": "true",
+            "west": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top11"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "none",
+            "south": "south",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "none",
+            "south": "south_and_south_west",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_east",
+            "south": "south",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_east",
+            "south": "south_and_south_west",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_west",
+            "south": "south",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_west",
+            "south": "south_and_south_west",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_east_and_north_west",
+            "south": "south",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_east_and_north_west",
+            "south": "south_and_south_west",
+            "east": "true",
+            "west": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top12"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "north",
+            "south": "south",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north",
+            "south": "south_and_south_west",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "south",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "south_and_south_west",
+            "east": "true",
+            "west": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top13"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "all",
+            "south": "none",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "none",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "all",
+            "south": "south_east",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "south_east",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "all",
+            "south": "south_west",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "south_west",
+            "east": "true",
+            "west": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top14"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "none",
+            "south": "all",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "none",
+            "south": "south_and_south_east",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_east",
+            "south": "all",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_east",
+            "south": "south_and_south_east",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_west",
+            "south": "all",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_west",
+            "south": "south_and_south_east",
+            "east": "true",
+            "west": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top15"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "north": "!north_and_north_west",
+            "south": "!south_and_south_west",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "!north_and_north_east",
+            "south": "!south_and_south_east",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "!north",
+            "south": "!south",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "!all",
+            "south": "!all",
+            "east": "true",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top16"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "north": "north",
+            "south": "!south",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north",
+            "south": "!south_and_south_west",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north",
+            "south": "!south_and_south_east",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north",
+            "south": "!all",
+            "east": "true",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top17"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "none",
+            "south": "south",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_west",
+            "south": "south",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_east",
+            "south": "south",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_east_and_north_west",
+            "south": "south",
+            "east": "true",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top18"
+      }
+    },
+    {
+      "when": {
+        "north": "north",
+        "south": "south",
+        "east": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top19"
+      }
+    },
+    {
+      "when": {
+        "north": "north_and_north_east",
+        "south": "south",
+        "east": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top20"
+      }
+    },
+    {
+      "when": {
+        "north": "north_and_north_west",
+        "south": "south",
+        "east": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top21"
+      }
+    },
+    {
+      "when": {
+        "north": "all",
+        "south": "south",
+        "east": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top22"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "north",
+            "south": "south_and_south_west",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "south_and_south_west",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north",
+            "south": "all",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "all",
+            "east": "false",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top23"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "all",
+            "south": "south",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "south",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "all",
+            "south": "south_and_south_east",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "south_and_south_east",
+            "east": "false",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top24"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "all",
+            "south": "all",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "all",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "all",
+            "south": "south_and_south_west",
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "south_and_south_west",
+            "east": "false",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top25"
+      }
+    },
+    {
+      "when": {
+        "north": "north",
+        "south": "south_and_south_west",
+        "east": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top26"
+      }
+    },
+    {
+      "when": {
+        "north": "north_and_north_east",
+        "south": "south_and_south_west",
+        "east": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top27"
+      }
+    },
+    {
+      "when": {
+        "north": "north_and_north_west",
+        "south": "south_and_south_west",
+        "east": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top28"
+      }
+    },
+    {
+      "when": {
+        "north": "all",
+        "south": "south_and_south_west",
+        "east": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top29"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "north",
+            "south": "all",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "all",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north",
+            "south": "south_and_south_east",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "south_and_south_east",
+            "east": "true",
+            "west": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top30"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "all",
+            "south": "south",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "south",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "all",
+            "south": "south_and_south_west",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "south_and_south_west",
+            "east": "true",
+            "west": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top31"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "all",
+            "south": "all",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "all",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "all",
+            "south": "south_and_south_east",
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "south_and_south_east",
+            "east": "true",
+            "west": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top32"
+      }
+    },
+    {
+      "when": {
+        "north": "north",
+        "south": "south_and_south_east",
+        "east": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top33"
+      }
+    },
+    {
+      "when": {
+        "north": "north_and_north_east",
+        "south": "south_and_south_east",
+        "east": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top34"
+      }
+    },
+    {
+      "when": {
+        "north": "north_and_north_west",
+        "south": "south_and_south_east",
+        "east": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top35"
+      }
+    },
+    {
+      "when": {
+        "north": "all",
+        "south": "south_and_south_east",
+        "east": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top36"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "north_and_north_west",
+            "south": "none",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "south_east",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "south_west",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_west",
+            "south": "south_east_and_south_west",
+            "east": "true",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top37"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "north_and_north_east",
+            "south": "none",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "south_east",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "south_west",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_east",
+            "south": "south_east_and_south_west",
+            "east": "true",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top38"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "all",
+            "south": "none",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "all",
+            "south": "south_east",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "all",
+            "south": "south_west",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "all",
+            "south": "south_east_and_south_west",
+            "east": "true",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top39"
+      }
+    },
+    {
+      "when": {
+        "north": "north",
+        "south": "all",
+        "east": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top40"
+      }
+    },
+    {
+      "when": {
+        "north": "north_and_north_east",
+        "south": "all",
+        "east": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top41"
+      }
+    },
+    {
+      "when": {
+        "north": "north_and_north_west",
+        "south": "all",
+        "east": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top42"
+      }
+    },
+    {
+      "when": {
+        "north": "all",
+        "south": "all",
+        "east": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top43"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "none",
+            "south": "south_and_south_west",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_east",
+            "south": "south_and_south_west",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_west",
+            "south": "south_and_south_west",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_east_and_north_west",
+            "south": "south_and_south_west",
+            "east": "true",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top44"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "none",
+            "south": "south_and_south_east",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_east",
+            "south": "south_and_south_east",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_west",
+            "south": "south_and_south_east",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_east_and_north_west",
+            "south": "south_and_south_east",
+            "east": "true",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top45"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "none",
+            "south": "all",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_east",
+            "south": "all",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_west",
+            "south": "all",
+            "east": "true",
+            "west": "true"
+          },
+          {
+            "north": "north_east_and_north_west",
+            "south": "all",
+            "east": "true",
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_top46"
+      }
+    },
+
+
+
+    {
+      "when": {
+        "AND": [
+          {
+            "north": "!north",
+            "east": "false"
+          },
+          {
+            "north": "!north_and_north_east",
+            "east": "false"
+          },
+          {
+            "north": "!north_and_north_west",
+            "east": "false"
+          },
+          {
+            "north": "!all",
+            "east": "false"
+          }
+        ]
+
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_corner"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "south": "!south",
+            "east": "false"
+          },
+          {
+            "south": "!south_and_south_east",
+            "east": "false"
+          },
+          {
+            "south": "!south_and_south_west",
+            "east": "false"
+          },
+          {
+            "south": "!all",
+            "east": "false"
+          }
+        ]
+
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_corner",
+        "y": 90
+      }
+    },
+
+
+    {
+      "when": {
+        "AND": [
+          {
+            "north": "!north",
+            "west": "false"
+          },
+          {
+            "north": "!north_and_north_east",
+            "west": "false"
+          },
+          {
+            "north": "!north_and_north_west",
+            "west": "false"
+          },
+          {
+            "north": "!all",
+            "west": "false"
+          }
+        ]
+
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_corner",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "south": "!south",
+            "west": "false"
+          },
+          {
+            "south": "!south_and_south_east",
+            "west": "false"
+          },
+          {
+            "south": "!south_and_south_west",
+            "west": "false"
+          },
+          {
+            "south": "!all",
+            "west": "false"
+          }
+        ]
+
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_corner",
+        "y": 180
+      }
+    },
+
+
+
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "north",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_east",
+            "west": "true"
+          }
+        ]
+
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_inside_corner",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "south": "south",
+            "west": "true"
+          },
+          {
+            "south": "south_and_south_east",
+            "west": "true"
+          }
+        ]
+
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_inside_corner",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "north",
+            "east": "true"
+          },
+          {
+            "north": "north_and_north_west",
+            "east": "true"
+          }
+        ]
+
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_inside_corner"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "south": "south",
+            "east": "true"
+          },
+          {
+            "south": "south_and_south_west",
+            "east": "true"
+          }
+        ]
+
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_inside_corner",
+        "y": 90
+      }
+    },
+
+
+
+
+
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "none"
+          },
+          {
+            "north": "north_west"
+          },
+          {
+            "north": "north_east"
+          },
+          {
+            "north": "north_east_and_north_west"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_end"
+      }
+    },
+
+    {
+      "when": {
+        "east": "false"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_end",
+        "y": 90
+      }
+    },
+
+    {
+      "when": {
+        "OR": [
+          {
+            "south": "none"
+          },
+          {
+            "south": "south_west"
+          },
+          {
+            "south": "south_east"
+          },
+          {
+            "south": "south_east_and_south_west"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_end",
+        "y": 180
+      }
+    },
+
+    {
+      "when": {
+        "west": "false"
+      },
+      "apply": {
+        "model": "hexerei:block/willow_altar/altar_end",
+        "y": 270
+      }
+    }
+
+
+
+
+
+
+  ]
+}

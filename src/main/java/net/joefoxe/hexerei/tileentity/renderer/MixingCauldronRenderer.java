@@ -106,6 +106,7 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
 
 
         }
+
         // output item
         ItemStack item2 = new ItemStack(tileEntityIn.getItemInSlot(8));
         if (!item2.isEmpty()) {
@@ -165,6 +166,34 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
         renderQuads(matrixStack.last().pose(), vertexBuilder, sprite, red, green, blue, alpha, heightPercentage, combinedLight);
     }
 
+    public static void renderFluidGUI(PoseStack matrixStack, MultiBufferSource renderTypeBuffer, FluidStack fluidStack, float alpha, float heightPercentage, int combinedLight){
+        VertexConsumer vertexBuilder = renderTypeBuffer.getBuffer(RenderType.translucentNoCrumbling());
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(IClientFluidTypeExtensions.of(fluidStack.getFluid()).getStillTexture(fluidStack));
+        int color = IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor(fluidStack);
+
+        alpha *= (color >> 24 & 255) / 255f;
+
+        float red = (color >> 16 & 255) / 255f;
+        float green = (color >> 8 & 255) / 255f;
+        float blue = (color & 255) / 255f;
+
+        renderQuads(matrixStack.last().pose(), vertexBuilder, sprite, red, green, blue, alpha, heightPercentage, combinedLight);
+    }
+
+    public static void renderFluidBlockGUI(PoseStack matrixStack, MultiBufferSource renderTypeBuffer, FluidStack fluidStack, float alpha, int combinedLight){
+        VertexConsumer vertexBuilder = renderTypeBuffer.getBuffer(RenderType.translucentNoCrumbling());
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(IClientFluidTypeExtensions.of(fluidStack.getFluid()).getStillTexture(fluidStack));
+        int color = IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor(fluidStack);
+
+        alpha *= (color >> 24 & 255) / 255f;
+
+        float red = (color >> 16 & 255) / 255f;
+        float green = (color >> 8 & 255) / 255f;
+        float blue = (color & 255) / 255f;
+
+        renderQuadsBlock(matrixStack.last().pose(), vertexBuilder, sprite, red, green, blue, alpha, combinedLight);
+    }
+
     private static void renderQuads(Matrix4f matrix, VertexConsumer vertexBuilder, TextureAtlasSprite sprite, float r, float g, float b, float alpha, float heightPercentage, int light){
         float height = MIN_Y + (MAX_Y - MIN_Y) * heightPercentage;
         float minU = sprite.getU(CORNERS * 16);
@@ -175,6 +204,33 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
         vertexBuilder.vertex(matrix, CORNERS, height, 1 - CORNERS).color(r, g, b, alpha).uv(minU, maxV).uv2(light).normal(0, 1, 0).endVertex();
         vertexBuilder.vertex(matrix, 1 - CORNERS, height, 1 - CORNERS).color(r, g, b, alpha).uv(maxU, maxV).uv2(light).normal(0, 1, 0).endVertex();
         vertexBuilder.vertex(matrix, 1 - CORNERS, height, CORNERS).color(r, g, b, alpha).uv(maxU, minV).uv2(light).normal(0, 1, 0).endVertex();
+    }
+
+    private static void renderQuadsBlock(Matrix4f matrix, VertexConsumer vertexBuilder, TextureAtlasSprite sprite, float r, float g, float b, float alpha, int light){
+        float height = (MIN_Y + (MAX_Y - MIN_Y)) * 0.8f;
+        float minU = sprite.getU(CORNERS * 16);
+        float maxU = sprite.getU((1 - CORNERS) * 16);
+        float minV = sprite.getV(CORNERS * 16);
+        float maxV = sprite.getV((1 - CORNERS) * 16);
+
+        vertexBuilder.vertex(matrix, CORNERS / 5f, height, CORNERS / 5f).color(r, g, b, alpha).uv(minU, minV).uv2(light).normal(0, 1, 0).endVertex();
+        vertexBuilder.vertex(matrix, CORNERS / 5f, height, 1 - CORNERS / 5f).color(r, g, b, alpha).uv(minU, maxV).uv2(light).normal(0, 1, 0).endVertex();
+        vertexBuilder.vertex(matrix, 1 - CORNERS / 5f, height, 1 - CORNERS / 5f).color(r, g, b, alpha).uv(maxU, maxV).uv2(light).normal(0, 1, 0).endVertex();
+        vertexBuilder.vertex(matrix, 1 - CORNERS / 5f, height, CORNERS / 5f).color(r, g, b, alpha).uv(maxU, minV).uv2(light).normal(0, 1, 0).endVertex();
+
+
+        float shading = 0.75f;
+        vertexBuilder.vertex(matrix, CORNERS / 5f, height, 1 - CORNERS / 5f).color(r * shading, g * shading, b * shading, alpha).uv(minU, minV).uv2(light).normal(-1, 0, 0).endVertex();
+        vertexBuilder.vertex(matrix, CORNERS / 5f, height, CORNERS / 5f).color(r * shading, g * shading, b * shading, alpha).uv(minU, maxV).uv2(light).normal(-1, 0, 0).endVertex();
+        vertexBuilder.vertex(matrix, CORNERS / 5f, 0, CORNERS / 5f).color(r * shading, g * shading, b * shading, alpha).uv(maxU, maxV).uv2(light).normal(-1, 0, 0).endVertex();
+        vertexBuilder.vertex(matrix, CORNERS / 5f, 0, 1 - CORNERS / 5f).color(r * shading, g * shading, b * shading, alpha).uv(maxU, minV).uv2(light).normal(-1, 0, 0).endVertex();
+
+
+        shading = 0.45f;
+        vertexBuilder.vertex(matrix, 1 - CORNERS / 5f, height, 1 - CORNERS / 5f).color(r * shading, g * shading, b * shading, alpha).uv(minU, minV).uv2(light).normal(0, 0, -1).endVertex();
+        vertexBuilder.vertex(matrix, CORNERS / 5f, height, 1 - CORNERS / 5f).color(r * shading, g * shading, b * shading, alpha).uv(minU, maxV).uv2(light).normal(0, 0, -1).endVertex();
+        vertexBuilder.vertex(matrix, CORNERS / 5f, 0, 1 - CORNERS / 5f).color(r * shading, g * shading, b * shading, alpha).uv(maxU, maxV).uv2(light).normal(0, 0, -1).endVertex();
+        vertexBuilder.vertex(matrix, 1 - CORNERS / 5f, 0, 1 - CORNERS / 5f).color(r * shading, g * shading, b * shading, alpha).uv(maxU, minV).uv2(light).normal(0, 0, -1).endVertex();
     }
 
     // THIS IS WHAT I WAS LOOKING FOR FOREVER AHHHHH

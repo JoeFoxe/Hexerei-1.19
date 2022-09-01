@@ -3,8 +3,10 @@ package net.joefoxe.hexerei.tileentity;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.custom.MixingCauldron;
 import net.joefoxe.hexerei.container.MixingCauldronContainer;
+import net.joefoxe.hexerei.data.recipes.FluidMixingRecipe;
 import net.joefoxe.hexerei.data.recipes.MixingCauldronRecipe;
 import net.joefoxe.hexerei.fluid.ModFluids;
+import net.joefoxe.hexerei.fluid.PotionMixingRecipes;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.particle.ModParticleTypes;
 import net.joefoxe.hexerei.tileentity.renderer.MixingCauldronRenderer;
@@ -20,7 +22,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -38,6 +39,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.NonNullList;
@@ -67,8 +70,9 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.LIT;
 
 public class MixingCauldronTile extends RandomizableContainerBlockEntity implements WorldlyContainer, Clearable, MenuProvider, IFluidHandler {
 
@@ -541,38 +545,120 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
             inv.setItem(i, this.items.get(i));
         }
 
+        if(PotionMixingRecipes.ALL == null || PotionMixingRecipes.ALL.isEmpty()){
+            PotionMixingRecipes.ALL = PotionMixingRecipes.createRecipes();
+            PotionMixingRecipes.BY_ITEM = PotionMixingRecipes.sortRecipesByItem(PotionMixingRecipes.ALL);
+        }
 
         Optional<MixingCauldronRecipe> recipe = level.getRecipeManager()
                 .getRecipeFor(MixingCauldronRecipe.Type.INSTANCE, inv, level);
+        List<FluidMixingRecipe> recipe2 = PotionMixingRecipes.ALL.stream().filter((potionRecipe) ->{
+            if(potionRecipe.getIngredients().isEmpty()) {
+                PotionMixingRecipes.ALL = null;
+                return false;
 
+            }
+            return potionRecipe.matches(inv, level);
+//            return inv.getItem(0).is(potionRecipe.getIngredients().get(0).getItems()[0].getItem());
+
+        }).toList();
+        boolean matchesRecipe = false;
+
+        for(FluidMixingRecipe fluidMixingRecipe : recipe2){
+            boolean fluidEqual = fluidMixingRecipe.getLiquid().isFluidEqual(this.fluidStack);
+
+            if(fluidEqual) {
+                matchesRecipe = true;
+                break;
+            }
+        }
+
+//        List<FluidMixingRecipe> list = PotionMixingRecipes.BY_ITEM.get(inv.getItem(0).getItem());
+//        Optional<FluidMixingRecipe> recipe2 = list != null ?list.stream().findFirst().filter((fluidMixingRecipe -> {
+//            return fluidMixingRecipe.matches(inv, level);
+//        })) : Optional.empty();
+
+
+        if(!matchesRecipe)
+            recipe2 = level.getRecipeManager().getRecipeFor(FluidMixingRecipe.Type.INSTANCE, inv, level).stream().toList();
+
+
+
+
+        AtomicBoolean firstRecipe = new AtomicBoolean(false);
         recipe.ifPresent(iRecipe -> {
             ItemStack output = iRecipe.getResultItem();
             //ask for delay
+            FluidStack recipeFluid = iRecipe.getLiquid();
+            FluidStack containerFluid = this.getFluidStack();
 
-            if(iRecipe.getLiquid().isFluidEqual(this.getFluidStack()) && (inv.getItem(8) == ItemStack.EMPTY || inv.getItem(8).getCount() == 0) && !this.crafted && iRecipe.getFluidLevelsConsumed() <= this.getFluidStack().getAmount()) {
-                this.crafting = true;
-                if(this.craftDelay >= this.craftDelayMax) {
-                    Random rand = new Random();
-                    craftTheItem(output);
-                    int temp = this.getFluidStack().getAmount();
-                    this.getFluidStack().shrink(this.getTankCapacity(0));
-                    this.fill(new FluidStack(iRecipe.getLiquidOutput(), temp), FluidAction.EXECUTE);
+            boolean fluidEqual = recipeFluid.isFluidEqual(containerFluid);
+            boolean outputEmpty = (inv.getItem(8) == ItemStack.EMPTY || inv.getItem(8).getCount() == 0);
+            boolean hasEnoughFluid = iRecipe.getFluidLevelsConsumed() <= this.getFluidStack().getAmount();
+            boolean needsHeat = iRecipe.getHeatCondition() != FluidMixingRecipe.HeatCondition.NONE;
+            if (fluidEqual && !this.crafted && hasEnoughFluid) {
+                BlockState heatSource = level.getBlockState(getPos().below());
+                if(!needsHeat || heatSource.is(HexereiTags.Blocks.HEAT_SOURCES)){
+                    if(!heatSource.hasProperty(LIT) || heatSource.getValue(LIT)){
+                        firstRecipe.set(true);
+                        this.crafting = true;
+                        if(this.craftDelay >= craftDelayMax) {
+                            craftTheItem(output);
+                            int temp = this.getFluidStack().getAmount();
+                            this.getFluidStack().shrink(this.getTankCapacity(0));
+                            this.fill(new FluidStack(iRecipe.getLiquidOutput(), temp), FluidAction.EXECUTE);
 
-                    //for setting a cooldown on crafting so the animations can take place
-                    this.crafted = true;
-                    HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new EmitParticlesPacket(worldPosition, 10, true));
-                    this.getFluidStack().shrink(iRecipe.getFluidLevelsConsumed());
-                    if (this.getFluidStack().getAmount() % 10 == 1)
-                        this.getFluidStack().shrink(1);
-                    if (this.getFluidStack().getAmount() % 10 == 9)
-                        this.getFluidStack().grow(1);
-                    setChanged();
-
-               }
+                            //for setting a cooldown on crafting so the animations can take place
+                            this.crafted = true;
+                            HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new EmitParticlesPacket(worldPosition, 10, true));
+                            this.getFluidStack().shrink(iRecipe.getFluidLevelsConsumed());
+                            if (this.getFluidStack().getAmount() % 10 == 1)
+                                this.getFluidStack().shrink(1);
+                            if (this.getFluidStack().getAmount() % 10 == 9)
+                                this.getFluidStack().grow(1);
+                            setChanged();
+                        }
+                    }
+                }
             }
 
 
         });
+
+
+        if(!firstRecipe.get() && !recipe2.isEmpty()){
+            for(FluidMixingRecipe fluidMixingRecipe : recipe2) {
+                ItemStack output = fluidMixingRecipe.getResultItem();
+                //ask for delay
+                FluidStack recipeFluid = fluidMixingRecipe.getLiquid();
+                FluidStack containerFluid = this.getFluidStack();
+
+                boolean fluidEqual = recipeFluid.isFluidEqual(containerFluid);
+                boolean hasEnoughFluid = this.getFluidStack().getAmount() >= 50;
+                boolean needsHeat = fluidMixingRecipe.getHeatCondition() != FluidMixingRecipe.HeatCondition.NONE;
+                if (fluidEqual && !this.crafted && hasEnoughFluid) {
+                    BlockState heatSource = level.getBlockState(getPos().below());
+                    if(!needsHeat || heatSource.is(HexereiTags.Blocks.HEAT_SOURCES)){
+                        if(!heatSource.hasProperty(LIT) || heatSource.getValue(LIT)){
+                            this.crafting = true;
+                            if (this.craftDelay >= craftDelayMax) {
+                                craftTheItem(output);
+                                int temp = this.getFluidStack().getAmount();
+                                this.getFluidStack().shrink(this.getTankCapacity(0));
+                                this.fill(new FluidStack(fluidMixingRecipe.getLiquidOutput(), temp), FluidAction.EXECUTE);
+
+                                //for setting a cooldown on crafting so the animations can take place
+                                this.crafted = true;
+                                HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new EmitParticlesPacket(worldPosition, 10, true));
+                                setChanged();
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         if(this.crafting)
             this.craftDelay += 2;
         if(this.craftDelay >= 1)
