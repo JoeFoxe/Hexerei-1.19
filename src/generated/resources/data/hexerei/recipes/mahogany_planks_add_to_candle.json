@@ -1,0 +1,10 @@
+{
+  "type": "hexerei:add_to_candle",
+  "input": {
+    "item": "hexerei:mahogany_planks"
+  },
+  "output": {
+    "item": "hexerei:candle",
+    "nbt": "{base:{layer:\"hexerei:mahogany_planks\",layerFromBlockLocation:1b}}"
+  }
+}

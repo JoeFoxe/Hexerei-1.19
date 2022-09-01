@@ -1,0 +1,10 @@
+{
+  "type": "hexerei:add_to_candle",
+  "input": {
+    "item": "minecraft:birch_planks"
+  },
+  "output": {
+    "item": "hexerei:candle",
+    "nbt": "{base:{layer:\"minecraft:birch_planks\",layerFromBlockLocation:1b}}"
+  }
+}
