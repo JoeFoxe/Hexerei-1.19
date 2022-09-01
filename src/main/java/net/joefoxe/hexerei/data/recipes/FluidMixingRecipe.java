@@ -224,19 +224,33 @@ public class FluidMixingRecipe implements Recipe<SimpleContainer> {
                 inputs.add(Ingredient.fromNetwork(buffer));
             }
 
-            return new FluidMixingRecipe(recipeId,
-                    inputs, buffer.readFluidStack(), buffer.readFluidStack(), buffer.readEnum(HeatCondition.class));
+            FluidStack inputFluid = buffer.readFluidStack();
+            FluidStack outputFluid = buffer.readFluidStack();
+            HeatCondition heated = buffer.readEnum(HeatCondition.class);
+
+
+            return new FluidMixingRecipe(
+                    recipeId,
+                    inputs,
+                    inputFluid,
+                    outputFluid,
+                    heated);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, FluidMixingRecipe recipe) {
+
             buffer.writeInt(recipe.getIngredients().size());
+
+            //ingredients
             for (Ingredient ing : recipe.getIngredients()) {
                 ing.toNetwork(buffer);
             }
-            buffer.writeItem(recipe.getResultItem());
+            //input
             buffer.writeFluidStack(recipe.getLiquid());
+            //output
             buffer.writeFluidStack(recipe.getLiquidOutput());
+            //enum heatsource
             buffer.writeEnum(recipe.heatCondition);
         }
 

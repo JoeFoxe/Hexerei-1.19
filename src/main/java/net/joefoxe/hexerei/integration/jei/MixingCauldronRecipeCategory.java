@@ -395,7 +395,7 @@ public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauld
             if (!output.isEmpty() && (!recipe.getLiquid().getFluid().isSame(recipe.getLiquidOutput().getFluid()) || (flag && recipe.getLiquid().getFluid().isSame(recipe.getLiquidOutput().getFluid()) && !compare))) {
                 output2.draw(matrixStack, 138, 16);
                 matrixStack.scale(0.6f, 0.6f, 0.6f);
-                minecraft.font.draw(matrixStack, Component.translatable("gui.jei.category.mixing_cauldron.convert_fluid"), 139 * 1.666f, 38 * 1.666f, 0xFF404040);
+                minecraft.font.draw(matrixStack, Component.translatable("gui.jei.category.mixing_cauldron.convert_fluid"), 139 * 1.666f, 58 * 1.666f, 0xFF404040);
             } else
                 output1.draw(matrixStack, 138, 16);
 

@@ -128,8 +128,13 @@ public class AddToCandleRecipe extends CustomRecipe {
         }
     }
 
+    @Override
+    public ItemStack getResultItem() {
+        return getOutput();
+    }
+
     public ItemStack getOutput() {
-        return output;
+        return output.copy();
     }
 
     public NonNullList<Ingredient> getInputs() {
@@ -215,7 +220,7 @@ public class AddToCandleRecipe extends CustomRecipe {
             buffer.writeInt(recipe.getIngredients().size());
             for (Ingredient ing : recipe.getIngredients())
                 ing.toNetwork(buffer);
-            buffer.writeItem(recipe.getResultItem());
+            buffer.writeItem(recipe.getOutput());
         }
 
     }
