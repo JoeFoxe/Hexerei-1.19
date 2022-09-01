@@ -1,7 +1,6 @@
 package net.joefoxe.hexerei.util.message;
 
 import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.tileentity.MixingCauldronTile;
 import net.joefoxe.hexerei.tileentity.SageBurningPlateTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;

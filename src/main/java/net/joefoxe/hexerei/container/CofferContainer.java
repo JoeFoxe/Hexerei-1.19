@@ -1,6 +1,5 @@
 package net.joefoxe.hexerei.container;
 
-import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.tileentity.CofferTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
@@ -18,8 +17,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
-
-import javax.annotation.Nonnull;
 
 
 public class CofferContainer extends AbstractContainerMenu {

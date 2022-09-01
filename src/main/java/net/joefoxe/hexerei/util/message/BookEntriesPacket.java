@@ -5,13 +5,10 @@ import net.joefoxe.hexerei.data.books.BookManager;
 import net.joefoxe.hexerei.data.books.BookEntries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Supplier;
 
 public class BookEntriesPacket {

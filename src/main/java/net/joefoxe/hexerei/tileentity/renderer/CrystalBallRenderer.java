@@ -2,18 +2,13 @@ package net.joefoxe.hexerei.tileentity.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.joefoxe.hexerei.block.ModBlocks;
-import net.joefoxe.hexerei.block.custom.CrystalBall;
-import net.joefoxe.hexerei.block.custom.MixingCauldron;
-import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.tileentity.CrystalBallTile;
-import net.joefoxe.hexerei.tileentity.MixingCauldronTile;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.world.item.ItemStack;
 import com.mojang.math.Vector3f;
 import net.minecraftforge.client.model.data.ModelData;

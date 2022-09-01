@@ -2,8 +2,6 @@ package net.joefoxe.hexerei.block.custom;
 
 
 
-import java.util.Random;
-
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

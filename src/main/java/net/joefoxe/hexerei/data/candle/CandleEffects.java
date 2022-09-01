@@ -1,7 +1,6 @@
 package net.joefoxe.hexerei.data.candle;
 
 import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.block.custom.Candle;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;

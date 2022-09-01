@@ -1,17 +1,12 @@
 package net.joefoxe.hexerei.tileentity;
 
 import net.joefoxe.hexerei.block.custom.CrystalBall;
-import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
-import net.minecraft.client.renderer.texture.Tickable;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
 
 public class CrystalBallTile extends BlockEntity {

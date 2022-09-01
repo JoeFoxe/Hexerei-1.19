@@ -2,7 +2,6 @@ package net.joefoxe.hexerei.item.custom;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.IFirstPersonItemAnimation;
 import net.joefoxe.hexerei.client.renderer.IThirdPersonItemAnimation;
 import net.joefoxe.hexerei.client.renderer.IThirdPersonItemRenderer;
@@ -50,8 +49,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

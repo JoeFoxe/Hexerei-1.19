@@ -2,8 +2,6 @@ package net.joefoxe.hexerei.client.renderer.color;
 
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.custom.Coffer;
-import net.joefoxe.hexerei.block.custom.MixingCauldron;
-import net.joefoxe.hexerei.item.custom.SatchelItem;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.BiomeColors;

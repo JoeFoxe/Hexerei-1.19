@@ -6,7 +6,6 @@ import net.joefoxe.hexerei.world.structure.structures.WitchHutStructure;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraftforge.registries.*;
-import net.minecraftforge.registries.RegistryObject;
 
 public class ModStructures {
     public static final DeferredRegister<StructureType<?>> DEFERRED_REGISTRY_STRUCTURE = DeferredRegister.create(Registry.STRUCTURE_TYPE_REGISTRY, Hexerei.MOD_ID);

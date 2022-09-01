@@ -1,7 +1,6 @@
 package net.joefoxe.hexerei.events;
 
 import net.joefoxe.hexerei.item.custom.WitchArmorItem;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;

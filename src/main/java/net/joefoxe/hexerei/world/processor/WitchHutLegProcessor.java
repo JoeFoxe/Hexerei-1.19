@@ -21,7 +21,6 @@ import net.minecraft.world.level.material.Material;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Random;
 
 /**
  * Dynamically generates support legs below small dungeons.

@@ -1,6 +1,5 @@
 package net.joefoxe.hexerei.data.datagen;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.data.recipes.AddToCandleRecipe;

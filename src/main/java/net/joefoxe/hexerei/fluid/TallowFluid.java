@@ -1,7 +1,6 @@
 package net.joefoxe.hexerei.fluid;
 
 import net.joefoxe.hexerei.item.ModItems;
-import net.joefoxe.hexerei.particle.ModParticleTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -25,7 +24,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 
 public abstract class TallowFluid extends ForgeFlowingFluid {
 

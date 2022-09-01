@@ -8,7 +8,6 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.block.grower.AbstractTreeGrower;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class MahoganyTree extends AbstractTreeGrower {
 

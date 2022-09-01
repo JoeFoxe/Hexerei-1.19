@@ -1,10 +1,6 @@
 package net.joefoxe.hexerei.world;
 
 import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.world.gen.*;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = Hexerei.MOD_ID)

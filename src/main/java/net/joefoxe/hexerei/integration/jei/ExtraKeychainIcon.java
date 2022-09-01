@@ -7,17 +7,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.recipe.RecipeType;
 import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.block.ModBlocks;
-import net.joefoxe.hexerei.block.custom.MixingCauldron;
-import net.joefoxe.hexerei.data.recipes.AddToCandleRecipe;
-import net.joefoxe.hexerei.data.recipes.FluidMixingRecipe;
-import net.joefoxe.hexerei.data.recipes.MixingCauldronRecipe;
-import net.joefoxe.hexerei.fluid.PotionMixingRecipes;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.custom.KeychainItem;
-import net.joefoxe.hexerei.tileentity.renderer.MixingCauldronRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.LightTexture;
@@ -34,8 +26,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -43,10 +33,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.common.Tags;
 
-import java.util.List;
-import java.util.Random;
 import java.util.function.Supplier;
 
 public class ExtraKeychainIcon implements IDrawable {

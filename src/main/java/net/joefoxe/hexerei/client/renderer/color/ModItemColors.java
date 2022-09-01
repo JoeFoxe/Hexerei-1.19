@@ -7,8 +7,6 @@ import net.joefoxe.hexerei.item.custom.MixingCauldronItem;
 import net.joefoxe.hexerei.item.custom.WitchArmorItem;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.DyeableLeatherItem;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GrassColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.WaterlilyBlock;

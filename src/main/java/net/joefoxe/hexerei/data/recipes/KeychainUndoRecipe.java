@@ -9,7 +9,6 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 
@@ -44,9 +43,9 @@ public class KeychainUndoRecipe extends CustomRecipe {
             ItemStack stack = inventory.getItem(i);
             if (!stack.isEmpty()) {
                 if (stack.getItem() instanceof KeychainItem) {
-                    CompoundTag tag = stack.getOrCreateTag();
+                    CompoundTag tag = stack.getTag();
 
-                    if(tag.contains("Items")){
+                    if (tag != null && tag.contains("Items")){
                         ++keychain;
                     }
                 } else {

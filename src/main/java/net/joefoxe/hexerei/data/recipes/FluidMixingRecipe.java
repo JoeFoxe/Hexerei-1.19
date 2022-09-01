@@ -8,8 +8,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.fluid.FluidIngredient;
-import net.joefoxe.hexerei.fluid.PotionFluid;
-import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.FriendlyByteBuf;
@@ -50,7 +48,6 @@ public class FluidMixingRecipe implements Recipe<SimpleContainer> {
         this.liquid = liquid;
         this.liquidOutput = liquidOutput;
         this.heatCondition = HeatCondition.NONE;
-
         for(int i = 0; i < 8; i++) {
             itemMatchesSlot.add(false);
         }

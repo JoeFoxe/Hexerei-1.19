@@ -30,9 +30,9 @@ public class KeychainRecipe extends CustomRecipe {
             ItemStack stack = inventory.getItem(i);
             if (!stack.isEmpty()) {
                 if (stack.getItem() instanceof KeychainItem) {
-                    CompoundTag tag = stack.getOrCreateTag();
+                    CompoundTag tag = stack.getTag();
 
-                    if(!tag.contains("Items")){
+                    if (tag == null || !tag.contains("Items")){
                         ++keychain;
                     }
                 } else {
@@ -67,7 +67,7 @@ public class KeychainRecipe extends CustomRecipe {
         }
         if (keychain.getItem() instanceof KeychainItem && !other.isEmpty()) {
             CompoundTag tag = new CompoundTag();
-            if(keychain.hasTag())
+            if (keychain.hasTag())
                 tag = keychain.getTag();
 
             ListTag listtag = new ListTag();
