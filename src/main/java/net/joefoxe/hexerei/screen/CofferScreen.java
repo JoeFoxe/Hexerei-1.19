@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static net.joefoxe.hexerei.container.CofferContainer.OFFSET;
+
 public class CofferScreen extends AbstractContainerScreen<CofferContainer> {
     private final ResourceLocation GUI = new ResourceLocation(Hexerei.MOD_ID,
             "textures/gui/coffer_gui.png");
@@ -40,9 +42,9 @@ public class CofferScreen extends AbstractContainerScreen<CofferContainer> {
 
     public CofferScreen(CofferContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
-        titleLabelY = 1;
+        titleLabelY = 1 - OFFSET;
         titleLabelX = 4;
-        inventoryLabelY = 135;
+        inventoryLabelY = 135 - OFFSET;
         mouseX = 0;
         mouseY = 0;
     }
@@ -83,7 +85,7 @@ public class CofferScreen extends AbstractContainerScreen<CofferContainer> {
         RenderSystem.setShaderTexture(0, GUI);
 
         int i = this.leftPos;
-        int j = this.topPos;
+        int j = this.topPos - OFFSET;
         this.blit(matrixStack, i, j - 3, 0, 0, 214, 157);
         this.blit(matrixStack, i + 94, j - 30, 230, 0, 26, 26);
         if(this.menu.getToggled() == 1)
@@ -103,10 +105,10 @@ public class CofferScreen extends AbstractContainerScreen<CofferContainer> {
         RenderSystem.disableDepthTest();
         itemRenderer.renderGuiItem(new ItemStack(ModBlocks.COFFER.get().asItem()),
                 this.leftPos + 99,
-                this.topPos - 25);
+                this.topPos - 25 - OFFSET);
 
         if(this.minecraft.player != null)
-            InventoryScreen.renderEntityInInventory(this.leftPos + 107, this.topPos + 88, 20, (float)(this.leftPos + 107 - x) , (float)(this.topPos + 88 - 30 - y), this.minecraft.player);
+            InventoryScreen.renderEntityInInventory(this.leftPos + 107, this.topPos + 88 - OFFSET, 20, (float)(this.leftPos + 107 - x) , (float)(this.topPos + 88 - 30 - y - OFFSET), this.minecraft.player);
 
         RenderSystem.enableDepthTest();
 
@@ -117,7 +119,7 @@ public class CofferScreen extends AbstractContainerScreen<CofferContainer> {
         boolean mouseClicked = super.mouseClicked(x, y, button);
 
 
-        if(x > this.leftPos + 188 && x < this.leftPos + 188 + 18 &&  y > this.topPos + 129 && y < this.topPos + 129 + 18){
+        if(x > this.leftPos + 188 && x < this.leftPos + 188 + 18 &&  y > this.topPos + 129 - OFFSET && y < this.topPos + 129 + 18 - OFFSET){
             this.menu.setToggled(1 - this.menu.getToggled());
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }
@@ -133,7 +135,7 @@ public class CofferScreen extends AbstractContainerScreen<CofferContainer> {
 
     public void renderButtonTooltip(PoseStack matrixStack, int mouseX, int mouseY){
         List<Component> components = new ArrayList<>();
-        if (isHovering((double)mouseX, (double)mouseY, 188D, 130, 18D, 18D)) {
+        if (isHovering((double)mouseX, (double)mouseY, 188D, 130 - OFFSET, 18D, 18D)) {
             components.add(Component.translatable("tooltip.hexerei.gather_to_here_button"));
             if(Screen.hasShiftDown()) {
                 components.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));

@@ -1,5 +1,5 @@
 {
   "type": "hexerei:vegetal",
   "biomes": "#minecraft:is_jungle",
-  "feature": "hexerei:selenite_geode_placed"
+  "feature": "hexerei:selenite_geode_placed_jungle"
 }

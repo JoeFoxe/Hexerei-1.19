@@ -136,6 +136,7 @@ public class HerbJarTile extends RandomizableContainerBlockEntity implements Cle
     @Override
     public void setChanged() {
         super.setChanged();
+        sync();
 
     }
 
@@ -214,11 +215,14 @@ public class HerbJarTile extends RandomizableContainerBlockEntity implements Cle
     }
 
     public void sync() {
-        setChanged();
 
         if(level != null){
-            if (!level.isClientSide)
-                HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new TESyncPacket(worldPosition, save(new CompoundTag())));
+            if (!level.isClientSide) {
+                CompoundTag tag = save(new CompoundTag());
+                HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new TESyncPacket(worldPosition, tag));
+//                System.out.println(this.itemHandler.getContents().get(0).getCount());
+//                syncClientCount(0, this.itemHandler.getContents().get(0).getCount());
+            }
 
             if (this.level != null)
                 this.level.sendBlockUpdated(this.worldPosition, this.level.getBlockState(this.worldPosition), this.level.getBlockState(this.worldPosition),
@@ -265,7 +269,7 @@ public class HerbJarTile extends RandomizableContainerBlockEntity implements Cle
         return new JarHandler(1,1024) {
             @Override
             protected void onContentsChanged(int slot) {
-                sync();
+                setChanged();
             }
 
             @Override
@@ -335,7 +339,7 @@ public class HerbJarTile extends RandomizableContainerBlockEntity implements Cle
 
         if (this.itemHandler.getContents().get(0).isEmpty()) {
             this.itemHandler.insertItem(0, stack.copy(), false);
-            sync();
+            setChanged();
             stack.shrink(count);
             return count;
         }
@@ -391,7 +395,7 @@ public class HerbJarTile extends RandomizableContainerBlockEntity implements Cle
         lastClickTime = getLevel().getGameTime();
         lastClickUUID = player.getUUID();
         if(count > 0)
-            sync();
+            setChanged();
 
         return count;
     }

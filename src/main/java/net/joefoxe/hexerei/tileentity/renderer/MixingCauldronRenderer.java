@@ -39,7 +39,7 @@ import java.util.Objects;
 public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldronTile> {
 
     public static final float CORNERS = (float)MixingCauldron.SHAPE.min(Direction.Axis.X) + 3 / 16f;
-    public static final float MIN_Y = 3f / 16f;
+    public static final float MIN_Y = 4f / 16f;
     public static final float MAX_Y = 15f/ 16f;
 
     @Override

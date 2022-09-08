@@ -616,10 +616,6 @@ public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauld
                 output1.draw(matrixStack, 138, 16);
             }
         }
-
-
-
-
     }
 
     private void renderItem(ItemStack stack, PoseStack matrixStackIn, MultiBufferSource bufferIn,

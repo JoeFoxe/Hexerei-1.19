@@ -86,6 +86,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -1190,8 +1191,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
             for (BlockPos blockPos : this.cofferHerbJarList) {
                 BlockEntity blockEntity = level.getBlockEntity(this.cofferHerbJarList.get(k++));
                 if (blockEntity instanceof CofferTile cofferTile) {
-                    for (int i = 0; i < cofferTile.itemHandler.getSlots(); i++) {
-                        if ((cofferTile).itemHandler.getStackInSlot(i).is(stack.getItem())) {
+                    for (int i = 0; i < cofferTile.itemStackHandler.getSlots(); i++) {
+                        if ((cofferTile).itemStackHandler.getStackInSlot(i).is(stack.getItem())) {
                             flag = true;
                             break;
                         }
@@ -1577,6 +1578,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                 Collections.sort(list, this.theNearestAttackableTargetSorter);
                 this.targetEntity = list.get(0);
                 this.mustUpdate = false;
+                if(targetEntity == null)
+                    return false;
                 this.hunter.onFindTarget(targetEntity);
                 return !((CrowEntity) mob).isInSittingPose() && (mob.getTarget() == null || !mob.getTarget().isAlive());
             }
@@ -1814,8 +1817,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
             return this.tryTicks % 100 == 0;
         }
 
-        protected boolean isValidTarget(LevelReader p_28680_, BlockPos p_28681_) {
-            BlockState blockstate = p_28680_.getBlockState(p_28681_);
+        protected boolean isValidTarget(LevelReader p_28680_, BlockPos pos) {
+            BlockState blockstate = p_28680_.getBlockState(pos);
             if(blockstate.is(HexereiTags.Blocks.CROW_HARVESTABLE))
             {
                 if(blockstate.getBlock() instanceof StemBlock)
@@ -1825,6 +1828,30 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                 else if(blockstate.hasProperty(BlockStateProperties.AGE_7))
                     return blockstate.getValue(BlockStateProperties.AGE_7) >= 7;
                 return CaveVines.hasGlowBerries(blockstate);
+            }
+            if(blockstate.is(HexereiTags.Blocks.CROW_BLOCK_HARVESTABLE))
+            {
+                if(blockstate.getBlock() instanceof StemGrownBlock)
+                {
+                    if(level.getBlockState(pos.north()).getBlock() instanceof AttachedStemBlock stemBlock)
+                        if(stemBlock.fruit == level.getBlockState(pos).getBlock())
+                            return true;
+                    if(level.getBlockState(pos.south()).getBlock() instanceof AttachedStemBlock stemBlock)
+                        if(stemBlock.fruit == level.getBlockState(pos).getBlock())
+                            return true;
+                    if(level.getBlockState(pos.east()).getBlock() instanceof AttachedStemBlock stemBlock)
+                        if(stemBlock.fruit == level.getBlockState(pos).getBlock())
+                            return true;
+                    if(level.getBlockState(pos.west()).getBlock() instanceof AttachedStemBlock stemBlock)
+                        if(stemBlock.fruit == level.getBlockState(pos).getBlock())
+                            return true;
+                    return false;
+                }
+                if(ForgeRegistries.BLOCKS.getKey(blockstate.getBlock()).toString().equals("immersiveengineering:hemp")){
+                    return level.getBlockState(pos.below()).is(blockstate.getBlock());
+                }
+                else
+                    return true;
             }
             return false;
         }
@@ -1857,80 +1884,90 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         protected void onReachedTarget() {
             if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(CrowEntity.this.level, CrowEntity.this)) {
                 BlockState blockstate = CrowEntity.this.level.getBlockState(this.blockPos);
-                if (blockstate.is(Blocks.SWEET_BERRY_BUSH)) {
-                    this.pickSweetBerries(blockstate);
-                    CrowEntity.this.peck();
-                    HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(blockPosition())), new CrowPeckPacket(CrowEntity.this));
-                } else if (CaveVines.hasGlowBerries(blockstate)) {
-                    this.pickGlowBerry(blockstate);
-                    CrowEntity.this.peck();
-                    HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(blockPosition())), new CrowPeckPacket(CrowEntity.this));
-                }
-                else if (blockstate.getBlock() instanceof PickableDoubleFlower && !CrowEntity.this.level.isClientSide) {
+                if(blockstate.is(HexereiTags.Blocks.CROW_HARVESTABLE)){
+                    if (blockstate.is(Blocks.SWEET_BERRY_BUSH)) {
+                        this.pickSweetBerries(blockstate);
+                        CrowEntity.this.peck();
+                        HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(blockPosition())), new CrowPeckPacket(CrowEntity.this));
+                    } else if (CaveVines.hasGlowBerries(blockstate)) {
+                        this.pickGlowBerry(blockstate);
+                        CrowEntity.this.peck();
+                        HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(blockPosition())), new CrowPeckPacket(CrowEntity.this));
+                    } else if (blockstate.getBlock() instanceof PickableDoubleFlower && !CrowEntity.this.level.isClientSide) {
 
-                    ItemStack firstOutput = new ItemStack(((PickableDoubleFlower)blockstate.getBlock()).firstOutput.get(), 4);
-                    ItemStack secondOutput = ItemStack.EMPTY;
-                    if(((PickableDoubleFlower)blockstate.getBlock()).secondOutput != null)
-                        secondOutput = new ItemStack(((PickableDoubleFlower)blockstate.getBlock()).secondOutput.get(), ((PickableDoubleFlower)blockstate.getBlock()).maxSecondOutput);
-                    int j = Math.max(1, level.random.nextInt(firstOutput.getCount()));
-                    int k = 0;
-                    if(((PickableDoubleFlower)blockstate.getBlock()).secondOutput != null)
-                        k = Math.max(1, level.random.nextInt(secondOutput.getCount()));
-                    ((PickableDoubleFlower)blockstate.getBlock()).popResource(level, this.blockPos, new ItemStack(firstOutput.getItem(), Math.max(1,(int)Math.floor(j))));
-                    if (level.random.nextInt(2) == 0 && ((PickableDoubleFlower)blockstate.getBlock()).secondOutput != null)
-                        ((PickableDoubleFlower)blockstate.getBlock()).popResource(level, this.blockPos, new ItemStack(secondOutput.getItem(), Math.max(1,(int)Math.floor(k))));
+                        ItemStack firstOutput = new ItemStack(((PickableDoubleFlower) blockstate.getBlock()).firstOutput.get(), 4);
+                        ItemStack secondOutput = ItemStack.EMPTY;
+                        if (((PickableDoubleFlower) blockstate.getBlock()).secondOutput != null)
+                            secondOutput = new ItemStack(((PickableDoubleFlower) blockstate.getBlock()).secondOutput.get(), ((PickableDoubleFlower) blockstate.getBlock()).maxSecondOutput);
+                        int j = Math.max(1, level.random.nextInt(firstOutput.getCount()));
+                        int k = 0;
+                        if (((PickableDoubleFlower) blockstate.getBlock()).secondOutput != null)
+                            k = Math.max(1, level.random.nextInt(secondOutput.getCount()));
+                        ((PickableDoubleFlower) blockstate.getBlock()).popResource(level, this.blockPos, new ItemStack(firstOutput.getItem(), Math.max(1, (int) Math.floor(j))));
+                        if (level.random.nextInt(2) == 0 && ((PickableDoubleFlower) blockstate.getBlock()).secondOutput != null)
+                            ((PickableDoubleFlower) blockstate.getBlock()).popResource(level, this.blockPos, new ItemStack(secondOutput.getItem(), Math.max(1, (int) Math.floor(k))));
 
-                    if(blockstate.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER) {
-                        CrowEntity.this.level.setBlock(this.blockPos, level.getBlockState(this.blockPos).setValue(BlockStateProperties.AGE_3, 0), 2);
-                        CrowEntity.this.level.setBlock(this.blockPos.above(), level.getBlockState(this.blockPos.above()).setValue(BlockStateProperties.AGE_3, 0), 2);
-                    }
-                    if(blockstate.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER) {
-                        CrowEntity.this.level.setBlock(this.blockPos.below(), level.getBlockState(this.blockPos.below()).setValue(BlockStateProperties.AGE_3, 0), 2);
-                        CrowEntity.this.level.setBlock(this.blockPos, level.getBlockState(this.blockPos).setValue(BlockStateProperties.AGE_3, 0), 2);
-                    }
-                    CrowEntity.this.peck();
-                    CrowEntity.this.playSound(SoundEvents.CAVE_VINES_PICK_BERRIES, 1.0F, 1.0F);
-                    HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(blockPosition())), new CrowPeckPacket(CrowEntity.this));
-
-                }
-                else if (blockstate.getBlock() instanceof PickableFlower && !CrowEntity.this.level.isClientSide) {
-
-                    ItemStack firstOutput = new ItemStack(((PickableFlower)blockstate.getBlock()).firstOutput.get(), 4);
-                    ItemStack secondOutput = ItemStack.EMPTY;
-                    if(((PickableFlower)blockstate.getBlock()).secondOutput != null)
-                        secondOutput = new ItemStack(((PickableFlower)blockstate.getBlock()).secondOutput.get(), ((PickableFlower)blockstate.getBlock()).maxSecondOutput);
-                    int j = Math.max(1, level.random.nextInt(firstOutput.getCount()));
-                    int k = 0;
-                    if(((PickableFlower)blockstate.getBlock()).secondOutput != null)
-                        k = Math.max(1, level.random.nextInt(secondOutput.getCount()));
-                    ((PickableFlower)blockstate.getBlock()).popResource(level, this.blockPos, new ItemStack(firstOutput.getItem(), Math.max(1,(int)Math.floor(j))));
-                    if (level.random.nextInt(2) == 0 && ((PickableFlower)blockstate.getBlock()).secondOutput != null)
-                        ((PickableFlower)blockstate.getBlock()).popResource(level, this.blockPos, new ItemStack(secondOutput.getItem(), Math.max(1,(int)Math.floor(k))));
-
-                    CrowEntity.this.level.setBlock(this.blockPos, blockstate.setValue(BlockStateProperties.AGE_3, 0), 2);
-
-                    CrowEntity.this.peck();
-                    CrowEntity.this.playSound(SoundEvents.CAVE_VINES_PICK_BERRIES, 1.0F, 1.0F);
-                    HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(blockPosition())), new CrowPeckPacket(CrowEntity.this));
-
-                } else if(!CrowEntity.this.level.isClientSide) {
-                    List<ItemStack> drops = blockstate.getBlock().getDrops(blockstate, (ServerLevel) CrowEntity.this.level, this.blockPos, CrowEntity.this.level.getBlockEntity(this.blockPos));
-                    for(ItemStack drop : drops)
-                    {
-
-                        if(blockstate.hasProperty(BlockStateProperties.AGE_3)) {
-                            CrowEntity.this.level.addFreshEntity(new ItemEntity(CrowEntity.this.level, this.blockPos.getX()+0.5f, this.blockPos.getY()+0.25f, this.blockPos.getZ()+0.5f, drop));
-                            CrowEntity.this.level.setBlock(this.blockPos, blockstate.setValue(BlockStateProperties.AGE_3, 0), 2);
+                        if (blockstate.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER) {
+                            CrowEntity.this.level.setBlock(this.blockPos, level.getBlockState(this.blockPos).setValue(BlockStateProperties.AGE_3, 0), 2);
+                            CrowEntity.this.level.setBlock(this.blockPos.above(), level.getBlockState(this.blockPos.above()).setValue(BlockStateProperties.AGE_3, 0), 2);
                         }
-                        if(blockstate.hasProperty(BlockStateProperties.AGE_7)) {
-                            CrowEntity.this.level.addFreshEntity(new ItemEntity(CrowEntity.this.level, this.blockPos.getX()+0.5f, this.blockPos.getY()+0.25f, this.blockPos.getZ()+0.5f, drop));
-                            CrowEntity.this.level.setBlock(this.blockPos, blockstate.setValue(BlockStateProperties.AGE_7, 0), 2);
+                        if (blockstate.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER) {
+                            CrowEntity.this.level.setBlock(this.blockPos.below(), level.getBlockState(this.blockPos.below()).setValue(BlockStateProperties.AGE_3, 0), 2);
+                            CrowEntity.this.level.setBlock(this.blockPos, level.getBlockState(this.blockPos).setValue(BlockStateProperties.AGE_3, 0), 2);
                         }
                         CrowEntity.this.peck();
-                        CrowEntity.this.playSound(SoundEvents.CROP_BREAK, 1.0F, 1.0F);
+                        CrowEntity.this.playSound(SoundEvents.CAVE_VINES_PICK_BERRIES, 1.0F, 1.0F);
                         HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(blockPosition())), new CrowPeckPacket(CrowEntity.this));
 
+                    } else if (blockstate.getBlock() instanceof PickableFlower && !CrowEntity.this.level.isClientSide) {
+
+                        ItemStack firstOutput = new ItemStack(((PickableFlower) blockstate.getBlock()).firstOutput.get(), 4);
+                        ItemStack secondOutput = ItemStack.EMPTY;
+                        if (((PickableFlower) blockstate.getBlock()).secondOutput != null)
+                            secondOutput = new ItemStack(((PickableFlower) blockstate.getBlock()).secondOutput.get(), ((PickableFlower) blockstate.getBlock()).maxSecondOutput);
+                        int j = Math.max(1, level.random.nextInt(firstOutput.getCount()));
+                        int k = 0;
+                        if (((PickableFlower) blockstate.getBlock()).secondOutput != null)
+                            k = Math.max(1, level.random.nextInt(secondOutput.getCount()));
+                        ((PickableFlower) blockstate.getBlock()).popResource(level, this.blockPos, new ItemStack(firstOutput.getItem(), Math.max(1, (int) Math.floor(j))));
+                        if (level.random.nextInt(2) == 0 && ((PickableFlower) blockstate.getBlock()).secondOutput != null)
+                            ((PickableFlower) blockstate.getBlock()).popResource(level, this.blockPos, new ItemStack(secondOutput.getItem(), Math.max(1, (int) Math.floor(k))));
+
+                        CrowEntity.this.level.setBlock(this.blockPos, blockstate.setValue(BlockStateProperties.AGE_3, 0), 2);
+
+                        CrowEntity.this.peck();
+                        CrowEntity.this.playSound(SoundEvents.CAVE_VINES_PICK_BERRIES, 1.0F, 1.0F);
+                        HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(blockPosition())), new CrowPeckPacket(CrowEntity.this));
+
+                    } else if (!CrowEntity.this.level.isClientSide) {
+                        List<ItemStack> drops = blockstate.getBlock().getDrops(blockstate, (ServerLevel) CrowEntity.this.level, this.blockPos, CrowEntity.this.level.getBlockEntity(this.blockPos));
+                        for (ItemStack drop : drops) {
+
+                            if (blockstate.hasProperty(BlockStateProperties.AGE_3)) {
+                                CrowEntity.this.level.addFreshEntity(new ItemEntity(CrowEntity.this.level, this.blockPos.getX() + 0.5f, this.blockPos.getY() + 0.25f, this.blockPos.getZ() + 0.5f, drop));
+                                CrowEntity.this.level.setBlock(this.blockPos, blockstate.setValue(BlockStateProperties.AGE_3, 0), 2);
+                            }
+                            if (blockstate.hasProperty(BlockStateProperties.AGE_7)) {
+                                CrowEntity.this.level.addFreshEntity(new ItemEntity(CrowEntity.this.level, this.blockPos.getX() + 0.5f, this.blockPos.getY() + 0.25f, this.blockPos.getZ() + 0.5f, drop));
+                                CrowEntity.this.level.setBlock(this.blockPos, blockstate.setValue(BlockStateProperties.AGE_7, 0), 2);
+                            }
+                            CrowEntity.this.peck();
+                            CrowEntity.this.playSound(SoundEvents.CROP_BREAK, 1.0F, 1.0F);
+                            HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(blockPosition())), new CrowPeckPacket(CrowEntity.this));
+
+                        }
                     }
+                }
+                else if(blockstate.is(HexereiTags.Blocks.CROW_BLOCK_HARVESTABLE)){
+                    LootContext.Builder builder = (new LootContext.Builder((ServerLevel) level)).withRandom(level.getRandom()).withParameter(LootContextParams.ORIGIN, position()).withParameter(LootContextParams.TOOL, new ItemStack(Items.IRON_HOE));
+
+                    for(ItemStack stack : blockstate.getDrops(builder)){
+                        Block.popResource(level, this.blockPos, stack);
+
+                        CrowEntity.this.playSound(blockstate.getSoundType().getBreakSound(), 1.0F, 1.0F);
+                        HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(blockPosition())), new CrowPeckPacket(CrowEntity.this));
+                    }
+                    ((ServerLevel) level).setBlock(this.blockPos, Blocks.AIR.defaultBlockState(), 3);
                 }
             }
         }
@@ -2058,6 +2095,9 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                 boolean flag = false;
                 for(BlockPos pos : this.entity.cofferHerbJarList){
                     this.targetEntity = level.getBlockEntity(pos);
+
+                    if(this.targetEntity == null)
+                        break;
 
                     BlockPos perchPos = getPerchPos();
                     if(this.targetEntity.getBlockPos().equals(perchPos)){

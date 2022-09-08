@@ -1,7 +1,6 @@
 package net.joefoxe.hexerei.data.candle;
 
 import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.block.custom.Candle;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -23,6 +22,7 @@ public class CandleEffects {
             });
         }
          effects.put(new ResourceLocation(Hexerei.MOD_ID, "growth_effect").toString(), new BonemealingCandleEffect());
+         effects.put(new ResourceLocation(Hexerei.MOD_ID, "sunshine_effect").toString(), new SunshineCandleEffect());
 
 //         effects.forEach(((s, candleEffect) -> {
 //             System.out.println(s + " - " + candleEffect);

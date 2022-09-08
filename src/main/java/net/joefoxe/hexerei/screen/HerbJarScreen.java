@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static net.joefoxe.hexerei.container.HerbJarContainer.OFFSET;
+
 public class HerbJarScreen extends AbstractContainerScreen<HerbJarContainer> {
     private final ResourceLocation GUI = new ResourceLocation(Hexerei.MOD_ID,
             "textures/gui/herb_jar_gui.png");
@@ -32,9 +34,9 @@ public class HerbJarScreen extends AbstractContainerScreen<HerbJarContainer> {
 
     public HerbJarScreen(HerbJarContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
-        inventoryLabelY = 135;
+        inventoryLabelY = 135 - OFFSET;
         inventoryLabelX = 8;
-        titleLabelY = 1;
+        titleLabelY = 1 - OFFSET;
         titleLabelX = 52;
     }
 
@@ -67,24 +69,24 @@ public class HerbJarScreen extends AbstractContainerScreen<HerbJarContainer> {
 
         int i = this.leftPos;
         int j = this.topPos;
-        this.blit(matrixStack, i, j - 3, 0, 0, 214, 157);
+        this.blit(matrixStack, i, j - 3 - OFFSET, 0, 0, 214, 157);
 
         if(this.menu.getToggled() == 1)
         {
-            this.blit(matrixStack, i + 82, j + 105, 238, 26, 18, 18);
+            this.blit(matrixStack, i + 82, j + 105 - OFFSET, 238, 26, 18, 18);
 
         }
-        this.blit(matrixStack, i + 78, j - 30, 230, 0, 26, 26);
+        this.blit(matrixStack, i + 78, j - 30 - OFFSET, 230, 0, 26, 26);
         Minecraft minecraft = Minecraft.getInstance();
         ItemRenderer itemRenderer = minecraft.getItemRenderer();
         RenderSystem.disableDepthTest();
         itemRenderer.renderGuiItem(this.menu.stack,
                 this.leftPos + 83,
-                this.topPos - 25);
+                this.topPos - 25 - OFFSET);
         RenderSystem.enableDepthTest();
 
         RenderSystem.setShaderTexture(0, INVENTORY);
-        this.blit(matrixStack, i + 3, j + 129, 0, 0, 176, 100);
+        this.blit(matrixStack, i + 3, j + 129 - OFFSET, 0, 0, 176, 100);
 
 
         RenderSystem.setShaderTexture(0, GUI);
@@ -100,7 +102,7 @@ public class HerbJarScreen extends AbstractContainerScreen<HerbJarContainer> {
         boolean mouseClicked = super.mouseClicked(x, y, button);
 
 
-        if(x > this.leftPos + 82 && x <= this.leftPos + 82 + 18 &&  y >= this.topPos + 105 && y < this.topPos + 105 + 18){
+        if(x > this.leftPos + 82 && x <= this.leftPos + 82 + 18 &&  y >= this.topPos + 105 - OFFSET && y < this.topPos + 105 + 18 - OFFSET){
             this.menu.setToggled(1 - this.menu.getToggled());
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }
@@ -117,7 +119,7 @@ public class HerbJarScreen extends AbstractContainerScreen<HerbJarContainer> {
 
     public void renderButtonTooltip(PoseStack matrixStack, int mouseX, int mouseY){
         List<Component> components = new ArrayList<>();
-        if (isHovering((double)mouseX, (double)mouseY, 82D, 105, 18D, 18D)) {
+        if (isHovering((double)mouseX, (double)mouseY, 82D, 105 - OFFSET, 18D, 18D)) {
             components.add(Component.translatable("tooltip.hexerei.gather_to_here_button"));
             if(Screen.hasShiftDown()) {
                 components.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));

@@ -6,6 +6,12 @@
       "hexerei:crow_flute"
     ]
   },
+  "whistle": {
+    "subtitle": "sounds.hexerei.whistle",
+    "sounds": [
+      "hexerei:whistle"
+    ]
+  },
   "crow_flute_select": {
     "subtitle": "sounds.hexerei.crow_flute_select",
     "sounds": [

@@ -3,6 +3,7 @@ package net.joefoxe.hexerei.item.custom;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -118,6 +119,17 @@ public class BroomItem extends Item {
         return new BroomItemRenderer();
     }
 
+    public static UUID getUUID(ItemStack stack) {
+
+        CompoundTag tag = stack.getOrCreateTag();
+        if (tag.contains("UUID")) {
+            return tag.getUUID("UUID");
+        }
+        UUID newUUID = UUID.randomUUID();
+        tag.putUUID("UUID", newUUID);
+        return newUUID;
+    }
+
 
     public BroomEntity getBroom(Level world, ItemStack stack) {
 
@@ -173,24 +185,25 @@ public class BroomItem extends Item {
             }
 
             if (raytraceresult.getType() == HitResult.Type.BLOCK) {
-                BroomEntity boatentity = new BroomEntity(worldIn, raytraceresult.getLocation().x, raytraceresult.getLocation().y, raytraceresult.getLocation().z);
-                boatentity.setBroomType(this.type);
-                boatentity.setYRot(playerIn.getYRot());
-                boatentity.itemHandler.deserializeNBT(itemstack.getOrCreateTag().getCompound("Inventory"));
+                BroomEntity broom = new BroomEntity(worldIn, raytraceresult.getLocation().x, raytraceresult.getLocation().y, raytraceresult.getLocation().z);
+                broom.setBroomType(this.type);
+                broom.broomUUID = BroomItem.getUUID(itemstack);
+                broom.setYRot(playerIn.getYRot());
+                broom.itemHandler.deserializeNBT(itemstack.getOrCreateTag().getCompound("Inventory"));
                 if(!itemstack.getOrCreateTag().contains("floatMode")) {
-                    boatentity.itemHandler.setStackInSlot(2, new ItemStack(ModItems.BROOM_BRUSH.get()));
-                    boatentity.sync();
+                    broom.itemHandler.setStackInSlot(2, new ItemStack(ModItems.BROOM_BRUSH.get()));
+                    broom.sync();
                 }
-                boatentity.floatMode = (itemstack.getOrCreateTag().getBoolean("floatMode"));
+                broom.floatMode = (itemstack.getOrCreateTag().getBoolean("floatMode"));
 
-                boatentity.setCustomName(itemstack.getHoverName());
+                broom.setCustomName(itemstack.getHoverName());
 
-                if (!worldIn.noCollision(boatentity, boatentity.getBoundingBox().inflate(-0.1D))) {
+                if (!worldIn.noCollision(broom, broom.getBoundingBox().inflate(-0.1D))) {
                     return InteractionResultHolder.fail(itemstack);
                 } else {
                     if (!worldIn.isClientSide) {
 
-                        worldIn.addFreshEntity(boatentity);
+                        worldIn.addFreshEntity(broom);
                         if (!playerIn.getAbilities().instabuild) {
                             itemstack.shrink(1);
                         }

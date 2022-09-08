@@ -147,10 +147,10 @@ public class CrowFluteItem extends Item implements Container, IThirdPersonItemAn
                         UUID crowId = tag.getUUID("UUID");
                         Entity entity = ((ServerLevel) player.level).getEntity(crowId);
 
-                        if (entity instanceof CrowEntity) {
+                        if (entity instanceof CrowEntity crow) {
                             tag.putInt("ID", entity.getId());
                             crows.add((CrowEntity) entity);
-                            ((CrowEntity) ((ServerLevel) player.level).getEntity(crowId)).setPerchPos(ctx.getClickedPos());
+                            crow.setPerchPos(ctx.getClickedPos());
                         } else {
                             id.remove(i);
 //                        crows.remove(entity);

@@ -71,11 +71,10 @@ public class BroomKeychainItemRenderer extends CustomItemRenderer {
         CompoundTag tag2 = stack.getOrCreateTag();
         if(tag2.contains("Items")){
             ListTag list = tag2.getList("Items", 10);
-            ItemStack ammo = ItemStack.of(list.getCompound(0));
-            if (!ammo.isEmpty()) {
+            ItemStack other = ItemStack.of(list.getCompound(0));
+            if (!other.isEmpty() && !list.isEmpty()) {
 
                 matrixStackIn.pushPose();
-
 
                 matrixStackIn.translate((16.0F * (-0.25D))/ 16f,
                         -(16.0F * (0.25D + 0.035))/ 16f,
@@ -84,7 +83,7 @@ public class BroomKeychainItemRenderer extends CustomItemRenderer {
 
                 //0.4 scale
 
-                renderItem(ammo, matrixStackIn, bufferIn, combinedLightIn);
+                renderItem(other, matrixStackIn, bufferIn, combinedLightIn);
 
                 matrixStackIn.popPose();
             }

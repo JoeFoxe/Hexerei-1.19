@@ -22,6 +22,7 @@ import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
@@ -402,9 +403,11 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
             Vec3 offset = new Vec3(random.nextDouble() * 2 * Math.cos(rotation), 0, random.nextDouble() * 2 * Math.sin(rotation));
 
             if(particle != null && Registry.PARTICLE_TYPE.get(particle.get(random.nextInt(particle.size()))) != null) {
-                worldIn.addParticle((ParticleOptions) Registry.PARTICLE_TYPE.get(particle.get(random.nextInt(particle.size()))), true, (double) pos.getX() + 0.5D + offset.x, (double) pos.getY() + random.nextDouble() * 0.15f, (double) pos.getZ() + 0.5D + offset.z, offset.x / 8f, random.nextDouble() * 0.025D, offset.z / 8f);
-                if (spawnExtraSmoke) {
+                if(Registry.PARTICLE_TYPE.get(particle.get(random.nextInt(particle.size()))) != null) {
                     worldIn.addParticle((ParticleOptions) Registry.PARTICLE_TYPE.get(particle.get(random.nextInt(particle.size()))), true, (double) pos.getX() + 0.5D + offset.x, (double) pos.getY() + random.nextDouble() * 0.15f, (double) pos.getZ() + 0.5D + offset.z, offset.x / 8f, random.nextDouble() * 0.025D, offset.z / 8f);
+                    if (spawnExtraSmoke) {
+                        worldIn.addParticle((ParticleOptions) Registry.PARTICLE_TYPE.get(particle.get(random.nextInt(particle.size()))), true, (double) pos.getX() + 0.5D + offset.x, (double) pos.getY() + random.nextDouble() * 0.15f, (double) pos.getZ() + 0.5D + offset.z, offset.x / 8f, random.nextDouble() * 0.025D, offset.z / 8f);
+                    }
                 }
             }
         }
@@ -633,9 +636,18 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
             tooltip.add(Component.translatable("tooltip.hexerei.candle_shift_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             tooltip.add(Component.translatable("tooltip.hexerei.candle_shift_3").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
 
+
+
         } else {
             tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
 
+            String str = CandleItem.getEffectLocation(stack);
+            if(str != null) {
+                String translateEffect = "effect." + (new ResourceLocation(str).getNamespace()) + "." + new ResourceLocation(str).getPath();
+                MutableComponent component = Component.translatable(translateEffect).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999)));
+                tooltip.add(Component.translatable("tooltip.hexerei.candle_effect", component));
+
+            }
         }
         super.appendHoverText(stack, world, tooltip, flagIn);
     }

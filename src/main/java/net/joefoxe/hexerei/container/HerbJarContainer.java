@@ -31,6 +31,8 @@ public class HerbJarContainer extends AbstractContainerMenu {
     private final IItemHandler playerInventory;
     public final ItemStack stack;
 
+    public static final int OFFSET = 28;
+
 
     public HerbJarContainer(int windowId, ItemStack itemStack, Level world, BlockPos pos, Inventory playerInventory, Player player) {
         super(ModContainers.HERB_JAR_CONTAINER.get(), windowId);
@@ -39,11 +41,11 @@ public class HerbJarContainer extends AbstractContainerMenu {
         playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
 
-        layoutPlayerInventorySlots(11, 147);
+        layoutPlayerInventorySlots(11, 147 - OFFSET);
 
         if(tileEntity != null) {
             tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-                addSlot(new JarSlot(h, 0, 83, 74));
+                addSlot(new JarSlot(h, 0, 83, 74 - OFFSET));
             });
 
 
@@ -85,6 +87,7 @@ public class HerbJarContainer extends AbstractContainerMenu {
 
     public void clicked(int p_150400_, int p_150401_, ClickType p_150402_, Player p_150403_) {
             this.doClick(p_150400_, p_150401_, p_150402_, p_150403_);
+            this.tileEntity.setChanged();
     }
 
     private void doClick(int p_150431_, int p_150432_, ClickType p_150433_, Player p_150434_) {

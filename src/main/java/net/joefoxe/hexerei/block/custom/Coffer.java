@@ -1,19 +1,13 @@
 package net.joefoxe.hexerei.block.custom;
 
-import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ITileEntity;
 import net.joefoxe.hexerei.container.CofferContainer;
 import net.joefoxe.hexerei.item.custom.CofferItem;
-import net.joefoxe.hexerei.item.custom.SatchelItem;
-import net.joefoxe.hexerei.items.JarHandler;
 import net.joefoxe.hexerei.tileentity.CofferTile;
 import net.joefoxe.hexerei.tileentity.ModTileEntities;
 import net.joefoxe.hexerei.util.HexereiUtil;
-import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.level.ServerLevel;
@@ -25,17 +19,14 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.*;
@@ -44,15 +35,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.util.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.*;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
@@ -64,12 +52,9 @@ import net.minecraftforge.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Stream;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
-public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, EntityBlock, SimpleWaterloggedBlock, DyeableLeatherItem {
+public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, SimpleWaterloggedBlock, DyeableLeatherItem {
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -286,9 +271,9 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
         Optional<CofferTile> tileEntityOptional = Optional.ofNullable(getBlockEntity(worldIn, pos));
 
         CompoundTag tag = item.getOrCreateTag();
-        CompoundTag inv = tileEntityOptional.map(coffer -> coffer.itemHandler.serializeNBT())
+        CompoundTag inv = tileEntityOptional.map(coffer -> coffer.itemStackHandler.serializeNBT())
                 .orElse(new CompoundTag());
-        ItemStackHandler empty = tileEntityOptional.map(herb_jar -> herb_jar.itemHandler)
+        ItemStackHandler empty = tileEntityOptional.map(herb_jar -> herb_jar.itemStackHandler)
                 .orElse(new ItemStackHandler(36));
 
         boolean flag = false;
@@ -330,6 +315,7 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
 
             te.buttonToggled = stack.getOrCreateTag()
                     .getInt("ButtonToggled");
+            te.setChanged();
         });
         super.setPlacedBy(worldIn, pos, state, placer, stack);
 

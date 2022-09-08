@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "hexerei:medium_satchel"
+    "hexerei:medium_satchel",
+    "hexerei:replacer_satchel"
   ]
 }

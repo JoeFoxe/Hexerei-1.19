@@ -1,6 +1,14 @@
 package net.joefoxe.hexerei.item.custom;
 
+import com.mojang.datafixers.util.Pair;
+import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.client.renderer.entity.model.BroomKeychainChainModel;
+import net.joefoxe.hexerei.client.renderer.entity.model.BroomKeychainModel;
+import net.joefoxe.hexerei.client.renderer.entity.model.BroomMediumSatchelModel;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -10,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -26,19 +35,22 @@ import java.util.function.Consumer;
 
 import net.minecraft.world.item.Item.Properties;
 
-public class KeychainItem extends Item {
-
-
-    public NonNullList<ItemStack> containedItem = NonNullList.withSize(1, ItemStack.EMPTY);
-
+public class KeychainItem extends BroomAttachmentItem {
+    public Pair<ResourceLocation, Model> chain_resources = null;
     public KeychainItem(Properties properties) {
         super(properties);
 
     }
-//ContainerHelper.saveAllItems(tag, this.items);
 
-
-
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void bakeModels() {
+        EntityModelSet context = Minecraft.getInstance().getEntityModels();
+        this.model = new BroomKeychainModel(context.bakeLayer(BroomKeychainModel.LAYER_LOCATION));
+        this.texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/broom_keychain.png");
+        this.dye_texture = null;
+        this.chain_resources = Pair.of(new ResourceLocation(Hexerei.MOD_ID, "textures/entity/broom_keychain.png"), new BroomKeychainChainModel(context.bakeLayer(BroomKeychainChainModel.LAYER_LOCATION)));
+    }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {

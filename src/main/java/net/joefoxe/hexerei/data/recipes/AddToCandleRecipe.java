@@ -71,8 +71,12 @@ public class AddToCandleRecipe extends CustomRecipe {
                     if(newInputs.isEmpty() || newInputs.get(1).getItems().length == 0)
                         return false;
 
-                    CompoundTag tag = itemstack1.getOrCreateTag();
-                    CompoundTag tag2 = newInputs.get(1).getItems()[0].getOrCreateTag();
+                    CompoundTag tag = new CompoundTag();
+                    CompoundTag tag2 = new CompoundTag();
+                    if(itemstack1.hasTag())
+                        tag = itemstack1.getOrCreateTag();
+                    if(newInputs.get(1).getItems()[0].hasTag())
+                        tag2 = newInputs.get(1).getItems()[0].getOrCreateTag();
                     boolean compare = NbtUtils.compareNbt(tag2, tag, true);
 
                     if ((itemstack1.is(this.newInputs.get(1).getItems()[0].getItem()) && compare)) {
@@ -105,8 +109,12 @@ public class AddToCandleRecipe extends CustomRecipe {
                 } else {
 
 
-                    CompoundTag tag = itemstack1.getOrCreateTag();
-                    CompoundTag tag2 = newInputs.get(1).getItems()[0].getOrCreateTag();
+                    CompoundTag tag = new CompoundTag();
+                    CompoundTag tag2 = new CompoundTag();
+                    if(itemstack1.hasTag())
+                        tag = itemstack1.getOrCreateTag();
+                    if(newInputs.get(1).getItems()[0].hasTag())
+                        tag2 = newInputs.get(1).getItems()[0].getOrCreateTag();
                     boolean compare = NbtUtils.compareNbt(tag2, tag, true);
 
                     if (!itemstack1.is(this.newInputs.get(1).getItems()[0].getItem()) && compare) {

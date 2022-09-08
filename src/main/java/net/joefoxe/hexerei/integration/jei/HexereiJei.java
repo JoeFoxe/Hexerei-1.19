@@ -30,6 +30,7 @@ import mezz.jei.api.runtime.IRecipesGui;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.custom.MixingCauldron;
+import net.joefoxe.hexerei.container.BroomContainer;
 import net.joefoxe.hexerei.data.recipes.*;
 import net.joefoxe.hexerei.fluid.ModFluids;
 import net.joefoxe.hexerei.fluid.PotionFluid;
@@ -328,11 +329,11 @@ public class HexereiJei implements IModPlugin {
             @Override
             public List<Rect2i> getGuiExtraAreas(BroomScreen gui) {
                 List<Rect2i> ret = new ArrayList<>();
-                Rect2i rect2i = new Rect2i(gui.getGuiLeft(), gui.getGuiTop(), 214, 82 + gui.offset);
+                Rect2i rect2i = new Rect2i(gui.getGuiLeft(), gui.getGuiTop() - BroomContainer.OFFSET, 214, 82 + gui.offset);
                 ret.add(rect2i);
-                rect2i = new Rect2i(gui.getGuiLeft(), gui.getGuiTop() + 79 + gui.offset, 214, 34);
+                rect2i = new Rect2i(gui.getGuiLeft(), gui.getGuiTop() + 79 + gui.offset - BroomContainer.OFFSET, 214, 34);
                 ret.add(rect2i);
-                rect2i = new Rect2i(gui.getGuiLeft() + 184, gui.getGuiTop() + 55 + gui.offset + ((int)gui.dropdownOffset), 26, 58);
+                rect2i = new Rect2i(gui.getGuiLeft() + 184, gui.getGuiTop() + 55 + gui.offset + ((int)gui.dropdownOffset) - BroomContainer.OFFSET, 26, 58);
                 ret.add(rect2i);
 
                 return ret;

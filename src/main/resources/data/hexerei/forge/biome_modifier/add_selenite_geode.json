@@ -1,5 +1,5 @@
 {
   "type": "hexerei:vegetal",
   "biomes": "#forge:is_swamp",
-  "feature": "hexerei:selenite_geode_placed"
+  "feature": "hexerei:selenite_geode_placed_swamp"
 }

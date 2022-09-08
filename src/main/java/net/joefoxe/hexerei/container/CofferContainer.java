@@ -3,6 +3,7 @@ package net.joefoxe.hexerei.container;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.tileentity.CofferTile;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -26,6 +27,7 @@ public class CofferContainer extends AbstractContainerMenu {
     private final BlockEntity tileEntity;
     private final Player playerEntity;
     private final IItemHandler playerInventory;
+    public static final int OFFSET = 28;
 
 
     public CofferContainer(int windowId, Level world, BlockPos pos, Inventory playerInventory, Player player) {
@@ -33,50 +35,93 @@ public class CofferContainer extends AbstractContainerMenu {
         this.tileEntity = world.getBlockEntity(pos);
         playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
+        if(tileEntity instanceof Container container)
+            container.startOpen(player);
 
 
-        layoutPlayerInventorySlots(11, 147);
+        layoutPlayerInventorySlots(11, 147 - OFFSET);
 
-        //add slots for mixing cauldron
-        if(tileEntity != null) {
-            tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-                this.addSlot(new SlotItemHandler(h, 0, 15 + (21 * 0), 18));
-                this.addSlot(new SlotItemHandler(h, 1, 15 + (21 * 1), 18));
-                this.addSlot(new SlotItemHandler(h, 2, 15 + (21 * 2), 18));
-                this.addSlot(new SlotItemHandler(h, 3, 15 + (21 * 3), 18));
-                this.addSlot(new SlotItemHandler(h, 4, 15 + (21 * 4), 18));
-                this.addSlot(new SlotItemHandler(h, 5, 15 + (21 * 5), 18));
-                this.addSlot(new SlotItemHandler(h, 6, 15 + (21 * 6), 18));
-                this.addSlot(new SlotItemHandler(h, 7, 15 + (21 * 7), 18));
-                this.addSlot(new SlotItemHandler(h, 8, 15 + (21 * 8), 18));
-                this.addSlot(new SlotItemHandler(h, 9, 15 + (21 * 0), 39));
-                this.addSlot(new SlotItemHandler(h, 10, 15 + (21 * 1), 39));
-                this.addSlot(new SlotItemHandler(h, 11, 15 + (21 * 2), 39));
-                this.addSlot(new SlotItemHandler(h, 12, 15 + (21 * 6), 39));
-                this.addSlot(new SlotItemHandler(h, 13, 15 + (21 * 7), 39));
-                this.addSlot(new SlotItemHandler(h, 14, 15 + (21 * 8), 39));
-                this.addSlot(new SlotItemHandler(h, 15, 15 + (21 * 0), 60));
-                this.addSlot(new SlotItemHandler(h, 16, 15 + (21 * 1), 60));
-                this.addSlot(new SlotItemHandler(h, 17, 15 + (21 * 2), 60));
-                this.addSlot(new SlotItemHandler(h, 18, 15 + (21 * 6), 60));
-                this.addSlot(new SlotItemHandler(h, 19, 15 + (21 * 7), 60));
-                this.addSlot(new SlotItemHandler(h, 20, 15 + (21 * 8), 60));
-                this.addSlot(new SlotItemHandler(h, 21, 15 + (21 * 0), 81));
-                this.addSlot(new SlotItemHandler(h, 22, 15 + (21 * 1), 81));
-                this.addSlot(new SlotItemHandler(h, 23, 15 + (21 * 2), 81));
-                this.addSlot(new SlotItemHandler(h, 24, 15 + (21 * 6), 81));
-                this.addSlot(new SlotItemHandler(h, 25, 15 + (21 * 7), 81));
-                this.addSlot(new SlotItemHandler(h, 26, 15 + (21 * 8), 81));
-                this.addSlot(new SlotItemHandler(h, 27, 15 + (21 * 0), 102));
-                this.addSlot(new SlotItemHandler(h, 28, 15 + (21 * 1), 102));
-                this.addSlot(new SlotItemHandler(h, 29, 15 + (21 * 2), 102));
-                this.addSlot(new SlotItemHandler(h, 30, 15 + (21 * 3), 102));
-                this.addSlot(new SlotItemHandler(h, 31, 15 + (21 * 4), 102));
-                this.addSlot(new SlotItemHandler(h, 32, 15 + (21 * 5), 102));
-                this.addSlot(new SlotItemHandler(h, 33, 15 + (21 * 6), 102));
-                this.addSlot(new SlotItemHandler(h, 34, 15 + (21 * 7), 102));
-                this.addSlot(new SlotItemHandler(h, 35, 15 + (21 * 8), 102));
-            });
+
+
+        //add slots for coffer
+        if(tileEntity != null && tileEntity instanceof Container container) {
+
+            this.addSlot(new Slot(container, 0, 15 + (21 * 0), 18 - OFFSET));
+            this.addSlot(new Slot(container, 1, 15 + (21 * 1), 18 - OFFSET));
+            this.addSlot(new Slot(container, 2, 15 + (21 * 2), 18 - OFFSET));
+            this.addSlot(new Slot(container, 3, 15 + (21 * 3), 18 - OFFSET));
+            this.addSlot(new Slot(container, 4, 15 + (21 * 4), 18 - OFFSET));
+            this.addSlot(new Slot(container, 5, 15 + (21 * 5), 18 - OFFSET));
+            this.addSlot(new Slot(container, 6, 15 + (21 * 6), 18 - OFFSET));
+            this.addSlot(new Slot(container, 7, 15 + (21 * 7), 18 - OFFSET));
+            this.addSlot(new Slot(container, 8, 15 + (21 * 8), 18 - OFFSET));
+            this.addSlot(new Slot(container, 9, 15 + (21 * 0), 39 - OFFSET));
+            this.addSlot(new Slot(container, 10, 15 + (21 * 1), 39 - OFFSET));
+            this.addSlot(new Slot(container, 11, 15 + (21 * 2), 39 - OFFSET));
+            this.addSlot(new Slot(container, 12, 15 + (21 * 6), 39 - OFFSET));
+            this.addSlot(new Slot(container, 13, 15 + (21 * 7), 39 - OFFSET));
+            this.addSlot(new Slot(container, 14, 15 + (21 * 8), 39 - OFFSET));
+            this.addSlot(new Slot(container, 15, 15 + (21 * 0), 60 - OFFSET));
+            this.addSlot(new Slot(container, 16, 15 + (21 * 1), 60 - OFFSET));
+            this.addSlot(new Slot(container, 17, 15 + (21 * 2), 60 - OFFSET));
+            this.addSlot(new Slot(container, 18, 15 + (21 * 6), 60 - OFFSET));
+            this.addSlot(new Slot(container, 19, 15 + (21 * 7), 60 - OFFSET));
+            this.addSlot(new Slot(container, 20, 15 + (21 * 8), 60 - OFFSET));
+            this.addSlot(new Slot(container, 21, 15 + (21 * 0), 81 - OFFSET));
+            this.addSlot(new Slot(container, 22, 15 + (21 * 1), 81 - OFFSET));
+            this.addSlot(new Slot(container, 23, 15 + (21 * 2), 81 - OFFSET));
+            this.addSlot(new Slot(container, 24, 15 + (21 * 6), 81 - OFFSET));
+            this.addSlot(new Slot(container, 25, 15 + (21 * 7), 81 - OFFSET));
+            this.addSlot(new Slot(container, 26, 15 + (21 * 8), 81 - OFFSET));
+            this.addSlot(new Slot(container, 27, 15 + (21 * 0), 102 - OFFSET));
+            this.addSlot(new Slot(container, 28, 15 + (21 * 1), 102 - OFFSET));
+            this.addSlot(new Slot(container, 29, 15 + (21 * 2), 102 - OFFSET));
+            this.addSlot(new Slot(container, 30, 15 + (21 * 3), 102 - OFFSET));
+            this.addSlot(new Slot(container, 31, 15 + (21 * 4), 102 - OFFSET));
+            this.addSlot(new Slot(container, 32, 15 + (21 * 5), 102 - OFFSET));
+            this.addSlot(new Slot(container, 33, 15 + (21 * 6), 102 - OFFSET));
+            this.addSlot(new Slot(container, 34, 15 + (21 * 7), 102 - OFFSET));
+            this.addSlot(new Slot(container, 35, 15 + (21 * 8), 102 - OFFSET));
+
+
+//            tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
+//                this.addSlot(new SlotItemHandler(h, 0, 15 + (21 * 0), 18));
+//                this.addSlot(new SlotItemHandler(h, 1, 15 + (21 * 1), 18));
+//                this.addSlot(new SlotItemHandler(h, 2, 15 + (21 * 2), 18));
+//                this.addSlot(new SlotItemHandler(h, 3, 15 + (21 * 3), 18));
+//                this.addSlot(new SlotItemHandler(h, 4, 15 + (21 * 4), 18));
+//                this.addSlot(new SlotItemHandler(h, 5, 15 + (21 * 5), 18));
+//                this.addSlot(new SlotItemHandler(h, 6, 15 + (21 * 6), 18));
+//                this.addSlot(new SlotItemHandler(h, 7, 15 + (21 * 7), 18));
+//                this.addSlot(new SlotItemHandler(h, 8, 15 + (21 * 8), 18));
+//                this.addSlot(new SlotItemHandler(h, 9, 15 + (21 * 0), 39));
+//                this.addSlot(new SlotItemHandler(h, 10, 15 + (21 * 1), 39));
+//                this.addSlot(new SlotItemHandler(h, 11, 15 + (21 * 2), 39));
+//                this.addSlot(new SlotItemHandler(h, 12, 15 + (21 * 6), 39));
+//                this.addSlot(new SlotItemHandler(h, 13, 15 + (21 * 7), 39));
+//                this.addSlot(new SlotItemHandler(h, 14, 15 + (21 * 8), 39));
+//                this.addSlot(new SlotItemHandler(h, 15, 15 + (21 * 0), 60));
+//                this.addSlot(new SlotItemHandler(h, 16, 15 + (21 * 1), 60));
+//                this.addSlot(new SlotItemHandler(h, 17, 15 + (21 * 2), 60));
+//                this.addSlot(new SlotItemHandler(h, 18, 15 + (21 * 6), 60));
+//                this.addSlot(new SlotItemHandler(h, 19, 15 + (21 * 7), 60));
+//                this.addSlot(new SlotItemHandler(h, 20, 15 + (21 * 8), 60));
+//                this.addSlot(new SlotItemHandler(h, 21, 15 + (21 * 0), 81));
+//                this.addSlot(new SlotItemHandler(h, 22, 15 + (21 * 1), 81));
+//                this.addSlot(new SlotItemHandler(h, 23, 15 + (21 * 2), 81));
+//                this.addSlot(new SlotItemHandler(h, 24, 15 + (21 * 6), 81));
+//                this.addSlot(new SlotItemHandler(h, 25, 15 + (21 * 7), 81));
+//                this.addSlot(new SlotItemHandler(h, 26, 15 + (21 * 8), 81));
+//                this.addSlot(new SlotItemHandler(h, 27, 15 + (21 * 0), 102));
+//                this.addSlot(new SlotItemHandler(h, 28, 15 + (21 * 1), 102));
+//                this.addSlot(new SlotItemHandler(h, 29, 15 + (21 * 2), 102));
+//                this.addSlot(new SlotItemHandler(h, 30, 15 + (21 * 3), 102));
+//                this.addSlot(new SlotItemHandler(h, 31, 15 + (21 * 4), 102));
+//                this.addSlot(new SlotItemHandler(h, 32, 15 + (21 * 5), 102));
+//                this.addSlot(new SlotItemHandler(h, 33, 15 + (21 * 6), 102));
+//                this.addSlot(new SlotItemHandler(h, 34, 15 + (21 * 7), 102));
+//                this.addSlot(new SlotItemHandler(h, 35, 15 + (21 * 8), 102));
+//            });
         }
 
         addDataSlot(new DataSlot() {

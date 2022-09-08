@@ -192,16 +192,9 @@ public class MixingCauldronTransferInfo implements IRecipeTransferHandler<Mixing
                     .filter(t -> t.getType()==VanillaTypes.ITEM_STACK)
                     .map(t -> (ItemStack)t.getIngredient())
                     .findFirst();
-            if(stack.isPresent() && j != 8)
-                items.set(j, stack.get());
+            if(stack.isPresent() && j != 9)
+                items.set(j - 1, stack.get());
             j++;
-//            int recipeSlot = entry.getKey();
-//            if(recipeSlot != 8){
-//                List<ItemStack> allIngredients = entry.getValue().getAllIngredients();
-//                if (!allIngredients.isEmpty()) {
-//                    items.set(recipeSlot, allIngredients.get(0));
-//                }
-//            }
         }
         NonNullList<ItemStack> inv = blockEntity.items;
 
@@ -244,8 +237,8 @@ public class MixingCauldronTransferInfo implements IRecipeTransferHandler<Mixing
                     .filter(t -> t.getType()==VanillaTypes.ITEM_STACK)
                     .map(t -> (ItemStack)t.getIngredient())
                     .findFirst();
-            if(stack.isPresent() && j != 8)
-                items.set(j, stack.get());
+            if(stack.isPresent() && j != 9)
+                items.set(j - 1, stack.get());
             j++;
 //            int recipeSlot = entry.getKey();
 //            if(recipeSlot != 8){

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " SM",
+    " MM",
+    "B  "
+
+  ],
+  "key": {
+    "M": {
+      "item": "hexerei:mahogany_planks"
+    },
+    "S": {
+      "item": "minecraft:stone_button"
+    },
+    "B": {
+      "item": "minecraft:bamboo"
+    }
+  },
+  "result": {
+    "item": "hexerei:broom_whistle",
+    "count": 1
+  }
+}

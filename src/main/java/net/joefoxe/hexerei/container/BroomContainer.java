@@ -6,9 +6,12 @@ import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.tileentity.CofferTile;
 import net.joefoxe.hexerei.util.HexereiTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.HasCustomInventoryScreen;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
@@ -24,10 +27,15 @@ import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
 
-public class BroomContainer extends AbstractContainerMenu {
+public class BroomContainer extends AbstractContainerMenu implements HasCustomInventoryScreen {
     private final Player playerEntity;
     public final BroomEntity broomEntity;
     private final IItemHandler playerInventory;
+    private final IItemHandler playerEnderInventory;
+    public static final int OFFSET = 34;
+
+    public boolean isEnder;
+    public ItemStack satchel;
 
 
 
@@ -35,11 +43,15 @@ public class BroomContainer extends AbstractContainerMenu {
 //        this(windowId, inv, new SimpleContainer(5));
 //    }
 
-    public BroomContainer(int windowId, BroomEntity broomEntity, Inventory playerInventory, Player player) {
+    public BroomContainer(int windowId, BroomEntity broomEntity, Inventory playerInventory, Player player, boolean isEnder) {
         super(ModContainers.BROOM_CONTAINER.get(), windowId);
         this.broomEntity = broomEntity;
+        broomEntity.startOpen(player);
         playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
+        this.playerEnderInventory = new InvWrapper(player.getEnderChestInventory());
+        this.isEnder = isEnder;
+        this.satchel = broomEntity.itemHandler.getStackInSlot(1);
 
         int offset = 0;
         broomEntity.sync();
@@ -49,13 +61,13 @@ public class BroomContainer extends AbstractContainerMenu {
             offset = 42;
         if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.LARGE_SATCHELS))
             offset = 63;
-        layoutPlayerInventorySlots(11, 106 + offset);
+        layoutPlayerInventorySlots(11, 106 + offset - OFFSET);
 
         //add slots for mixing cauldron
         if(broomEntity != null) {
             broomEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
 
-                addSlot(new SlotItemHandler(h, 0, 37, 47){
+                addSlot(new SlotItemHandler(h, 0, 37, 47 - OFFSET){
 
                     @Override
                     public int getMaxStackSize() {
@@ -69,7 +81,7 @@ public class BroomContainer extends AbstractContainerMenu {
                 });
 
                 //satchel slot
-                addSlot(new SlotItemHandler(h, 1, 99, 47) {
+                addSlot(new SlotItemHandler(h, 1, 99, 47 - OFFSET) {
 
                     @Override
                     public int getMaxStackSize() {
@@ -83,6 +95,9 @@ public class BroomContainer extends AbstractContainerMenu {
 
                     @Override
                     public boolean mayPickup(Player playerIn) {
+
+                        if(broomEntity.isEnder())
+                            return true;
 
                         if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.SMALL_SATCHELS)) {
                             if (broomEntity.itemHandler.getStackInSlot(3).getItem() == (ItemStack.EMPTY.getItem()) &&
@@ -163,7 +178,7 @@ public class BroomContainer extends AbstractContainerMenu {
                         return true;
                     }
                 });
-                addSlot(new SlotItemHandler(h, 2, 160, 47){
+                addSlot(new SlotItemHandler(h, 2, 160, 47 - OFFSET){
 
                     @Override
                     public int getMaxStackSize() {
@@ -176,56 +191,78 @@ public class BroomContainer extends AbstractContainerMenu {
                     }
                 });
 
-
                 for(int i = 0; i < 3; i++)
                     for(int j = 0; j < 9; j++)
-                        addSlot(new SlotItemHandler(h, 3 + (i * 9) + j , 15 + 21 * j, 21 * i + 82) {
+                        addSlot(new SlotItemHandler(h, 3 + (i * 9) + j, 15 + 21 * j, 21 * i + 82 - OFFSET) {
                             @Override
                             public boolean mayPlace(@NotNull ItemStack stack) {
                                 return !(stack.is(ModItems.WILLOW_BROOM.get()) || stack.is(ModItems.MAHOGANY_BROOM.get()));
                             }
                         });
+                for(int i = 0; i < 3; i++)
+                    for(int j = 0; j < 9; j++)
+                        addSlot(new SlotItemHandler(playerEnderInventory, (i * 9) + j, 15 + 21 * j, 21 * i + 82 - OFFSET) {
+                            @Override
+                            public boolean mayPlace(@NotNull ItemStack stack) {
+                                return true;
+                            }
+                        });
 
                 int offset2 = 0;
-                if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.SMALL_SATCHELS)) {
-                    offset2 = 21;
+                if (!broomEntity.isEnder()) {
+                    if (broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.SMALL_SATCHELS)) {
+                        offset2 = 21;
 
-                    for(int i = 0; i < 1; i++)
-                        for(int j = 0; j < 9; j++)
-                            this.slots.get(39 + (i * 9) + j).y = 21 * i + 82;
-
-
-                    for(int i = 1; i < 3; i++)
-                        for(int j = 0; j < 9; j++)
-                            this.slots.get(39 + (i * 9) + j).y = -999;
-                }
-                if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.MEDIUM_SATCHELS)) {
-                    offset2 = 42;
-
-                    for(int i = 0; i < 2; i++)
-                        for(int j = 0; j < 9; j++)
-                            this.slots.get(39 + (i * 9) + j).y = 21 * i + 82;
+                        for (int i = 0; i < 1; i++)
+                            for (int j = 0; j < 9; j++)
+                                this.slots.get(39 + (i * 9) + j).y = 21 * i + 82 - OFFSET;
 
 
-                    for(int i = 2; i < 3; i++)
-                        for(int j = 0; j < 9; j++)
-                            this.slots.get(39 + (i * 9) + j).y = -999;
-                }
-                if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.LARGE_SATCHELS)) {
+                        for (int i = 1; i < 3; i++)
+                            for (int j = 0; j < 9; j++)
+                                this.slots.get(39 + (i * 9) + j).y = -999;
+                    }
+                    if (broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.MEDIUM_SATCHELS)) {
+                        offset2 = 42;
+
+                        for (int i = 0; i < 2; i++)
+                            for (int j = 0; j < 9; j++)
+                                this.slots.get(39 + (i * 9) + j).y = 21 * i + 82 - OFFSET;
+
+
+                        for (int i = 2; i < 3; i++)
+                            for (int j = 0; j < 9; j++)
+                                this.slots.get(39 + (i * 9) + j).y = -999;
+                    }
+                    if (broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.LARGE_SATCHELS)) {
+                        offset2 = 63;
+
+                        for (int i = 0; i < 3; i++)
+                            for (int j = 0; j < 9; j++)
+                                this.slots.get(39 + (i * 9) + j).y = 21 * i + 82 - OFFSET;
+
+                    }
+                    for (int i = 0; i < 3; i++)
+                        for (int j = 0; j < 9; j++)
+                            this.slots.get(39 + (i * 9) + j + 27).y = -999;
+                } else {
+
                     offset2 = 63;
 
-                    for(int i = 0; i < 3; i++)
-                        for(int j = 0; j < 9; j++)
-                            this.slots.get(39 + (i * 9) + j).y = 21 * i + 82;
-
+                    for (int i = 0; i < 3; i++)
+                        for (int j = 0; j < 9; j++)
+                            this.slots.get(39 + (i * 9) + j + 27).y = 21 * i + 82 - OFFSET;
+                    for (int i = 0; i < 3; i++)
+                        for (int j = 0; j < 9; j++)
+                            this.slots.get(39 + (i * 9) + j).y = -999;
                 }
 
                 for(int i = 0; i < 3; i++)
                     for(int j = 0; j < 9; j++)
-                        this.slots.get((i * 9) + j).y = 106 + (i * 18) + offset2;
+                        this.slots.get((i * 9) + j).y = 106 + (i * 18) + offset2 - OFFSET;
 
                 for(int k = 0; k < 9; k++)
-                    this.slots.get(27 + k).y = 106 + 58 + offset2;
+                    this.slots.get(27 + k).y = 106 + 58 + offset2 - OFFSET;
 
 
                 if(offset2 == 0)
@@ -252,49 +289,94 @@ public class BroomContainer extends AbstractContainerMenu {
 
     }
 
+
+    public void removed(Player pPlayer) {
+        if (pPlayer instanceof ServerPlayer) {
+            ItemStack itemstack = this.getCarried();
+            if (!itemstack.isEmpty()) {
+                if (pPlayer.isAlive() && !((ServerPlayer)pPlayer).hasDisconnected()) {
+                    pPlayer.getInventory().placeItemBackInInventory(itemstack);
+                } else {
+                    pPlayer.drop(itemstack, false);
+                }
+
+                this.setCarried(ItemStack.EMPTY);
+            }
+        }
+        this.broomEntity.stopOpen(pPlayer);
+
+    }
+
     @Override
     public void clicked(int p_150400_, int p_150401_, ClickType p_150402_, Player p_150403_) {
         super.clicked(p_150400_, p_150401_, p_150402_, p_150403_);
         int offset = 0;
-        if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.SMALL_SATCHELS)) {
-            offset = 21;
 
-            for(int i = 0; i < 1; i++)
-                for(int j = 0; j < 9; j++)
-                    this.slots.get(39 + (i * 9) + j).y = 21 * i + 82;
+        if(satchel != broomEntity.itemHandler.getStackInSlot(1)){
 
+            if(!satchel.isEmpty())
+                playSoundClose(isEnder);
+            else
+                playSoundOpen(broomEntity.isEnder());
 
-            for(int i = 1; i < 3; i++)
-                for(int j = 0; j < 9; j++)
-                    this.slots.get(39 + (i * 9) + j).y = -999;
+            satchel = broomEntity.itemHandler.getStackInSlot(1);
+            isEnder = broomEntity.isEnder();
         }
-        if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.MEDIUM_SATCHELS)) {
-            offset = 42;
 
-            for(int i = 0; i < 2; i++)
-                for(int j = 0; j < 9; j++)
-                    this.slots.get(39 + (i * 9) + j).y = 21 * i + 82;
+        if (!broomEntity.isEnder()) {
+            if (broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.SMALL_SATCHELS)) {
+                offset = 21;
+
+                for (int i = 0; i < 1; i++)
+                    for (int j = 0; j < 9; j++)
+                        this.slots.get(39 + (i * 9) + j).y = 21 * i + 82 - OFFSET;
 
 
-            for(int i = 2; i < 3; i++)
-                for(int j = 0; j < 9; j++)
-                    this.slots.get(39 + (i * 9) + j).y = -999;
-        }
-        if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.LARGE_SATCHELS)) {
+                for (int i = 1; i < 3; i++)
+                    for (int j = 0; j < 9; j++)
+                        this.slots.get(39 + (i * 9) + j).y = -999;
+            }
+            if (broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.MEDIUM_SATCHELS)) {
+                offset = 42;
+
+                for (int i = 0; i < 2; i++)
+                    for (int j = 0; j < 9; j++)
+                        this.slots.get(39 + (i * 9) + j).y = 21 * i + 82 - OFFSET;
+
+
+                for (int i = 2; i < 3; i++)
+                    for (int j = 0; j < 9; j++)
+                        this.slots.get(39 + (i * 9) + j).y = -999;
+            }
+            if (broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.LARGE_SATCHELS)) {
+                offset = 63;
+
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 9; j++)
+                        this.slots.get(39 + (i * 9) + j).y = 21 * i + 82 - OFFSET;
+
+            }
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 9; j++)
+                    this.slots.get(39 + (i * 9) + j + 27).y = -999;
+        } else {
+
             offset = 63;
 
-            for(int i = 0; i < 3; i++)
-                for(int j = 0; j < 9; j++)
-                    this.slots.get(39 + (i * 9) + j).y = 21 * i + 82;
-
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 9; j++)
+                    this.slots.get(39 + (i * 9) + j + 27).y = 21 * i + 82 - OFFSET;
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 9; j++)
+                    this.slots.get(39 + (i * 9) + j).y = -999;
         }
 
         for(int i = 0; i < 3; i++)
             for(int j = 0; j < 9; j++)
-                this.slots.get((i * 9) + j).y = 106 + (i * 18) + offset;
+                this.slots.get((i * 9) + j).y = 106 + (i * 18) + offset - OFFSET;
 
         for(int k = 0; k < 9; k++)
-            this.slots.get(27 + k).y = 106 + 58 + offset;
+            this.slots.get(27 + k).y = 106 + 58 + offset - OFFSET;
 
 
         if(offset == 0)
@@ -309,6 +391,32 @@ public class BroomContainer extends AbstractContainerMenu {
 
     public void playSound() {
         this.broomEntity.getLevel().playSound((Player)null, this.broomEntity.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 1.0F, 1.0F);;
+    }
+
+    public void playSoundOpen(boolean isEnder) {
+        SoundEvent sound = SoundEvents.ARMOR_EQUIP_LEATHER;
+        float volume = 0.75f;
+        if(isEnder) {
+            sound = SoundEvents.ENDER_CHEST_OPEN;
+            volume = 0.5f;
+        }
+
+        this.broomEntity.getLevel().playSound((Player)null, (double)this.broomEntity.getX(), (double)this.broomEntity.getY() + 0.5D, (double)this.broomEntity.getZ(), sound, SoundSource.BLOCKS, volume, this.broomEntity.getLevel().random.nextFloat() * 0.1F + 0.9F);
+    }
+    public void playSoundClose(boolean isEnder) {
+        SoundEvent sound = SoundEvents.ARMOR_EQUIP_LEATHER;
+        float pitch = 0.4f;
+        float volume = 0.75f;
+        if(isEnder) {
+            sound = SoundEvents.ENDER_CHEST_CLOSE;
+            pitch = 0.9f;
+            volume = 0.5f;
+        }
+
+        this.broomEntity.getLevel().playSound((Player)null, (double)this.broomEntity.getX(), (double)this.broomEntity.getY() + 0.5D, (double)this.broomEntity.getZ(), sound, SoundSource.BLOCKS, volume, this.broomEntity.getLevel().random.nextFloat() * 0.1F + pitch);
+    }
+    public void playSound(SoundEvent event) {
+        this.broomEntity.getLevel().playSound((Player)null, this.broomEntity.blockPosition(), event, SoundSource.BLOCKS, 1.0F, 1.0F);;
     }
 
     public boolean getFloatMode() {
@@ -393,11 +501,14 @@ public class BroomContainer extends AbstractContainerMenu {
         if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.LARGE_SATCHELS))
             count = 27;
 
+        if(broomEntity.isEnder())
+            count += 27;
+
 
         // Check if the slot clicked is one of the vanilla container slots
         if (index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
             // This is a vanilla container slot so merge the stack into the tile inventory
-            if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX
+            if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX + (broomEntity.isEnder() ? 30 : 0), TE_INVENTORY_FIRST_SLOT_INDEX
                     + TE_INVENTORY_SLOT_COUNT + count, false)) {
                 return ItemStack.EMPTY;  // EMPTY_ITEM
             }
@@ -418,5 +529,10 @@ public class BroomContainer extends AbstractContainerMenu {
         }
         sourceSlot.onTake(playerEntity, sourceStack);
         return copyOfSourceStack;
+    }
+
+    @Override
+    public void openCustomInventoryScreen(Player pPlayer) {
+
     }
 }

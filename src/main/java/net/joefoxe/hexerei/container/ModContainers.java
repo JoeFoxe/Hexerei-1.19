@@ -87,10 +87,11 @@ public class ModContainers {
 
                 Level world = inv.player.getLevel();//new BroomEntity(world, pos.getX(), pos.getY(), pos.getZ())
                 int id = data.readInt();
+                boolean isEnder = data.readBoolean();
                 if(world.getEntity(id) != null)
-                    return new BroomContainer(windowId,(BroomEntity)world.getEntity(id), inv, inv.player);
+                    return new BroomContainer(windowId,(BroomEntity)world.getEntity(id), inv, inv.player, isEnder);
                 else
-                    return new BroomContainer(windowId,new BroomEntity(world, 0, 0, 0), inv, inv.player);
+                    return new BroomContainer(windowId,new BroomEntity(world, 0, 0, 0), inv, inv.player, isEnder);
 
             })));
 

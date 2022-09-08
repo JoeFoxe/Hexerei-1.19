@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:pumpkin",
+    "minecraft:melon",
+    {
+      "id": "immersiveengineering:hemp",
+      "required": false
+    }
+
+  ]
+}

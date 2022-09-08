@@ -32,7 +32,7 @@
       "type": "item",
       "x": 1,
       "y": 3,
-      "name": "minecraft:air"
+      "name": "hexerei:infused_fabric"
     },
     {
       "type": "item",
@@ -70,7 +70,7 @@
       "type": "item",
       "x": 1,
       "y": 5,
-      "name": "hexerei:infused_fabric"
+      "name": "minecraft:air"
     },
     {
       "type": "item",

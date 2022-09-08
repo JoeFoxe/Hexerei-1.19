@@ -1090,44 +1090,48 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
 
     public void clickedNext(BookOfShadowsAltarTile altarTile, int pages){
         CompoundTag tag2 = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
-        for(int i = 0; i < pages; i++){
-            int currentPage = tag2.getInt("page");
-            int currentChapter = tag2.getInt("chapter");
-            if (currentPage < BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - (2)) {
-                tag2.putInt("page", currentPage + (2));
-                if (currentChapter < BookManager.getBookEntries().chapterList.size() - 1 && currentPage + (2) > BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - 1) {
-                    tag2.putInt("chapter", ++currentChapter);
-                    tag2.putInt("page", BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - 1);
-                }
-            } else {
-                if (currentChapter < BookManager.getBookEntries().chapterList.size() - 1) {
-                    tag2.putInt("chapter", ++currentChapter);
-                    tag2.putInt("page", 0);
+        if(BookManager.getBookEntries() != null){
+            for (int i = 0; i < pages; i++) {
+                int currentPage = tag2.getInt("page");
+                int currentChapter = tag2.getInt("chapter");
+                if (currentPage < BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - (2)) {
+                    tag2.putInt("page", currentPage + (2));
+                    if (currentChapter < BookManager.getBookEntries().chapterList.size() - 1 && currentPage + (2) > BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - 1) {
+                        tag2.putInt("chapter", ++currentChapter);
+                        tag2.putInt("page", BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - 1);
+                    }
                 } else {
-                    tag2.putInt("page", BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - 1);
+                    if (currentChapter < BookManager.getBookEntries().chapterList.size() - 1) {
+                        tag2.putInt("chapter", ++currentChapter);
+                        tag2.putInt("page", 0);
+                    } else {
+                        tag2.putInt("page", BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - 1);
+                    }
                 }
             }
         }
     }
     public void clickedBack(BookOfShadowsAltarTile altarTile, int pages){
         CompoundTag tag2 = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
-        for(int i = 0; i < pages; i++){
-            int currentPage = tag2.getInt("page");
-            int currentChapter = tag2.getInt("chapter");
-            if (currentPage > 0) {
+        if(BookManager.getBookEntries() != null){
+            for (int i = 0; i < pages; i++) {
+                int currentPage = tag2.getInt("page");
+                int currentChapter = tag2.getInt("chapter");
+                if (currentPage > 0) {
 
-                if (currentChapter > 0 && currentPage - (2) < 0) {
-                    tag2.putInt("chapter", --currentChapter);
-                    tag2.putInt("page", BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - 1);
-                } else
-                    tag2.putInt("page", Math.max(currentPage - (2), 0));
+                    if (currentChapter > 0 && currentPage - (2) < 0) {
+                        tag2.putInt("chapter", --currentChapter);
+                        tag2.putInt("page", BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - 1);
+                    } else
+                        tag2.putInt("page", Math.max(currentPage - (2), 0));
 
-            } else {
-                if (currentChapter > 0) {
-                    tag2.putInt("chapter", --currentChapter);
-                    tag2.putInt("page", BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - 1);
                 } else {
-                    tag2.putInt("page", 0);
+                    if (currentChapter > 0) {
+                        tag2.putInt("chapter", --currentChapter);
+                        tag2.putInt("page", BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - 1);
+                    } else {
+                        tag2.putInt("page", 0);
+                    }
                 }
             }
         }

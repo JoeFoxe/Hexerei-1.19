@@ -117,7 +117,13 @@ public class HerbJarRenderer implements BlockEntityRenderer<HerbJarTile> {
 
             long r = tileEntityIn.getBlockPos().asLong();
             Random rand = new Random(r);
-            boolean is3dModel = shaper.getModelManager().getModel(new ModelResourceLocation(item.getDescriptionId(), "inventory")).isGui3d();
+
+
+            BakedModel itemModel = itemRenderer.getModel(new ItemStack(item), null, null, 0);
+
+
+
+            boolean is3dModel = itemModel.isGui3d();
             for(int a = 0; a < ((float)tileEntityIn.itemHandler.getContents().get(0).getCount() / 1024f) * 20f; a++){
                 matrixStackIn.pushPose();
 

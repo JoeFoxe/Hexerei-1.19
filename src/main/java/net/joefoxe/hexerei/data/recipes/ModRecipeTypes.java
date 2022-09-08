@@ -62,6 +62,9 @@ public class ModRecipeTypes {
     public static final RegistryObject<RecipeType<KeychainUndoRecipe>> KEYCHAIN_UNDO_TYPE = RECIPE_TYPES.register("keychain_undo", () -> new ModRecipeType<>());
     public static final RegistryObject<RecipeSerializer<KeychainUndoRecipe>> KEYCHAIN_UNDO_SERIALIZER = RECIPE_SERIALIZERS.register("keychain_undo", () -> new SimpleRecipeSerializer<>(KeychainUndoRecipe::new));
 
+    public static final RegistryObject<RecipeType<WhistleBindRecipe>> WHISTLE_BIND_TYPE = RECIPE_TYPES.register("whistle_bind", () -> new ModRecipeType<>());
+    public static final RegistryObject<RecipeSerializer<WhistleBindRecipe>> WHISTLE_BIND_SERIALIZER = RECIPE_SERIALIZERS.register("whistle_bind", () -> new SimpleRecipeSerializer<>(WhistleBindRecipe::new));
+
     private static class ModRecipeType<T extends Recipe<?>> implements RecipeType<T> {
         @Override
         public String toString() {

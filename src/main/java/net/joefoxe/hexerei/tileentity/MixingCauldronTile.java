@@ -97,7 +97,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
     private static final int[] SLOTS_INPUT = new int[]{0, 1, 2, 3, 4, 5, 6, 7};
     private static final int[] SLOTS_OUTPUT = new int[]{8};
 
-    VoxelShape BLOOD_SIGIL_SHAPE = Block.box(2.0D, 3.0D, 2.0D, 14.0D, 4.0D, 14.0D);
+    VoxelShape BLOOD_SIGIL_SHAPE = Block.box(2.0D, 3.0D, 2.0D, 14.0D, 6.0D, 14.0D);
     VoxelShape HOPPER_SHAPE = Block.box(2.0D, 3.0D, 2.0D, 14.0D, 6.0D, 14.0D);
 
 

@@ -40,7 +40,11 @@ public class ModPlacedFeatures {
             () -> new PlacedFeature((Holder<ConfiguredFeature<?,?>>)(Holder<? extends ConfiguredFeature<?,?>>)
                     ModConfiguredFeatures.FLOWERING_LILYPAD, VegetationPlacements.worldSurfaceSquaredWithCount(4)));
 
-    public static final RegistryObject<PlacedFeature> SELENITE_GEODE_PLACED = PLACED_FEATURES.register("selenite_geode_placed",
+    public static final RegistryObject<PlacedFeature> SELENITE_GEODE_PLACED_SWAMP = PLACED_FEATURES.register("selenite_geode_placed_swamp",
+            () -> new PlacedFeature((Holder<ConfiguredFeature<?,?>>)(Holder<? extends ConfiguredFeature<?,?>>)
+                    ModConfiguredFeatures.SELENITE_GEODE, List.of(RarityFilter.onAverageOnceEvery(24), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(6), VerticalAnchor.absolute(30)), BiomeFilter.biome())));
+
+    public static final RegistryObject<PlacedFeature> SELENITE_GEODE_PLACED_JUNGLE = PLACED_FEATURES.register("selenite_geode_placed_jungle",
             () -> new PlacedFeature((Holder<ConfiguredFeature<?,?>>)(Holder<? extends ConfiguredFeature<?,?>>)
                     ModConfiguredFeatures.SELENITE_GEODE, List.of(RarityFilter.onAverageOnceEvery(24), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(6), VerticalAnchor.absolute(30)), BiomeFilter.biome())));
 

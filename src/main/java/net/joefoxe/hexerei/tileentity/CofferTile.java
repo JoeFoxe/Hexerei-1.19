@@ -17,6 +17,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Clearable;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -40,11 +41,12 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.stream.IntStream;
 
-public class CofferTile extends RandomizableContainerBlockEntity implements Clearable {
+public class CofferTile extends RandomizableContainerBlockEntity implements WorldlyContainer, Clearable {
 
-    public final ItemStackHandler itemHandler = createHandler();
-    private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
+    public final ItemStackHandler itemStackHandler = createHandler();
+    private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemStackHandler);
 
 //    protected NonNullList<ItemStack> items = NonNullList.withSize(8, ItemStack.EMPTY);
 
@@ -54,6 +56,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
     public int dyeColor = 0x422F1E;
 
     public Component customName;
+    private static final int[] SLOTS = IntStream.range(0, 36).toArray();
 
 
     public CofferTile(BlockEntityType<?> tileEntityTypeIn, BlockPos blockPos, BlockState blockState) {
@@ -78,7 +81,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
     }
 
     public void readInventory(CompoundTag compound) {
-        itemHandler.deserializeNBT(compound);
+        itemStackHandler.deserializeNBT(compound);
     }
 
     public void setDyeColor(int dyeColor){
@@ -95,15 +98,15 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
     @Override
     protected NonNullList<ItemStack> getItems() {
         NonNullList<ItemStack> items = NonNullList.withSize(36, ItemStack.EMPTY);
-        for(int i = 0; i < this.itemHandler.getSlots(); i++)
-            items.set(i, this.itemHandler.getStackInSlot(i));
+        for(int i = 0; i < this.itemStackHandler.getSlots(); i++)
+            items.set(i, this.itemStackHandler.getStackInSlot(i));
         return items;
     }
 
     @Override
     public ItemStack removeItem(int p_59613_, int p_59614_) {
         this.unpackLootTable((Player)null);
-        ItemStack itemstack = p_59613_ >= 0 && p_59613_ < this.itemHandler.getSlots() && !this.itemHandler.getStackInSlot(p_59613_).isEmpty() && p_59614_ > 0 ? this.getItems().get(p_59613_).split(p_59614_) : ItemStack.EMPTY;
+        ItemStack itemstack = p_59613_ >= 0 && p_59613_ < this.itemStackHandler.getSlots() && !this.itemStackHandler.getStackInSlot(p_59613_).isEmpty() && p_59614_ > 0 ? this.getItems().get(p_59613_).split(p_59614_) : ItemStack.EMPTY;
         if (!itemstack.isEmpty()) {
             this.sync();
         }
@@ -114,10 +117,10 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
     @Override
     public ItemStack removeItemNoUpdate(int p_59630_) {
         this.unpackLootTable((Player)null);
-        if(p_59630_ >= 0 && p_59630_ < this.itemHandler.getSlots())
+        if(p_59630_ >= 0 && p_59630_ < this.itemStackHandler.getSlots())
         {
-            this.itemHandler.setStackInSlot(p_59630_, ItemStack.EMPTY);
-            return this.itemHandler.getStackInSlot(p_59630_);
+            this.itemStackHandler.setStackInSlot(p_59630_, ItemStack.EMPTY);
+            return this.itemStackHandler.getStackInSlot(p_59630_);
 
         }
         return ItemStack.EMPTY;
@@ -126,13 +129,13 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
     @Override
     public ItemStack getItem(int p_59611_) {
         this.unpackLootTable((Player)null);
-        return this.itemHandler.getStackInSlot(p_59611_);
+        return this.itemStackHandler.getStackInSlot(p_59611_);
     }
 
     @Override
     public void setItem(int p_59616_, ItemStack p_59617_) {
         this.unpackLootTable((Player)null);
-        this.itemHandler.setStackInSlot(p_59616_, p_59617_);
+        this.itemStackHandler.setStackInSlot(p_59616_, p_59617_);
         if (p_59617_.getCount() > this.getMaxStackSize()) {
             p_59617_.setCount(this.getMaxStackSize());
         }
@@ -142,8 +145,8 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
 
     @Override
     protected void setItems(NonNullList<ItemStack> itemsIn) {
-        for(int i = 0; i <  Math.min(itemsIn.size(), this.itemHandler.getSlots()); i++)
-            this.itemHandler.setStackInSlot(i, itemsIn.get( i));
+        for(int i = 0; i <  Math.min(itemsIn.size(), this.itemStackHandler.getSlots()); i++)
+            this.itemStackHandler.setStackInSlot(i, itemsIn.get( i));
     }
 
     @Override
@@ -190,8 +193,8 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
         super.clearContent();
 //        this.items.clear();
 
-        for(int i = 0; i < this.itemHandler.getSlots(); i++)
-            this.itemHandler.setStackInSlot(i, ItemStack.EMPTY);
+        for(int i = 0; i < this.itemStackHandler.getSlots(); i++)
+            this.itemStackHandler.setStackInSlot(i, ItemStack.EMPTY);
     }
 
 //    @Override
@@ -239,7 +242,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
 //    @Override
     public CompoundTag save(CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.put("inv", itemHandler.serializeNBT());
+        tag.put("inv", itemStackHandler.serializeNBT());
         tag.putInt("ButtonToggled", this.buttonToggled);
         tag.putInt("DyeColor", this.dyeColor);
         return tag;
@@ -248,7 +251,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
 
     @Override
     public void saveAdditional(CompoundTag compound) {
-        compound.put("inv", itemHandler.serializeNBT());
+        compound.put("inv", itemStackHandler.serializeNBT());
         if (this.customName != null)
             compound.putString("CustomName", Component.Serializer.toJson(this.customName));
         compound.putInt("ButtonToggled", this.buttonToggled);
@@ -261,7 +264,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
     @Override
     public void load(CompoundTag compoundTag) {
         super.load(compoundTag);
-        itemHandler.deserializeNBT(compoundTag.getCompound("inv"));
+        itemStackHandler.deserializeNBT(compoundTag.getCompound("inv"));
         if (compoundTag.contains("CustomName", 8))
             this.customName = Component.Serializer.fromJson(compoundTag.getString("CustomName"));
         if(compoundTag.contains("ButtonToggled"))
@@ -355,19 +358,22 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
+        if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return handler.cast();
+        }
         return super.getCapability(cap);
     }
 
     public ItemStack getItemStackInSlot(int slot) {
-        return this.itemHandler.getStackInSlot(slot);
+        return this.itemStackHandler.getStackInSlot(slot);
     }
 
     public int getNumberOfItems() {
 
         int num = 0;
-        for(int i = 0; i < this.itemHandler.getSlots(); i++)
+        for(int i = 0; i < this.itemStackHandler.getSlots(); i++)
         {
-            if(this.itemHandler.getStackInSlot(i) != ItemStack.EMPTY)
+            if(this.itemStackHandler.getStackInSlot(i) != ItemStack.EMPTY)
                 num++;
         }
         return num;
@@ -376,9 +382,9 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
 
     public boolean hasItem(Item item) {
 
-        if(this.itemHandler != null){
-            for (int i = 0; i < this.itemHandler.getSlots(); i++) {
-                if (this.itemHandler.getStackInSlot(i).is(item))
+        if(this.itemStackHandler != null){
+            for (int i = 0; i < this.itemStackHandler.getSlots(); i++) {
+                if (this.itemStackHandler.getStackInSlot(i).is(item))
                     return true;
             }
             return false;
@@ -389,9 +395,9 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
 
     public boolean hasNonMaxStackItemStack(ItemStack item) {
 
-        if(this.itemHandler != null){
-            for (int i = 0; i < this.itemHandler.getSlots(); i++) {
-                if (this.itemHandler.getStackInSlot(i) == item && this.itemHandler.getStackInSlot(i).getCount() < this.itemHandler.getStackInSlot(i).getMaxStackSize())
+        if(this.itemStackHandler != null){
+            for (int i = 0; i < this.itemStackHandler.getSlots(); i++) {
+                if (this.itemStackHandler.getStackInSlot(i) == item && this.itemStackHandler.getStackInSlot(i).getCount() < this.itemStackHandler.getStackInSlot(i).getMaxStackSize())
                     return true;
             }
             return false;
@@ -401,9 +407,9 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
     }
     public boolean isEmpty() {
 
-        if(this.itemHandler != null){
-            for (int i = 0; i < this.itemHandler.getSlots(); i++) {
-                if (!this.itemHandler.getStackInSlot(i).isEmpty())
+        if(this.itemStackHandler != null){
+            for (int i = 0; i < this.itemStackHandler.getSlots(); i++) {
+                if (!this.itemStackHandler.getStackInSlot(i).isEmpty())
                     return false;
             }
             return true;
@@ -511,4 +517,18 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Clea
         return super.getMaxStackSize();
     }
 
+    @Override
+    public int[] getSlotsForFace(Direction pSide) {
+        return SLOTS;
+    }
+
+    @Override
+    public boolean canPlaceItemThroughFace(int pIndex, ItemStack pItemStack, @org.jetbrains.annotations.Nullable Direction pDirection) {
+        return itemStackHandler.isItemValid(pIndex, pItemStack);
+    }
+
+    @Override
+    public boolean canTakeItemThroughFace(int pIndex, ItemStack pStack, Direction pDirection) {
+        return true;
+    }
 }

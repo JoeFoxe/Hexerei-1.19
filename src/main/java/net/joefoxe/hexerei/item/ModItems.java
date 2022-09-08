@@ -1,17 +1,22 @@
 package net.joefoxe.hexerei.item;
 
+import com.mojang.datafixers.util.Pair;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
 import net.joefoxe.hexerei.client.renderer.entity.custom.BroomEntity;
+import net.joefoxe.hexerei.client.renderer.entity.model.*;
 import net.joefoxe.hexerei.data.books.HexereiBookItem;
 import net.joefoxe.hexerei.fluid.ModFluids;
 import net.joefoxe.hexerei.item.custom.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -19,6 +24,7 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -48,9 +54,21 @@ public class ModItems {
 //    public static final RegistryObject<Item> FIRE_TABLET = ITEMS.register("fire_tablet",
 //            () -> new FireTabletItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
+    public static final RegistryObject<Item> WHISTLE = ITEMS.register("broom_whistle",
+            () -> new WhistleItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(100)));
+
 
     public static final RegistryObject<Item> SMALL_SATCHEL = ITEMS.register("small_satchel",
             () -> new SatchelItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)){
+
+                @OnlyIn(Dist.CLIENT)
+                @Override
+                public void bakeModels() {
+                    EntityModelSet context = Minecraft.getInstance().getEntityModels();
+                    this.model = new BroomSmallSatchelModel(context.bakeLayer(BroomSmallSatchelModel.LAYER_LOCATION));
+                    this.texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/broom_small_satchel.png");
+                    this.dye_texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/broom_small_satchel_dye.png");
+                }
 
                 @Override
                 public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
@@ -85,6 +103,14 @@ public class ModItems {
     public static final RegistryObject<Item> MEDIUM_SATCHEL = ITEMS.register("medium_satchel",
             () -> new SatchelItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)){
 
+                @OnlyIn(Dist.CLIENT)
+                @Override
+                public void bakeModels() {
+                    EntityModelSet context = Minecraft.getInstance().getEntityModels();
+                    this.model = new BroomMediumSatchelModel(context.bakeLayer(BroomMediumSatchelModel.LAYER_LOCATION));
+                    this.texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/broom_satchel.png");
+                    this.dye_texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/broom_satchel_dye.png");
+                }
                 @Override
                 public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
 
@@ -119,6 +145,15 @@ public class ModItems {
     public static final RegistryObject<Item> LARGE_SATCHEL = ITEMS.register("large_satchel",
             () -> new SatchelItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)){
 
+
+                @OnlyIn(Dist.CLIENT)
+                @Override
+                public void bakeModels() {
+                    EntityModelSet context = Minecraft.getInstance().getEntityModels();
+                    this.model = new BroomLargeSatchelModel(context.bakeLayer(BroomLargeSatchelModel.LAYER_LOCATION));
+                    this.texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/broom_large_satchel.png");
+                    this.dye_texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/broom_large_satchel_dye.png");
+                }
                 @Override
                 public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
 
@@ -149,9 +184,72 @@ public class ModItems {
                 }
             });
 
-    public static final RegistryObject<Item> GOLD_RINGS = ITEMS.register("gold_rings",
-            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)){
 
+    public static final RegistryObject<Item> ENDER_SATCHEL = ITEMS.register("ender_satchel",
+            () -> new SatchelItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)){
+
+                @OnlyIn(Dist.CLIENT)
+                @Override
+                public void bakeModels() {
+                    EntityModelSet context = Minecraft.getInstance().getEntityModels();
+                    this.model = new BroomMediumSatchelModel(context.bakeLayer(BroomMediumSatchelModel.LAYER_LOCATION));
+                    this.texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/broom_ender_satchel.png");
+                    this.dye_texture = null;
+                }
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+
+                    if(Screen.hasShiftDown()) {
+                        tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                        tooltip.add(Component.translatable("tooltip.hexerei.ender_satchel").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    } else {
+                        tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                        tooltip.add(Component.translatable("tooltip.hexerei.broom_attachments").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    }
+                    super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+
+            });
+
+    public static final RegistryObject<Item> REPLACER_SATCHEL = ITEMS.register("replacer_satchel",
+            () -> new SatchelItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)){
+
+                @OnlyIn(Dist.CLIENT)
+                @Override
+                public void bakeModels() {
+                    EntityModelSet context = Minecraft.getInstance().getEntityModels();
+                    this.model = new BroomMediumSatchelModel(context.bakeLayer(BroomMediumSatchelModel.LAYER_LOCATION));
+                    this.texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/broom_replacer_satchel.png");
+                    this.dye_texture = null;
+                }
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+
+                    if(Screen.hasShiftDown()) {
+                        tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                        tooltip.add(Component.translatable("tooltip.hexerei.medium_satchel").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                        tooltip.add(Component.translatable("tooltip.hexerei.replacer_satchel_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                        tooltip.add(Component.translatable("tooltip.hexerei.replacer_satchel_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    } else {
+                        tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                        tooltip.add(Component.translatable("tooltip.hexerei.broom_attachments").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    }
+                    super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+
+            });
+
+    public static final RegistryObject<Item> GOLD_RINGS = ITEMS.register("gold_rings",
+            () -> new BroomAttachmentItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)){
+
+                @OnlyIn(Dist.CLIENT)
+                @Override
+                public void bakeModels() {
+                    EntityModelSet context = Minecraft.getInstance().getEntityModels();
+                    this.model = new BroomRingsModel(context.bakeLayer(BroomRingsModel.LAYER_LOCATION));
+                    this.texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/broom.png");
+                    this.dye_texture = null;
+                }
                 @Override
                 public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
 
@@ -161,8 +259,17 @@ public class ModItems {
             });
 
     public static final RegistryObject<Item> BROOM_NETHERITE_TIP = ITEMS.register("broom_netherite_tip",
-            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.BROOM_NETHERITE_TIP_DURABILITY.get()*/200)){
+            () -> new BroomAttachmentItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.BROOM_NETHERITE_TIP_DURABILITY.get()*/200)){
 
+
+                @OnlyIn(Dist.CLIENT)
+                @Override
+                public void bakeModels() {
+                    EntityModelSet context = Minecraft.getInstance().getEntityModels();
+                    this.model = new BroomNetheriteTipModel(context.bakeLayer(BroomNetheriteTipModel.LAYER_LOCATION));
+                    this.texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/broom_netherite_tip.png");
+                    this.dye_texture = null;
+                }
                 @Override
                 public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
                     if(Screen.hasShiftDown()) {
@@ -179,8 +286,16 @@ public class ModItems {
             });
 
     public static final RegistryObject<Item> BROOM_WATERPROOF_TIP = ITEMS.register("broom_waterproof_tip",
-            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.BROOM_WATERPROOF_TIP_DURABILITY.get()*/800)){
+            () -> new BroomAttachmentItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.BROOM_WATERPROOF_TIP_DURABILITY.get()*/800)){
 
+                @OnlyIn(Dist.CLIENT)
+                @Override
+                public void bakeModels() {
+                    EntityModelSet context = Minecraft.getInstance().getEntityModels();
+                    this.model = new BroomWaterproofTipModel(context.bakeLayer(BroomWaterproofTipModel.LAYER_LOCATION));
+                    this.texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/broom_waterproof_tip.png");
+                    this.dye_texture = null;
+                }
                 @Override
                 public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
                     if(Screen.hasShiftDown()) {
@@ -214,8 +329,16 @@ public class ModItems {
             () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
     public static final RegistryObject<Item> BROOM_BRUSH = ITEMS.register("broom_brush",
-            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.BROOM_BRUSH_DURABILITY.get()*/100)){
+            () -> new BroomAttachmentItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.BROOM_BRUSH_DURABILITY.get()*/100)){
 
+                @OnlyIn(Dist.CLIENT)
+                @Override
+                public void bakeModels() {
+                    EntityModelSet context = Minecraft.getInstance().getEntityModels();
+                    this.model = new BroomBrushBaseModel(context.bakeLayer(BroomBrushBaseModel.LAYER_LOCATION));
+                    this.texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/broom.png");
+                    this.dye_texture = null;
+                }
                 @Override
                 public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
 
@@ -228,8 +351,16 @@ public class ModItems {
             () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
     public static final RegistryObject<Item> HERB_ENHANCED_BROOM_BRUSH = ITEMS.register("herb_enhanced_broom_brush",
-            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.ENHANCED_BROOM_BRUSH_DURABILITY.get()*/200)){
+            () -> new BroomAttachmentItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.ENHANCED_BROOM_BRUSH_DURABILITY.get()*/200)){
 
+                @OnlyIn(Dist.CLIENT)
+                @Override
+                public void bakeModels() {
+                    EntityModelSet context = Minecraft.getInstance().getEntityModels();
+                    this.model = new BroomBrushBaseModel(context.bakeLayer(BroomBrushBaseModel.LAYER_LOCATION));
+                    this.texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/herb_enhanced_brush.png");
+                    this.dye_texture = null;
+                }
                 @Override
                 public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
 

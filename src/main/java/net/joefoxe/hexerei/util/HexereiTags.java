@@ -15,6 +15,7 @@ public class HexereiTags {
 		public static final TagKey<Block> HERB_BLOCK = createTag("herbs");
 		public static final TagKey<Block> HEAT_SOURCES = createTag("heat_sources");
 		public static final TagKey<Block> CROW_HARVESTABLE = createTag("crow_harvestable");
+		public static final TagKey<Block> CROW_BLOCK_HARVESTABLE = createTag("crow_block_harvestable");
 
 		private static TagKey<Block> createTag(String name) {
 			return BlockTags.create(new ResourceLocation(Hexerei.MOD_ID, name));

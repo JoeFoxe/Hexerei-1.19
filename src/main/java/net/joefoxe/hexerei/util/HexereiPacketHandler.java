@@ -84,6 +84,14 @@ public class HexereiPacketHandler {
 
         instance.registerMessage(
                 ++ id,
+                BroomEnderSatchelBrushParticlePacket.class,
+                BroomEnderSatchelBrushParticlePacket::encode,
+                BroomEnderSatchelBrushParticlePacket::decode,
+                BroomEnderSatchelBrushParticlePacket::consume
+        );
+
+        instance.registerMessage(
+                ++ id,
                 BroomDamageMiscToServer.class,
                 BroomDamageMiscToServer::encode,
                 BroomDamageMiscToServer::decode,

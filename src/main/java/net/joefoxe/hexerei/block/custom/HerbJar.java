@@ -39,6 +39,7 @@ import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.ClipContext;
@@ -91,6 +92,10 @@ public class HerbJar extends Block implements ITileEntity<HerbJarTile>, EntityBl
 
         return null;
     }
+    @Override
+    public boolean isPathfindable(BlockState pState, BlockGetter pLevel, BlockPos pPos, PathComputationType pType) {
+        return false;
+    }
 
     // hitbox REMEMBER TO DO THIS
     public static final VoxelShape SHAPE = Stream.of(
@@ -120,6 +125,7 @@ public class HerbJar extends Block implements ITileEntity<HerbJarTile>, EntityBl
 
             if(!worldIn.isClientSide()) {
                 if (tileEntity instanceof HerbJarTile) {
+                    ((HerbJarTile) tileEntity).sync();
                     MenuProvider containerProvider = createContainerProvider(worldIn, pos, getCloneItemStack(worldIn, pos, state));
                     NetworkHooks.openScreen(((ServerPlayer) player), containerProvider, b -> b.writeBlockPos(tileEntity.getBlockPos()).writeItem(getCloneItemStack(worldIn, pos, state)));
                 } else {
