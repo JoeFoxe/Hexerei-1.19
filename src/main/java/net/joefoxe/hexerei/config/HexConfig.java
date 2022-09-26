@@ -40,7 +40,7 @@ public class HexConfig {
     public static ForgeConfigSpec.ConfigValue<Integer> CROW_SPAWN_MIN_COUNT;
     public static ForgeConfigSpec.ConfigValue<Integer> CROW_SPAWN_MAX_COUNT;
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> COFFER_BLACKLIST;
-
+    public static ForgeConfigSpec.ConfigValue<Integer> WILLOW_SWAMP_RARITY;
 
 
     public static ForgeConfigSpec.BooleanValue FANCY_FONT_IN_BOOK;
@@ -161,6 +161,9 @@ public class HexConfig {
                 .defineList("coffer_blacklist", list,(o) -> true);
         builder.pop();
 
+        builder.push("Biome Generation");
+        WILLOW_SWAMP_RARITY = builder.comment("rarity of the willow swamp biome, 0 to disable").defineInRange("willow_swamp_rarity", 2, 0, Integer.MAX_VALUE);
+        builder.pop();
         COMMON_CONFIG = builder.build();
 
 
