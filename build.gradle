@@ -153,11 +153,12 @@ dependencies {
 
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
 
-    implementation fg.deobf("curse.maven:terrablender-563928:3926355")
-
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
+
+    implementation fg.deobf("com.github.glitchfiend:TerraBlender-forge:${mc_version}-2.0.1.127")
+    implementation fg.deobf("curse.maven:cyanide-541676:3832812") // Cyanide
 
     annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
 }

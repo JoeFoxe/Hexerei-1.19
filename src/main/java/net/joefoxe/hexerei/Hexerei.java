@@ -13,9 +13,7 @@ import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
 import net.joefoxe.hexerei.config.HexConfig;
 import net.joefoxe.hexerei.container.ModContainers;
 import net.joefoxe.hexerei.data.books.PageDrawing;
-import net.joefoxe.hexerei.data.candle.CandleEffects;
 import net.joefoxe.hexerei.data.datagen.ModRecipeProvider;
-import net.joefoxe.hexerei.data.recipes.HexereiRecipeProvider;
 import net.joefoxe.hexerei.data.recipes.ModRecipeTypes;
 import net.joefoxe.hexerei.data.tags.ModBiomeTagsProvider;
 import net.joefoxe.hexerei.event.ModLootModifiers;
@@ -35,13 +33,13 @@ import net.joefoxe.hexerei.tileentity.ModTileEntities;
 import net.joefoxe.hexerei.util.*;
 import net.joefoxe.hexerei.world.biome.ModBiomes;
 import net.joefoxe.hexerei.world.biomemods.ModBiomeModifiers;
-import net.joefoxe.hexerei.world.gen.ModConfiguredFeatures;
 import net.joefoxe.hexerei.world.gen.ModFeatures;
 import net.joefoxe.hexerei.world.gen.ModPlacedFeatures;
 import net.joefoxe.hexerei.world.processor.DarkCovenLegProcessor;
 import net.joefoxe.hexerei.world.processor.MangroveTreeLegProcessor;
 import net.joefoxe.hexerei.world.processor.WitchHutLegProcessor;
 import net.joefoxe.hexerei.world.structure.ModStructures;
+import net.joefoxe.hexerei.world.terrablender.ModRegion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -66,7 +64,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.data.ForgeBlockTagsProvider;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.TickEvent;
@@ -75,6 +72,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -147,20 +145,17 @@ public class Hexerei {
 		ModRecipeTypes.register(eventBus);
 		ModParticleTypes.PARTICLES.register(eventBus);
 		ModFeatures.register(eventBus);
+		ModPlacedFeatures.register(eventBus);
 		ModStructures.DEFERRED_REGISTRY_STRUCTURE.register(eventBus);
-		ModBiomes.register(eventBus);
 		ModSounds.register(eventBus);
 		ModEntityTypes.register(eventBus);
 		ModBiomeModifiers.register(eventBus);
-		ModPlacedFeatures.register(eventBus);
-
+		ModBiomes.register(eventBus);
 		HexereiJeiCompat.init();
 		ModLootModifiers.init();
 		HexereiModNameTooltipCompat.init();
 
-
 		IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
-
 
 		eventBus.addListener(this::loadComplete);
 
@@ -258,8 +253,10 @@ public class Hexerei {
 			ComposterBlock.COMPOSTABLES.put(ModItems.SAGE_SEED.get().asItem(), 0.3F);
 			ComposterBlock.COMPOSTABLES.put(ModItems.DRIED_SAGE.get().asItem(), 0.3F);
 			ComposterBlock.COMPOSTABLES.put(ModItems.TALLOW_IMPURITY.get().asItem(), 0.3F);
-
 		});
+		if (ModList.get().isLoaded("terrablender") && HexConfig.WILLOW_SWAMP_RARITY.get() > 0){
+			event.enqueueWork(ModRegion::init);
+		}
 	}
 
 

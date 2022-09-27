@@ -69,6 +69,10 @@
     "#minecraft:saplings",
     "#minecraft:flowers",
     "#forge:seeds",
-    "#forge:crops"
+    "#forge:crops",
+    {
+      "id": "ars_nouveau:magebloom",
+      "required": false
+    }
   ]
 }

@@ -4,12 +4,11 @@ import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.world.structure.structures.HexereiAbstractTreeFeature;
 import net.joefoxe.hexerei.world.structure.structures.HexereiMahoganyTreeFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 
 public class ModFeatures {
