@@ -1,0 +1,27 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "give_recipe": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:spruce_planks"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "give_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:woodcutting/spruce/crafting_table_from_spruce_planks_woodcutting"
+    ]
+  }
+}

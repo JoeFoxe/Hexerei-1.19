@@ -1,0 +1,27 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "give_recipe": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:stripped_acacia_log"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "give_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:woodcutting/acacia/acacia_planks_from_stripped_acacia_log_woodcutting"
+    ]
+  }
+}

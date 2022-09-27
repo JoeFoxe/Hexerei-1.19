@@ -1,0 +1,8 @@
+{
+  "parent": "hexerei:block/connected_glass_pane/noside_alt",
+  "textures": {
+    "edge": "hexerei:block/mahogany_planks",
+    "pane": "hexerei:block/polished_smooth_mahogany_glass_pane"
+  },
+  "render_type": "cutout_mipped"
+}

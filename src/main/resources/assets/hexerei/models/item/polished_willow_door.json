@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "hexerei:item/polished_willow_door"
+  },
+  "render_type": "translucent"
+}

@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "facing=north,left=false,right=false":  { "model":"hexerei:block/carpet_stairs_double_dyed" },
+    "facing=north,left=false,right=true":  { "model": "hexerei:block/carpet_stairs_double_right_dyed" },
+    "facing=north,left=true,right=false":  { "model": "hexerei:block/carpet_stairs_double_left_dyed" },
+    "facing=north,left=true,right=true":  { "model": "hexerei:block/carpet_stairs_double_full_dyed" },
+    "facing=east,left=false,right=false":  { "model":"hexerei:block/carpet_stairs_double_dyed", "y": 90, "uvlock": true },
+    "facing=east,left=false,right=true":  { "model": "hexerei:block/carpet_stairs_double_right_dyed", "y": 90, "uvlock": true },
+    "facing=east,left=true,right=false":  { "model": "hexerei:block/carpet_stairs_double_left_dyed", "y": 90, "uvlock": true },
+    "facing=east,left=true,right=true":  { "model": "hexerei:block/carpet_stairs_double_full_dyed", "y": 90, "uvlock": true },
+    "facing=south,left=false,right=false":  { "model":"hexerei:block/carpet_stairs_double_dyed", "y": 180, "uvlock": true },
+    "facing=south,left=false,right=true":  { "model": "hexerei:block/carpet_stairs_double_right_dyed", "y": 180, "uvlock": true },
+    "facing=south,left=true,right=false":  { "model": "hexerei:block/carpet_stairs_double_left_dyed", "y": 180, "uvlock": true },
+    "facing=south,left=true,right=true":  { "model": "hexerei:block/carpet_stairs_double_full_dyed", "y": 180, "uvlock": true },
+    "facing=west,left=false,right=false":  { "model":"hexerei:block/carpet_stairs_double_dyed", "y": 270, "uvlock": true },
+    "facing=west,left=false,right=true":  { "model": "hexerei:block/carpet_stairs_double_right_dyed", "y": 270, "uvlock": true },
+    "facing=west,left=true,right=false":  { "model": "hexerei:block/carpet_stairs_double_left_dyed", "y": 270, "uvlock": true },
+    "facing=west,left=true,right=true":  { "model": "hexerei:block/carpet_stairs_double_full_dyed", "y": 270, "uvlock": true }
+
+  }
+}

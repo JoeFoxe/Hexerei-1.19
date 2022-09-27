@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "count": 2,
+  "ingredient": {
+    "item": "minecraft:oak_planks"
+  },
+  "result": "minecraft:oak_slab"
+}

@@ -2,6 +2,7 @@ package net.joefoxe.hexerei.block.custom;
 
 import net.joefoxe.hexerei.block.ITileEntity;
 import net.joefoxe.hexerei.container.CofferContainer;
+import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.custom.CofferItem;
 import net.joefoxe.hexerei.tileentity.CofferTile;
 import net.joefoxe.hexerei.tileentity.ModTileEntities;
@@ -18,6 +19,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.entity.player.Player;
@@ -199,18 +201,24 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
     @Override
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         ItemStack itemstack = player.getItemInHand(handIn);
+        if (itemstack.is(ModItems.CROW_FLUTE.get()) && itemstack.getOrCreateTag().getInt("commandMode") == 2) {
+            player.getItemInHand(handIn).useOn(new UseOnContext(player, handIn, hit));
+            return InteractionResult.SUCCESS;
+        }
         if(!worldIn.isClientSide()) {
+
 
             BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 
-            if(tileEntity instanceof CofferTile) {
+            if (tileEntity instanceof CofferTile) {
                 MenuProvider containerProvider = createContainerProvider(worldIn, pos);
 
-                NetworkHooks.openScreen(((ServerPlayer)player), containerProvider, tileEntity.getBlockPos());
+                NetworkHooks.openScreen(((ServerPlayer) player), containerProvider, tileEntity.getBlockPos());
 
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
+
         }
         return InteractionResult.SUCCESS;
     }

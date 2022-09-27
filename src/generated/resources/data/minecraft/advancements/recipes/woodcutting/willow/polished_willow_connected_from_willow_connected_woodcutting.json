@@ -1,0 +1,27 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "give_recipe": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "hexerei:willow_connected"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "give_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:woodcutting/willow/polished_willow_connected_from_willow_connected_woodcutting"
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "minecraft:dark_oak_slab"
+  },
+  "result": "minecraft:dark_oak_button"
+}

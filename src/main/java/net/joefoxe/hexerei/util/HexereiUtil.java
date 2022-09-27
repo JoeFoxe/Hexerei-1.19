@@ -39,8 +39,12 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -83,6 +87,33 @@ public class HexereiUtil {
             throw new IllegalArgumentException("Could not get key for value " + value + "!");
         }
         return key;
+    }
+
+    public static <V> ResourceLocation getKeyOrThrow(Block value) {
+        IForgeRegistry<Block> registry = ForgeRegistries.BLOCKS;
+        ResourceLocation key = registry.getKey(value);
+        if (key == null) {
+            throw new IllegalArgumentException("Could not get key for value " + value + "!");
+        }
+        return key;
+    }
+
+    public static <V> ResourceLocation getKeyOrThrow(Item value) {
+        IForgeRegistry<Item> registry = ForgeRegistries.ITEMS;
+        ResourceLocation key = registry.getKey(value);
+        if (key == null) {
+            throw new IllegalArgumentException("Could not get key for value " + value + "!");
+        }
+        return key;
+    }
+
+
+    public static String getModNameForModId(String modId) {
+        ModList modList = ModList.get();
+        return modList.getModContainerById(modId)
+                .map(ModContainer::getModInfo)
+                .map(IModInfo::getDisplayName)
+                .orElseGet(() -> StringUtils.capitalize(modId));
     }
 
     public static float moveTo(float input, float movedTo, float speed)

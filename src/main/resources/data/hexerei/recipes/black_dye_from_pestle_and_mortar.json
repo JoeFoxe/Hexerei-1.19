@@ -1,0 +1,25 @@
+{
+  "type": "hexerei:pestle_and_mortar",
+  "ingredients": [
+    {
+      "item": "hexerei:belladonna_berries"
+    },
+    {
+      "item": "hexerei:belladonna_berries"
+    },
+    {
+      "item": "hexerei:belladonna_berries"
+    },
+    {
+      "item": "hexerei:belladonna_berries"
+    },
+    {
+      "item": "hexerei:belladonna_berries"
+    }
+  ],
+  "output": {
+    "item": "minecraft:black_dye",
+    "count": 4
+  },
+  "grindingTime": 300
+}

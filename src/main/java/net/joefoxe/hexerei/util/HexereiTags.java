@@ -39,6 +39,11 @@ public class HexereiTags {
 		public static final TagKey<Item> HERB_ITEM = createTag("herbs");
 		public static final TagKey<Item> TALLOW_MELTABLE = createTag("tallow_meltable");
 		public static final TagKey<Item> CANDLES = createTag("candles");
+		public static final TagKey<Item> WILLOW_PLANKS = createTag("willow_planks");
+		public static final TagKey<Item> MAHOGANY_PLANKS = createTag("mahogany_planks");
+		public static final TagKey<Item> FLOWER_BIPRODUCT = createTag("flower_biproduct");
+		public static final TagKey<Item> INFUSED_FABRIC_CARPET = createTag("infused_fabric_carpet");
+		public static final TagKey<Item> INFUSED_FABRIC_BLOCK = createTag("infused_fabric_block");
 
 		private static TagKey<Item> createTag(String name) {
 			return ItemTags.create(new ResourceLocation(Hexerei.MOD_ID, name));

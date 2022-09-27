@@ -1,0 +1,10 @@
+{
+  "type": "hexerei:add_to_candle",
+  "input": {
+    "item": "hexerei:mahogany_connected"
+  },
+  "output": {
+    "item": "hexerei:candle",
+    "nbt": "{base:{layer:\"hexerei:mahogany_connected\",layerFromBlockLocation:1b}}"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "hexerei:polished_mahogany_connected"
+  },
+  "ingredient_count": 4,
+  "result": "hexerei:polished_mahogany_boat"
+}

@@ -1,0 +1,36 @@
+
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"render_type": "cutout",
+	"textures": {
+		"top": "hexerei:block/infused_fabric_ornate",
+		"side": "hexerei:block/infused_fabric_ornate",
+		"particle": "#side"
+	},
+	"elements": [
+		{
+			"from": [8, 0, 2],
+			"to": [16, 1, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -7, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 8, 1], "texture": "#side"},
+				"east": {"uv": [2, 0, 14, 1], "texture": "#side"},
+				"south": {"uv": [8, 0, 16, 1], "texture": "#side"},
+				"west": {"uv": [2, 15, 14, 16], "texture": "#side"},
+				"up": {"uv": [8, 2, 16, 14], "texture": "#top"}
+			}
+		},
+		{
+			"from": [-0.01, -8.01, 2],
+			"to": [8, -7, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -7, 8]},
+			"faces": {
+				"north": {"uv": [0, 15, 8, 16], "texture": "#side"},
+				"south": {"uv": [0, 15, 8, 16], "texture": "#side"},
+				"west": {"uv": [2, 15, 14, 16], "texture": "#side"},
+				"up": {"uv": [0, 2, 8, 14], "texture": "#top"}
+			}
+		}
+	]
+}

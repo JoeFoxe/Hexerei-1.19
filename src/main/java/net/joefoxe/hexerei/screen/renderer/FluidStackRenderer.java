@@ -7,6 +7,13 @@ import java.util.List;
 
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.ingredients.IIngredientRenderer;
+import net.joefoxe.hexerei.integration.HexereiModNameTooltipCompat;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Style;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.forgespi.language.IModInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.base.Preconditions;
@@ -182,8 +189,8 @@ public class FluidStackRenderer implements IIngredientRenderer<FluidStack> {
         float uMax = textureSprite.getU1();
         float vMin = textureSprite.getV0();
         float vMax = textureSprite.getV1();
-        uMax = uMax - (maskRight / 16F * (uMax - uMin));
-        vMax = vMax - (maskTop / 16F * (vMax - vMin));
+        uMin = uMin + (maskRight / 16F * (uMax - uMin));
+        vMin = vMin + (maskTop / 16F * (vMax - vMin));
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
@@ -218,6 +225,8 @@ public class FluidStackRenderer implements IIngredientRenderer<FluidStack> {
             MutableComponent amountString = Component.translatable("book.hexerei.tooltip.liquid.amount", nf.format(amount));
             tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
         }
+
+
 
         return tooltip;
     }

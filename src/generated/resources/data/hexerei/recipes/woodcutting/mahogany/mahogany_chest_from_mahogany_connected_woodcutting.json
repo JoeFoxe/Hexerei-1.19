@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "hexerei:mahogany_connected"
+  },
+  "ingredient_count": 6,
+  "result": "hexerei:mahogany_chest"
+}

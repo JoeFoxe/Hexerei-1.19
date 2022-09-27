@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "hexerei:willow_button",
-    "hexerei:mahogany_button"
+    "hexerei:mahogany_button",
+    "hexerei:polished_willow_button",
+    "hexerei:polished_mahogany_button"
   ]
 }

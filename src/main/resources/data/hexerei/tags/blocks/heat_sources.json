@@ -7,7 +7,7 @@
     "#minecraft:campfires",
     "#minecraft:fire",
     {
-      "id": "farmersdelight:heat_sources",
+      "id": "#farmersdelight:heat_sources",
       "required": false
     }
   ]

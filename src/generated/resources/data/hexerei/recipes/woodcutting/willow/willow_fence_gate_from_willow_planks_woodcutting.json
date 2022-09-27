@@ -1,0 +1,7 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "hexerei:willow_planks"
+  },
+  "result": "hexerei:willow_fence_gate"
+}

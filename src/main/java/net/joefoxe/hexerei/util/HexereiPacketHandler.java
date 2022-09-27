@@ -68,6 +68,14 @@ public class HexereiPacketHandler {
 
         instance.registerMessage(
                 ++ id,
+                DrainCauldronToServer.class,
+                DrainCauldronToServer::encode,
+                DrainCauldronToServer::decode,
+                DrainCauldronToServer::consume
+        );
+
+        instance.registerMessage(
+                ++ id,
                 BroomSyncRotation.class,
                 BroomSyncRotation::encode,
                 BroomSyncRotation::decode,

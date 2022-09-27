@@ -1,0 +1,7 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "hexerei:polished_mahogany_pillar"
+  },
+  "result": "hexerei:polished_mahogany_fence"
+}

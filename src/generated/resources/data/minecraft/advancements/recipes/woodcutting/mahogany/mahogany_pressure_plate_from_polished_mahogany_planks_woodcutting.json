@@ -1,0 +1,27 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "give_recipe": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "hexerei:polished_mahogany_planks"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "give_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:woodcutting/mahogany/mahogany_pressure_plate_from_polished_mahogany_planks_woodcutting"
+    ]
+  }
+}

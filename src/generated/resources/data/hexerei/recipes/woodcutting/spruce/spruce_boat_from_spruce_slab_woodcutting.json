@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "minecraft:spruce_slab"
+  },
+  "ingredient_count": 8,
+  "result": "minecraft:spruce_boat"
+}

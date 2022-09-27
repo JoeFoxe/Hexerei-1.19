@@ -1,0 +1,27 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "give_recipe": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:mangrove_planks"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "give_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:woodcutting/mangrove/mangrove_chest_boat_from_mangrove_planks_woodcutting"
+    ]
+  }
+}

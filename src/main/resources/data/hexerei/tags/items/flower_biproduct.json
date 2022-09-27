@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "hexerei:belladonna_flowers",
+    "hexerei:belladonna_berries",
+    "hexerei:mandrake_flowers",
+    "hexerei:mugwort_flowers",
+    "hexerei:mugwort_leaves",
+    "hexerei:yellow_dock_flowers",
+    "hexerei:yellow_dock_leaves"
+  ]
+}

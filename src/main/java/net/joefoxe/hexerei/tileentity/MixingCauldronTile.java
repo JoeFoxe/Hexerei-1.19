@@ -100,6 +100,8 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
     VoxelShape BLOOD_SIGIL_SHAPE = Block.box(2.0D, 3.0D, 2.0D, 14.0D, 6.0D, 14.0D);
     VoxelShape HOPPER_SHAPE = Block.box(2.0D, 3.0D, 2.0D, 14.0D, 6.0D, 14.0D);
 
+    public float fluidRenderLevel = 0;
+    public FluidStack renderedFluid;
 
 
     public MixingCauldronTile(BlockEntityType<?> tileEntityTypeIn, BlockPos blockPos, BlockState blockState) {
@@ -112,6 +114,10 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
 
     public FluidStack getFluidStack(){
         return this.fluidStack;
+    }
+
+    public void setFluidStack(FluidStack fluidStack){
+        this.fluidStack = fluidStack;
     }
 
     @Override
@@ -713,7 +719,14 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
 
 //    @Override
     public void tick() {
+
+
         if(level.isClientSide) {
+            float dist = Math.abs(fluidRenderLevel - fluidStack.getAmount()) / 1000f;
+            if(!fluidStack.isEmpty())
+                renderedFluid = fluidStack.copy();
+            if(renderedFluid != null)
+                renderedFluid.setAmount((int)fluidRenderLevel);
             renderParticles();
             return;
         }

@@ -55,10 +55,15 @@ public class PestleAndMortarRecipeCategory implements IRecipeCategory<PestleAndM
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, PestleAndMortarRecipe recipe, IFocusGroup focuses) {
         builder.setShapeless();
+        if(recipe.getIngredients().size() > 0)
         builder.addSlot(RecipeIngredientRole.INPUT, 11, 14).addIngredients(recipe.getIngredients().get(0));//.getItemStacks().init(0, true, 10, 13);
+        if(recipe.getIngredients().size() > 1)
         builder.addSlot(RecipeIngredientRole.INPUT, 20, 36).addIngredients(recipe.getIngredients().get(1));
+        if(recipe.getIngredients().size() > 2)
         builder.addSlot(RecipeIngredientRole.INPUT, 42, 45).addIngredients(recipe.getIngredients().get(2));
+        if(recipe.getIngredients().size() > 3)
         builder.addSlot(RecipeIngredientRole.INPUT, 64, 36).addIngredients(recipe.getIngredients().get(3));
+        if(recipe.getIngredients().size() > 4)
         builder.addSlot(RecipeIngredientRole.INPUT, 73, 14).addIngredients(recipe.getIngredients().get(4));
         builder.addSlot(RecipeIngredientRole.OUTPUT, 117, 31).addItemStack(recipe.getResultItem());
 

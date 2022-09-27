@@ -2,6 +2,7 @@ package net.joefoxe.hexerei.block.custom;
 
 import net.joefoxe.hexerei.block.ITileEntity;
 import net.joefoxe.hexerei.container.HerbJarContainer;
+import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.items.JarHandler;
 import net.joefoxe.hexerei.tileentity.HerbJarTile;
 import net.joefoxe.hexerei.tileentity.ModTileEntities;
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeableLeatherItem;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.client.gui.screens.Screen;
@@ -119,6 +121,10 @@ public class HerbJar extends Block implements ITileEntity<HerbJarTile>, EntityBl
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         ItemStack itemstack = player.getItemInHand(handIn);
 
+        if (player.getItemInHand(handIn).is(ModItems.CROW_FLUTE.get()) && player.getItemInHand(handIn).getOrCreateTag().getInt("commandMode") == 2) {
+            player.getItemInHand(handIn).useOn(new UseOnContext(player, handIn, hit));
+            return InteractionResult.SUCCESS;
+        }
         if ((itemstack.isEmpty() && player.isShiftKeyDown()) || state.getValue(HorizontalDirectionalBlock.FACING).getOpposite() != hit.getDirection()) {
 
             BlockEntity tileEntity = worldIn.getBlockEntity(pos);

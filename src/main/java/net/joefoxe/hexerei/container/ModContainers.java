@@ -22,6 +22,12 @@ public class ModContainers {
 
     public static DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Hexerei.MOD_ID);
 
+    public static final RegistryObject<MenuType<WoodcutterContainer>> WOODCUTTER_CONTAINER
+            = CONTAINERS.register("woodcutter_container",
+            () -> IForgeMenuType.create(((windowId, inv, data) -> {
+                return new WoodcutterContainer(windowId, inv);
+            })));
+
     public static final RegistryObject<MenuType<MixingCauldronContainer>> MIXING_CAULDRON_CONTAINER
             = CONTAINERS.register("mixing_cauldron_container",
             () -> IForgeMenuType.create(((windowId, inv, data) -> {

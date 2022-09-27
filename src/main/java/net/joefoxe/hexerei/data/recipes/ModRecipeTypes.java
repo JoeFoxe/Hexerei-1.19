@@ -49,6 +49,12 @@ public class ModRecipeTypes {
     public static final RegistryObject<RecipeSerializer<CutCandleRecipe>> CUT_CANDLE_SERIALIZER =
             RECIPE_SERIALIZERS.register("cut_candle", () -> new SimpleRecipeSerializer<>(CutCandleRecipe::new));
 
+    public static final RegistryObject<RecipeSerializer<WoodcutterRecipe>> WOODCUTTING_SERIALIZER =
+            RECIPE_SERIALIZERS.register("woodcutting", () -> WoodcutterRecipe.Serializer.INSTANCE);
+
+    public static final RegistryObject<RecipeSerializer<FillWaxingKitRecipe>> FILL_WAXING_KIT_SERIALIZER =
+            RECIPE_SERIALIZERS.register("fill_waxing_kit", () -> new SimpleRecipeSerializer<>(FillWaxingKitRecipe::new));
+
 
     public static final RegistryObject<RecipeType<CrowFluteRecipe>> CROW_FLUTE_DYE_TYPE = RECIPE_TYPES.register("crow_flute_dye", () -> new ModRecipeType<>());
     public static final RegistryObject<RecipeSerializer<CrowFluteRecipe>> CROW_FLUTE_DYE_SERIALIZER = RECIPE_SERIALIZERS.register("crow_flute_dye", () -> new CrowFluteRecipe.Serializer());
@@ -64,6 +70,8 @@ public class ModRecipeTypes {
 
     public static final RegistryObject<RecipeType<WhistleBindRecipe>> WHISTLE_BIND_TYPE = RECIPE_TYPES.register("whistle_bind", () -> new ModRecipeType<>());
     public static final RegistryObject<RecipeSerializer<WhistleBindRecipe>> WHISTLE_BIND_SERIALIZER = RECIPE_SERIALIZERS.register("whistle_bind", () -> new SimpleRecipeSerializer<>(WhistleBindRecipe::new));
+
+    public static final RegistryObject<RecipeType<WoodcutterRecipe>> WOODCUTTING_TYPE = RECIPE_TYPES.register("woodcutting", () -> new ModRecipeType<>());
 
     private static class ModRecipeType<T extends Recipe<?>> implements RecipeType<T> {
         @Override

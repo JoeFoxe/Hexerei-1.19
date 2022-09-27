@@ -3,6 +3,8 @@ package net.joefoxe.hexerei.client.renderer.entity;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.entity.custom.BroomEntity;
 import net.joefoxe.hexerei.client.renderer.entity.custom.CrowEntity;
+import net.joefoxe.hexerei.client.renderer.entity.custom.ModBoatEntity;
+import net.joefoxe.hexerei.client.renderer.entity.custom.ModChestBoatEntity;
 import net.joefoxe.hexerei.item.ModItemGroup;
 import net.joefoxe.hexerei.item.ModItems;
 import net.minecraft.resources.ResourceLocation;
@@ -41,6 +43,18 @@ public class ModEntityTypes {
                     () -> EntityType.Builder.<BroomEntity>of(BroomEntity::new,
                                     MobCategory.MISC).sized(1.175F, 0.3625F).setTrackingRange(10)
                             .build(new ResourceLocation(Hexerei.MOD_ID, "broom").toString()));
+
+    public static final RegistryObject<EntityType<ModBoatEntity>> HEXEREI_BOAT =
+            ENTITY_TYPES.register("boat",
+                    () -> EntityType.Builder.of(ModBoatEntity::new,
+                                    MobCategory.MISC).sized(1.175F, 0.3625F).setTrackingRange(10)
+                            .build(new ResourceLocation(Hexerei.MOD_ID, "boat").toString()));
+
+    public static final RegistryObject<EntityType<ModChestBoatEntity>> HEXEREI_CHEST_BOAT =
+            ENTITY_TYPES.register("chest_boat",
+                    () -> EntityType.Builder.of(ModChestBoatEntity::new,
+                                    MobCategory.MISC).sized(1.175F, 0.3625F).setTrackingRange(10)
+                            .build(new ResourceLocation(Hexerei.MOD_ID, "chest_boat").toString()));
 
     public static final RegistryObject<EntityType<CrowEntity>> CROW =
             ENTITY_TYPES.register("crow",

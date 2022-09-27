@@ -1,0 +1,17 @@
+
+{
+  "variants": {
+    "axis=x": {
+      "model": "hexerei:block/polished_willow_pillar_horizontal",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "hexerei:block/polished_willow_pillar"
+    },
+    "axis=z": {
+      "model": "hexerei:block/polished_willow_pillar_horizontal",
+      "x": 90
+    }
+  }
+}

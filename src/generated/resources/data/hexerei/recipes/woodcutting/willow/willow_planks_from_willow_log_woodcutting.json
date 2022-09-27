@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "count": 5,
+  "ingredient": {
+    "item": "hexerei:willow_log"
+  },
+  "result": "hexerei:willow_planks"
+}

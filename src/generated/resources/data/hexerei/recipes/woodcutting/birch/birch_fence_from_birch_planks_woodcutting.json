@@ -1,0 +1,7 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "minecraft:birch_planks"
+  },
+  "result": "minecraft:birch_fence"
+}

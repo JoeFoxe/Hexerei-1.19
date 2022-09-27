@@ -20,6 +20,7 @@ public class ModSounds {
     public static RegistryObject<SoundEvent> CROW_FLUTE_DESELECT = registerSoundEvent("crow_flute_deselect");
 
     public static RegistryObject<SoundEvent> BROOM_WHISTLE = registerSoundEvent("whistle");
+    public static RegistryObject<SoundEvent> HOOTSIFER = registerSoundEvent("hootsifer");
 
     public static RegistryObject<SoundEvent> BOOK_TURN_PAGE_SLOW = registerSoundEvent("book_turn_page_slow");
     public static RegistryObject<SoundEvent> BOOK_TURN_PAGE_FAST = registerSoundEvent("book_turn_page_fast");

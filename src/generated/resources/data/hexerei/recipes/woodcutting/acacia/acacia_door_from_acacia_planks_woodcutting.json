@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "minecraft:acacia_planks"
+  },
+  "ingredient_count": 2,
+  "result": "minecraft:acacia_door"
+}

@@ -1,7 +1,7 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "particle/broom_particle_3"
+		"layer0": "hexerei:particle/broom_particle_3"
 	},
 	"overrides": [
 		{ "predicate": { "angle": 0.0 }, "model": "hexerei:item/dowsing_rod1" },

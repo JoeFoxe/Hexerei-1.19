@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_trapdoor_open",
+  "textures": {
+    "texture": "hexerei:block/polished_mahogany_trapdoor"
+  },
+  "render_type": "translucent"
+}

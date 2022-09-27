@@ -1,0 +1,7 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "hexerei:polished_willow_pillar"
+  },
+  "result": "hexerei:willow_pressure_plate"
+}

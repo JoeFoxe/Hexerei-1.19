@@ -30,6 +30,15 @@ public class CofferContainer extends AbstractContainerMenu {
     public static final int OFFSET = 28;
 
 
+    private Slot cofferSlot(Container container, int slot, int x, int y){
+        return new Slot(container, slot, x, y){
+            @Override
+            public boolean mayPlace(ItemStack pStack) {
+                return container.canPlaceItem(slot, pStack);
+            }
+        };
+    }
+
     public CofferContainer(int windowId, Level world, BlockPos pos, Inventory playerInventory, Player player) {
         super(ModContainers.COFFER_CONTAINER.get(), windowId);
         this.tileEntity = world.getBlockEntity(pos);
@@ -46,42 +55,42 @@ public class CofferContainer extends AbstractContainerMenu {
         //add slots for coffer
         if(tileEntity != null && tileEntity instanceof Container container) {
 
-            this.addSlot(new Slot(container, 0, 15 + (21 * 0), 18 - OFFSET));
-            this.addSlot(new Slot(container, 1, 15 + (21 * 1), 18 - OFFSET));
-            this.addSlot(new Slot(container, 2, 15 + (21 * 2), 18 - OFFSET));
-            this.addSlot(new Slot(container, 3, 15 + (21 * 3), 18 - OFFSET));
-            this.addSlot(new Slot(container, 4, 15 + (21 * 4), 18 - OFFSET));
-            this.addSlot(new Slot(container, 5, 15 + (21 * 5), 18 - OFFSET));
-            this.addSlot(new Slot(container, 6, 15 + (21 * 6), 18 - OFFSET));
-            this.addSlot(new Slot(container, 7, 15 + (21 * 7), 18 - OFFSET));
-            this.addSlot(new Slot(container, 8, 15 + (21 * 8), 18 - OFFSET));
-            this.addSlot(new Slot(container, 9, 15 + (21 * 0), 39 - OFFSET));
-            this.addSlot(new Slot(container, 10, 15 + (21 * 1), 39 - OFFSET));
-            this.addSlot(new Slot(container, 11, 15 + (21 * 2), 39 - OFFSET));
-            this.addSlot(new Slot(container, 12, 15 + (21 * 6), 39 - OFFSET));
-            this.addSlot(new Slot(container, 13, 15 + (21 * 7), 39 - OFFSET));
-            this.addSlot(new Slot(container, 14, 15 + (21 * 8), 39 - OFFSET));
-            this.addSlot(new Slot(container, 15, 15 + (21 * 0), 60 - OFFSET));
-            this.addSlot(new Slot(container, 16, 15 + (21 * 1), 60 - OFFSET));
-            this.addSlot(new Slot(container, 17, 15 + (21 * 2), 60 - OFFSET));
-            this.addSlot(new Slot(container, 18, 15 + (21 * 6), 60 - OFFSET));
-            this.addSlot(new Slot(container, 19, 15 + (21 * 7), 60 - OFFSET));
-            this.addSlot(new Slot(container, 20, 15 + (21 * 8), 60 - OFFSET));
-            this.addSlot(new Slot(container, 21, 15 + (21 * 0), 81 - OFFSET));
-            this.addSlot(new Slot(container, 22, 15 + (21 * 1), 81 - OFFSET));
-            this.addSlot(new Slot(container, 23, 15 + (21 * 2), 81 - OFFSET));
-            this.addSlot(new Slot(container, 24, 15 + (21 * 6), 81 - OFFSET));
-            this.addSlot(new Slot(container, 25, 15 + (21 * 7), 81 - OFFSET));
-            this.addSlot(new Slot(container, 26, 15 + (21 * 8), 81 - OFFSET));
-            this.addSlot(new Slot(container, 27, 15 + (21 * 0), 102 - OFFSET));
-            this.addSlot(new Slot(container, 28, 15 + (21 * 1), 102 - OFFSET));
-            this.addSlot(new Slot(container, 29, 15 + (21 * 2), 102 - OFFSET));
-            this.addSlot(new Slot(container, 30, 15 + (21 * 3), 102 - OFFSET));
-            this.addSlot(new Slot(container, 31, 15 + (21 * 4), 102 - OFFSET));
-            this.addSlot(new Slot(container, 32, 15 + (21 * 5), 102 - OFFSET));
-            this.addSlot(new Slot(container, 33, 15 + (21 * 6), 102 - OFFSET));
-            this.addSlot(new Slot(container, 34, 15 + (21 * 7), 102 - OFFSET));
-            this.addSlot(new Slot(container, 35, 15 + (21 * 8), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 0, 15 + (21 * 0), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 1, 15 + (21 * 1), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 2, 15 + (21 * 2), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 3, 15 + (21 * 3), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 4, 15 + (21 * 4), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 5, 15 + (21 * 5), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 6, 15 + (21 * 6), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 7, 15 + (21 * 7), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 8, 15 + (21 * 8), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 9, 15 + (21 * 0), 39 - OFFSET));
+            this.addSlot(cofferSlot(container, 10, 15 + (21 * 1), 39 - OFFSET));
+            this.addSlot(cofferSlot(container, 11, 15 + (21 * 2), 39 - OFFSET));
+            this.addSlot(cofferSlot(container, 12, 15 + (21 * 6), 39 - OFFSET));
+            this.addSlot(cofferSlot(container, 13, 15 + (21 * 7), 39 - OFFSET));
+            this.addSlot(cofferSlot(container, 14, 15 + (21 * 8), 39 - OFFSET));
+            this.addSlot(cofferSlot(container, 15, 15 + (21 * 0), 60 - OFFSET));
+            this.addSlot(cofferSlot(container, 16, 15 + (21 * 1), 60 - OFFSET));
+            this.addSlot(cofferSlot(container, 17, 15 + (21 * 2), 60 - OFFSET));
+            this.addSlot(cofferSlot(container, 18, 15 + (21 * 6), 60 - OFFSET));
+            this.addSlot(cofferSlot(container, 19, 15 + (21 * 7), 60 - OFFSET));
+            this.addSlot(cofferSlot(container, 20, 15 + (21 * 8), 60 - OFFSET));
+            this.addSlot(cofferSlot(container, 21, 15 + (21 * 0), 81 - OFFSET));
+            this.addSlot(cofferSlot(container, 22, 15 + (21 * 1), 81 - OFFSET));
+            this.addSlot(cofferSlot(container, 23, 15 + (21 * 2), 81 - OFFSET));
+            this.addSlot(cofferSlot(container, 24, 15 + (21 * 6), 81 - OFFSET));
+            this.addSlot(cofferSlot(container, 25, 15 + (21 * 7), 81 - OFFSET));
+            this.addSlot(cofferSlot(container, 26, 15 + (21 * 8), 81 - OFFSET));
+            this.addSlot(cofferSlot(container, 27, 15 + (21 * 0), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 28, 15 + (21 * 1), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 29, 15 + (21 * 2), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 30, 15 + (21 * 3), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 31, 15 + (21 * 4), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 32, 15 + (21 * 5), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 33, 15 + (21 * 6), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 34, 15 + (21 * 7), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 35, 15 + (21 * 8), 102 - OFFSET));
 
 
 //            tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {

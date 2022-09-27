@@ -1,0 +1,7 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "hexerei:polished_willow_planks"
+  },
+  "result": "hexerei:polished_willow_layered"
+}

@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "hexerei:willow_slab",
-    "hexerei:mahogany_slab"
+    "hexerei:mahogany_slab",
+    "hexerei:polished_willow_slab",
+    "hexerei:polished_mahogany_slab"
   ]
 }

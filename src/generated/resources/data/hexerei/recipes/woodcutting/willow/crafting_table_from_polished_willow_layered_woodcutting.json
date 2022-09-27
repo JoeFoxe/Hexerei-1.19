@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "hexerei:polished_willow_layered"
+  },
+  "ingredient_count": 2,
+  "result": "minecraft:crafting_table"
+}

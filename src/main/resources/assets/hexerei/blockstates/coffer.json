@@ -2,7 +2,7 @@
 {
   "variants": {
     "": {
-      "model": "hexerei:block/blank"
+      "model": "hexerei:block/coffer_block"
     }
   }
 }

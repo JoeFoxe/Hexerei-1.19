@@ -1,0 +1,10 @@
+{
+  "type": "hexerei:add_to_candle",
+  "input": {
+    "item": "hexerei:polished_mahogany_layered"
+  },
+  "output": {
+    "item": "hexerei:candle",
+    "nbt": "{base:{layer:\"hexerei:polished_mahogany_layered\",layerFromBlockLocation:1b}}"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "facing=north,left=false,right=false":  { "model":"hexerei:block/infused_fabric_carpet_stairs_double" },
+    "facing=north,left=false,right=true":  { "model": "hexerei:block/infused_fabric_carpet_stairs_double_right" },
+    "facing=north,left=true,right=false":  { "model": "hexerei:block/infused_fabric_carpet_stairs_double_left" },
+    "facing=north,left=true,right=true":  { "model": "hexerei:block/infused_fabric_carpet_stairs_double_full" },
+    "facing=east,left=false,right=false":  { "model":"hexerei:block/infused_fabric_carpet_stairs_double", "y": 90, "uvlock": true },
+    "facing=east,left=false,right=true":  { "model": "hexerei:block/infused_fabric_carpet_stairs_double_right", "y": 90, "uvlock": true },
+    "facing=east,left=true,right=false":  { "model": "hexerei:block/infused_fabric_carpet_stairs_double_left", "y": 90, "uvlock": true },
+    "facing=east,left=true,right=true":  { "model": "hexerei:block/infused_fabric_carpet_stairs_double_full", "y": 90, "uvlock": true },
+    "facing=south,left=false,right=false":  { "model":"hexerei:block/infused_fabric_carpet_stairs_double", "y": 180, "uvlock": true },
+    "facing=south,left=false,right=true":  { "model": "hexerei:block/infused_fabric_carpet_stairs_double_right", "y": 180, "uvlock": true },
+    "facing=south,left=true,right=false":  { "model": "hexerei:block/infused_fabric_carpet_stairs_double_left", "y": 180, "uvlock": true },
+    "facing=south,left=true,right=true":  { "model": "hexerei:block/infused_fabric_carpet_stairs_double_full", "y": 180, "uvlock": true },
+    "facing=west,left=false,right=false":  { "model":"hexerei:block/infused_fabric_carpet_stairs_double", "y": 270, "uvlock": true },
+    "facing=west,left=false,right=true":  { "model": "hexerei:block/infused_fabric_carpet_stairs_double_right", "y": 270, "uvlock": true },
+    "facing=west,left=true,right=false":  { "model": "hexerei:block/infused_fabric_carpet_stairs_double_left", "y": 270, "uvlock": true },
+    "facing=west,left=true,right=true":  { "model": "hexerei:block/infused_fabric_carpet_stairs_double_full", "y": 270, "uvlock": true }
+
+  }
+}

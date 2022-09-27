@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "hexerei:willow_fence",
-    "hexerei:mahogany_fence"
+    "hexerei:mahogany_fence",
+    "hexerei:polished_willow_fence",
+    "hexerei:polished_mahogany_fence"
   ]
 }

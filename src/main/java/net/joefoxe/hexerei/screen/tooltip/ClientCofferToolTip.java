@@ -77,6 +77,7 @@ public class ClientCofferToolTip implements HexereiBookTooltip {
             int j = this.gridSizeY();
             int k = 0;
 
+            this.drawBorder(p_194043_, p_194044_ + getHeightOffset(), i, j, matrixStack, z);
             for (int y = 0; y < 5; y++) {
                 for (int x = 0; x < 9; x++) {
                     if (k == 36)
@@ -92,7 +93,6 @@ public class ClientCofferToolTip implements HexereiBookTooltip {
             }
 
 
-            this.drawBorder(p_194043_, p_194044_ + getHeightOffset(), i, j, matrixStack, z);
         }
     }
 

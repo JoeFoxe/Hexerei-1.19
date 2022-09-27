@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "hexerei:willow_planks",
+    "hexerei:willow_connected",
+    "hexerei:polished_willow_planks",
+    "hexerei:polished_willow_connected",
+    "hexerei:polished_willow_layered",
+    "hexerei:polished_willow_pillar"
+  ]
+}

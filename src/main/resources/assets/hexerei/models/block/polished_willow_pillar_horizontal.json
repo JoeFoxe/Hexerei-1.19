@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column_horizontal",
+  "textures": {
+    "end": "hexerei:block/polished_willow_cap",
+    "side": "hexerei:block/polished_willow_pillar"
+  }
+}

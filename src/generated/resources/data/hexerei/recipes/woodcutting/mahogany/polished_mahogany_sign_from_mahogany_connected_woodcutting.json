@@ -1,0 +1,7 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "hexerei:mahogany_connected"
+  },
+  "result": "hexerei:polished_mahogany_sign"
+}

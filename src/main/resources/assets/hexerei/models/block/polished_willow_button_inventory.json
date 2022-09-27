@@ -1,0 +1,6 @@
+{
+  "parent": "block/button_inventory",
+  "textures": {
+    "texture": "hexerei:block/polished_willow_planks"
+  }
+}

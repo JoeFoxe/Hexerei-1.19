@@ -1,0 +1,7 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "minecraft:birch_slab"
+  },
+  "result": "minecraft:birch_button"
+}

@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "count": 2,
+  "ingredient": {
+    "item": "hexerei:polished_mahogany_pillar"
+  },
+  "result": "hexerei:mahogany_button"
+}

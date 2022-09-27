@@ -1,0 +1,10 @@
+{
+  "type": "hexerei:add_to_candle",
+  "input": {
+    "item": "hexerei:polished_willow_pillar"
+  },
+  "output": {
+    "item": "hexerei:candle",
+    "nbt": "{base:{layer:\"hexerei:polished_willow_pillar\",layerFromBlockLocation:1b}}"
+  }
+}

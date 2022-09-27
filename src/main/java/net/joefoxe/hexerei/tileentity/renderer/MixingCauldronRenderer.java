@@ -10,6 +10,7 @@ import net.joefoxe.hexerei.block.custom.HerbJar;
 import net.joefoxe.hexerei.block.custom.MixingCauldron;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.tileentity.MixingCauldronTile;
+import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -57,14 +58,21 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
         }
         else return;
 
+        float dist = Math.abs(tileEntityIn.fluidRenderLevel - tileEntityIn.getFluidStack().getAmount()) / 1000f;
+        tileEntityIn.fluidRenderLevel = HexereiUtil.moveTo(tileEntityIn.fluidRenderLevel, tileEntityIn.getFluidStack().getAmount(),  (25 + 50 * dist) * partialTicks);
 
         renderBlock(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, ModBlocks.MIXING_CAULDRON.get().defaultBlockState().setValue(HerbJar.GUI_RENDER, true).setValue(HerbJar.DYED, tileEntityIn.dyeColor != 0x422F1E && tileEntityIn.dyeColor != 0), null, tileEntityIn.getDyeColor());
 
         float fillPercentage = 0;
+        boolean flag = false;
         FluidStack fluidStack = tileEntityIn.getFluidInTank(0);
+        if(tileEntityIn.renderedFluid != null) {
+            fluidStack = tileEntityIn.renderedFluid;
+            flag = true;
+        }
         if(!fluidStack.isEmpty()) {
             matrixStackIn.pushPose();
-            fillPercentage = Math.min(1, (float) fluidStack.getAmount() / tileEntityIn.getTankCapacity(0));
+            fillPercentage = Math.min(1, (float) (flag ? tileEntityIn.fluidRenderLevel : fluidStack.getAmount()) / tileEntityIn.getTankCapacity(0));
 //            matrixStackIn.scale(1.05f, 1, 1.05f);
             if (fluidStack.getFluid().is(Tags.Fluids.GASEOUS))
                 renderFluid(matrixStackIn, bufferIn, fluidStack, fillPercentage, 1, combinedLightIn, tileEntityIn);
@@ -134,6 +142,7 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
 
         //gives the wobble
         ((MixingCauldronTile)tileEntityIn).degrees++;
+
         if (tileEntityIn.getItemInSlot(9) == ModItems.BLOOD_SIGIL.get()) {
             if(tileEntityIn.getItemInSlot(9).asItem() == ModItems.BLOOD_SIGIL.get())
             {

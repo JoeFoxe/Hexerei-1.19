@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "hexerei:polished_mahogany_planks"
+  },
+  "ingredient_count": 9,
+  "result": "hexerei:polished_mahogany_chest_boat"
+}

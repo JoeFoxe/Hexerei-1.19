@@ -1,5 +1,6 @@
 package net.joefoxe.hexerei.block.custom;
 
+import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ITileEntity;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.container.MixingCauldronContainer;
@@ -11,6 +12,7 @@ import net.joefoxe.hexerei.particle.ModParticleTypes;
 import net.joefoxe.hexerei.state.properties.LiquidType;
 import net.joefoxe.hexerei.tileentity.*;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
+import net.joefoxe.hexerei.util.HexereiTags;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.joefoxe.hexerei.util.message.EmitParticlesPacket;
 import net.minecraft.client.gui.screens.Screen;
@@ -43,11 +45,10 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -57,6 +58,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
@@ -128,6 +131,29 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
     ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
 
+
+    protected boolean canReceiveStalactiteDrip(Fluid pFluid) {
+        return true;
+    }
+
+    protected void receiveStalactiteDrip(BlockState pState, Level pLevel, BlockPos pPos, Fluid pFluid) {
+        BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+        if(blockEntity instanceof MixingCauldronTile mixingCauldron){
+            if(mixingCauldron.getFluidStack().isEmpty()){
+                mixingCauldron.fill(new FluidStack(pFluid, 100), IFluidHandler.FluidAction.EXECUTE);
+            }
+            else if(mixingCauldron.getFluidStack().getFluid() == pFluid){
+                if(mixingCauldron.getFluidStack().getAmount() < 2000) {
+                    mixingCauldron.getFluidStack().grow(100);
+                    if (mixingCauldron.getFluidStack().getAmount() > 2000) {
+                        mixingCauldron.getFluidStack().setAmount(2000);
+                    }
+                }
+            }
+            mixingCauldron.sync();
+        }
+
+    }
     public boolean useShapeForLightOcclusion(BlockState p_220074_1_) {
         return true;
     }
@@ -146,6 +172,32 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
         ItemStack stack = player.getItemInHand(hand).copy();
         Random random = new Random();
+
+        if (stack.is(ModItems.CROW_FLUTE.get()) && stack.getOrCreateTag().getInt("commandMode") == 2) {
+            stack.useOn(new UseOnContext(player, hand, rayTraceResult));
+            return InteractionResult.SUCCESS;
+        }
+        if (stack.is(HexereiTags.Items.SIGILS)) {
+
+            BlockEntity tileEntity = world.getBlockEntity(pos);
+            if (tileEntity instanceof MixingCauldronTile mixingCauldronTile) {
+                if(mixingCauldronTile.getItemStackInSlot(9).isEmpty()){
+                    stack.setCount(1);
+                    mixingCauldronTile.setItem(9, stack);
+                    player.getItemInHand(hand).shrink(1);
+                    return InteractionResult.SUCCESS;
+                }
+                else if(!mixingCauldronTile.getItemStackInSlot(9).is(stack.getItem())){
+                    player.inventory.placeItemBackInInventory(mixingCauldronTile.getItemStackInSlot(9));
+                    stack.setCount(1);
+                    mixingCauldronTile.setItem(9, stack);
+                    player.getItemInHand(hand).shrink(1);
+                    return InteractionResult.SUCCESS;
+                }
+
+            }
+        }
+
         ItemStack fillStack = stack.copy();
         fillStack.setCount(1);
         LazyOptional<IFluidHandlerItem> fluidHandlerOptional = fillStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY);
@@ -694,6 +746,19 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
         }
 
         super.animateTick(state, world, pos, rand);
+    }
+
+
+
+    public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
+        BlockPos blockpos = PointedDripstoneBlock.findStalactiteTipAboveCauldron(pLevel, pPos);
+        if (blockpos != null) {
+            Fluid fluid = PointedDripstoneBlock.getCauldronFillFluidType(pLevel, blockpos);
+            if (fluid != Fluids.EMPTY && this.canReceiveStalactiteDrip(fluid)) {
+                this.receiveStalactiteDrip(pState, pLevel, pPos, fluid);
+            }
+
+        }
     }
 
     private MenuProvider createContainerProvider(Level worldIn, BlockPos pos) {

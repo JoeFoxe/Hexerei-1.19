@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "hexerei:polished_willow_pillar"
+  },
+  "ingredient_count": 2,
+  "result": "hexerei:willow_trapdoor"
+}

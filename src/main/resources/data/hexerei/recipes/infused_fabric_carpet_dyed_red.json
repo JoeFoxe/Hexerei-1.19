@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FF"
+  ],
+  "key": {
+    "F": {
+      "item": "hexerei:infused_fabric_block_dyed_red"
+    }
+  },
+  "result": {
+    "item": "hexerei:infused_fabric_carpet_dyed_red",
+    "count": 3
+  }
+}

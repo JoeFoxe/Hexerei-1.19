@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "minecraft:mangrove_slab"
+  },
+  "ingredient_count": 2,
+  "result": "minecraft:mangrove_pressure_plate"
+}

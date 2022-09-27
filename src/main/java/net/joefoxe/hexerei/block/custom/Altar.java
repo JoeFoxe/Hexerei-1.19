@@ -2,6 +2,7 @@ package net.joefoxe.hexerei.block.custom;
 
 import net.joefoxe.hexerei.block.ITileEntity;
 import net.joefoxe.hexerei.block.ModBlocks;
+import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.tileentity.BookOfShadowsAltarTile;
 import net.joefoxe.hexerei.tileentity.ModTileEntities;
 import net.minecraft.client.gui.screens.Screen;
@@ -18,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -65,6 +67,11 @@ public class Altar extends ConnectingTableEntityBase implements ITileEntity<Book
         BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 
         if(tileEntity instanceof BookOfShadowsAltarTile bookOfShadowsAltarTile && !(Block.byItem(player.getItemInHand(handIn).getItem()) instanceof ConnectingTable)) {
+
+            if (player.getItemInHand(handIn).is(ModItems.CROW_FLUTE.get()) && player.getItemInHand(handIn).getOrCreateTag().getInt("commandMode") == 2) {
+                player.getItemInHand(handIn).useOn(new UseOnContext(player, handIn, hit));
+                return InteractionResult.SUCCESS;
+            }
             int num = bookOfShadowsAltarTile.interact(player, handIn);
 
             if(num == 1)

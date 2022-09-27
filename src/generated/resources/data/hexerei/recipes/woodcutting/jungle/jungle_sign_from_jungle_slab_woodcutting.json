@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "minecraft:jungle_slab"
+  },
+  "ingredient_count": 2,
+  "result": "minecraft:jungle_sign"
+}

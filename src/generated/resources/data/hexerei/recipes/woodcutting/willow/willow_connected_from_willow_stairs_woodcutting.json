@@ -1,0 +1,9 @@
+{
+  "type": "hexerei:woodcutting",
+  "count": 3,
+  "ingredient": {
+    "item": "hexerei:willow_stairs"
+  },
+  "ingredient_count": 4,
+  "result": "hexerei:willow_connected"
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FF"
+  ],
+  "key": {
+    "F": {
+      "item": "hexerei:infused_fabric_block_ornate"
+    }
+  },
+  "result": {
+    "item": "hexerei:infused_fabric_carpet_ornate",
+    "count": 3
+  }
+}
+
+

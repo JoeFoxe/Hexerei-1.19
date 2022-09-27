@@ -44,6 +44,12 @@ public class ModTileEntities {
     public static final RegistryObject<BlockEntityType<SageBurningPlateTile>> SAGE_BURNING_PLATE_TILE = TILE_ENTITIES.register(
             "sage_burning_plate_entity", () -> BlockEntityType.Builder.of(SageBurningPlateTile::new, ModBlocks.SAGE_BURNING_PLATE.get()).build(null));
 
+    public static final RegistryObject<BlockEntityType<ModChestBlockEntity>> CHEST_TILE = TILE_ENTITIES.register(
+            "chest_entity", () -> BlockEntityType.Builder.of(ModChestBlockEntity::new, ModBlocks.WILLOW_CHEST.get(), ModBlocks.MAHOGANY_CHEST.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<ModSignBlockEntity>> SIGN_TILE = TILE_ENTITIES.register(
+            "sign_entity", () -> BlockEntityType.Builder.of(ModSignBlockEntity::new, ModBlocks.WILLOW_SIGN.get(), ModBlocks.MAHOGANY_SIGN.get(), ModBlocks.WILLOW_WALL_SIGN.get(), ModBlocks.MAHOGANY_WALL_SIGN.get(), ModBlocks.POLISHED_WILLOW_SIGN.get(), ModBlocks.POLISHED_MAHOGANY_SIGN.get(), ModBlocks.POLISHED_WILLOW_WALL_SIGN.get(), ModBlocks.POLISHED_MAHOGANY_WALL_SIGN.get()).build(null));
+
 
     public static void register(IEventBus eventBus) {
         TILE_ENTITIES.register(eventBus);

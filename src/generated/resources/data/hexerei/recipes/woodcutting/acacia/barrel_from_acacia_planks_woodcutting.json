@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "minecraft:acacia_planks"
+  },
+  "ingredient_count": 3,
+  "result": "minecraft:barrel"
+}

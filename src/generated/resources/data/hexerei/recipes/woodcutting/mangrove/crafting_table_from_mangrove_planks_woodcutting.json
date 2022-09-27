@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "minecraft:mangrove_planks"
+  },
+  "ingredient_count": 2,
+  "result": "minecraft:crafting_table"
+}

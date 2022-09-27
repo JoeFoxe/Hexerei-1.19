@@ -1,0 +1,7 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "minecraft:mangrove_slab"
+  },
+  "result": "minecraft:mangrove_button"
+}

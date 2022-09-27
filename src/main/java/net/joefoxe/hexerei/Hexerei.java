@@ -5,6 +5,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tterrag.registrate.Registrate;
 import net.joefoxe.hexerei.block.ModBlocks;
+import net.joefoxe.hexerei.block.ModWoodType;
+import net.joefoxe.hexerei.block.connected.StitchedSprite;
+import net.joefoxe.hexerei.block.custom.ModChest;
 import net.joefoxe.hexerei.client.renderer.CrowPerchRenderer;
 import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
 import net.joefoxe.hexerei.config.HexConfig;
@@ -43,6 +46,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.texture.AtlasSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
@@ -54,6 +59,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.block.FlowerPotBlock;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -80,6 +86,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.LinkedList;
+
+import static net.joefoxe.hexerei.util.ClientProxy.MODEL_SWAPPER;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Hexerei.MOD_ID)
@@ -164,6 +172,9 @@ public class Hexerei {
 		// Register the doClientStuff method for modloading
 		eventBus.addListener(this::doClientStuff);
 
+
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MODEL_SWAPPER.registerListeners(eventBus));
+
 //        forgeEventBus.addListener(EventPriority.NORMAL, this::addDimensionalSpacing);
 //        forgeEventBus.addListener(EventPriority.NORMAL, WitchHutStructure::setupStructureSpawns);
 
@@ -200,6 +211,10 @@ public class Hexerei {
 							.put(ModBlocks.WILLOW_WOOD.get(), ModBlocks.STRIPPED_WILLOW_WOOD.get()).build();
 //            ModStructures.setupStructures();
 //            ModConfiguredStructures.registerConfiguredStructures();
+			WoodType.register(ModWoodType.MAHOGANY);
+			WoodType.register(ModWoodType.WILLOW);
+			WoodType.register(ModWoodType.POLISHED_MAHOGANY);
+			WoodType.register(ModWoodType.POLISHED_WILLOW);
 
 			Registry.register(Registry.STRUCTURE_PROCESSOR, new ResourceLocation(MOD_ID, "witch_hut_leg_processor"), WITCH_HUT_LEG_PROCESSOR);
 			Registry.register(Registry.STRUCTURE_PROCESSOR, new ResourceLocation(MOD_ID, "dark_coven_leg_processor"), DARK_COVEN_LEG_PROCESSOR);
@@ -253,6 +268,10 @@ public class Hexerei {
 
 		setupCrowPerchRenderer();
 		event.enqueueWork(() -> {
+			Sheets.addWoodType(ModWoodType.MAHOGANY);
+			Sheets.addWoodType(ModWoodType.WILLOW);
+			Sheets.addWoodType(ModWoodType.POLISHED_MAHOGANY);
+			Sheets.addWoodType(ModWoodType.POLISHED_WILLOW);
 
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.QUICKSILVER_FLUID.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.QUICKSILVER_FLOWING.get(), RenderType.translucent());
@@ -267,6 +286,7 @@ public class Hexerei {
 			MenuScreens.register(ModContainers.BROOM_CONTAINER.get(), BroomScreen::new);
 			MenuScreens.register(ModContainers.CROW_CONTAINER.get(), CrowScreen::new);
 			MenuScreens.register(ModContainers.CROW_FLUTE_CONTAINER.get(), CrowFluteScreen::new);
+			MenuScreens.register(ModContainers.WOODCUTTER_CONTAINER.get(), WoodcutterScreen::new);
 
 
 		});

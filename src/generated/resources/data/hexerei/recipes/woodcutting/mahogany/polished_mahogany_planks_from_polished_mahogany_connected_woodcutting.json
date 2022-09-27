@@ -1,0 +1,7 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "hexerei:polished_mahogany_connected"
+  },
+  "result": "hexerei:polished_mahogany_planks"
+}

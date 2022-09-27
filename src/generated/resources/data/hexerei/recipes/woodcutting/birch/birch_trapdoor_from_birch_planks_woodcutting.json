@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "minecraft:birch_planks"
+  },
+  "ingredient_count": 2,
+  "result": "minecraft:birch_trapdoor"
+}

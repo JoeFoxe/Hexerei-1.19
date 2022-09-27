@@ -283,6 +283,7 @@ public class HexereiJei implements IModPlugin {
                 new FluidMixingRecipeCategory(registration.getJeiHelpers().getGuiHelper(), "Potion"),
                 new DipperRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new PestleAndMortarRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
+                new WoodcutterRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new DryingRackRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
@@ -294,6 +295,8 @@ public class HexereiJei implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.MIXING_CAULDRON.get()), new RecipeType<>(DipperRecipeCategory.UID, DipperRecipe.class));
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.CANDLE_DIPPER.get()), new RecipeType<>(DipperRecipeCategory.UID, DipperRecipe.class));
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.HERB_DRYING_RACK.get()), new RecipeType<>(DryingRackRecipeCategory.UID, DryingRackRecipe.class));
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.WILLOW_WOODCUTTER.get()), new RecipeType<>(WoodcutterRecipeCategory.UID, WoodcutterRecipe.class));
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.MAHOGANY_WOODCUTTER.get()), new RecipeType<>(WoodcutterRecipeCategory.UID, WoodcutterRecipe.class));
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.PESTLE_AND_MORTAR.get()), new RecipeType<>(PestleAndMortarRecipeCategory.UID, PestleAndMortarRecipe.class));
     }
     @Override
@@ -379,6 +382,9 @@ public class HexereiJei implements IModPlugin {
 
         List<DryingRackRecipe> drying_rack_recipes = rm.getAllRecipesFor(DryingRackRecipe.Type.INSTANCE);
         registration.addRecipes(new RecipeType<>(DryingRackRecipeCategory.UID, DryingRackRecipe.class), drying_rack_recipes);
+
+        List<WoodcutterRecipe> woodcutter_recipes = rm.getAllRecipesFor(WoodcutterRecipe.Type.INSTANCE);
+        registration.addRecipes(new RecipeType<>(WoodcutterRecipeCategory.UID, WoodcutterRecipe.class), woodcutter_recipes);
     }
 
 

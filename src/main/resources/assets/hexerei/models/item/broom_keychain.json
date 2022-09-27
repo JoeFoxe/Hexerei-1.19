@@ -1,7 +1,7 @@
 {
   "parent": "builtin/entity",
   "textures": {
-    "particle": "hexerei:blocks/herb_jar_particle"
+    "particle": "hexerei:particle/herb_jar_particle"
   },
   "gui_light": "front",
   "display": {

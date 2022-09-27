@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "hexerei:mahogany_planks",
+    "hexerei:mahogany_connected",
+    "hexerei:polished_mahogany_planks",
+    "hexerei:polished_mahogany_connected",
+    "hexerei:polished_mahogany_layered",
+    "hexerei:polished_mahogany_pillar"
+  ]
+}

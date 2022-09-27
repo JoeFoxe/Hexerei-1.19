@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "hexerei:mahogany_planks"
+  },
+  "ingredient_count": 3,
+  "result": "minecraft:barrel"
+}

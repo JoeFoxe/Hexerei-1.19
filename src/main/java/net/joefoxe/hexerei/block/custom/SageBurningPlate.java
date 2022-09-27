@@ -27,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -89,6 +90,12 @@ public class SageBurningPlate extends Block implements ITileEntity<SageBurningPl
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 
+
+        if (player.getItemInHand(handIn).is(ModItems.CROW_FLUTE.get()) && player.getItemInHand(handIn).getOrCreateTag().getInt("commandMode") == 2) {
+            player.getItemInHand(handIn).useOn(new UseOnContext(player, handIn, hit));
+            return InteractionResult.SUCCESS;
+        }
+
         ItemStack itemstack = player.getItemInHand(handIn);
         Random random = new Random();
         if (tileEntity instanceof SageBurningPlateTile) {
@@ -96,7 +103,7 @@ public class SageBurningPlate extends Block implements ITileEntity<SageBurningPl
             {
                 if (((SageBurningPlateTile) tileEntity).getItems().get(0).is(ModItems.DRIED_SAGE_BUNDLE.get()) && !state.getValue(LIT)) {
 
-                    worldIn.setBlock(pos, state.setValue(BlockStateProperties.LIT, Boolean.valueOf(true)), 11);
+                    worldIn.setBlock(pos, state.setValue(BlockStateProperties.LIT, true), 11);
                     worldIn.playSound((Player) null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
                     itemstack.hurtAndBreak(1, player, player1 -> player1.broadcastBreakEvent(handIn));
 

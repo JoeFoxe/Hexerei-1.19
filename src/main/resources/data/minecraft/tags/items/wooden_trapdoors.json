@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "hexerei:willow_trapdoor",
-    "hexerei:mahogany_trapdoor"
+    "hexerei:mahogany_trapdoor",
+    "hexerei:polished_willow_trapdoor",
+    "hexerei:polished_mahogany_trapdoor"
   ]
 }

@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "hexerei:mahogany_window_pane",
+    "hexerei:waxed_mahogany_window_pane",
+    "hexerei:willow_window_pane",
+    "hexerei:waxed_willow_window_pane"
+  ]
+}

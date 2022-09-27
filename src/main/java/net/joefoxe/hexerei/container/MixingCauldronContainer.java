@@ -76,6 +76,12 @@ public class MixingCauldronContainer extends AbstractContainerMenu {
             return mixingTile.getFluidStack();
         return fluid;
     }
+    public FluidStack getRenderedFluid() {
+//        return fluid;
+        if(tileEntity instanceof MixingCauldronTile mixingTile)
+            return mixingTile.renderedFluid;
+        return fluid;
+    }
 
     public float getCraftPercent() {
         if(tileEntity instanceof MixingCauldronTile)

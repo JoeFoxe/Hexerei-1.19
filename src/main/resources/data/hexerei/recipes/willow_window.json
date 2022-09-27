@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "hexerei:willow_planks"
+    },
+    {
+      "tag": "forge:glass"
+    }
+  ],
+
+  "result": {
+    "item": "hexerei:willow_window",
+    "count": 2
+  }
+}

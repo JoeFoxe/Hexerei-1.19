@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "hexerei:polished_willow_slab"
+  },
+  "ingredient_count": 2,
+  "result": "hexerei:polished_willow_sign"
+}

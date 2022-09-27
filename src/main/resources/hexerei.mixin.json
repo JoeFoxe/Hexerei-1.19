@@ -4,12 +4,12 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "hexerei.mixin-refmap.json",
   "client": [
-    "HumanoidArmorLayerMixin",
-    "PlayerItemInHandLayerMixin",
-    "ThirdPersonRendererMixin",
-    "MouseHandlerMixin",
     "AbstractCandleBlockMixin",
-    "ItemInHandMixin"
+    "HumanoidArmorLayerMixin",
+    "ItemInHandMixin",
+    "MouseHandlerMixin",
+    "PlayerItemInHandLayerMixin",
+    "ThirdPersonRendererMixin"
   ],
   "mixins": [
   ],

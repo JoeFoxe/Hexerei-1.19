@@ -12,6 +12,12 @@
       "hexerei:whistle"
     ]
   },
+  "hootsifer": {
+    "subtitle": "sounds.hexerei.hootsifer",
+    "sounds": [
+      "hexerei:hootsifer"
+    ]
+  },
   "crow_flute_select": {
     "subtitle": "sounds.hexerei.crow_flute_select",
     "sounds": [

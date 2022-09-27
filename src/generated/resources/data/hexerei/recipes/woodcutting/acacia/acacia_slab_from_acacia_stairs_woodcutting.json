@@ -1,0 +1,9 @@
+{
+  "type": "hexerei:woodcutting",
+  "count": 3,
+  "ingredient": {
+    "item": "minecraft:acacia_stairs"
+  },
+  "ingredient_count": 2,
+  "result": "minecraft:acacia_slab"
+}

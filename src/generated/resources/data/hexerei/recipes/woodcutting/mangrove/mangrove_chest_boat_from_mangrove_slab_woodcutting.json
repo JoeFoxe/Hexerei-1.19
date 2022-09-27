@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "minecraft:mangrove_slab"
+  },
+  "ingredient_count": 18,
+  "result": "minecraft:mangrove_chest_boat"
+}

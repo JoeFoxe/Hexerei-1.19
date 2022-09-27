@@ -133,44 +133,45 @@ public class CrowFluteItem extends Item implements Container, IThirdPersonItemAn
         Player player = ctx.getPlayer();
         ItemStack itemstack = ctx.getItemInHand();
         if(!player.isShiftKeyDown()) {
-            if (itemstack.getOrCreateTag().getInt("commandMode") == 2 && !player.level.isClientSide) {
+            if (itemstack.getOrCreateTag().getInt("commandMode") == 2) {
 //                player.displayClientMessage(player.level.getBlockState(ctx.getClickedPos()).getBlock().getName(), true);
 
                 List<CrowEntity> crows = new ArrayList<>();
                 ListTag id = itemstack.getOrCreateTag().getList("crowList", Tag.TAG_COMPOUND);
                 if(id.size() < 1)
                     return InteractionResult.FAIL;
-                for (int i = 0; i < id.size(); i++) {
-                    CompoundTag tag = id.getCompound(i);
+                if(!player.level.isClientSide){
+                    for (int i = 0; i < id.size(); i++) {
+                        CompoundTag tag = id.getCompound(i);
 
-                    if(tag.contains("UUID")) {
-                        UUID crowId = tag.getUUID("UUID");
-                        Entity entity = ((ServerLevel) player.level).getEntity(crowId);
+                        if (tag.contains("UUID")) {
+                            UUID crowId = tag.getUUID("UUID");
+                            Entity entity = ((ServerLevel) player.level).getEntity(crowId);
 
-                        if (entity instanceof CrowEntity crow) {
-                            tag.putInt("ID", entity.getId());
-                            crows.add((CrowEntity) entity);
-                            crow.setPerchPos(ctx.getClickedPos());
+                            if (entity instanceof CrowEntity crow) {
+                                tag.putInt("ID", entity.getId());
+                                crows.add((CrowEntity) entity);
+                                crow.setPerchPos(ctx.getClickedPos());
+                            } else {
+                                id.remove(i);
+//                        crows.remove(entity);
+                                i = 0;
+                            }
                         } else {
                             id.remove(i);
-//                        crows.remove(entity);
                             i = 0;
                         }
                     }
-                    else
-                    {
-                        id.remove(i);
-                        i = 0;
-                    }
-                }
 
-                if(crows.size() > 0) {
-                    player.level.playSound(null, player.getX() + player.getLookAngle().x(), player.getY() + player.getEyeHeight(), player.getZ() + player.getLookAngle().z(), ModSounds.CROW_FLUTE.get(), SoundSource.PLAYERS, 1.0F, 0.8F + 0.4F * new Random().nextFloat());
-                    player.getCooldowns().addCooldown(this, 20);
+                    if (crows.size() > 0) {
+                        player.level.playSound(null, player.getX() + player.getLookAngle().x(), player.getY() + player.getEyeHeight(), player.getZ() + player.getLookAngle().z(), ModSounds.CROW_FLUTE.get(), SoundSource.PLAYERS, 1.0F, 0.8F + 0.4F * new Random().nextFloat());
+                        player.getCooldowns().addCooldown(this, 20);
+                    }
                 }
 
                 return InteractionResult.SUCCESS;
             }
+
         }
 
         return super.useOn(ctx);
@@ -505,6 +506,7 @@ public class CrowFluteItem extends Item implements Container, IThirdPersonItemAn
                             playerIn.playSound(ModSounds.CROW_FLUTE_DESELECT.get(), 1, 0.1f);
                             return InteractionResultHolder.fail(itemstack);
                         }
+                        return InteractionResultHolder.fail(itemstack);
                     }
                 }
             }

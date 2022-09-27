@@ -1,11 +1,19 @@
 package net.joefoxe.hexerei.block;
 
+import com.tterrag.registrate.Registrate;
+import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.block.connected.*;
+import net.joefoxe.hexerei.block.connected.behavior.*;
 import net.joefoxe.hexerei.block.custom.*;
 import net.joefoxe.hexerei.block.custom.trees.MahoganyTree;
 import net.joefoxe.hexerei.block.custom.trees.WillowTree;
 import net.joefoxe.hexerei.item.ModItemGroup;
 import net.joefoxe.hexerei.item.ModItems;
+import net.joefoxe.hexerei.tileentity.ModTileEntities;
+import net.joefoxe.hexerei.util.ClientProxy;
+import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -13,23 +21,27 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
-import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class ModBlocks {
@@ -38,13 +50,711 @@ public class ModBlocks {
 	public static final DeferredRegister<Block> BLOCKS
 					= DeferredRegister.create(ForgeRegistries.BLOCKS, Hexerei.MOD_ID);
 
-	public static final DeferredRegister<Item> ITEMS = ModItems.ITEMS;
+	public static final Registrate REGISTRATE = Hexerei.registrate();
+
+
+
+	public static final BlockEntry<Block> WILLOW_CONNECTED = REGISTRATE.block("willow_connected", Block::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WILLOW_CONNECTED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WILLOW_CONNECTED)))
+			.register();
+	public static final BlockEntry<WaxedLayeredBlock> WAXED_WILLOW_CONNECTED = REGISTRATE.block("waxed_willow_connected", WaxedLayeredBlock::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_WILLOW_CONNECTED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_WILLOW_CONNECTED)))
+			.defaultBlockstate()
+			.register();
+
+	public static final BlockEntry<Block> POLISHED_WILLOW_CONNECTED = REGISTRATE.block("polished_willow_connected", Block::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_WILLOW_CONNECTED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_WILLOW_CONNECTED)))
+			.register();
+
+	public static final BlockEntry<WaxedLayeredBlock> WAXED_POLISHED_WILLOW_CONNECTED = REGISTRATE.block("waxed_polished_willow_connected", WaxedLayeredBlock::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WILLOW_CONNECTED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_WILLOW_CONNECTED)))
+			.register();
+
+	public static final BlockEntry<ConnectedPillarBlock> POLISHED_WILLOW_PILLAR = REGISTRATE.block("polished_willow_pillar", ConnectedPillarBlock::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
+			.onRegister(connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.POLISHED_WILLOW_PILLAR_SIDE, AllSpriteShifts.POLISHED_WILLOW_PILLAR_TOP)))
+			.register();
+
+	public static final BlockEntry<WaxedConnectedRotatedPillarBlock> WAXED_POLISHED_WILLOW_PILLAR = REGISTRATE.block("waxed_polished_willow_pillar", WaxedConnectedRotatedPillarBlock::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
+			.onRegister(connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WILLOW_PILLAR_SIDE, AllSpriteShifts.WAXED_POLISHED_WILLOW_PILLAR_TOP)))
+			.register();
+
+	public static final BlockEntry<LayeredBlock> POLISHED_WILLOW_LAYERED = REGISTRATE.block("polished_willow_layered", LayeredBlock::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
+			.onRegister(connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.POLISHED_WILLOW_LAYERED, AllSpriteShifts.POLISHED_SMOOTH_WILLOW)))
+			.register();
+
+	public static final BlockEntry<WaxedLayeredBlock> WAXED_POLISHED_WILLOW_LAYERED = REGISTRATE.block("waxed_polished_willow_layered", WaxedLayeredBlock::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
+			.onRegister(connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WILLOW_LAYERED, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW)))
+			.register();
+
+
+	public static final BlockEntry<Block> MAHOGANY_CONNECTED = REGISTRATE.block("mahogany_connected", Block::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.MAHOGANY_CONNECTED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.MAHOGANY_CONNECTED)))
+			.register();
+
+
+	public static final BlockEntry<Block> POLISHED_MAHOGANY_CONNECTED = REGISTRATE.block("polished_mahogany_connected", Block::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_MAHOGANY_CONNECTED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_MAHOGANY_CONNECTED)))
+			.register();
+	public static final BlockEntry<WaxedLayeredBlock> WAXED_MAHOGANY_CONNECTED = REGISTRATE.block("waxed_mahogany_connected", (properties) -> new WaxedLayeredBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_MAHOGANY_CONNECTED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_MAHOGANY_CONNECTED)))
+			.register();
+	public static final BlockEntry<WaxedLayeredBlock> WAXED_POLISHED_MAHOGANY_CONNECTED = REGISTRATE.block("waxed_polished_mahogany_connected", (properties) -> new WaxedLayeredBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_MAHOGANY_CONNECTED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_MAHOGANY_CONNECTED)))
+			.register();
+
+	public static final BlockEntry<ConnectedPillarBlock> POLISHED_MAHOGANY_PILLAR = REGISTRATE.block("polished_mahogany_pillar", ConnectedPillarBlock::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.POLISHED_MAHOGANY_PILLAR_SIDE, AllSpriteShifts.POLISHED_MAHOGANY_PILLAR_TOP)))
+			.register();
+
+	public static final BlockEntry<WaxedConnectedRotatedPillarBlock> WAXED_POLISHED_MAHOGANY_PILLAR = REGISTRATE.block("waxed_polished_mahogany_pillar", WaxedConnectedRotatedPillarBlock::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.WAXED_POLISHED_MAHOGANY_PILLAR_SIDE, AllSpriteShifts.WAXED_POLISHED_MAHOGANY_PILLAR_TOP)))
+			.register();
+
+	public static final BlockEntry<LayeredBlock> POLISHED_MAHOGANY_LAYERED = REGISTRATE.block("polished_mahogany_layered", LayeredBlock::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.POLISHED_MAHOGANY_LAYERED, AllSpriteShifts.POLISHED_SMOOTH_MAHOGANY)))
+			.register();
+
+
+	public static final BlockEntry<WaxedLayeredBlock> WAXED_POLISHED_MAHOGANY_LAYERED = REGISTRATE.block("waxed_polished_mahogany_layered", WaxedLayeredBlock::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.WAXED_POLISHED_MAHOGANY_LAYERED, AllSpriteShifts.WAXED_POLISHED_SMOOTH_MAHOGANY)))
+			.register();
+
+
+	public static final BlockEntry<WaxedGlassPaneBlock> MAHOGANY_WINDOW_PANE = REGISTRATE.block("mahogany_window_pane", (properties) -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.copy(Blocks.GLASS_PANE)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.GLASS_PANE).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_MAHOGANY_GLASS_PANE)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_MAHOGANY_GLASS_PANE)))
+			.register();
+
+
+	public static final BlockEntry<WaxedGlassPaneBlock> WAXED_MAHOGANY_WINDOW_PANE = REGISTRATE.block("waxed_mahogany_window_pane", (properties) -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.copy(Blocks.GLASS_PANE)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.GLASS_PANE).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_MAHOGANY_GLASS_PANE)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_MAHOGANY_GLASS_PANE)))
+			.register();
+
+
+	public static final BlockEntry<WaxedGlassPaneBlock> WILLOW_WINDOW_PANE = REGISTRATE.block("willow_window_pane", (properties) -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.copy(Blocks.GLASS_PANE)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.GLASS_PANE).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_WILLOW_GLASS_PANE)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_WILLOW_GLASS_PANE)))
+			.register();
+
+
+	public static final BlockEntry<WaxedGlassPaneBlock> WAXED_WILLOW_WINDOW_PANE = REGISTRATE.block("waxed_willow_window_pane", (properties) -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.copy(Blocks.GLASS_PANE)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.GLASS_PANE).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW_GLASS_PANE)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW_GLASS_PANE)))
+			.register();
+
+	public static final BlockEntry<GlassBlock> MAHOGANY_WINDOW = REGISTRATE.block("mahogany_window", (properties) -> new GlassBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_MAHOGANY_GLASS)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_MAHOGANY_GLASS)))
+			.register();
+
+	public static final BlockEntry<WaxedGlassBlock> WAXED_MAHOGANY_WINDOW = REGISTRATE.block("waxed_mahogany_window", (properties) -> new WaxedGlassBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_MAHOGANY_GLASS)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_MAHOGANY_GLASS)))
+			.register();
+
+	public static final BlockEntry<GlassBlock> WILLOW_WINDOW = REGISTRATE.block("willow_window", (properties) -> new GlassBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_WILLOW_GLASS)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_WILLOW_GLASS)))
+			.register();
+
+	public static final BlockEntry<WaxedGlassBlock> WAXED_WILLOW_WINDOW = REGISTRATE.block("waxed_willow_window", (properties) -> new WaxedGlassBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW_GLASS)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW_GLASS)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpet> INFUSED_FABRIC_CARPET_ORNATE = REGISTRATE.block("infused_fabric_carpet_ornate", ConnectingCarpet::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE, AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_ORNATE = REGISTRATE.block("infused_fabric_block_ornate", (properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE)))
+			.register();
+
+//
+//	public static final RegistryObject<CarpetBlock> CARPET_SLAB = registerBlock("carpet_slab",
+//			() -> new ConnectingCarpet(BlockBehaviour.Properties.of(Material.METAL).noCollission().noOcclusion().strength(3).requiresCorrectToolForDrops().explosionResistance(8f)));
+
+	public static final BlockEntry<ConnectingCarpetSlab> CARPET_SLAB = REGISTRATE.block("carpet_slab", ConnectingCarpetSlab::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE, AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE)))
+			.register();
+
+
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_DYED_STAIRS = REGISTRATE.block("infused_fabric_carpet_dyed_stairs", ConnectingCarpetStairs::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpet> INFUSED_FABRIC_CARPET = REGISTRATE.block("infused_fabric_carpet", ConnectingCarpet::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET, AllSpriteShifts.INFUSED_FABRIC_CARPET)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpet> WAXED_INFUSED_FABRIC_CARPET = REGISTRATE.block("waxed_infused_fabric_carpet", ConnectingCarpet::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_DYED_WHITE = REGISTRATE.block("infused_fabric_carpet_dyed_white",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.WHITE))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_DYED_ORANGE = REGISTRATE.block("infused_fabric_carpet_dyed_orange",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.ORANGE))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_DYED_MAGENTA = REGISTRATE.block("infused_fabric_carpet_dyed_magenta",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.MAGENTA))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_DYED_LIGHT_BLUE = REGISTRATE.block("infused_fabric_carpet_dyed_light_blue",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.LIGHT_BLUE))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_DYED_YELLOW = REGISTRATE.block("infused_fabric_carpet_dyed_yellow",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.YELLOW))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_DYED_LIME = REGISTRATE.block("infused_fabric_carpet_dyed_lime",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.LIME))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_DYED_PINK = REGISTRATE.block("infused_fabric_carpet_dyed_pink",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.PINK))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_DYED_GRAY = REGISTRATE.block("infused_fabric_carpet_dyed_gray",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.GRAY))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_DYED_LIGHT_GRAY = REGISTRATE.block("infused_fabric_carpet_dyed_light_gray",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.LIGHT_GRAY))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_DYED_CYAN = REGISTRATE.block("infused_fabric_carpet_dyed_cyan",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.CYAN))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_DYED_PURPLE = REGISTRATE.block("infused_fabric_carpet_dyed_purple",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.PURPLE))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_DYED_BLUE = REGISTRATE.block("infused_fabric_carpet_dyed_blue",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.BLUE))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_DYED_BROWN = REGISTRATE.block("infused_fabric_carpet_dyed_brown",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.BROWN))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_DYED_GREEN = REGISTRATE.block("infused_fabric_carpet_dyed_green",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.GREEN))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_DYED_RED = REGISTRATE.block("infused_fabric_carpet_dyed_red",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.RED))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_DYED_BLACK = REGISTRATE.block("infused_fabric_carpet_dyed_black",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.BLACK))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_DYED_WHITE = REGISTRATE.block("waxed_infused_fabric_carpet_dyed_white",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.WHITE))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_DYED_ORANGE = REGISTRATE.block("waxed_infused_fabric_carpet_dyed_orange",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.ORANGE))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_DYED_MAGENTA = REGISTRATE.block("waxed_infused_fabric_carpet_dyed_magenta",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.MAGENTA))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_DYED_LIGHT_BLUE = REGISTRATE.block("waxed_infused_fabric_carpet_dyed_light_blue",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.LIGHT_BLUE))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_DYED_YELLOW = REGISTRATE.block("waxed_infused_fabric_carpet_dyed_yellow",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.YELLOW))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_DYED_LIME = REGISTRATE.block("waxed_infused_fabric_carpet_dyed_lime",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.LIME))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_DYED_PINK = REGISTRATE.block("waxed_infused_fabric_carpet_dyed_pink",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.PINK))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_DYED_GRAY = REGISTRATE.block("waxed_infused_fabric_carpet_dyed_gray",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.GRAY))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_DYED_LIGHT_GRAY = REGISTRATE.block("waxed_infused_fabric_carpet_dyed_light_gray",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.LIGHT_GRAY))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_DYED_CYAN = REGISTRATE.block("waxed_infused_fabric_carpet_dyed_cyan",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.CYAN))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_DYED_PURPLE = REGISTRATE.block("waxed_infused_fabric_carpet_dyed_purple",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.PURPLE))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_DYED_BLUE = REGISTRATE.block("waxed_infused_fabric_carpet_dyed_blue",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.BLUE))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_DYED_BROWN = REGISTRATE.block("waxed_infused_fabric_carpet_dyed_brown",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.BROWN))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_DYED_GREEN = REGISTRATE.block("waxed_infused_fabric_carpet_dyed_green",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.GREEN))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_DYED_RED = REGISTRATE.block("waxed_infused_fabric_carpet_dyed_red",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.RED))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_DYED_BLACK = REGISTRATE.block("waxed_infused_fabric_carpet_dyed_black",
+					(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.BLACK))
+			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK = REGISTRATE.block("infused_fabric_block", (properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK = REGISTRATE.block("waxed_infused_fabric_block", (properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET)))
+			.register();
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_DYED_WHITE = REGISTRATE.block("infused_fabric_block_dyed_white",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.WHITE))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_DYED_ORANGE = REGISTRATE.block("infused_fabric_block_dyed_orange",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.ORANGE))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_DYED_MAGENTA = REGISTRATE.block("infused_fabric_block_dyed_magenta",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.MAGENTA))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_DYED_LIGHT_BLUE = REGISTRATE.block("infused_fabric_block_dyed_light_blue",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.LIGHT_BLUE))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_DYED_YELLOW = REGISTRATE.block("infused_fabric_block_dyed_yellow",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.YELLOW))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_DYED_LIME = REGISTRATE.block("infused_fabric_block_dyed_lime",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.LIME))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_DYED_PINK = REGISTRATE.block("infused_fabric_block_dyed_pink",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.PINK))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_DYED_GRAY = REGISTRATE.block("infused_fabric_block_dyed_gray",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.GRAY))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_DYED_LIGHT_GRAY = REGISTRATE.block("infused_fabric_block_dyed_light_gray",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.LIGHT_GRAY))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_DYED_CYAN = REGISTRATE.block("infused_fabric_block_dyed_cyan",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.CYAN))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_DYED_PURPLE = REGISTRATE.block("infused_fabric_block_dyed_purple",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.PURPLE))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_DYED_BLUE = REGISTRATE.block("infused_fabric_block_dyed_blue",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.BLUE))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_DYED_BROWN = REGISTRATE.block("infused_fabric_block_dyed_brown",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.BROWN))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_DYED_GREEN = REGISTRATE.block("infused_fabric_block_dyed_green",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.GREEN))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_DYED_RED = REGISTRATE.block("infused_fabric_block_dyed_red",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.RED))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_DYED_BLACK = REGISTRATE.block("infused_fabric_block_dyed_black",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.BLACK))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_DYED_WHITE = REGISTRATE.block("waxed_infused_fabric_block_dyed_white",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.WHITE))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_DYED_ORANGE = REGISTRATE.block("waxed_infused_fabric_block_dyed_orange",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.ORANGE))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_DYED_MAGENTA = REGISTRATE.block("waxed_infused_fabric_block_dyed_magenta",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.MAGENTA))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_DYED_LIGHT_BLUE = REGISTRATE.block("waxed_infused_fabric_block_dyed_light_blue",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.LIGHT_BLUE))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_DYED_YELLOW = REGISTRATE.block("waxed_infused_fabric_block_dyed_yellow",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.YELLOW))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_DYED_LIME = REGISTRATE.block("waxed_infused_fabric_block_dyed_lime",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.LIME))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_DYED_PINK = REGISTRATE.block("waxed_infused_fabric_block_dyed_pink",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.PINK))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_DYED_GRAY = REGISTRATE.block("waxed_infused_fabric_block_dyed_gray",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.GRAY))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_DYED_LIGHT_GRAY = REGISTRATE.block("waxed_infused_fabric_block_dyed_light_gray",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.LIGHT_GRAY))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_DYED_CYAN = REGISTRATE.block("waxed_infused_fabric_block_dyed_cyan",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.CYAN))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_DYED_PURPLE = REGISTRATE.block("waxed_infused_fabric_block_dyed_purple",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.PURPLE))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_DYED_BLUE = REGISTRATE.block("waxed_infused_fabric_block_dyed_blue",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.BLUE))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_DYED_BROWN = REGISTRATE.block("waxed_infused_fabric_block_dyed_brown",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.BROWN))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_DYED_GREEN = REGISTRATE.block("waxed_infused_fabric_block_dyed_green",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.GREEN))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_DYED_RED = REGISTRATE.block("waxed_infused_fabric_block_dyed_red",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.RED))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_DYED_BLACK = REGISTRATE.block("waxed_infused_fabric_block_dyed_black",
+					(properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).color(MaterialColor.TERRACOTTA_BLACK), DyeColor.BLACK))
+			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+
+
+	public static final BlockEntry<ConnectingCarpetStairs> CARPET_STAIRS = REGISTRATE.block("carpet_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_ORNATE.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_BLACK))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE, AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_STAIRS = REGISTRATE.block("infused_fabric_carpet_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET), ModBlocks.INFUSED_FABRIC_CARPET.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET, AllSpriteShifts.INFUSED_FABRIC_CARPET)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_DYED_WHITE_STAIRS = REGISTRATE.block("infused_fabric_carpet_dyed_white_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_DYED_WHITE.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_WHITE))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_DYED_ORANGE_STAIRS = REGISTRATE.block("infused_fabric_carpet_dyed_orange_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_DYED_ORANGE.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_ORANGE))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_DYED_MAGENTA_STAIRS = REGISTRATE.block("infused_fabric_carpet_dyed_magenta_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_DYED_MAGENTA.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_MAGENTA))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_DYED_LIGHT_BLUE_STAIRS = REGISTRATE.block("infused_fabric_carpet_dyed_light_blue_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIGHT_BLUE.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_LIGHT_BLUE))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_DYED_YELLOW_STAIRS = REGISTRATE.block("infused_fabric_carpet_dyed_yellow_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_DYED_YELLOW.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_YELLOW))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_DYED_LIME_STAIRS = REGISTRATE.block("infused_fabric_carpet_dyed_lime_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIME.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_LIGHT_GREEN))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_DYED_PINK_STAIRS = REGISTRATE.block("infused_fabric_carpet_dyed_pink_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_DYED_PINK.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_PINK))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_DYED_GRAY_STAIRS = REGISTRATE.block("infused_fabric_carpet_dyed_gray_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_DYED_GRAY.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_GRAY))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_DYED_LIGHT_GRAY_STAIRS = REGISTRATE.block("infused_fabric_carpet_dyed_light_gray_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIGHT_GRAY.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_LIGHT_GRAY))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_DYED_CYAN_STAIRS = REGISTRATE.block("infused_fabric_carpet_dyed_cyan_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_DYED_CYAN.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_CYAN))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_DYED_PURPLE_STAIRS = REGISTRATE.block("infused_fabric_carpet_dyed_purple_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.PURPLE_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_DYED_PURPLE.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.PURPLE_CARPET).color(MaterialColor.TERRACOTTA_CYAN))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_DYED_BLUE_STAIRS = REGISTRATE.block("infused_fabric_carpet_dyed_blue_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.BLUE_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_DYED_BLUE.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLUE_CARPET).color(MaterialColor.TERRACOTTA_CYAN))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_DYED_BROWN_STAIRS = REGISTRATE.block("infused_fabric_carpet_dyed_brown_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.BROWN_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_DYED_BROWN.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BROWN_CARPET).color(MaterialColor.TERRACOTTA_BROWN))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_DYED_GREEN_STAIRS = REGISTRATE.block("infused_fabric_carpet_dyed_green_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.GREEN_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_DYED_GREEN.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.GREEN_CARPET).color(MaterialColor.TERRACOTTA_GREEN))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_DYED_RED_STAIRS = REGISTRATE.block("infused_fabric_carpet_dyed_red_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_DYED_RED.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_DYED_BLACK_STAIRS = REGISTRATE.block("infused_fabric_carpet_dyed_black_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.BLACK_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_DYED_BLACK.get())))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_CARPET).color(MaterialColor.TERRACOTTA_BLACK))
+			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
+			.register();
+
+	@OnlyIn(Dist.CLIENT)
+	private static void registerCTBehviour(Block entry, Supplier<ConnectedTextureBehaviour> behaviorSupplier) {
+		ConnectedTextureBehaviour behavior = behaviorSupplier.get();
+		ClientProxy.MODEL_SWAPPER.getCustomBlockModels()
+				.register(HexereiUtil.getKeyOrThrow(entry), model -> new CTModel(model, behavior));
+	}
+
+
+	public static <T extends Block> NonNullConsumer<? super T> blockConnectivity(
+			BiConsumer<T, BlockConnectivity> consumer) {
+		return entry -> onClient(() -> () -> registerBlockConnectivity(entry, consumer));
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private static <T extends Block> void registerBlockConnectivity(T entry,
+																	 BiConsumer<T, BlockConnectivity> consumer) {
+		consumer.accept(entry, ClientProxy.BLOCK_CONNECTIVITY);
+	}
+
+
+	protected static void onClient(Supplier<Runnable> toRun) {
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, toRun);
+	}
+	public static <T extends Block> NonNullConsumer<? super T> connectedTextures(
+			Supplier<ConnectedTextureBehaviour> behavior) {
+		return entry -> onClient(() -> () -> registerCTBehviour(entry, behavior));
+	}
+
 
 //    public static final RegistryObject<Block> SCRAP_BLOCK = registerBlock("scrap_block",
-//            () -> new Block(BlockBehaviour.Properties.of(Material.STONE).strength(2).setRequiresTool().explosionResistance(5f)));
+//            () -> new Block(BlockBehavior.Properties.of(Material.STONE).strength(2).setRequiresTool().explosionResistance(5f)));
 
 	public static final RegistryObject<MixingCauldron> MIXING_CAULDRON = registerBlockNoItem("mixing_cauldron",
-					() -> new MixingCauldron(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).lightLevel(state -> 12)));
+					() -> new MixingCauldron(BlockBehaviour.Properties.of(Material.METAL).randomTicks().explosionResistance(4f).requiresCorrectToolForDrops().strength(3).lightLevel(state -> 12)));
 
 	public static final RegistryObject<CandleDipper> CANDLE_DIPPER = registerBlock("candle_dipper",
 					() -> new CandleDipper(BlockBehaviour.Properties.of(Material.METAL).noCollission().noOcclusion().strength(3).requiresCorrectToolForDrops().explosionResistance(8f)));
@@ -57,6 +767,42 @@ public class ModBlocks {
 
 	public static final RegistryObject<ConnectingTable> WILLOW_ALTAR = registerBlock("willow_altar",
 			() -> new ConnectingTable(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).explosionResistance(2f)));
+
+	public static final RegistryObject<Woodcutter> MAHOGANY_WOODCUTTER = registerBlock("mahogany_woodcutter",
+			() -> new Woodcutter(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3)));
+
+	public static final RegistryObject<Woodcutter> WILLOW_WOODCUTTER = registerBlock("willow_woodcutter",
+			() -> new Woodcutter(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3)));
+
+	public static final RegistryObject<ModChest> WILLOW_CHEST = registerBlockNoItem("willow_chest",
+			() -> new ModChest(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3), ModTileEntities.CHEST_TILE::get, ModChest.WoodType.WILLOW));
+
+	public static final RegistryObject<ModChest> MAHOGANY_CHEST = registerBlockNoItem("mahogany_chest",
+			() -> new ModChest(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3), ModTileEntities.CHEST_TILE::get, ModChest.WoodType.MAHOGANY));
+
+	public static final RegistryObject<ModSign> MAHOGANY_SIGN = registerBlockNoItem("mahogany_sign",
+			() -> new ModSign(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).noCollission().noOcclusion(), ModWoodType.MAHOGANY));
+
+	public static final RegistryObject<ModSign> WILLOW_SIGN = registerBlockNoItem("willow_sign",
+			() -> new ModSign(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).noCollission().noOcclusion(), ModWoodType.WILLOW));
+
+	public static final RegistryObject<ModWallSign> MAHOGANY_WALL_SIGN = registerBlockNoItem("mahogany_wall_sign",
+			() -> new ModWallSign(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.MAHOGANY));
+
+	public static final RegistryObject<ModWallSign> WILLOW_WALL_SIGN = registerBlockNoItem("willow_wall_sign",
+			() -> new ModWallSign(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.WILLOW));
+
+	public static final RegistryObject<ModSign> POLISHED_MAHOGANY_SIGN = registerBlockNoItem("polished_mahogany_sign",
+			() -> new ModSign(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).noCollission().noOcclusion(), ModWoodType.POLISHED_MAHOGANY));
+
+	public static final RegistryObject<ModSign> POLISHED_WILLOW_SIGN = registerBlockNoItem("polished_willow_sign",
+			() -> new ModSign(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).noCollission().noOcclusion(), ModWoodType.POLISHED_WILLOW));
+
+	public static final RegistryObject<ModWallSign> POLISHED_MAHOGANY_WALL_SIGN = registerBlockNoItem("polished_mahogany_wall_sign",
+			() -> new ModWallSign(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.POLISHED_MAHOGANY));
+
+	public static final RegistryObject<ModWallSign> POLISHED_WILLOW_WALL_SIGN = registerBlockNoItem("polished_willow_wall_sign",
+			() -> new ModWallSign(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.POLISHED_WILLOW));
 
 //    public static final RegistryObject<Block> SAGE_BUNDLE_PLATE = registerBlock("sage_bundle_plate",
 //            () -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).explosionResistance(2f)));
@@ -129,7 +875,7 @@ public class ModBlocks {
 					() -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.STRIPPED_OAK_WOOD)));
 
 	public static final RegistryObject<Block> MAHOGANY_PLANKS = registerBlock("mahogany_planks",
-					() -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+			() -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
 
 	public static final RegistryObject<StairBlock> MAHOGANY_STAIRS = registerBlock("mahogany_stairs",
 					() -> new StairBlock(() -> MAHOGANY_PLANKS.get().defaultBlockState(),
@@ -161,6 +907,54 @@ public class ModBlocks {
 
 	public static final RegistryObject<SaplingBlock> MAHOGANY_SAPLING = registerBlock("mahogany_sapling",
 					() -> new SaplingBlock(new MahoganyTree(), BlockBehaviour.Properties.copy(Blocks.OAK_SAPLING)));
+
+	public static final RegistryObject<Block> POLISHED_MAHOGANY_PLANKS = registerBlock("polished_mahogany_planks",
+			() -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<StairBlock> POLISHED_MAHOGANY_STAIRS = registerBlock("polished_mahogany_stairs",
+			() -> new StairBlock(() -> POLISHED_MAHOGANY_PLANKS.get().defaultBlockState(),
+					BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<FenceBlock> POLISHED_MAHOGANY_FENCE = registerBlock("polished_mahogany_fence",
+			() -> new FenceBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<FenceGateBlock> POLISHED_MAHOGANY_FENCE_GATE = registerBlock("polished_mahogany_fence_gate",
+			() -> new FenceGateBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<SlabBlock> POLISHED_MAHOGANY_SLAB = registerBlock("polished_mahogany_slab",
+			() -> new SlabBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<WoodButtonBlock> POLISHED_MAHOGANY_BUTTON = registerBlock("polished_mahogany_button",
+			() -> new WoodButtonBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noCollission()));
+
+	public static final RegistryObject<PressurePlateBlock> POLISHED_MAHOGANY_PRESSURE_PLATE = registerBlock("polished_mahogany_pressure_plate",
+			() -> new PressurePlateBlock(PressurePlateBlock.Sensitivity.EVERYTHING, BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noCollission()));
+
+	public static final RegistryObject<DoorBlock> POLISHED_MAHOGANY_DOOR = registerBlock("polished_mahogany_door",
+			() -> new DoorBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noOcclusion()));
+
+	public static final RegistryObject<TrapDoorBlock> POLISHED_MAHOGANY_TRAPDOOR = registerBlock("polished_mahogany_trapdoor",
+			() -> new TrapDoorBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noOcclusion()));
+
+
+//	public static final RegistryObject<Block> WAXED_MAHOGANY_CONNECTED = registerBlock("waxed_mahogany_connected",
+//			() -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)){
+//
+//				@Nullable
+//				@Override
+//				public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate) {
+//
+//
+//					boolean cloth = CleaningClothItem.CLOTH_WAX_OFF.equals(toolAction);
+//					BlockState toReturn = ModBlocks.WAXED_MAHOGANY_CONNECTED.get().defaultBlockState();
+//
+//					if(cloth){
+//						toReturn = ModBlocks.MAHOGANY_CONNECTED.get().defaultBlockState();
+//					}
+//
+//					return toReturn;
+//				}
+//			});
 
 
 	public static final RegistryObject<WillowLog> WILLOW_LOG = registerBlock("willow_log",
@@ -214,6 +1008,112 @@ public class ModBlocks {
 
 	public static final RegistryObject<SaplingBlock> WILLOW_SAPLING = registerBlock("willow_sapling",
 					() -> new SaplingBlock(new WillowTree(), BlockBehaviour.Properties.copy(Blocks.OAK_SAPLING)));
+
+
+	public static final RegistryObject<Block> POLISHED_WILLOW_PLANKS = registerBlock("polished_willow_planks",
+			() -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<StairBlock> POLISHED_WILLOW_STAIRS = registerBlock("polished_willow_stairs",
+			() -> new StairBlock(() -> POLISHED_WILLOW_PLANKS.get().defaultBlockState(),
+					BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<FenceBlock> POLISHED_WILLOW_FENCE = registerBlock("polished_willow_fence",
+			() -> new FenceBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<FenceGateBlock> POLISHED_WILLOW_FENCE_GATE = registerBlock("polished_willow_fence_gate",
+			() -> new FenceGateBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<SlabBlock> POLISHED_WILLOW_SLAB = registerBlock("polished_willow_slab",
+			() -> new SlabBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<WoodButtonBlock> POLISHED_WILLOW_BUTTON = registerBlock("polished_willow_button",
+			() -> new WoodButtonBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noCollission()));
+
+	public static final RegistryObject<PressurePlateBlock> POLISHED_WILLOW_PRESSURE_PLATE = registerBlock("polished_willow_pressure_plate",
+			() -> new PressurePlateBlock(PressurePlateBlock.Sensitivity.EVERYTHING, BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noCollission()));
+
+	public static final RegistryObject<DoorBlock> POLISHED_WILLOW_DOOR = registerBlock("polished_willow_door",
+			() -> new DoorBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noOcclusion()));
+
+	public static final RegistryObject<TrapDoorBlock> POLISHED_WILLOW_TRAPDOOR = registerBlock("polished_willow_trapdoor",
+			() -> new TrapDoorBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noOcclusion()));
+//
+//	public static final RegistryObject<Block> WAXED_POLISHED_WILLOW_CONNECTED = registerBlock("waxed_polished_willow_connected",
+//			() -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)){
+//
+//				@Nullable
+//				@Override
+//				public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate) {
+//
+//
+//					boolean cloth = CleaningClothItem.CLOTH_WAX_OFF.equals(toolAction);
+//					BlockState toReturn = ModBlocks.WAXED_POLISHED_WILLOW_CONNECTED.get().defaultBlockState();
+//
+//					if(cloth){
+//						toReturn = ModBlocks.POLISHED_WILLOW_CONNECTED.get().defaultBlockState();
+//					}
+//
+//					return toReturn;
+//				}
+//			});
+//
+//	public static final RegistryObject<Block> WAXED_POLISHED_WILLOW_LAYERED = registerBlock("waxed_polished_willow_layered",
+//			() -> new LayeredBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)){
+//
+//				@Nullable
+//				@Override
+//				public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate) {
+//
+//
+//					boolean cloth = CleaningClothItem.CLOTH_WAX_OFF.equals(toolAction);
+//					BlockState toReturn = ModBlocks.WAXED_POLISHED_WILLOW_LAYERED.get().defaultBlockState().setValue(AXIS, state.getValue(AXIS));
+//
+//					if(cloth){
+//						toReturn = ModBlocks.POLISHED_WILLOW_LAYERED.get().defaultBlockState().setValue(AXIS, state.getValue(AXIS));
+//					}
+//
+//					return toReturn;
+//				}
+//			});
+//
+//	public static final RegistryObject<Block> WAXED_POLISHED_WILLOW_PILLAR = registerBlock("waxed_polished_willow_pillar",
+//			() -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)){
+//
+//				@Nullable
+//				@Override
+//				public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate) {
+//
+//
+//					boolean cloth = CleaningClothItem.CLOTH_WAX_OFF.equals(toolAction);
+//					BlockState toReturn = ModBlocks.WAXED_POLISHED_WILLOW_PILLAR.get().defaultBlockState().setValue(AXIS, state.getValue(AXIS));
+//
+//					if(cloth){
+//						toReturn = ModBlocks.POLISHED_WILLOW_PILLAR.get().defaultBlockState().setValue(AXIS, state.getValue(AXIS));
+//					}
+//
+//					return toReturn;
+//				}
+//			});
+//
+//	public static final RegistryObject<Block> WAXED_WILLOW_CONNECTED = registerBlock("waxed_willow_connected",
+//			() -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)){
+//
+//				@Nullable
+//				@Override
+//				public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate) {
+//
+//
+//					boolean cloth = CleaningClothItem.CLOTH_WAX_OFF.equals(toolAction);
+//					BlockState toReturn = ModBlocks.WAXED_WILLOW_CONNECTED.get().defaultBlockState();
+//
+//					if(cloth){
+//						toReturn = ModBlocks.WILLOW_CONNECTED.get().defaultBlockState();
+//					}
+//
+//					return toReturn;
+//				}
+//			});
+//
 
 	public static final RegistryObject<FloweringLilyPadBlock> LILY_PAD_BLOCK = registerBlockNoItem("flowering_lily_pad",
 					() -> new FloweringLilyPadBlock(BlockBehaviour.Properties.of(Material.VEGETABLE).instabreak().sound(SoundType.LILY_PAD).noOcclusion()));

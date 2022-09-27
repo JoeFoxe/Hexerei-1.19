@@ -10,6 +10,7 @@ import net.joefoxe.hexerei.client.renderer.entity.custom.CrowEntity;
 import net.joefoxe.hexerei.item.custom.CrowFluteItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -47,9 +48,12 @@ public class CrowPerchRenderer {
         }
     }
 
+
+
+
     @SubscribeEvent
     public static void renderWorldLastEvent(RenderLevelStageEvent event) {
-        if(lastStackMain.getItem() instanceof CrowFluteItem){
+        if(lastStackMain.getItem() instanceof CrowFluteItem && event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS){
             int command = lastStackMain.getOrCreateTag().getInt("commandMode");
             if (command == 2) { // Perch
                 MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
@@ -76,7 +80,7 @@ public class CrowPerchRenderer {
                 matrixStack.popPose();
             }
         }
-        if(lastStackOff.getItem() instanceof CrowFluteItem){
+        if(lastStackOff.getItem() instanceof CrowFluteItem && event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS){
             int command = lastStackOff.getOrCreateTag().getInt("commandMode");
             if (command == 2) { // Perch
                 MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
@@ -107,6 +111,7 @@ public class CrowPerchRenderer {
 
     private static void renderPillar(MultiBufferSource.BufferSource buffer, PoseStack matrixStack, float xOffset, float yOffset, float zOffset){
         VertexConsumer faceBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HILIGHT_FACE);
+//        VertexConsumer faceBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HILIGHT_FACE);
         Matrix4f posMat = matrixStack.last().pose();
         int color = 0x110511;
         int r = (color & 0xFF0000) >> 16;
@@ -149,6 +154,7 @@ public class CrowPerchRenderer {
     }
 
     private static void renderHorizontalPillar(MultiBufferSource.BufferSource buffer, PoseStack matrixStack, float xOffset, float yOffset, float zOffset){
+//        VertexConsumer faceBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HILIGHT_FACE);
         VertexConsumer faceBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HILIGHT_FACE);
         Matrix4f posMat = matrixStack.last().pose();
         int color = 0x110511;
@@ -282,10 +288,9 @@ public class CrowPerchRenderer {
                 int b = color & 0xFF;
                 int alpha = 40;
 
-//                System.out.println(Hexerei.getClientTicks());
-                matrixStack.translate(0.5f, Mth.sin(Hexerei.getClientTicks() / 10f) / 10f, 0.5f);
-                matrixStack.mulPose(Vector3f.YP.rotationDegrees(Hexerei.getClientTicks()));
-                matrixStack.translate(-0.5f, 0, -0.5f);
+//                matrixStack.translate(0.5f, Mth.sin(Hexerei.getClientTicks() / 10f) / 10f, 0.5f);
+//                matrixStack.mulPose(Vector3f.YP.rotationDegrees(Hexerei.getClientTicks()));
+//                matrixStack.translate(-0.5f, 0, -0.5f);
                 matrixStack.translate(BOX_START, BOX_START, BOX_START);
 
                 renderPillar(buffer, matrixStack, BOX_SIZE * -0.1f, 0, BOX_SIZE * -0.1f);

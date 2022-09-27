@@ -1,0 +1,258 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "hexerei:block/infused_fabric_carpet/infused_fabric_carpet_dyed_middle"
+      }
+    },
+
+    {
+      "when": {
+        "AND": [
+          {
+            "north": "!north",
+            "east": "false"
+          },
+          {
+            "north": "!north_and_north_east",
+            "east": "false"
+          },
+          {
+            "north": "!north_and_north_west",
+            "east": "false"
+          },
+          {
+            "north": "!all",
+            "east": "false"
+          }
+        ]
+
+      },
+      "apply": {
+        "model": "hexerei:block/infused_fabric_carpet/infused_fabric_carpet_dyed_corner"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "south": "!south",
+            "east": "false"
+          },
+          {
+            "south": "!south_and_south_east",
+            "east": "false"
+          },
+          {
+            "south": "!south_and_south_west",
+            "east": "false"
+          },
+          {
+            "south": "!all",
+            "east": "false"
+          }
+        ]
+
+      },
+      "apply": {
+        "model": "hexerei:block/infused_fabric_carpet/infused_fabric_carpet_dyed_corner_90"
+      }
+    },
+
+
+    {
+      "when": {
+        "AND": [
+          {
+            "north": "!north",
+            "west": "false"
+          },
+          {
+            "north": "!north_and_north_east",
+            "west": "false"
+          },
+          {
+            "north": "!north_and_north_west",
+            "west": "false"
+          },
+          {
+            "north": "!all",
+            "west": "false"
+          }
+        ]
+
+      },
+      "apply": {
+        "model": "hexerei:block/infused_fabric_carpet/infused_fabric_carpet_dyed_corner_270"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "south": "!south",
+            "west": "false"
+          },
+          {
+            "south": "!south_and_south_east",
+            "west": "false"
+          },
+          {
+            "south": "!south_and_south_west",
+            "west": "false"
+          },
+          {
+            "south": "!all",
+            "west": "false"
+          }
+        ]
+
+      },
+      "apply": {
+        "model": "hexerei:block/infused_fabric_carpet/infused_fabric_carpet_dyed_corner_180"
+      }
+    },
+
+
+
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "north",
+            "west": "true"
+          },
+          {
+            "north": "north_and_north_east",
+            "west": "true"
+          }
+        ]
+
+      },
+      "apply": {
+        "model": "hexerei:block/infused_fabric_carpet/infused_fabric_carpet_dyed_corner_270"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "south": "south",
+            "west": "true"
+          },
+          {
+            "south": "south_and_south_east",
+            "west": "true"
+          }
+        ]
+
+      },
+      "apply": {
+        "model": "hexerei:block/infused_fabric_carpet/infused_fabric_carpet_dyed_corner_180"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "north",
+            "east": "true"
+          },
+          {
+            "north": "north_and_north_west",
+            "east": "true"
+          }
+        ]
+
+      },
+      "apply": {
+        "model": "hexerei:block/infused_fabric_carpet/infused_fabric_carpet_dyed_corner"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "south": "south",
+            "east": "true"
+          },
+          {
+            "south": "south_and_south_west",
+            "east": "true"
+          }
+        ]
+
+      },
+      "apply": {
+        "model": "hexerei:block/infused_fabric_carpet/infused_fabric_carpet_dyed_corner_90"
+      }
+    },
+
+
+
+
+
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "none"
+          },
+          {
+            "north": "north_west"
+          },
+          {
+            "north": "north_east"
+          },
+          {
+            "north": "north_east_and_north_west"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/infused_fabric_carpet/infused_fabric_carpet_dyed_end"
+      }
+    },
+
+    {
+      "when": {
+        "east": "false"
+      },
+      "apply": {
+        "model": "hexerei:block/infused_fabric_carpet/infused_fabric_carpet_dyed_end_90"
+      }
+    },
+
+    {
+      "when": {
+        "OR": [
+          {
+            "south": "none"
+          },
+          {
+            "south": "south_west"
+          },
+          {
+            "south": "south_east"
+          },
+          {
+            "south": "south_east_and_south_west"
+          }
+        ]
+      },
+      "apply": {
+        "model": "hexerei:block/infused_fabric_carpet/infused_fabric_carpet_dyed_end_180"
+      }
+    },
+
+    {
+      "when": {
+        "west": "false"
+      },
+      "apply": {
+        "model": "hexerei:block/infused_fabric_carpet/infused_fabric_carpet_dyed_end_270"
+      }
+    }
+
+  ]
+}

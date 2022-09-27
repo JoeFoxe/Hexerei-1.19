@@ -1650,7 +1650,21 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                     pos = CrowEntity.this.getPerchPos().above().above();
                 else
                     pos = CrowEntity.this.blockPosition().above().above();
-                CrowEntity.this.navigation.moveTo(CrowEntity.this.getNavigation().createPath(pos, 0), 1.5f);
+
+
+                CrowEntity.this.navigation.stop();
+                if (CrowEntity.this.distanceToSqr(CrowEntity.this.lastStuckCheckPos) < 0.1D && CrowEntity.this.isOnGround()) {
+//                    CrowEntity.this.push(0,2,0);
+                    CrowEntity.this.push(Math.min(0.2f,(pos.getX() - CrowEntity.this.position().x) / 20.0f), 0.15f, Math.min(0.2f,(pos.getZ() - CrowEntity.this.position().z) / 20.0f));
+                    CrowEntity.this.navigation.moveTo(CrowEntity.this.getNavigation().createPath(pos, 0), 1.5f);
+
+                }
+                else {
+
+                    CrowEntity.this.navigation.moveTo(CrowEntity.this.getNavigation().createPath(CrowEntity.this.blockPosition().above().above(), 0), 1.5f);
+                }
+
+                CrowEntity.this.stuckTimer = 0;
             }
 
             if (this.targetEntity == null || this.targetEntity != null && !this.targetEntity.isAlive()) {
@@ -2194,7 +2208,22 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                     pos = CrowEntity.this.getPerchPos().above().above();
                 else
                     pos = CrowEntity.this.blockPosition().above().above();
-                CrowEntity.this.navigation.moveTo(CrowEntity.this.getNavigation().createPath(pos, 0), 1.5f);
+
+                CrowEntity.this.navigation.stop();
+                if (CrowEntity.this.distanceToSqr(CrowEntity.this.lastStuckCheckPos) < 0.1D && CrowEntity.this.isOnGround()) {
+//                    CrowEntity.this.push(0,2,0);
+                    CrowEntity.this.push(Math.min(0.2f,(pos.getX() - CrowEntity.this.position().x) / 20.0f), 0.15f, Math.min(0.2f,(pos.getZ() - CrowEntity.this.position().z) / 20.0f));
+                    CrowEntity.this.navigation.moveTo(CrowEntity.this.getNavigation().createPath(pos, 0), 1.5f);
+
+                }
+                else {
+
+                    CrowEntity.this.navigation.moveTo(CrowEntity.this.getNavigation().createPath(CrowEntity.this.blockPosition().above().above(), 0), 1.5f);
+                }
+
+                CrowEntity.this.stuckTimer = 0;
+
+//                CrowEntity.this.navigation.moveTo(CrowEntity.this.getNavigation().createPath(pos, 0), 1.5f);
             }
 
             ++this.tryTicks;
@@ -2212,12 +2241,12 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 
                 }else{
 //                    CrowEntity.this.getMoveControl().setWantedPosition(flightTarget.getX(), flightTarget.getY(), flightTarget.getZ(), 1F);
-                    CrowEntity.this.getNavigation().moveTo(this.entity.getNavigation().createPath(flightTarget.getX() + 0.5f, flightTarget.getY() + 0.5f, flightTarget.getZ() + 0.5f, 0), 1.5f);
+                    CrowEntity.this.getNavigation().moveTo(this.entity.getNavigation().createPath(flightTarget.getX() + 0.5f, flightTarget.getY() + 1f, flightTarget.getZ() + 0.5f, 0), 1.5f);
                 }
             }
             if (targetEntity != null) {
                 flightTarget = targetEntity.getBlockPos();
-                if (CrowEntity.this.distanceToSqr(targetEntity.getBlockPos().getX() + 0.5f, targetEntity.getBlockPos().getY(), targetEntity.getBlockPos().getZ() + 0.5f) < this.entity.getMaxDistToItem()) {
+                if (CrowEntity.this.distanceToSqr(targetEntity.getBlockPos().getX() + 0.5f, targetEntity.getBlockPos().getY(), targetEntity.getBlockPos().getZ() + 0.5f) < this.entity.getMaxDistToItem() * 1.25f) {
                     try{
                         BlockEntity entity = targetEntity;
                         LazyOptional<IItemHandler> handler = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN);
@@ -3406,6 +3435,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                 return false;
             if(CrowEntity.this.aiItemFlag)
                 return false;
+            if(CrowEntity.this.depositItemBeforePerch)
+                return false;
 //            double topOffset = CrowEntity.this.level.getBlockState(CrowEntity.this.getPerchPos()).getBlock().getOcclusionShape(CrowEntity.this.level.getBlockState(CrowEntity.this.getPerchPos()), CrowEntity.this.level, CrowEntity.this.getPerchPos()).max(Direction.Axis.Y);
 //            if(this.distanceTo(CrowEntity.this.getPerchPos().getX(), CrowEntity.this.getPerchPos().getZ()) < 1 && this.mob.position().y() >= CrowEntity.this.getPerchPos().getY() + topOffset && this.mob.position().y() < CrowEntity.this.getPerchPos().above().getY() + topOffset)
 //                return false;
@@ -3564,16 +3595,25 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
             if(isStuck)
             {
                 Vec3 randomPos = DefaultRandomPos.getPos(this.mob, 10, 7);
-                BlockPos pos;
-                if(randomPos == null)
-                    randomPos = LandRandomPos.getPos(this.mob, 10, 7);
-                if(randomPos != null)
-                    pos = new BlockPos(randomPos.x, randomPos.y, randomPos.z);
-                else if(CrowEntity.this.getPerchPos() != null)
+                BlockPos pos = null;
+                if(CrowEntity.this.getPerchPos() != null)
                     pos = CrowEntity.this.getPerchPos().above().above();
                 else
                     pos = CrowEntity.this.blockPosition().above().above();
-                CrowEntity.this.navigation.moveTo(this.mob.getNavigation().createPath(pos, 0), 1.5f);
+
+                CrowEntity.this.navigation.stop();
+                if (CrowEntity.this.distanceToSqr(CrowEntity.this.lastStuckCheckPos) < 0.1D && CrowEntity.this.isOnGround()) {
+//                    CrowEntity.this.push(0,2,0);
+                    CrowEntity.this.push(Math.min(0.2f,(pos.getX() - CrowEntity.this.position().x) / 20.0f), 0.15f, Math.min(0.2f,(pos.getZ() - CrowEntity.this.position().z) / 20.0f));
+                    CrowEntity.this.navigation.moveTo(CrowEntity.this.getNavigation().createPath(pos, 0), 1.5f);
+
+                }
+                else {
+
+                    CrowEntity.this.navigation.moveTo(CrowEntity.this.getNavigation().createPath(CrowEntity.this.blockPosition().above().above(), 0), 1.5f);
+                }
+
+                CrowEntity.this.stuckTimer = 0;
             }
             else if(CrowEntity.this.getPerchPos() != null){
                 if (!(this.distanceTo(CrowEntity.this.getPerchPos().getX(), CrowEntity.this.getPerchPos().getZ()) < 1 && this.mob.position().y() >= CrowEntity.this.getPerchPos().getY() + topOffset && this.mob.position().y() < CrowEntity.this.getPerchPos().above().getY() + topOffset)) {

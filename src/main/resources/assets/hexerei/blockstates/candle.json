@@ -1,5 +1,5 @@
 {
   "variants": {
-    "": { "model": "hexerei:block/blank" }
+    "": { "model": "hexerei:block/candle_block" }
   }
 }

@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "minecraft:birch_planks"
+  },
+  "ingredient_count": 6,
+  "result": "minecraft:chest"
+}

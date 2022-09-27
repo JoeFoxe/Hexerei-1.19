@@ -2,8 +2,14 @@ package net.joefoxe.hexerei.util;
 
 import com.google.common.collect.Maps;
 import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.block.connected.BlockConnectivity;
+import net.joefoxe.hexerei.block.connected.ModelSwapper;
+import net.joefoxe.hexerei.block.connected.StitchedSprite;
+import net.joefoxe.hexerei.client.renderer.entity.custom.ModBoatEntity;
 import net.joefoxe.hexerei.client.renderer.entity.model.*;
 import net.joefoxe.hexerei.client.renderer.entity.render.CrowRenderer;
+import net.joefoxe.hexerei.client.renderer.entity.render.ModBoatRenderer;
+import net.joefoxe.hexerei.client.renderer.entity.render.ModChestBoatRenderer;
 import net.joefoxe.hexerei.data.books.PageDrawing;
 import net.joefoxe.hexerei.item.ModItemProperties;
 import net.joefoxe.hexerei.item.ModItems;
@@ -15,12 +21,14 @@ import net.joefoxe.hexerei.screen.tooltip.ClientCofferToolTip;
 import net.joefoxe.hexerei.screen.tooltip.ClientHerbJarToolTip;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.ChestRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -38,9 +46,12 @@ import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+
+import static net.joefoxe.hexerei.block.connected.StitchedSprite.ALL;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientProxy implements SidedProxy {
@@ -52,6 +63,8 @@ public class ClientProxy implements SidedProxy {
 
     public static final ModelLayerLocation READING_GLASSES_LAYER = new ModelLayerLocation(new ResourceLocation(Hexerei.MOD_ID, "reading_glasses"), "main");
 
+    public static final BlockConnectivity BLOCK_CONNECTIVITY = new BlockConnectivity();
+    public static final ModelSwapper MODEL_SWAPPER = new ModelSwapper();
 
 
     @Override
@@ -97,6 +110,8 @@ public class ClientProxy implements SidedProxy {
 
     @SubscribeEvent
     public static void setup(EntityRenderersEvent.RegisterRenderers e){
+        e.registerBlockEntityRenderer(ModTileEntities.CHEST_TILE.get(), ModChestRenderer::new);
+        e.registerBlockEntityRenderer(ModTileEntities.SIGN_TILE.get(), ModSignRenderer::new);
         e.registerBlockEntityRenderer(ModTileEntities.MIXING_CAULDRON_TILE.get(), context -> new MixingCauldronRenderer());
         e.registerBlockEntityRenderer(ModTileEntities.COFFER_TILE.get(), context -> new CofferRenderer());
         e.registerBlockEntityRenderer(ModTileEntities.HERB_JAR_TILE.get(), context -> new HerbJarRenderer());
@@ -108,6 +123,8 @@ public class ClientProxy implements SidedProxy {
         e.registerBlockEntityRenderer(ModTileEntities.PESTLE_AND_MORTAR_TILE.get(), context -> new PestleAndMortarRenderer());
         e.registerBlockEntityRenderer(ModTileEntities.SAGE_BURNING_PLATE_TILE.get(), context -> new SageBurningPlateRenderer());
         e.registerEntityRenderer(ModEntityTypes.BROOM.get(), BroomRenderer::new);
+        e.registerEntityRenderer(ModEntityTypes.HEXEREI_BOAT.get(), context -> new ModBoatRenderer(context, false));
+        e.registerEntityRenderer(ModEntityTypes.HEXEREI_CHEST_BOAT.get(), context -> new ModChestBoatRenderer(context, true));
         e.registerEntityRenderer(ModEntityTypes.CROW.get(), CrowRenderer::new);
         ModItemProperties.makeDowsingRod(ModItems.DOWSING_ROD.get());
     }
@@ -139,6 +156,18 @@ public class ClientProxy implements SidedProxy {
         event.registerLayerDefinition(CandleModel.CANDLE_HERB_LAYER, CandleModel::createBodyLayerHerb);
         event.registerLayerDefinition(CandleModel.CANDLE_GLOW_LAYER, CandleModel::createBodyLayerGlow);
         event.registerLayerDefinition(CandleModel.CANDLE_SWIRL_LAYER, CandleModel::createBodyLayerSwirl);
+        event.registerLayerDefinition(new ModelLayerLocation(new ResourceLocation("hexerei", "boat/willow"), "main"), ()-> BoatModel.createBodyModel(false));
+        event.registerLayerDefinition(new ModelLayerLocation(new ResourceLocation("hexerei", "boat/polished_willow"), "main"), ()-> BoatModel.createBodyModel(false));
+        event.registerLayerDefinition(new ModelLayerLocation(new ResourceLocation("hexerei", "boat/mahogany"), "main"), ()-> BoatModel.createBodyModel(false));
+        event.registerLayerDefinition(new ModelLayerLocation(new ResourceLocation("hexerei", "boat/polished_mahogany"), "main"), ()-> BoatModel.createBodyModel(false));
+        event.registerLayerDefinition(new ModelLayerLocation(new ResourceLocation("hexerei", "chest_boat/willow"), "main"), ()-> BoatModel.createBodyModel(true));
+        event.registerLayerDefinition(new ModelLayerLocation(new ResourceLocation("hexerei", "chest_boat/polished_willow"), "main"), ()-> BoatModel.createBodyModel(true));
+        event.registerLayerDefinition(new ModelLayerLocation(new ResourceLocation("hexerei", "chest_boat/mahogany"), "main"), ()-> BoatModel.createBodyModel(true));
+        event.registerLayerDefinition(new ModelLayerLocation(new ResourceLocation("hexerei", "chest_boat/polished_mahogany"), "main"), ()-> BoatModel.createBodyModel(true));
+        event.registerLayerDefinition(new ModelLayerLocation(new ResourceLocation("hexerei", "chest/mahogany"), "main"), ModChestRenderer::createSingleBodyLayer);
+        event.registerLayerDefinition(new ModelLayerLocation(new ResourceLocation("hexerei", "chest/mahogany_right"), "main"), ModChestRenderer::createDoubleBodyRightLayer);
+        event.registerLayerDefinition(new ModelLayerLocation(new ResourceLocation("hexerei", "chest/mahogany_left"), "main"), ModChestRenderer::createDoubleBodyLeftLayer);
+        event.registerLayerDefinition(new ModelLayerLocation(new ResourceLocation("hexerei", "sign/mahogany"), "main"), ModSignRenderer::createSignLayer);
 
     }
 
@@ -156,6 +185,27 @@ public class ClientProxy implements SidedProxy {
         });
         event.addSprite(PageDrawing.SLOT_ATLAS);
         event.addSprite(PageDrawing.TITLE);
+
+        ResourceLocation atlasLocation = event.getAtlas().location();
+        List<StitchedSprite> sprites = ALL.get(atlasLocation);
+
+        if (sprites != null) {
+            for (StitchedSprite sprite : sprites) {
+                event.addSprite(sprite.getLocation());
+            }
+        }
+    }
+    @SubscribeEvent
+    public static void onTextureStitch(TextureStitchEvent.Post event) {
+        TextureAtlas atlas = event.getAtlas();
+        ResourceLocation atlasLocation = atlas.location();
+
+        List<StitchedSprite> sprites = ALL.get(atlasLocation);
+        if (sprites != null) {
+            for (StitchedSprite sprite : sprites) {
+                sprite.loadSprite(atlas);
+            }
+        }
     }
 
 

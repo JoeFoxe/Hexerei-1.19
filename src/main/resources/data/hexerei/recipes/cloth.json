@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "I"
+  ],
+  "key": {
+    "I": {
+      "item": "hexerei:infused_fabric"
+    }
+  },
+  "result": {
+    "item": "hexerei:cloth"
+  }
+}

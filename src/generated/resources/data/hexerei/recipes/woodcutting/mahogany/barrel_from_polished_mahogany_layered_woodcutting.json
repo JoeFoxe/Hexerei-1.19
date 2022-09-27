@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "hexerei:polished_mahogany_layered"
+  },
+  "ingredient_count": 3,
+  "result": "minecraft:barrel"
+}

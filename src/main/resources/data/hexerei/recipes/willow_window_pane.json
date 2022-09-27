@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "GGG"
+
+  ],
+  "key": {
+    "G": {
+      "tag": "hexerei:willow_window"
+    }
+  },
+  "result": {
+    "item": "hexerei:willow_window_pane",
+    "count": 16
+  }
+}

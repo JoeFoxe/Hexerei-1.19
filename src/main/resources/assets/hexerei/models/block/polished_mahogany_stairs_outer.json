@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "hexerei:block/polished_mahogany_planks",
+    "top": "hexerei:block/polished_mahogany_planks",
+    "side": "hexerei:block/polished_mahogany_planks"
+  }
+}
