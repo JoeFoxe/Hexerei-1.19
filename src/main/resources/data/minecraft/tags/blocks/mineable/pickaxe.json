@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
+    "hexerei:willow_woodcutter",
+    "hexerei:mahogany_woodcutter",
     "hexerei:candelabra",
     "hexerei:crystal_ball",
     "hexerei:pestle_and_mortar",

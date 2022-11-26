@@ -39,9 +39,17 @@ public class ModContainers {
     public static final RegistryObject<MenuType<CofferContainer>> COFFER_CONTAINER
             = CONTAINERS.register("coffer_container",
             () -> IForgeMenuType.create(((windowId, inv, data) -> {
-                BlockPos pos = data.readBlockPos();
-                Level world = inv.player.getLevel();
-                return new CofferContainer(windowId, world, pos, inv, inv.player);
+                if(data.readBoolean()){
+                    BlockPos pos = data.readBlockPos();
+                    Level world = inv.player.getLevel();
+                    return new CofferContainer(windowId, world, pos, inv, inv.player);
+                } else {
+
+                    if(data.readInt() == 0)
+                        return new CofferContainer(windowId, inv.player.getMainHandItem(), inv, inv.player, InteractionHand.MAIN_HAND);
+                    else
+                        return new CofferContainer(windowId, inv.player.getOffhandItem(), inv, inv.player, InteractionHand.OFF_HAND);
+                }
             })));
 
     public static final RegistryObject<MenuType<HerbJarContainer>> HERB_JAR_CONTAINER

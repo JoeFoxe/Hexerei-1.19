@@ -762,6 +762,10 @@ public class ModBlocks {
 	public static final RegistryObject<Coffer> COFFER = registerBlockNoItem("coffer",
 					() -> new Coffer(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).requiresCorrectToolForDrops().explosionResistance(8f)));
 
+	//TODO get back to this crystal eventually
+	public static final RegistryObject<CuttingCrystal> CUTTING_CRYSTAL = registerBlockNoItem("cutting_crystal",
+			() -> new CuttingCrystal(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).requiresCorrectToolForDrops().explosionResistance(8f)));
+
 	public static final RegistryObject<Altar> BOOK_OF_SHADOWS_ALTAR = registerBlock("book_of_shadows_altar",
 			() -> new Altar(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).explosionResistance(2f)));
 
@@ -769,40 +773,40 @@ public class ModBlocks {
 			() -> new ConnectingTable(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).explosionResistance(2f)));
 
 	public static final RegistryObject<Woodcutter> MAHOGANY_WOODCUTTER = registerBlock("mahogany_woodcutter",
-			() -> new Woodcutter(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3)));
+			() -> new Woodcutter(BlockBehaviour.Properties.copy(Blocks.STONECUTTER).explosionResistance(4f).requiresCorrectToolForDrops().strength(3)));
 
 	public static final RegistryObject<Woodcutter> WILLOW_WOODCUTTER = registerBlock("willow_woodcutter",
-			() -> new Woodcutter(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3)));
+			() -> new Woodcutter(BlockBehaviour.Properties.copy(Blocks.STONECUTTER).explosionResistance(4f).requiresCorrectToolForDrops().strength(3)));
 
 	public static final RegistryObject<ModChest> WILLOW_CHEST = registerBlockNoItem("willow_chest",
-			() -> new ModChest(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3), ModTileEntities.CHEST_TILE::get, ModChest.WoodType.WILLOW));
+			() -> new ModChest(BlockBehaviour.Properties.copy(Blocks.CHEST).explosionResistance(4f).strength(3), ModTileEntities.CHEST_TILE::get, ModChest.WoodType.WILLOW));
 
 	public static final RegistryObject<ModChest> MAHOGANY_CHEST = registerBlockNoItem("mahogany_chest",
-			() -> new ModChest(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3), ModTileEntities.CHEST_TILE::get, ModChest.WoodType.MAHOGANY));
+			() -> new ModChest(BlockBehaviour.Properties.copy(Blocks.CHEST).explosionResistance(4f).strength(3), ModTileEntities.CHEST_TILE::get, ModChest.WoodType.MAHOGANY));
 
 	public static final RegistryObject<ModSign> MAHOGANY_SIGN = registerBlockNoItem("mahogany_sign",
-			() -> new ModSign(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).noCollission().noOcclusion(), ModWoodType.MAHOGANY));
+			() -> new ModSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModWoodType.MAHOGANY));
 
 	public static final RegistryObject<ModSign> WILLOW_SIGN = registerBlockNoItem("willow_sign",
-			() -> new ModSign(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).noCollission().noOcclusion(), ModWoodType.WILLOW));
+			() -> new ModSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModWoodType.WILLOW));
 
 	public static final RegistryObject<ModWallSign> MAHOGANY_WALL_SIGN = registerBlockNoItem("mahogany_wall_sign",
-			() -> new ModWallSign(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.MAHOGANY));
+			() -> new ModWallSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.MAHOGANY));
 
 	public static final RegistryObject<ModWallSign> WILLOW_WALL_SIGN = registerBlockNoItem("willow_wall_sign",
-			() -> new ModWallSign(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.WILLOW));
+			() -> new ModWallSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.WILLOW));
 
 	public static final RegistryObject<ModSign> POLISHED_MAHOGANY_SIGN = registerBlockNoItem("polished_mahogany_sign",
-			() -> new ModSign(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).noCollission().noOcclusion(), ModWoodType.POLISHED_MAHOGANY));
+			() -> new ModSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModWoodType.POLISHED_MAHOGANY));
 
 	public static final RegistryObject<ModSign> POLISHED_WILLOW_SIGN = registerBlockNoItem("polished_willow_sign",
-			() -> new ModSign(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).noCollission().noOcclusion(), ModWoodType.POLISHED_WILLOW));
+			() -> new ModSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModWoodType.POLISHED_WILLOW));
 
 	public static final RegistryObject<ModWallSign> POLISHED_MAHOGANY_WALL_SIGN = registerBlockNoItem("polished_mahogany_wall_sign",
-			() -> new ModWallSign(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.POLISHED_MAHOGANY));
+			() -> new ModWallSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.POLISHED_MAHOGANY));
 
 	public static final RegistryObject<ModWallSign> POLISHED_WILLOW_WALL_SIGN = registerBlockNoItem("polished_willow_wall_sign",
-			() -> new ModWallSign(BlockBehaviour.Properties.of(Material.METAL).explosionResistance(4f).requiresCorrectToolForDrops().strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.POLISHED_WILLOW));
+			() -> new ModWallSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.POLISHED_WILLOW));
 
 //    public static final RegistryObject<Block> SAGE_BUNDLE_PLATE = registerBlock("sage_bundle_plate",
 //            () -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).explosionResistance(2f)));

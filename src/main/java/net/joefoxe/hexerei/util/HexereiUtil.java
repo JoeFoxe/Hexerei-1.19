@@ -3,6 +3,7 @@ package net.joefoxe.hexerei.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.netty.buffer.Unpooled;
 import net.joefoxe.hexerei.Hexerei;
@@ -11,6 +12,7 @@ import net.joefoxe.hexerei.tileentity.HerbJarTile;
 import net.joefoxe.hexerei.tileentity.ModTileEntities;
 import net.minecraft.client.model.*;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
@@ -20,24 +22,39 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.IceBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
@@ -46,13 +63,16 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class HexereiUtil {
 
+    public static final Vec3 CENTER_OF_ORIGIN = new Vec3(.5, .5, .5);
     public static ResourceLocation getRegistryName(Item i) {
         return ForgeRegistries.ITEMS.getKey(i);
     }
@@ -68,6 +88,98 @@ public class HexereiUtil {
     public static ResourceLocation getRegistryName(Enchantment e) {
         return ForgeRegistries.ENCHANTMENTS.getKey(e);
     }
+
+
+    @OnlyIn(Dist.CLIENT)
+    public static class FogData {
+        public final FogRenderer.FogMode mode;
+        public float start;
+        public float end;
+        public FogShape shape = FogShape.SPHERE;
+
+        public FogData(FogRenderer.FogMode p_234204_) {
+            this.mode = p_234204_;
+        }
+    }
+
+    public static Vec3 offsetRandomly(Vec3 vec, RandomSource r, float radius) {
+        return new Vec3(vec.x + (r.nextFloat() - .5f) * 2 * radius, vec.y + (r.nextFloat() - .5f) * 2 * radius,
+                vec.z + (r.nextFloat() - .5f) * 2 * radius);
+    }
+
+
+    public static Vec3 getCenterOf(Vec3i pos) {
+        if (pos.equals(Vec3i.ZERO))
+            return CENTER_OF_ORIGIN;
+        return Vec3.atLowerCornerOf(pos)
+                .add(.5f, .5f, .5f);
+    }
+
+
+    // CREDIT: https://github.com/Creators-of-Create/Create/tree/mc1.19/dev by simibubi & team
+// Under MIT-License: https://github.com/Creators-of-Create/Create/blob/mc1.19/dev/LICENSE
+    public static void destroyBlock(Level world, BlockPos pos, float effectChance) {
+        destroyBlock(world, pos, effectChance, stack -> Block.popResource(world, pos, stack));
+    }
+
+    // CREDIT: https://github.com/Creators-of-Create/Create/tree/mc1.19/dev by simibubi & team
+// Under MIT-License: https://github.com/Creators-of-Create/Create/blob/mc1.19/dev/LICENSE
+    public static void destroyBlock(Level world, BlockPos pos, float effectChance,
+                                    Consumer<ItemStack> droppedItemCallback) {
+        destroyBlockAs(world, pos, null, ItemStack.EMPTY, effectChance, droppedItemCallback);
+    }
+
+    // CREDIT: https://github.com/Creators-of-Create/Create/tree/mc1.19/dev by simibubi & team
+// Under MIT-License: https://github.com/Creators-of-Create/Create/blob/mc1.19/dev/LICENSE
+    public static void destroyBlockAs(Level world, BlockPos pos, @Nullable Player player, ItemStack usedTool,
+                                      float effectChance, Consumer<ItemStack> droppedItemCallback) {
+        FluidState fluidState = world.getFluidState(pos);
+        BlockState state = world.getBlockState(pos);
+
+        if (world.random.nextFloat() < effectChance)
+            world.levelEvent(2001, pos, Block.getId(state));
+        BlockEntity tileentity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
+
+        if (player != null) {
+            BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, pos, state, player);
+            MinecraftForge.EVENT_BUS.post(event);
+            if (event.isCanceled())
+                return;
+
+            if (event.getExpToDrop() > 0 && world instanceof ServerLevel)
+                state.getBlock()
+                        .popExperience((ServerLevel) world, pos, event.getExpToDrop());
+
+            usedTool.mineBlock(world, state, pos, player);
+            player.awardStat(Stats.BLOCK_MINED.get(state.getBlock()));
+        }
+
+        if (world instanceof ServerLevel && world.getGameRules()
+                .getBoolean(GameRules.RULE_DOBLOCKDROPS) && !world.restoringBlockSnapshots
+                && (player == null || !player.isCreative())) {
+            for (ItemStack itemStack : Block.getDrops(state, (ServerLevel) world, pos, tileentity, player, usedTool))
+                droppedItemCallback.accept(itemStack);
+
+            // Simulating IceBlock#playerDestroy. Not calling method directly as it would drop item
+            // entities as a side-effect
+            if (state.getBlock() instanceof IceBlock && usedTool.getEnchantmentLevel(Enchantments.SILK_TOUCH) == 0) {
+                if (world.dimensionType()
+                        .ultraWarm())
+                    return;
+
+                Material material = world.getBlockState(pos.below())
+                        .getMaterial();
+                if (material.blocksMotion() || material.isLiquid())
+                    world.setBlockAndUpdate(pos, Blocks.WATER.defaultBlockState());
+                return;
+            }
+
+            state.spawnAfterBreak((ServerLevel) world, pos, ItemStack.EMPTY, true);
+        }
+
+        world.setBlockAndUpdate(pos, fluidState.createLegacyBlock());
+    }
+
 
 
 

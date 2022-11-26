@@ -27,8 +27,6 @@ public class ExtinguishParticle extends TextureSheetParticle {
         this.ydStart = motionY;
         this.zdStart = motionZ;
         this.ydExtra = new Random().nextFloat() * (motionY/10f);
-//        this.roll = new Random().nextFloat() * (float)Math.PI;
-//        this.oRoll = this.roll;
         this.rotationDir = new Random().nextFloat() - 0.5f;
         this.fallingSpeed = new Random().nextFloat();
         this.lifetime = 50 + (int)(new Random().nextFloat() * 50f);

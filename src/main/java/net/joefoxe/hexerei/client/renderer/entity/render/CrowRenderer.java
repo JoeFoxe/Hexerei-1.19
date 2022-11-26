@@ -1,22 +1,32 @@
 package net.joefoxe.hexerei.client.renderer.entity.render;
 
 import com.google.common.collect.Maps;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.entity.custom.CrowEntity;
 import net.joefoxe.hexerei.client.renderer.entity.model.CrowModel;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.custom.BroomItem;
+import net.joefoxe.hexerei.util.HexereiPacketHandler;
+import net.joefoxe.hexerei.util.message.AskForMapDataPacket;
+import net.joefoxe.hexerei.util.message.BookBookmarkSwapToServer;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -25,29 +35,49 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.layers.EnergySwirlLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.DyeableLeatherItem;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.world.entity.animal.horse.Variant;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.AbstractSkullBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/crow.png");
     private static final ResourceLocation CROW_COLLAR_LOCATION = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/crow_collar.png");
     private static final ResourceLocation POWER_LOCATION = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
+    public static Map<Item, ResourceLocation> TRINKET_LOCATION = Util.make(() ->{
+        Map<Item, ResourceLocation> map = new HashMap<>();
+        map.put(ModItems.CROW_ANKH_AMULET.get(), new ResourceLocation("hexerei:textures/item/crow_ankh_amulet_trinket.png"));
+        return map;
+    });
+
+    private static final Map<CrowVariant, ResourceLocation> LOCATION_BY_VARIANT = Util.make(Maps.newEnumMap(CrowVariant.class), (p_114874_) -> {
+        p_114874_.put(CrowVariant.BLACK, new ResourceLocation(Hexerei.MOD_ID, "textures/entity/crow.png"));
+        p_114874_.put(CrowVariant.HOODED, new ResourceLocation(Hexerei.MOD_ID, "textures/entity/crow_hooded.png"));
+        p_114874_.put(CrowVariant.NORTHWESTERN, new ResourceLocation(Hexerei.MOD_ID, "textures/entity/crow_northwestern.png"));
+        p_114874_.put(CrowVariant.PIED, new ResourceLocation(Hexerei.MOD_ID, "textures/entity/crow_pied.png"));
+        p_114874_.put(CrowVariant.ALBINO, new ResourceLocation(Hexerei.MOD_ID, "textures/entity/crow_albino.png"));
+        p_114874_.put(CrowVariant.GRAY, new ResourceLocation(Hexerei.MOD_ID, "textures/entity/crow_gray.png"));
+        p_114874_.put(CrowVariant.DARKBROWN, new ResourceLocation(Hexerei.MOD_ID, "textures/entity/crow.png"));
+    });
     private final Pair<ResourceLocation, CrowModel<CrowEntity>> crowResources;
     public CrowRenderer(Context erm) {
 
@@ -57,15 +87,19 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
 
         this.addLayer(new LayerCrowItem(this));
         this.addLayer(new LayerCrowCollar(this));
+        this.addLayer(new LayerCrowMisc(this));
         this.addLayer(new LayerCrowHelmet(this, erm));
         this.addLayer(new CrowPowerLayer(this, erm.getModelSet()));
     }
 
-
     @Override
-    public ResourceLocation getTextureLocation(CrowEntity entity) {
-        return TEXTURE;
+    public ResourceLocation getTextureLocation(CrowEntity pEntity) {
+        return LOCATION_BY_VARIANT.get(pEntity.getVariant());
     }
+//    @Override
+//    public ResourceLocation getTextureLocation(CrowEntity entity) {
+//        return TEXTURE;
+//    }
 
     @Override
     public void render(CrowEntity crowEntity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
@@ -75,7 +109,14 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
 //            this.model.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityDecal(CROW_COLLAR_LOCATION)), packedLightIn, OverlayTexture.NO_OVERLAY, afloat[0], afloat[1], afloat[2], 1.0f);
 //        }
 
+        matrixStackIn.pushPose();
+
+//        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
+//        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(crowEntity.getYRot() * 2f + 180f));
+//        matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(90));
+//        matrixStackIn.mulPoseMatrix(Matrix4f.createScaleMatrix(1, -1, 1));
         super.render(crowEntity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+        matrixStackIn.popPose();
 
 
 //        if (!crowEntity.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
@@ -161,6 +202,167 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
                 this.getParentModel().renderToBuffer(matrixStackIn, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, afloat[0], afloat[1], afloat[2], 1.0F);
 
             }
+        }
+    }
+
+
+    @OnlyIn(Dist.CLIENT)
+    public class LayerCrowMisc extends RenderLayer<CrowEntity, CrowModel<CrowEntity>> {
+        private static final ResourceLocation CROW_AMULET_LOCATION = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/crow_amulet.png");
+
+        public LayerCrowMisc(RenderLayerParent<CrowEntity, CrowModel<CrowEntity>> p_117707_) {
+            super(p_117707_);
+        }
+
+//        @Override
+//        public void render(PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, CrowEntity pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
+//
+//        }
+
+
+        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, CrowEntity crow, float p_117724_, float p_117725_, float p_117726_, float p_117727_, float p_117728_, float p_117729_) {
+            ItemStack itemstack = crow.getItem(2);
+            if (!crow.isInvisible() && !itemstack.isEmpty()) {
+
+                boolean renderNecklace = false;
+
+                matrixStackIn.pushPose();
+                translateToBody(matrixStackIn);
+                matrixStackIn.translate(0, -0.15F, -0.165F);
+                if(itemstack.getItem() instanceof BroomItem)
+                    matrixStackIn.translate(0.1f, 0.16f, 0.01F);
+                if(crow.isBaby()){
+                    matrixStackIn.scale(0.75F, 0.75F, 0.75F);
+                }
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180F));
+                if(itemstack.getItem() instanceof BroomItem)
+                    matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-90F));
+                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(180F));
+                matrixStackIn.scale(0.1F, 0.1F, 0.1F);
+                ItemStack stack = itemstack.copy();
+    //            Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(crow, stack, ItemTransforms.TransformType.GROUND, false, matrixStackIn, bufferIn, packedLightIn);
+
+
+                BakedModel itemModel = Minecraft.getInstance().getItemRenderer().getModel(stack, null, null, 0);
+
+                ResourceLocation loc = TRINKET_LOCATION.getOrDefault(stack.getItem(), null);
+
+                if(loc != null) {
+
+                    matrixStackIn.pushPose();
+                    matrixStackIn.translate(0, 0, -0.02F);
+                    matrixStackIn.scale(10, 10, 10);
+
+                    matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(180));
+                    RenderSystem.setShader(GameRenderer::getNewEntityShader);
+
+                    Matrix4f matrix = matrixStackIn.last().pose();
+                    MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+                    VertexConsumer buffer = bufferSource.getBuffer(RenderType.entityCutout(loc));
+
+                    matrixStackIn.last().normal().mul(new Quaternion(Vector3f.XP, 45f, true));
+                    Matrix3f normal = matrixStackIn.last().normal();
+                    int u = 0;
+                    int v = 0;
+                    int imageWidth = 16;
+                    int imageHeight = 16;
+                    int width = 16;
+                    int height = 16;
+                    float u1 = (u + 0.0F) / (float) imageWidth;
+                    float u2 = (u + (float) width) / (float) imageWidth;
+                    float v1 = (v + 0.0F) / (float) imageHeight;
+                    float v2 = (v + (float) height) / (float) imageHeight;
+
+                    int temp = packedLightIn;
+                    if(stack.hasTag() && stack.getOrCreateTag().contains("Active") && stack.getOrCreateTag().getBoolean("Active"))
+                        packedLightIn = LightTexture.FULL_BRIGHT;
+
+                    buffer.vertex(matrix,  0.055f / 16 * width, -0.055f / 16 * height,0).color(255, 255, 255, 255).uv(u1, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normal, 1F, 0F, 0F).endVertex();
+                    buffer.vertex(matrix, 0.055f / 16 * width, 0.055f / 16 * height, 0).color(255, 255, 255, 255).uv(u1, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normal, 1F, 0F, 0F).endVertex();
+                    buffer.vertex(matrix, -0.055f / 16 * width, 0.055f / 16 * height, 0).color(255, 255, 255, 255).uv(u2, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normal, 1F, 0F, 0F).endVertex();
+                    buffer.vertex(matrix,  -0.055f / 16 * width,-0.055f / 16 * height, 0).color(255, 255, 255, 255).uv(u2, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normal, 1F, 0F, 0F).endVertex();
+
+                    if(stack.hasTag() && stack.getOrCreateTag().contains("Active") && stack.getOrCreateTag().getBoolean("Active")){
+
+                        buffer = bufferSource.getBuffer(RenderType.entityTranslucentEmissive(new ResourceLocation("hexerei:textures/item/crow_active_amulet_trinket.png")));
+
+                        matrixStackIn.translate(0, 0, 0.002F);
+                        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-(Hexerei.getClientTicks()) % 360f));
+                        matrixStackIn.last().normal().mul(new Quaternion(Vector3f.XP, 45f, true));
+                        normal = matrixStackIn.last().normal();
+                        imageWidth = 32;
+                        imageHeight = 32;
+                        width = 32;
+                        height = 32;
+                        u1 = (u + 0.0F) / (float) imageWidth;
+                        u2 = (u + (float) width) / (float) imageWidth;
+                        v1 = (v + 0.0F) / (float) imageHeight;
+                        v2 = (v + (float) height) / (float) imageHeight;
+
+                        buffer.vertex(matrix, 0.055f / 16 * width, -0.055f / 16 * height, 0).color(1, 1, 1, Math.abs(Mth.cos(Hexerei.getClientTicks() / 100f))).uv(u1, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normal, 1F, 0F, 0F).endVertex();
+                        buffer.vertex(matrix, 0.055f / 16 * width, 0.055f / 16 * height, 0).color(1, 1, 1, Math.abs(Mth.cos(Hexerei.getClientTicks() / 100f))).uv(u1, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normal, 1F, 0F, 0F).endVertex();
+                        buffer.vertex(matrix, -0.055f / 16 * width, 0.055f / 16 * height, 0).color(1, 1, 1, Math.abs(Mth.cos(Hexerei.getClientTicks() / 100f))).uv(u2, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normal, 1F, 0F, 0F).endVertex();
+                        buffer.vertex(matrix, -0.055f / 16 * width, -0.055f / 16 * height, 0).color(1, 1, 1, Math.abs(Mth.cos(Hexerei.getClientTicks() / 100f))).uv(u2, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normal, 1F, 0F, 0F).endVertex();
+
+
+                        matrixStackIn.scale(1.15f, 1.15f, 1.15f);
+                        matrixStackIn.translate(0, 0, -0.004F);
+                        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(1.5f * (Hexerei.getClientTicks()) % 360f));
+                        buffer.vertex(matrix, 0.055f / 16 * width, -0.055f / 16 * height, 0).color(1, 1, 1, Math.abs(Mth.cos(Hexerei.getClientTicks() / 75f))).uv(u1, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normal, 1F, 0F, 0F).endVertex();
+                        buffer.vertex(matrix, 0.055f / 16 * width, 0.055f / 16 * height, 0).color(1, 1, 1, Math.abs(Mth.cos(Hexerei.getClientTicks() / 75f))).uv(u1, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normal, 1F, 0F, 0F).endVertex();
+                        buffer.vertex(matrix, -0.055f / 16 * width, 0.055f / 16 * height, 0).color(1, 1, 1, Math.abs(Mth.cos(Hexerei.getClientTicks() / 75f))).uv(u2, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normal, 1F, 0F, 0F).endVertex();
+                        buffer.vertex(matrix, -0.055f / 16 * width, -0.055f / 16 * height, 0).color(1, 1, 1, Math.abs(Mth.cos(Hexerei.getClientTicks() / 75f))).uv(u2, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLightIn).normal(normal, 1F, 0F, 0F).endVertex();
+
+                    }
+                    packedLightIn = temp;
+                    matrixStackIn.popPose();
+                    matrixStackIn.translate(0, 0, 0.03F);
+                    matrixStackIn.scale(1.15F, 1.15F, 1.15F);
+                    Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(crow, new ItemStack(ModItems.CROW_BLANK_AMULET_TRINKET.get()), ItemTransforms.TransformType.FIXED, false, matrixStackIn, bufferIn, packedLightIn);
+                    renderNecklace = true;
+                }else {
+
+                    if(stack.is(Items.FILLED_MAP)) {
+                        matrixStackIn.pushPose();
+                        matrixStackIn.translate(-1/2f, -1/2f, 0);
+                        matrixStackIn.scale(1F/128F, 1F/128F, 1);
+                        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180f));
+                        matrixStackIn.translate(-128F, -128F, 0);
+                        MapItemSavedData mapitemsaveddata = MapItem.getSavedData(itemstack, crow.level);
+                        if(mapitemsaveddata == null)
+                                HexereiPacketHandler.sendToServer(new AskForMapDataPacket(itemstack));
+                        if(mapitemsaveddata != null && crow.getFramedMapId().isPresent())
+                            Minecraft.getInstance().gameRenderer.getMapRenderer().render(matrixStackIn, bufferIn, crow.getFramedMapId().getAsInt(), mapitemsaveddata, true, packedLightIn);
+                        matrixStackIn.popPose();
+                        matrixStackIn.translate(0, 0, 0.03F);
+                        matrixStackIn.scale(1.15F, 1.15F, 1.15F);
+                        Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(crow, new ItemStack(ModItems.CROW_BLANK_AMULET_TRINKET_FRAME.get()), ItemTransforms.TransformType.FIXED, false, matrixStackIn, bufferIn, packedLightIn);
+                        renderNecklace = true;
+
+                    }
+                    else if(stack.is(ModItems.CROW_BLANK_AMULET.get())){
+                        matrixStackIn.pushPose();
+                        matrixStackIn.translate(0, 0, 0.03F);
+                        matrixStackIn.scale(1.15F, 1.15F, 1.15F);
+                        Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(crow, stack, ItemTransforms.TransformType.FIXED, false, matrixStackIn, bufferIn, packedLightIn);
+                        matrixStackIn.popPose();
+                        renderNecklace = true;
+                    }
+                }
+
+                matrixStackIn.popPose();
+
+                if(renderNecklace){
+                    VertexConsumer vertexConsumer = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutoutNoCull(CROW_AMULET_LOCATION), false, false);
+                    this.getParentModel().renderToBuffer(matrixStackIn, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                }
+
+            }
+        }
+
+        protected void translateToBody(PoseStack matrixStack) {
+            this.getParentModel().body.translateAndRotate(matrixStack);
+
         }
     }
 

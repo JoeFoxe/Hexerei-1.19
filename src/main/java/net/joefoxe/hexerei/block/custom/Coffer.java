@@ -9,6 +9,7 @@ import net.joefoxe.hexerei.tileentity.ModTileEntities;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.level.ServerLevel;
@@ -213,7 +214,7 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
             if (tileEntity instanceof CofferTile) {
                 MenuProvider containerProvider = createContainerProvider(worldIn, pos);
 
-                NetworkHooks.openScreen(((ServerPlayer) player), containerProvider, tileEntity.getBlockPos());
+                NetworkHooks.openScreen(((ServerPlayer) player), containerProvider, b -> b.writeBoolean(true).writeLong(tileEntity.getBlockPos().asLong()));
 
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
@@ -225,7 +226,7 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
 
     public Coffer(Properties properties) {
         super(properties.noOcclusion());
-        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.valueOf(false)));
+        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
     }
 
     @Override
@@ -313,8 +314,6 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
     @Override
     public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
 
-        if (stack == null)
-            return;
         withTileEntityDo(worldIn, pos, te -> {
             te.readInventory(stack.getOrCreateTag()
                     .getCompound("Inventory"));
@@ -323,13 +322,14 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
 
             te.buttonToggled = stack.getOrCreateTag()
                     .getInt("ButtonToggled");
-            te.setChanged();
+            te.sync();
         });
         super.setPlacedBy(worldIn, pos, state, placer, stack);
 
         if (stack.hasCustomHoverName()) {
             BlockEntity tileentity = worldIn.getBlockEntity(pos);
-            ((CofferTile)tileentity).customName = stack.getHoverName();
+            if(tileentity != null)
+                ((CofferTile)tileentity).customName = stack.getHoverName();
         }
 
     }

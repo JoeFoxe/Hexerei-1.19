@@ -1,6 +1,10 @@
 {
   "replace": false,
   "values": [
+    "hexerei:book_of_shadows_altar",
+    "hexerei:willow_altar",
+    "hexerei:willow_chest",
+    "hexerei:mahogany_chest",
     "hexerei:herb_drying_rack_full",
     "hexerei:herb_drying_rack",
     "hexerei:book_of_shadows_altar"

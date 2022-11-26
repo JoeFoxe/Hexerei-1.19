@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class ModWoodType {
-    public static WoodType WILLOW = WoodType.create("willow");
-    public static WoodType POLISHED_WILLOW = WoodType.create("polished_willow");
-    public static WoodType MAHOGANY = WoodType.create("mahogany");
-    public static WoodType POLISHED_MAHOGANY = WoodType.create("polished_mahogany");
+    public static WoodType WILLOW = WoodType.create("hexerei_willow");
+    public static WoodType POLISHED_WILLOW = WoodType.create("hexerei_polished_willow");
+    public static WoodType MAHOGANY = WoodType.create("hexerei_mahogany");
+    public static WoodType POLISHED_MAHOGANY = WoodType.create("hexerei_polished_mahogany");
     public static List<WoodType> woodTypes = List.of(WILLOW, MAHOGANY, POLISHED_WILLOW, POLISHED_MAHOGANY);
 }

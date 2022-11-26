@@ -1,11 +1,14 @@
 package net.joefoxe.hexerei.client.renderer.entity.custom;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.Maps;
+import com.mojang.math.Vector3f;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.custom.PickableDoubleFlower;
 import net.joefoxe.hexerei.block.custom.PickableFlower;
 import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
 import net.joefoxe.hexerei.client.renderer.entity.custom.ai.ITargetsDroppedItems;
+import net.joefoxe.hexerei.client.renderer.entity.render.CrowVariant;
 import net.joefoxe.hexerei.config.HexConfig;
 //import net.joefoxe.hexerei.container.CrowContainer;
 import net.joefoxe.hexerei.container.CrowContainer;
@@ -17,6 +20,7 @@ import net.joefoxe.hexerei.util.HexereiPacketHandler;
 import net.joefoxe.hexerei.util.HexereiTags;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.joefoxe.hexerei.util.message.*;
+import net.minecraft.Util;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -32,22 +36,28 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.ai.util.*;
 import net.minecraft.world.entity.animal.*;
+import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.Villager;
@@ -64,6 +74,7 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -72,6 +83,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -160,10 +172,27 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
     private static final EntityDataAccessor<Optional<BlockPos>> PERCH_POS = SynchedEntityData.defineId(CrowEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     private static final EntityDataAccessor<Integer> CROW_DYE_COLOR = SynchedEntityData.defineId(CrowEntity.class, EntityDataSerializers.INT);
 
+    private static final EntityDataAccessor<Integer> DATA_ID_TYPE_VARIANT = SynchedEntityData.defineId(CrowEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> DATA_PLAYING_DEAD = SynchedEntityData.defineId(CrowEntity.class, EntityDataSerializers.BOOLEAN);
+
+    public int playingDead;
+
+    private final Map<String, Vector3f> modelRotationValues = Maps.newHashMap();
+    public static final int TOTAL_PLAYDEAD_TIME = 200;
+
     public CrowEntity(EntityType<CrowEntity> type, Level worldIn) {
         super(type, worldIn);
         registerGoals();
-        this.moveControl = new FlyingMoveControl(this, 10, false);
+        this.moveControl = new FlyingMoveControl(this, 10, false) {
+
+            @Override
+            public void tick() {
+                if (!CrowEntity.this.isPlayingDead()) {
+                    super.tick();
+                }
+
+            }
+        };
         this.setPathfindingMalus(BlockPathTypes.DANGER_FIRE, -1.0F);
         this.setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0F);
         this.setPathfindingMalus(BlockPathTypes.LEAVES, 4.0F);
@@ -203,6 +232,9 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         this.rightWingAngleActual = 0;
         this.leftWingAngle = 0;
         this.leftWingAngleActual = 0;
+
+
+        this.playingDead = 0;
     }
 
 
@@ -218,8 +250,20 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         this.goalSelector.addGoal(4, new WaterAvoidingRandomFlyingGoal(this, 1.0D));
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(4, new LandOnOwnersShoulderGoal(this));
-        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Player.class, 6.0F));
-        this.goalSelector.addGoal(10, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Player.class, 6.0F){
+            @Override
+            public void tick() {
+                if(!CrowEntity.this.isPlayingDead())
+                    super.tick();
+            }
+        });
+        this.goalSelector.addGoal(10, new RandomLookAroundGoal(this){
+            @Override
+            public void tick() {
+                if(!CrowEntity.this.isPlayingDead())
+                    super.tick();
+            }
+        });
         this.targetSelector.addGoal(2, new CrowGatherItems(this, false, false, 40, 24));
         this.goalSelector.addGoal(2, new CrowDepositCoffer(this));
         this.goalSelector.addGoal(2, new CrowHarvestGoal((double)1.5F, 24, 6));
@@ -237,6 +281,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         this.entityData.define(HELP_COMMAND, 0);
         this.entityData.define(PERCH_POS, Optional.empty());
         this.entityData.define(CROW_DYE_COLOR, -1);
+        this.entityData.define(DATA_ID_TYPE_VARIANT, 0);
+        this.entityData.define(DATA_PLAYING_DEAD, false);
     }
 
     public void sync() {
@@ -282,6 +328,24 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 ////        this.updateContainerEquipment();
 //        this.itemHandler = net.minecraftforge.common.util.LazyOptional.of(() -> new net.minecraftforge.items.wrapper.InvWrapper(this.inventory));
 //    }
+
+
+    @Override
+    public void die(DamageSource pCause) {
+        if (!this.checkTotemDeathProtection(pCause)) {
+            super.die(pCause);
+        }
+    }
+
+    @Override
+    public boolean hurt(DamageSource pSource, float pAmount) {
+        float f = this.getHealth();
+        if (!this.level.isClientSide && !this.isNoAi() && ((float)this.level.random.nextInt(3) < pAmount || f / this.getMaxHealth() < 0.5F) && pAmount < f && (pSource.getEntity() != null || pSource.getDirectEntity() != null) && !this.isPlayingDead()) {
+            this.playingDead = TOTAL_PLAYDEAD_TIME;
+        }
+
+        return super.hurt(pSource, pAmount);
+    }
 
     @Override
     public boolean isInWall() {
@@ -371,6 +435,23 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         }
     }
 
+    private void setTypeVariant(int pTypeVariant) {
+        this.entityData.set(DATA_ID_TYPE_VARIANT, pTypeVariant);
+    }
+
+    private int getTypeVariant() {
+        return this.entityData.get(DATA_ID_TYPE_VARIANT);
+    }
+
+//    private void setVariantAndMarkings(CrowVariant pVariant, Markings pMarking) {
+//        this.setTypeVariant(pVariant.getId() & 255 | pMarking.getId() << 8 & '\uff00');
+//    }
+
+    public CrowVariant getVariant() {
+        return CrowVariant.byId(this.getTypeVariant() & 255);
+    }
+
+
     @Override
     public void setRecordPlayingNearby(BlockPos p_21082_, boolean p_21083_) {
         this.jukebox = p_21082_;
@@ -381,6 +462,58 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         Vec3 renderCenter = new Vec3(CrowEntity.this.getX(), CrowEntity.this.getY(), CrowEntity.this.getZ());
         AABB aabb = new AABB(-targetDistance, -targetDistance, -targetDistance, targetDistance, targetDistance, targetDistance);
         return aabb.move(renderCenter);
+    }
+
+    private void removeFramedMap(ItemStack pStack) {
+        this.getFramedMapId().ifPresent((p_218864_) -> {
+            MapItemSavedData mapitemsaveddata = MapItem.getSavedData(p_218864_, this.level);
+            if (mapitemsaveddata != null) {
+                mapitemsaveddata.removedFromFrame(this.blockPosition(), this.getId());
+                mapitemsaveddata.setDirty(true);
+            }
+
+        });
+        pStack.setEntityRepresentation((Entity)null);
+    }
+
+
+    public boolean checkTotemDeathProtection(DamageSource pDamageSource) {
+        if (pDamageSource.isBypassInvul()) {
+            return false;
+        } else {
+            ItemStack itemstack = null;
+
+            boolean triggered = false;
+            for(InteractionHand interactionhand : InteractionHand.values()) {
+                ItemStack itemstack1 = this.getItemInHand(interactionhand);
+                if (itemstack1.is(ModItems.CROW_ANKH_AMULET.get())) {
+                    itemstack = itemstack1.copy();
+                    itemstack1.shrink(1);
+                    triggered = true;
+                    break;
+                }
+            }
+
+            ItemStack itemstack1 = this.itemHandler.getStackInSlot(2);
+            if (!triggered && itemstack1.is(ModItems.CROW_ANKH_AMULET.get())) {
+                itemstack = itemstack1.copy();
+                itemstack1.shrink(1);
+                triggered = true;
+            }
+
+            if (triggered) {
+
+                this.setHealth(1.0F);
+                this.removeAllEffects();
+                this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 900, 1));
+                this.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
+                this.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 800, 0));
+                this.level.broadcastEntityEvent(this, (byte)35);
+                this.sync();
+            }
+
+            return triggered;
+        }
     }
 
     @Override
@@ -398,6 +531,27 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 
             this.sync = true;
         }
+        if(!level.isClientSide){
+            if(this.itemHandler.getStackInSlot(2).is(ModItems.CROW_BLANK_AMULET.get())){
+                this.itemHandler.getStackInSlot(2).inventoryTick(level, this, 2, true);
+            } if(this.itemHandler.getStackInSlot(2).getItem() instanceof MapItem mapItem){
+                MapItemSavedData mapitemsaveddata = MapItem.getSavedData(this.itemHandler.getStackInSlot(2), level);
+                if (mapitemsaveddata != null && !mapitemsaveddata.locked) {
+                    mapItem.update(level, this, mapitemsaveddata);
+                }
+            }
+        }
+
+        if(this.playingDead > 0){
+            if(!isPlayingDead())
+                setPlayingDead(true);
+            this.playingDead--;
+        } else {
+            if(isPlayingDead())
+                setPlayingDead(false);
+        }
+        if(CrowEntity.this.isPlayingDead())
+            return;
 
         if(this.breedNuggetGivenByCrowTimer > 0 && !this.level.isClientSide)
         {
@@ -858,10 +1012,14 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         this.setCommand(compound.getInt("Command"));
         this.setHelpCommand(compound.getInt("HelpCommand"));
         this.pickpocketTimer = compound.getInt("PickpocketTimer");
+        this.setTypeVariant(compound.getInt("Variant"));
+        this.playingDead = (compound.getInt("PlayingDeadTimer"));
 //        this.itemHandler.setStackInSlot(0, ItemStack.of(compound.getCompound("HandItem")));
 //        this.itemHandler.setStackInSlot(1, ItemStack.of(compound.getCompound("HeadItem")));
 //        this.itemHandler.setStackInSlot(2, ItemStack.of(compound.getCompound("MiscItem")));
         itemHandler.deserializeNBT(compound.getCompound("inv"));
+
+        removeFramedMap(itemHandler.getStackInSlot(2));
 //        this.inventory.fromTag(compound.getList("inv", 0));
 //        this.setItemSlot(EquipmentSlot.HEAD, itemHandler.getStackInSlot(0));
 //        this.setItemSlot(EquipmentSlot.MAINHAND, itemHandler.getStackInSlot(1));
@@ -876,6 +1034,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         this.setCommand(compound.getInt("Command"));
         this.setHelpCommand(compound.getInt("HelpCommand"));
         this.pickpocketTimer = compound.getInt("PickpocketTimer");
+        this.setTypeVariant(compound.getInt("Variant"));
+        this.playingDead = compound.getInt("PlayingDeadTimer");
 //        this.itemHandler.setStackInSlot(0, ItemStack.of(compound.getCompound("HandItem")));
 //        this.itemHandler.setStackInSlot(1, ItemStack.of(compound.getCompound("HeadItem")));
 //        this.itemHandler.setStackInSlot(2, ItemStack.of(compound.getCompound("MiscItem")));
@@ -897,6 +1057,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         compound.putInt("Command", this.getCommand());
         compound.putInt("HelpCommand", this.getHelpCommand());
         compound.putInt("PickpocketTimer", pickpocketTimer);
+        compound.putInt("Variant", this.getTypeVariant());
+        compound.putInt("PlayingDeadTimer", this.playingDead);
 //        compound.put("HandItem", this.itemHandler.getStackInSlot(0).save(new CompoundTag()));
 //        compound.put("HeadItem", this.itemHandler.getStackInSlot(1).save(new CompoundTag()));
 //        compound.put("MiscItem", this.itemHandler.getStackInSlot(2).save(new CompoundTag()));
@@ -915,6 +1077,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         compound.putInt("Command", this.getCommand());
         compound.putInt("HelpCommand", this.getHelpCommand());
         compound.putInt("PickpocketTimer", pickpocketTimer);
+        compound.putInt("Variant", this.getTypeVariant());
+        compound.putInt("PlayingDeadTimer", this.playingDead);
 //        compound.put("HandItem", this.itemHandler.getStackInSlot(0).save(new CompoundTag()));
 //        compound.put("HeadItem", this.itemHandler.getStackInSlot(1).save(new CompoundTag()));
 //        compound.put("MiscItem", this.itemHandler.getStackInSlot(2).save(new CompoundTag()));
@@ -927,6 +1091,34 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
             compound.putInt("PerchZ", this.getPerchPos().getZ());
         }
         compound.putInt("DyeColor", this.getDyeColorId());
+    }
+
+
+    @Override
+    @Nullable
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
+        RandomSource randomsource = pLevel.getRandom();
+        CrowVariant variant;
+        if (pSpawnData instanceof CrowEntity.CrowGroupData) {
+            variant = ((CrowEntity.CrowGroupData)pSpawnData).variant;
+        } else {
+            boolean isVariant = randomsource.nextInt(5) == 0;
+            variant = Util.getRandom(CrowVariant.values(), randomsource);
+            if(!isVariant)
+                variant = CrowVariant.BLACK;
+            pSpawnData = new CrowEntity.CrowGroupData(variant);
+        }
+
+        this.setTypeVariant(variant.getId() & 255);
+        return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
+    }
+    public static class CrowGroupData extends AgeableMob.AgeableMobGroupData {
+        public final CrowVariant variant;
+
+        public CrowGroupData(CrowVariant pVariant) {
+            super(true);
+            this.variant = pVariant;
+        }
     }
 
     public void aiStep() {
@@ -985,9 +1177,71 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
     }
 
     @Override
+    public MobType getMobType() {
+        return MobType.UNDEFINED;
+    }
+
+    public OptionalInt getFramedMapId() {
+        ItemStack itemstack = this.getItem(2);
+        if (itemstack.is(Items.FILLED_MAP)) {
+            Integer integer = MapItem.getMapId(itemstack);
+            if (integer != null) {
+                return OptionalInt.of(integer);
+            }
+        }
+
+        return OptionalInt.empty();
+    }
+    public boolean canBeSeenAsEnemy() {
+        return !this.isPlayingDead() && super.canBeSeenAsEnemy();
+    }
+
+    public void setPlayingDead(boolean pPlayingDead) {
+        if(this.getItem(2).is(ModItems.CROW_ANKH_AMULET.get())) {
+            this.getItem(2).getOrCreateTag().putBoolean("Active", pPlayingDead);
+            if(pPlayingDead)
+                addEffect(new MobEffectInstance(MobEffects.REGENERATION, 120, 1));
+        }
+        if(pPlayingDead != isPlayingDead()) {
+//            this.setDeltaMovement(0, 0, 0);
+//            this.moveControl.setWantedPosition(xo, yo, zo, 1);
+            this.setNoGravity(false);
+            this.setSpeed(0);
+            this.navigation.stop();
+            this.caw = false;
+            this.cawTimer = random.nextInt(360) + 360;
+            this.tailFan = false;
+            this.tailFanTimer = random.nextInt(80) + 20;
+            this.tailWag = false;
+            this.tailWagTimer = random.nextInt(80) + 80;
+            this.sync();
+        }
+        this.entityData.set(DATA_PLAYING_DEAD, pPlayingDead);
+    }
+
+    public boolean isPlayingDead() {
+        return this.entityData.get(DATA_PLAYING_DEAD);
+    }
+
+    public Map<String, Vector3f> getModelRotationValues() {
+        return this.modelRotationValues;
+    }
+    @Override
     public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
-        return ModEntityTypes.CROW.get().create(world);
+//        return ModEntityTypes.CROW.get().create(world);
 //        return null;
+
+
+        CrowEntity crow = ModEntityTypes.CROW.get().create(world);
+        if (crow != null) {
+            CrowVariant crowVariant;
+            crowVariant = this.random.nextBoolean() ? this.getVariant() : ((CrowEntity)entity).getVariant();
+
+            crow.setTypeVariant(crowVariant.getId() & 255);
+            crow.setPersistenceRequired();
+        }
+
+        return crow;
     }
 
 //    @Override
@@ -1369,6 +1623,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
     @Override
     public void containerChanged(Container p_18983_) {
 
+        ItemStack stack = p_18983_.getItem(2);
+        stack.setEntityRepresentation(this);
     }
 
     public class FloatGoal extends Goal {
@@ -1628,6 +1884,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 
         @Override
         public void tick() {
+            if(CrowEntity.this.isPlayingDead())
+                return;
             super.tick();
 
             boolean isStuck = false;
@@ -1791,6 +2049,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         }
 
         public void tick() {
+            if(CrowEntity.this.isPlayingDead())
+                return;
             if (!this.isSittingOnShoulder && !this.entity.isInSittingPose() && !this.entity.isLeashed()) {
                 if (this.entity.getBoundingBox().intersects(this.owner.getBoundingBox())) {
 
@@ -1871,6 +2131,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         }
 
         public void tick() {
+            if(CrowEntity.this.isPlayingDead())
+                return;
             BlockPos blockpos = this.getMoveToTarget();
 
             if (this.isReachedTarget()) {
@@ -2184,6 +2446,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 
         @Override
         public void tick() {
+            if(CrowEntity.this.isPlayingDead())
+                return;
             if (cooldown > 0) {
                 cooldown--;
             }
@@ -2402,6 +2666,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 
         @Override
         public void tick() {
+            if(CrowEntity.this.isPlayingDead())
+                return;
             if (CrowEntity.this.pickpocketTimer <= 0)
             {
                 if (targetEntity != null) {
@@ -2582,6 +2848,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         }
 
         public void tick() {
+            if(CrowEntity.this.isPlayingDead())
+                return;
             this.tamable.getLookControl().setLookAt(this.owner, 10.0F, (float)this.tamable.getMaxHeadXRot());
             if (--this.timeToRecalcPath <= 0) {
                 this.timeToRecalcPath = this.adjustedTickDelay(10);
@@ -2711,6 +2979,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         }
 
         public void tick() {
+            if(CrowEntity.this.isPlayingDead())
+                return;
             if (--this.timeToRecalcPath <= 0) {
                 this.timeToRecalcPath = this.adjustedTickDelay(10);
                 this.animal.getNavigation().moveTo(this.parent, this.speedModifier);
@@ -2810,6 +3080,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         }
 
         public void tick() {
+            if(CrowEntity.this.isPlayingDead())
+                return;
             this.mob.getLookControl().setLookAt(this.player, (float)(this.mob.getMaxHeadYRot() + 20), (float)this.mob.getMaxHeadXRot());
             if (this.mob.distanceToSqr(this.player) < 6.25D) {
                 this.mob.getNavigation().stop();
@@ -2930,6 +3202,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         }
 
         public void tick() {
+            if(CrowEntity.this.isPlayingDead())
+                return;
             LivingEntity livingentity = this.mob.getTarget();
             if (livingentity != null) {
                 this.mob.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
@@ -3208,6 +3482,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 
         @Override
         public void tick() {
+            if(CrowEntity.this.isPlayingDead())
+                return;
             super.tick();
         }
 
@@ -3279,6 +3555,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 
         public void tick() {
 
+            if(CrowEntity.this.isPlayingDead())
+                return;
             if(this.partner != null){
                 this.animal.getLookControl().setLookAt(this.partner, 10.0F, (float) this.animal.getMaxHeadXRot());
                 this.animal.getNavigation().moveTo(this.partner, this.speedModifier);
@@ -3579,6 +3857,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 
         @Override
         public void tick() {
+            if(CrowEntity.this.isPlayingDead())
+                return;
             double topOffset = 0;
             if(CrowEntity.this.getPerchPos() != null)
                 topOffset = CrowEntity.this.level.getBlockState(CrowEntity.this.getPerchPos()).getBlock().getOcclusionShape(CrowEntity.this.level.getBlockState(CrowEntity.this.getPerchPos()), CrowEntity.this.level, CrowEntity.this.getPerchPos()).max(Direction.Axis.Y);

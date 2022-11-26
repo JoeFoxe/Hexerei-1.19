@@ -243,7 +243,7 @@
   "tooltip.hexerei.sage_seeds": "Break grass to find.",
   "tooltip.hexerei.seed_mixture_shift": "Crows love this food. Try feeding crows this to befriend them. Crow Snackies",
   "tooltip.hexerei.keychain_contains": "Contains: %s",
-  "tooltip.hexerei.keychain_with_item": "You can overwrite the item attached with the same method.",
+  "tooltip.hexerei.keychain_with_item": "To remove the imprinted item, place in a crafting grid and take out the imprinted item.",
   "tooltip.hexerei.keychain_without_item": "Combine with another item in a crafting grid to attach, consumes item.",
   "tooltip.hexerei.found_in_swamp": "Found in a swamp biome.",
   "tooltip.hexerei.broom_attachments": "Broom attachment.",
@@ -998,6 +998,15 @@
 
   "entity.hexerei.boat" : "Boat",
   "entity.hexerei.chest_boat" : "Chest Boat",
+
+  "item.hexerei.crow_blank_amulet" : "Crow Blank Amulet Trinket",
+  "item.hexerei.crow_filled_amulet" : " Amulet",
+  "item.hexerei.crow_ankh_amulet" : "Crow Ankh Amulet",
+  "tooltip.hexerei.crow_ankh_amulet_1" : "Protects your crow from dangers, while playing dead the crow will gain regeneration.",
+  "tooltip.hexerei.crow_ankh_amulet_2" : "If the crow were to die instead the amulet breaks and the crow gains regeneration, like a totem of undying.",
+  "tooltip.hexerei.cosmetic_only" : "Cosmetic Only.",
+  "tooltip.hexerei.crow_blank_amulet" : "Place in your crow's 'Misc' slot.",
+  "tooltip.hexerei.infused_fabric_ornate" : "Use a gold nugget on a fabric piece in world to make it ornate.",
 
   "itemGroup.hexereiModTab": "Hexerei"
 

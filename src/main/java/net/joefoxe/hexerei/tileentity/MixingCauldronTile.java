@@ -15,16 +15,19 @@ import net.joefoxe.hexerei.util.HexereiTags;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.joefoxe.hexerei.util.message.EmitParticlesPacket;
 import net.joefoxe.hexerei.util.message.TESyncPacket;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -63,6 +66,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -570,8 +574,20 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
         }).toList();
         boolean matchesRecipe = false;
 
+        ResourceLocation fl2 = ForgeRegistries.FLUIDS.getKey(this.fluidStack.getFluid());
+        CompoundTag tag = this.fluidStack.isEmpty() ? new CompoundTag() : this.fluidStack.copy().getOrCreateTag();
+
+
+
         for(FluidMixingRecipe fluidMixingRecipe : recipe2){
             boolean fluidEqual = fluidMixingRecipe.getLiquid().isFluidEqual(this.fluidStack);
+            ResourceLocation fl1 = ForgeRegistries.FLUIDS.getKey(fluidMixingRecipe.getLiquid().getFluid());
+            if(!fluidEqual && fl1 != null && fl2 != null && fl1.getPath().equals(fl2.getPath())) {
+                boolean flag = NbtUtils.compareNbt(fluidMixingRecipe.getLiquid().copy().getOrCreateTag(), tag, true);
+                if(flag){
+                    fluidEqual = true;
+                }
+            }
 
             if(fluidEqual) {
                 matchesRecipe = true;
@@ -640,6 +656,16 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
                 FluidStack containerFluid = this.getFluidStack();
 
                 boolean fluidEqual = recipeFluid.isFluidEqual(containerFluid);
+
+                ResourceLocation fl1 = ForgeRegistries.FLUIDS.getKey(fluidMixingRecipe.getLiquid().getFluid());
+                if(!fluidEqual && fl1 != null && fl2 != null && fl1.getPath().equals(fl2.getPath())) {
+                    boolean flag = NbtUtils.compareNbt(fluidMixingRecipe.getLiquid().copy().getOrCreateTag(), tag, true);
+                    if(flag){
+                        fluidEqual = true;
+                    }
+                }
+
+
                 boolean hasEnoughFluid = this.getFluidStack().getAmount() >= 50;
                 boolean needsHeat = fluidMixingRecipe.getHeatCondition() != FluidMixingRecipe.HeatCondition.NONE;
                 if (fluidEqual && !this.crafted && hasEnoughFluid) {

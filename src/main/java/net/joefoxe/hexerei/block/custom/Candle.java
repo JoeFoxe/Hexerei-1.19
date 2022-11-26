@@ -632,17 +632,15 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
 
         if(Screen.hasShiftDown()) {
             tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-            tooltip.add(Component.translatable("tooltip.hexerei.candle_shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(Component.translatable("tooltip.hexerei.candle_shift_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             tooltip.add(Component.translatable("tooltip.hexerei.candle_shift_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             tooltip.add(Component.translatable("tooltip.hexerei.candle_shift_3").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-
-
 
         } else {
             tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
 
             String str = CandleItem.getEffectLocation(stack);
-            if(str != null) {
+            if(str != null && str.length() > 0 && !str.equals("hexerei:no_effect")) {
                 String translateEffect = "effect." + (new ResourceLocation(str).getNamespace()) + "." + new ResourceLocation(str).getPath();
                 MutableComponent component = Component.translatable(translateEffect).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999)));
                 tooltip.add(Component.translatable("tooltip.hexerei.candle_effect", component));

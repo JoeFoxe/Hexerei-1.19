@@ -76,7 +76,7 @@ public class WoodcutterContainer extends AbstractContainerMenu {
 
             @Override
             public boolean mayPickup(Player pPlayer) {
-                if(WoodcutterContainer.this.selectedRecipeIndex.get() == -1 || WoodcutterContainer.this.container.getItem(0).getCount() < recipes.get(WoodcutterContainer.this.selectedRecipeIndex.get()).ingredientCount)
+                if(WoodcutterContainer.this.selectedRecipeIndex.get() == -1 || recipes.isEmpty() || WoodcutterContainer.this.container.getItem(0).getCount() < recipes.get(WoodcutterContainer.this.selectedRecipeIndex.get()).ingredientCount)
                     return false;
 
                 return super.mayPickup(pPlayer);

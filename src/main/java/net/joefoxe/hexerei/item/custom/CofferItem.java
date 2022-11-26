@@ -1,13 +1,29 @@
 package net.joefoxe.hexerei.item.custom;
 
 import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.client.renderer.entity.custom.CrowEntity;
+import net.joefoxe.hexerei.container.CofferContainer;
 import net.joefoxe.hexerei.item.ModItems;
+import net.joefoxe.hexerei.tileentity.CofferTile;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -20,10 +36,12 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class CofferItem extends BlockItem implements DyeableLeatherItem {
 
@@ -100,6 +118,8 @@ public class CofferItem extends BlockItem implements DyeableLeatherItem {
 
     @Override
     public InteractionResult place(BlockPlaceContext context) {
+        if(context.getPlayer() != null && context.getPlayer().isSteppingCarefully())
+            return InteractionResult.PASS;
         return super.place(context);
     }
 
@@ -110,6 +130,38 @@ public class CofferItem extends BlockItem implements DyeableLeatherItem {
             public int getSlotLimit(int slot) {
                 return 64;
             }
+        };
+    }
+
+    public InteractionResultHolder<ItemStack> use(Level level, Player playerIn, InteractionHand handIn) {
+        ItemStack itemstack = playerIn.getItemInHand(handIn);
+
+        playerIn.startUsingItem(handIn);
+        if (!level.isClientSide) {
+            if (playerIn.isShiftKeyDown()) {
+
+                MenuProvider containerProvider = createContainerProvider(itemstack, handIn, itemstack.getTag());
+
+                NetworkHooks.openScreen((ServerPlayer) playerIn, containerProvider, b -> b.writeBoolean(false).writeInt(handIn == InteractionHand.MAIN_HAND ? 0 : 1));
+
+            }
+        }
+        return InteractionResultHolder.success(itemstack);
+    }
+
+    private MenuProvider createContainerProvider(ItemStack itemStack, InteractionHand hand, CompoundTag list) {
+        return new MenuProvider() {
+            @Nullable
+            @Override
+            public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity) {
+                return new CofferContainer(i, itemStack, playerInventory, playerEntity, hand);
+            }
+
+            @Override
+            public Component getDisplayName() {
+                return Component.translatable("screen.hexerei.coffer");
+            }
+
         };
     }
 

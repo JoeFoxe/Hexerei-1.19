@@ -25,13 +25,13 @@ public class PotionFluidType extends FluidType {
         this.flowingTexture = flowingTexture;
     }
 
-    public int getTintColor(FluidStack stack) {
+    public static int getTintColor(FluidStack stack) {
         CompoundTag tag = stack.getOrCreateTag();
         int color = PotionUtils.getColor(PotionUtils.getAllEffects(tag)) | 0xD0000000;
         return color;
     }
 
-    public int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
+    public static int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
         return 0xffffffff;
     }
 
@@ -61,12 +61,12 @@ public class PotionFluidType extends FluidType {
 
             @Override
             public int getTintColor(FluidStack stack) {
-                return PotionFluidType.this.getTintColor(stack);
+                return PotionFluidType.getTintColor(stack);
             }
 
             @Override
             public int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                return PotionFluidType.this.getTintColor(state, getter, pos);
+                return PotionFluidType.getTintColor(state, getter, pos);
             }
 
         });

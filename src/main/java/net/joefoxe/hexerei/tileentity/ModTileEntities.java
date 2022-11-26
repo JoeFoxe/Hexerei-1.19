@@ -50,6 +50,8 @@ public class ModTileEntities {
     public static final RegistryObject<BlockEntityType<ModSignBlockEntity>> SIGN_TILE = TILE_ENTITIES.register(
             "sign_entity", () -> BlockEntityType.Builder.of(ModSignBlockEntity::new, ModBlocks.WILLOW_SIGN.get(), ModBlocks.MAHOGANY_SIGN.get(), ModBlocks.WILLOW_WALL_SIGN.get(), ModBlocks.MAHOGANY_WALL_SIGN.get(), ModBlocks.POLISHED_WILLOW_SIGN.get(), ModBlocks.POLISHED_MAHOGANY_SIGN.get(), ModBlocks.POLISHED_WILLOW_WALL_SIGN.get(), ModBlocks.POLISHED_MAHOGANY_WALL_SIGN.get()).build(null));
 
+    public static final RegistryObject<BlockEntityType<CuttingCrystalTile>> CUTTING_CRYSTAL_TILE = TILE_ENTITIES.register(
+            "cutting_crystal_entity", () -> BlockEntityType.Builder.of(CuttingCrystalTile::new, ModBlocks.CUTTING_CRYSTAL.get()).build(null));
 
     public static void register(IEventBus eventBus) {
         TILE_ENTITIES.register(eventBus);

@@ -21,7 +21,9 @@ public class BroomItemRenderer extends CustomItemRenderer {
         }
 
 
+        stack.pushPose();
         renderer.render(((BroomItem)itemStack.getItem()).getBroomFast(minecraft.level, itemStack), 0F, 1F, stack, source, light);
+        stack.popPose();
     }
 
 }

@@ -1,14 +1,23 @@
 package net.joefoxe.hexerei.container;
 
+import com.google.common.collect.Lists;
 import net.joefoxe.hexerei.block.ModBlocks;
+import net.joefoxe.hexerei.block.custom.Coffer;
 import net.joefoxe.hexerei.tileentity.CofferTile;
+import net.joefoxe.hexerei.tileentity.ModChestBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
@@ -29,6 +38,11 @@ public class CofferContainer extends AbstractContainerMenu {
     private final IItemHandler playerInventory;
     public static final int OFFSET = 28;
 
+    public boolean inWorld;
+
+    public InteractionHand hand;
+    public ItemStack stack;
+
 
     private Slot cofferSlot(Container container, int slot, int x, int y){
         return new Slot(container, slot, x, y){
@@ -46,11 +60,9 @@ public class CofferContainer extends AbstractContainerMenu {
         this.playerInventory = new InvWrapper(playerInventory);
         if(tileEntity instanceof Container container)
             container.startOpen(player);
-
+        this.inWorld = true;
 
         layoutPlayerInventorySlots(11, 147 - OFFSET);
-
-
 
         //add slots for coffer
         if(tileEntity != null && tileEntity instanceof Container container) {
@@ -91,46 +103,6 @@ public class CofferContainer extends AbstractContainerMenu {
             this.addSlot(cofferSlot(container, 33, 15 + (21 * 6), 102 - OFFSET));
             this.addSlot(cofferSlot(container, 34, 15 + (21 * 7), 102 - OFFSET));
             this.addSlot(cofferSlot(container, 35, 15 + (21 * 8), 102 - OFFSET));
-
-
-//            tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-//                this.addSlot(new SlotItemHandler(h, 0, 15 + (21 * 0), 18));
-//                this.addSlot(new SlotItemHandler(h, 1, 15 + (21 * 1), 18));
-//                this.addSlot(new SlotItemHandler(h, 2, 15 + (21 * 2), 18));
-//                this.addSlot(new SlotItemHandler(h, 3, 15 + (21 * 3), 18));
-//                this.addSlot(new SlotItemHandler(h, 4, 15 + (21 * 4), 18));
-//                this.addSlot(new SlotItemHandler(h, 5, 15 + (21 * 5), 18));
-//                this.addSlot(new SlotItemHandler(h, 6, 15 + (21 * 6), 18));
-//                this.addSlot(new SlotItemHandler(h, 7, 15 + (21 * 7), 18));
-//                this.addSlot(new SlotItemHandler(h, 8, 15 + (21 * 8), 18));
-//                this.addSlot(new SlotItemHandler(h, 9, 15 + (21 * 0), 39));
-//                this.addSlot(new SlotItemHandler(h, 10, 15 + (21 * 1), 39));
-//                this.addSlot(new SlotItemHandler(h, 11, 15 + (21 * 2), 39));
-//                this.addSlot(new SlotItemHandler(h, 12, 15 + (21 * 6), 39));
-//                this.addSlot(new SlotItemHandler(h, 13, 15 + (21 * 7), 39));
-//                this.addSlot(new SlotItemHandler(h, 14, 15 + (21 * 8), 39));
-//                this.addSlot(new SlotItemHandler(h, 15, 15 + (21 * 0), 60));
-//                this.addSlot(new SlotItemHandler(h, 16, 15 + (21 * 1), 60));
-//                this.addSlot(new SlotItemHandler(h, 17, 15 + (21 * 2), 60));
-//                this.addSlot(new SlotItemHandler(h, 18, 15 + (21 * 6), 60));
-//                this.addSlot(new SlotItemHandler(h, 19, 15 + (21 * 7), 60));
-//                this.addSlot(new SlotItemHandler(h, 20, 15 + (21 * 8), 60));
-//                this.addSlot(new SlotItemHandler(h, 21, 15 + (21 * 0), 81));
-//                this.addSlot(new SlotItemHandler(h, 22, 15 + (21 * 1), 81));
-//                this.addSlot(new SlotItemHandler(h, 23, 15 + (21 * 2), 81));
-//                this.addSlot(new SlotItemHandler(h, 24, 15 + (21 * 6), 81));
-//                this.addSlot(new SlotItemHandler(h, 25, 15 + (21 * 7), 81));
-//                this.addSlot(new SlotItemHandler(h, 26, 15 + (21 * 8), 81));
-//                this.addSlot(new SlotItemHandler(h, 27, 15 + (21 * 0), 102));
-//                this.addSlot(new SlotItemHandler(h, 28, 15 + (21 * 1), 102));
-//                this.addSlot(new SlotItemHandler(h, 29, 15 + (21 * 2), 102));
-//                this.addSlot(new SlotItemHandler(h, 30, 15 + (21 * 3), 102));
-//                this.addSlot(new SlotItemHandler(h, 31, 15 + (21 * 4), 102));
-//                this.addSlot(new SlotItemHandler(h, 32, 15 + (21 * 5), 102));
-//                this.addSlot(new SlotItemHandler(h, 33, 15 + (21 * 6), 102));
-//                this.addSlot(new SlotItemHandler(h, 34, 15 + (21 * 7), 102));
-//                this.addSlot(new SlotItemHandler(h, 35, 15 + (21 * 8), 102));
-//            });
         }
 
         addDataSlot(new DataSlot() {
@@ -143,28 +115,110 @@ public class CofferContainer extends AbstractContainerMenu {
                 return ((CofferTile)tileEntity).getButtonToggled();
             }
         });
-
-
-
     }
 
+    public CofferContainer(int windowId, ItemStack itemStack, Inventory playerInventory, Player player, InteractionHand hand) {
+        super(ModContainers.COFFER_CONTAINER.get(), windowId);
+        playerEntity = player;
+        this.playerInventory = new InvWrapper(playerInventory);
+        this.inWorld = false;
+        this.tileEntity = ModBlocks.COFFER.get().newBlockEntity(BlockPos.ZERO, ModBlocks.COFFER.get().defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, Direction.SOUTH));
+
+        this.stack = itemStack;
+        this.hand = hand;
+//        player.getHandSlots().forEach((stack) -> {stack.equals(this.stack)});
+
+
+        layoutPlayerInventorySlots(11, 147 - OFFSET);
+
+        //add slots for coffer
+
+        if(this.tileEntity instanceof CofferTile te) {
+            te.readInventory(stack.getOrCreateTag()
+                    .getCompound("Inventory"));
+
+            te.setDyeColor(Coffer.getColorStatic(stack));
+
+            te.buttonToggled = stack.getOrCreateTag()
+                    .getInt("ButtonToggled");
+            te.self = itemStack;
+            te.setChanged();
+        }
+
+
+        if(tileEntity != null && tileEntity instanceof Container container) {
+
+            this.addSlot(cofferSlot(container, 0, 15 + (21 * 0), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 1, 15 + (21 * 1), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 2, 15 + (21 * 2), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 3, 15 + (21 * 3), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 4, 15 + (21 * 4), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 5, 15 + (21 * 5), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 6, 15 + (21 * 6), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 7, 15 + (21 * 7), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 8, 15 + (21 * 8), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 9, 15 + (21 * 0), 39 - OFFSET));
+            this.addSlot(cofferSlot(container, 10, 15 + (21 * 1), 39 - OFFSET));
+            this.addSlot(cofferSlot(container, 11, 15 + (21 * 2), 39 - OFFSET));
+            this.addSlot(cofferSlot(container, 12, 15 + (21 * 6), 39 - OFFSET));
+            this.addSlot(cofferSlot(container, 13, 15 + (21 * 7), 39 - OFFSET));
+            this.addSlot(cofferSlot(container, 14, 15 + (21 * 8), 39 - OFFSET));
+            this.addSlot(cofferSlot(container, 15, 15 + (21 * 0), 60 - OFFSET));
+            this.addSlot(cofferSlot(container, 16, 15 + (21 * 1), 60 - OFFSET));
+            this.addSlot(cofferSlot(container, 17, 15 + (21 * 2), 60 - OFFSET));
+            this.addSlot(cofferSlot(container, 18, 15 + (21 * 6), 60 - OFFSET));
+            this.addSlot(cofferSlot(container, 19, 15 + (21 * 7), 60 - OFFSET));
+            this.addSlot(cofferSlot(container, 20, 15 + (21 * 8), 60 - OFFSET));
+            this.addSlot(cofferSlot(container, 21, 15 + (21 * 0), 81 - OFFSET));
+            this.addSlot(cofferSlot(container, 22, 15 + (21 * 1), 81 - OFFSET));
+            this.addSlot(cofferSlot(container, 23, 15 + (21 * 2), 81 - OFFSET));
+            this.addSlot(cofferSlot(container, 24, 15 + (21 * 6), 81 - OFFSET));
+            this.addSlot(cofferSlot(container, 25, 15 + (21 * 7), 81 - OFFSET));
+            this.addSlot(cofferSlot(container, 26, 15 + (21 * 8), 81 - OFFSET));
+            this.addSlot(cofferSlot(container, 27, 15 + (21 * 0), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 28, 15 + (21 * 1), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 29, 15 + (21 * 2), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 30, 15 + (21 * 3), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 31, 15 + (21 * 4), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 32, 15 + (21 * 5), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 33, 15 + (21 * 6), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 34, 15 + (21 * 7), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 35, 15 + (21 * 8), 102 - OFFSET));
+        }
+    }
+
+    @Override
+    public void broadcastChanges() {
+        super.broadcastChanges();
+    }
+
+    @Override
+    public void slotsChanged(Container pContainer) {
+        super.slotsChanged(pContainer);
+    }
 
     public void playSound() {
         this.tileEntity.getLevel().playSound((Player)null, this.tileEntity.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 1.0F, 1.0F);;
     }
 
     public int getToggled() {
-        return ((CofferTile)tileEntity).getButtonToggled();
+        if(this.inWorld)
+            return ((CofferTile)tileEntity).getButtonToggled();
+        return 0;
     }
 
     public void setToggled(int value) {
-        ((CofferTile)tileEntity).setButtonToggled(value);
+        if(this.inWorld)
+            ((CofferTile)tileEntity).setButtonToggled(value);
     }
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()),
-                        playerIn,tileEntity.getBlockState().getBlock());
+        if(this.inWorld)
+            return stillValid(ContainerLevelAccess.create(tileEntity.getLevel(), tileEntity.getBlockPos()),
+                            playerIn,tileEntity.getBlockState().getBlock());
+        return playerIn.getItemInHand(this.hand).equals(this.stack);
+
     }
 
     private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {

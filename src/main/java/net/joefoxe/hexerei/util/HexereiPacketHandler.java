@@ -362,6 +362,22 @@ public class HexereiPacketHandler {
                 RecipeToServer::decode,
                 RecipeToServer::consume
         );
+
+        instance.registerMessage(
+                ++ id,
+                AskForMapDataPacket.class,
+                AskForMapDataPacket::encode,
+                AskForMapDataPacket::decode,
+                AskForMapDataPacket::consume
+        );
+
+        instance.registerMessage(
+                ++ id,
+                MapDataPacket.class,
+                MapDataPacket::encode,
+                MapDataPacket::decode,
+                MapDataPacket::consume
+        );
     }
 
     private static <T> void register(Class<T> clazz, IMessage<T> message)

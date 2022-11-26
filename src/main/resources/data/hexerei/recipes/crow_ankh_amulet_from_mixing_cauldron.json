@@ -1,0 +1,47 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "liquid": {
+    "fluid": "hexerei:potion",
+    "nbt": {
+      "Bottle": "REGULAR",
+      "Potion": "minecraft:regeneration"
+    }
+  },
+  "ingredients": [
+    {
+      "item": "hexerei:crow_blank_amulet"
+    },
+    {
+      "item": "hexerei:dried_yellow_dock_leaves"
+    },
+    {
+      "item": "minecraft:glow_berries"
+    },
+    {
+      "item": "hexerei:dried_mugwort_flowers"
+    },
+    {
+      "item": "minecraft:totem_of_undying"
+    },
+    {
+      "item": "hexerei:dried_yellow_dock_flowers"
+    },
+    {
+      "item": "minecraft:glow_berries"
+    },
+    {
+      "item": "hexerei:dried_mugwort_leaves"
+    }
+  ],
+  "output": {
+    "item": "hexerei:crow_ankh_amulet"
+  },
+  "liquidOutput": {
+    "fluid": "hexerei:potion",
+    "nbt": {
+      "Bottle": "REGULAR",
+      "Potion": "minecraft:regeneration"
+    }
+  },
+  "fluidLevelsConsumed": 333
+}

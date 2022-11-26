@@ -11,8 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Random;
 
 public class WillowTree extends AbstractTreeGrower {
-
-
     @Override
     protected Holder<? extends ConfiguredFeature<?, ?>> getConfiguredFeature(RandomSource p_60014_, boolean p_60015_) {
         return ModConfiguredFeatures.WILLOW;

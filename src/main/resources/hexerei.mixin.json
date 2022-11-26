@@ -9,7 +9,9 @@
     "ItemInHandMixin",
     "MouseHandlerMixin",
     "PlayerItemInHandLayerMixin",
-    "ThirdPersonRendererMixin"
+    "ThirdPersonRendererMixin",
+    "ScreenEffectRendererMixin",
+    "FogRendererMixin"
   ],
   "mixins": [
   ],

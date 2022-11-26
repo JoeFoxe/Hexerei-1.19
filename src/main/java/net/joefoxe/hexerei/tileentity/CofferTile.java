@@ -23,6 +23,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -56,6 +57,8 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Worl
     public int dyeColor = 0x422F1E;
 
     public Component customName;
+
+    public ItemStack self = null;
     private static final int[] SLOTS = IntStream.range(0, 36).toArray();
 
 
@@ -152,6 +155,38 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Worl
     @Override
     public void setChanged() {
         super.setChanged();
+
+        if(this.self != null){
+
+            CompoundTag tag = this.self.getOrCreateTag();
+            CompoundTag inv = this.itemStackHandler.serializeNBT();
+
+            boolean flag = false;
+            for(int i = 0; i < 36; i++)
+            {
+                if(!this.itemStackHandler.getStackInSlot(i).isEmpty())
+                {
+                    flag = true;
+                    break;
+                }
+            }
+            if(flag)
+                tag.put("Inventory", inv);
+
+            if(self.getItem() instanceof DyeableLeatherItem dyeableLeatherItem)
+                dyeableLeatherItem.setColor(this.self, this.dyeColor);
+
+            tag.putInt("ButtonToggled", this.buttonToggled);
+
+
+            Component customName = getCustomName();
+
+            if (customName != null)
+                if(customName.getString().length() > 0)
+                    this.self.setHoverName(customName);
+
+
+        }
     }
 
     @Override

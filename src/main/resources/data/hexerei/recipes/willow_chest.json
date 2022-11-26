@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "# #",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "hexerei:willow_planks"
+    }
+  },
+  "result": {
+    "item": "hexerei:willow_chest",
+    "count": 1
+  }
+}
