@@ -3,6 +3,7 @@ package net.joefoxe.hexerei.config;
 import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.Mod;
+
 import java.util.ArrayList;
 import java.util.List;
 

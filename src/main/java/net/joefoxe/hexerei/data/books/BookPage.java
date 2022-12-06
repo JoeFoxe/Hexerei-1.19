@@ -1,19 +1,10 @@
 package net.joefoxe.hexerei.data.books;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.client.renderer.entity.custom.CrowEntity;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
 import java.util.List;

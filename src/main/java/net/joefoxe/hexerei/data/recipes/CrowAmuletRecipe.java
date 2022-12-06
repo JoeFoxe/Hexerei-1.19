@@ -1,8 +1,6 @@
 package net.joefoxe.hexerei.data.recipes;
 
-import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.custom.CrowAmuletItem;
-import net.joefoxe.hexerei.item.custom.KeychainItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;

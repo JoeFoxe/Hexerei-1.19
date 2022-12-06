@@ -1,11 +1,11 @@
 package net.joefoxe.hexerei.util;
 
-import java.util.UUID;
-import javax.annotation.Nullable;
-
-import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+
+import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class NBTUtilities {
     public static void putUniqueId(CompoundTag compound, String key, @Nullable UUID uuid) {

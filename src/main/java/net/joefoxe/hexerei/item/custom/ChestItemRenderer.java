@@ -1,18 +1,13 @@
 package net.joefoxe.hexerei.item.custom;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.joefoxe.hexerei.block.custom.HerbJar;
 import net.joefoxe.hexerei.block.custom.ModChest;
-import net.joefoxe.hexerei.client.renderer.entity.render.BroomRenderer;
 import net.joefoxe.hexerei.tileentity.ModChestBlockEntity;
 import net.joefoxe.hexerei.tileentity.renderer.ModChestRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.ChestRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

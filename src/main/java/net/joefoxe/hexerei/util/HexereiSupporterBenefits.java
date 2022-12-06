@@ -1,6 +1,9 @@
 package net.joefoxe.hexerei.util;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.UUID;
 
 public class HexereiSupporterBenefits {
 

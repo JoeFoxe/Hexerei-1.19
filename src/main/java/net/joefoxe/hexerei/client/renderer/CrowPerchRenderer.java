@@ -10,7 +10,6 @@ import net.joefoxe.hexerei.client.renderer.entity.custom.CrowEntity;
 import net.joefoxe.hexerei.item.custom.CrowFluteItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -24,7 +23,8 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class CrowPerchRenderer {

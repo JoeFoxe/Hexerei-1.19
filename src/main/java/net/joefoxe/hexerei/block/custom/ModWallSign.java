@@ -1,8 +1,6 @@
 package net.joefoxe.hexerei.block.custom;
 
-import net.joefoxe.hexerei.block.ModWoodType;
 import net.joefoxe.hexerei.tileentity.ModSignBlockEntity;
-import net.joefoxe.hexerei.tileentity.ModTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.WallSignBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;

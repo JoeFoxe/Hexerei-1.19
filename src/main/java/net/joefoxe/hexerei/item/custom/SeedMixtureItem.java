@@ -3,7 +3,6 @@ package net.joefoxe.hexerei.item.custom;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
@@ -13,9 +12,6 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
-
-
-import net.minecraft.world.item.Item.Properties;
 
 public class SeedMixtureItem extends Item {
 

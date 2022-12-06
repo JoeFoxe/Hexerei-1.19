@@ -1,8 +1,5 @@
 package net.joefoxe.hexerei.data.candle;
 
-import net.joefoxe.hexerei.Hexerei;
-import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

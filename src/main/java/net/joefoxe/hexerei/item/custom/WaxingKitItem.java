@@ -1,12 +1,6 @@
 package net.joefoxe.hexerei.item.custom;
 
-import com.google.common.base.Suppliers;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.ImmutableBiMap;
-import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.item.ModItems;
-import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -25,18 +19,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CrossCollisionBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 import static net.joefoxe.hexerei.item.custom.CleaningClothItem.getCleanedState;
-import static net.joefoxe.hexerei.item.custom.WaxBlendItem.WAXABLES;
 import static net.joefoxe.hexerei.item.custom.WaxBlendItem.getWaxed;
 
 public class WaxingKitItem extends Item {

@@ -1,15 +1,13 @@
 package net.joefoxe.hexerei.fluid;
 
 import com.tterrag.registrate.Registrate;
-import com.tterrag.registrate.builders.FluidBuilder;
+import com.tterrag.registrate.util.entry.FluidEntry;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.item.ModItems;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
@@ -18,8 +16,6 @@ import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.apache.commons.codec.binary.Hex;
-import com.tterrag.registrate.util.entry.FluidEntry;
 
 public class ModFluids {
 

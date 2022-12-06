@@ -5,7 +5,6 @@ import net.joefoxe.hexerei.block.connected.CTDyable;
 import net.joefoxe.hexerei.block.connected.FabricBlock;
 import net.joefoxe.hexerei.block.connected.Waxed;
 import net.joefoxe.hexerei.block.connected.WaxedLayeredBlockDyed;
-import net.joefoxe.hexerei.item.custom.DyeableCarpetItem;
 import net.joefoxe.hexerei.item.custom.SatchelItem;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.advancements.CriteriaTriggers;

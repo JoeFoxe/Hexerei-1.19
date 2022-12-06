@@ -1,11 +1,8 @@
 package net.joefoxe.hexerei.data.recipes;
 
 import net.joefoxe.hexerei.item.custom.BroomItem;
-import net.joefoxe.hexerei.item.custom.KeychainItem;
 import net.joefoxe.hexerei.item.custom.WhistleItem;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;

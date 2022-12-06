@@ -1,13 +1,11 @@
 package net.joefoxe.hexerei.container;
 
 import net.joefoxe.hexerei.block.ModBlocks;
-import net.joefoxe.hexerei.tileentity.MixingCauldronTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;

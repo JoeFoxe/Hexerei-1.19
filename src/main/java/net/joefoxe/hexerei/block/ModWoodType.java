@@ -1,12 +1,8 @@
 package net.joefoxe.hexerei.block;
 
-import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.WoodType;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class ModWoodType {
     public static WoodType WILLOW = WoodType.create("hexerei_willow");

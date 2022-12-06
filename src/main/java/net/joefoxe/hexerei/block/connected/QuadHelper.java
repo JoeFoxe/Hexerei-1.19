@@ -1,11 +1,10 @@
 package net.joefoxe.hexerei.block.connected;
 
-import java.util.Arrays;
-
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-
 import net.minecraft.client.renderer.block.model.BakedQuad;
+
+import java.util.Arrays;
 
 // CREDIT: https://github.com/Creators-of-Create/Create/tree/mc1.19/dev by simibubi & team
 // Under MIT-License: https://github.com/Creators-of-Create/Create/blob/mc1.19/dev/LICENSE

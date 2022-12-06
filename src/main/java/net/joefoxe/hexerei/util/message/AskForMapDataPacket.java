@@ -1,14 +1,8 @@
 package net.joefoxe.hexerei.util.message;
 
 import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.data.books.BookManager;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.MapRenderer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.PacketUtils;
-import net.minecraft.network.protocol.game.ClientboundMapItemDataPacket;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
@@ -19,7 +13,6 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Supplier;

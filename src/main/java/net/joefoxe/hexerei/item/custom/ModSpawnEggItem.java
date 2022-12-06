@@ -1,14 +1,14 @@
 package net.joefoxe.hexerei.item.custom;
 
 import net.minecraft.core.BlockSource;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.RegistryObject;
@@ -16,8 +16,6 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import net.minecraft.world.item.Item.Properties;
 
 public class ModSpawnEggItem extends SpawnEggItem {
     protected static final List<ModSpawnEggItem> UNADDED_EGGS = new ArrayList<>();

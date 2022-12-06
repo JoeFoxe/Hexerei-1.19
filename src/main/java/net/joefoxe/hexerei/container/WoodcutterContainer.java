@@ -1,25 +1,22 @@
 package net.joefoxe.hexerei.container;
 
-import net.joefoxe.hexerei.block.ModBlocks;
-import net.joefoxe.hexerei.data.recipes.ModRecipeTypes;
-import net.joefoxe.hexerei.data.recipes.WoodcutterRecipe;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
-
-
 import com.google.common.collect.Lists;
-
-import java.util.ArrayList;
-import java.util.List;
+import net.joefoxe.hexerei.block.ModBlocks;
+import net.joefoxe.hexerei.data.recipes.WoodcutterRecipe;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WoodcutterContainer extends AbstractContainerMenu {
     private final ContainerLevelAccess access;

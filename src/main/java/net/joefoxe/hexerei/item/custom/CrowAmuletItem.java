@@ -1,15 +1,8 @@
 package net.joefoxe.hexerei.item.custom;
 
-import com.mojang.datafixers.util.Pair;
-import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.client.renderer.entity.model.BroomKeychainChainModel;
-import net.joefoxe.hexerei.client.renderer.entity.model.BroomKeychainModel;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
 import net.joefoxe.hexerei.util.message.AskForMapDataPacket;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.model.Model;
-import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -19,7 +12,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;

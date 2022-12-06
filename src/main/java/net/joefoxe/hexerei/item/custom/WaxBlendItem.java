@@ -3,11 +3,6 @@ package net.joefoxe.hexerei.item.custom;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
-
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -24,11 +19,13 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CrossCollisionBlock;
-import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class WaxBlendItem extends Item {
     public static final Supplier<BiMap<Block, Block>> WAXABLES = Suppliers.memoize(() -> {

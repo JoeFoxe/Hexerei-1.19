@@ -5,7 +5,7 @@ import net.joefoxe.hexerei.world.structure.structures.DarkCovenStructure;
 import net.joefoxe.hexerei.world.structure.structures.WitchHutStructure;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.levelgen.structure.StructureType;
-import net.minecraftforge.registries.*;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
 public class ModStructures {

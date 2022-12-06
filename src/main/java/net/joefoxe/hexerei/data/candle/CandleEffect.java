@@ -1,12 +1,9 @@
 package net.joefoxe.hexerei.data.candle;
 
-import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.tileentity.CandleTile;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;

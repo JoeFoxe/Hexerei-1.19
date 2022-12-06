@@ -2,17 +2,10 @@ package net.joefoxe.hexerei.util.message;
 
 import com.google.common.collect.Lists;
 import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.data.books.BookEntries;
-import net.joefoxe.hexerei.data.books.BookManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.MapRenderer;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundMapItemDataPacket;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;

@@ -1,13 +1,9 @@
 package net.joefoxe.hexerei.block.connected.behavior;
 
 import net.joefoxe.hexerei.block.connected.CTSpriteShiftEntry;
-import net.joefoxe.hexerei.block.connected.ConnectedPillarBlock;
-import net.joefoxe.hexerei.block.connected.LayeredBlock;
 import net.joefoxe.hexerei.block.connected.SimpleCTBehaviour;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;

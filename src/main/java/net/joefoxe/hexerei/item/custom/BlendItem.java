@@ -12,9 +12,6 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.List;
 
-
-import net.minecraft.world.item.Item.Properties;
-
 public class BlendItem extends Item {
 
     public BlendItem(Properties properties) {

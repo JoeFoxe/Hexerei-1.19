@@ -1,8 +1,8 @@
 package net.joefoxe.hexerei.item;
 
 import net.joefoxe.hexerei.block.ModBlocks;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 
 public class ModItemGroup {
 

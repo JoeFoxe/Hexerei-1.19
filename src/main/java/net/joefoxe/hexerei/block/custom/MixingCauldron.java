@@ -1,37 +1,32 @@
 package net.joefoxe.hexerei.block.custom;
 
-import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ITileEntity;
-import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.container.MixingCauldronContainer;
 import net.joefoxe.hexerei.fluid.ModFluids;
 import net.joefoxe.hexerei.fluid.PotionFluid;
 import net.joefoxe.hexerei.fluid.PotionFluidHandler;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.particle.ModParticleTypes;
-import net.joefoxe.hexerei.state.properties.LiquidType;
-import net.joefoxe.hexerei.tileentity.*;
+import net.joefoxe.hexerei.tileentity.MixingCauldronTile;
+import net.joefoxe.hexerei.tileentity.ModTileEntities;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
 import net.joefoxe.hexerei.util.HexereiTags;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.joefoxe.hexerei.util.message.EmitParticlesPacket;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.*;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -48,17 +43,17 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.PointedDripstoneBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -69,15 +64,12 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.extensions.IForgeBlock;
-import net.minecraftforge.common.extensions.IForgeBlockState;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -90,8 +82,6 @@ import java.util.stream.Stream;
 
 import static net.joefoxe.hexerei.tileentity.renderer.MixingCauldronRenderer.MAX_Y;
 import static net.joefoxe.hexerei.tileentity.renderer.MixingCauldronRenderer.MIN_Y;
-
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class MixingCauldron extends BaseEntityBlock implements ITileEntity<MixingCauldronTile>, DyeableLeatherItem {
 

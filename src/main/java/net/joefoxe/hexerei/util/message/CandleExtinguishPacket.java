@@ -4,7 +4,6 @@ import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.custom.Candle;
 import net.joefoxe.hexerei.tileentity.CandleTile;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;

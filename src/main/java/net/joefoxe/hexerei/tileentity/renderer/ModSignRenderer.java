@@ -6,9 +6,6 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
-import java.util.List;
-import java.util.Map;
-
 import net.joefoxe.hexerei.tileentity.ModSignBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -41,6 +38,9 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.List;
+import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class ModSignRenderer implements BlockEntityRenderer<ModSignBlockEntity> {

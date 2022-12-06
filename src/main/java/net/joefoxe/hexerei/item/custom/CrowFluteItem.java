@@ -2,16 +2,15 @@ package net.joefoxe.hexerei.item.custom;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.IFirstPersonItemAnimation;
 import net.joefoxe.hexerei.client.renderer.IThirdPersonItemAnimation;
 import net.joefoxe.hexerei.client.renderer.IThirdPersonItemRenderer;
+import net.joefoxe.hexerei.client.renderer.TwoHandedItemAnimation;
 import net.joefoxe.hexerei.client.renderer.entity.custom.CrowEntity;
 import net.joefoxe.hexerei.container.CrowFluteContainer;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.sounds.ModSounds;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
-import net.joefoxe.hexerei.client.renderer.TwoHandedItemAnimation;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.joefoxe.hexerei.util.message.*;
 import net.minecraft.ChatFormatting;
@@ -26,7 +25,10 @@ import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -50,8 +52,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -63,9 +63,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.function.Predicate;
-
-
-import net.minecraft.world.item.Item.Properties;
 
 public class CrowFluteItem extends Item implements Container, IThirdPersonItemAnimation,
         IThirdPersonItemRenderer, IFirstPersonItemAnimation {

@@ -1,7 +1,5 @@
 package net.joefoxe.hexerei.client.renderer.entity.render;
 
-import net.minecraft.world.entity.animal.horse.Variant;
-
 import java.util.Arrays;
 import java.util.Comparator;
 

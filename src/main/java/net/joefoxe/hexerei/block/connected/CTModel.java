@@ -1,11 +1,6 @@
 package net.joefoxe.hexerei.block.connected;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
@@ -20,6 +15,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelData.Builder;
 import net.minecraftforge.client.model.data.ModelProperty;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 // CREDIT: https://github.com/Creators-of-Create/Create/tree/mc1.19/dev by simibubi & team
 // Under MIT-License: https://github.com/Creators-of-Create/Create/blob/mc1.19/dev/LICENSE

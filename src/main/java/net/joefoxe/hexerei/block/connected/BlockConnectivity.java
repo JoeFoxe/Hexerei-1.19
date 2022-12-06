@@ -1,12 +1,12 @@
 package net.joefoxe.hexerei.block.connected;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.function.BiPredicate;
-
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.function.BiPredicate;
 
 // CREDIT: https://github.com/Creators-of-Create/Create/tree/mc1.19/dev by simibubi & team
 // Under MIT-License: https://github.com/Creators-of-Create/Create/blob/mc1.19/dev/LICENSE

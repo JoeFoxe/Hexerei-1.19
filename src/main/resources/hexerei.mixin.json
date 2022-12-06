@@ -5,13 +5,13 @@
   "refmap": "hexerei.mixin-refmap.json",
   "client": [
     "AbstractCandleBlockMixin",
+    "FogRendererMixin",
     "HumanoidArmorLayerMixin",
     "ItemInHandMixin",
     "MouseHandlerMixin",
     "PlayerItemInHandLayerMixin",
-    "ThirdPersonRendererMixin",
     "ScreenEffectRendererMixin",
-    "FogRendererMixin"
+    "ThirdPersonRendererMixin"
   ],
   "mixins": [
   ],

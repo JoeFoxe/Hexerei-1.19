@@ -1,7 +1,10 @@
 package net.joefoxe.hexerei.block.connected.behavior;
 
 
-import net.joefoxe.hexerei.block.connected.*;
+import net.joefoxe.hexerei.block.connected.BlockConnectivity;
+import net.joefoxe.hexerei.block.connected.CTDyable;
+import net.joefoxe.hexerei.block.connected.CTSpriteShiftEntry;
+import net.joefoxe.hexerei.block.connected.ConnectedTextureBehaviour;
 import net.joefoxe.hexerei.util.ClientProxy;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;

@@ -2,17 +2,11 @@ package net.joefoxe.hexerei.data.candle;
 
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.tileentity.CandleTile;
-import net.joefoxe.hexerei.util.HexereiPacketHandler;
-import net.joefoxe.hexerei.util.message.CandleEffectParticlePacket;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.Random;
 
 public class SunshineCandleEffect extends AbstractCandleEffect{
     private static final int MAX_TIME = 8 * 20;

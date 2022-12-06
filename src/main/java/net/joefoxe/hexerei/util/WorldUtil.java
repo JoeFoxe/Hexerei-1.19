@@ -1,14 +1,15 @@
 package net.joefoxe.hexerei.util;
 
-import java.util.Optional;
-import java.util.UUID;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.UUID;
 
 public class WorldUtil {
     @SuppressWarnings("unchecked")

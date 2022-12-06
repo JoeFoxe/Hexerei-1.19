@@ -1,30 +1,12 @@
 package net.joefoxe.hexerei.screen.renderer;
 
 
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.ingredients.IIngredientRenderer;
-import net.joefoxe.hexerei.integration.HexereiModNameTooltipCompat;
-import net.minecraft.core.Registry;
-import net.minecraft.network.chat.Style;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.forgespi.language.IModInfo;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.Nullable;
-
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
-
+import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
@@ -38,6 +20,11 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
+import org.jetbrains.annotations.Nullable;
+
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 // CREDIT: https://github.com/mezz/JustEnoughItems by mezz
 // Under MIT-License: https://github.com/mezz/JustEnoughItems/blob/1.18/LICENSE.txt

@@ -1,34 +1,24 @@
 package net.joefoxe.hexerei.data.books;
 
 
-import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.item.ModItems;
-import net.joefoxe.hexerei.item.custom.BroomItemRenderer;
-import net.joefoxe.hexerei.item.custom.CustomItemRenderer;
 import net.joefoxe.hexerei.item.custom.CustomItemRendererWithPageDrawing;
 import net.joefoxe.hexerei.item.custom.HexereiBookItemRenderer;
-import net.joefoxe.hexerei.util.HexereiUtil;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
-
-import net.minecraft.world.item.Item.Properties;
 
 public class HexereiBookItem extends Item implements DyeableLeatherItem {
 

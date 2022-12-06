@@ -17,17 +17,10 @@ import net.joefoxe.hexerei.data.recipes.DipperRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.fluids.FluidStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DipperRecipeCategory implements IRecipeCategory<DipperRecipe> {
     public final static ResourceLocation UID = new ResourceLocation(Hexerei.MOD_ID, "dipper");

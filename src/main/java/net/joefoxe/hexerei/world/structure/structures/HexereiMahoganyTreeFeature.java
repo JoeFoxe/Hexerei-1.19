@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import net.joefoxe.hexerei.Hexerei;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
-import net.minecraft.data.worldgen.ProcessorLists;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
@@ -19,7 +18,6 @@ import net.minecraft.world.level.levelgen.feature.configurations.TreeConfigurati
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
 
 import java.util.Optional;
-import java.util.Random;
 
 public class HexereiMahoganyTreeFeature extends Feature<TreeConfiguration> {
 

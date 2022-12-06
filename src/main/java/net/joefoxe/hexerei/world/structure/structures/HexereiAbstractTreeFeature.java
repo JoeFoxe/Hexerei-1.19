@@ -2,25 +2,22 @@ package net.joefoxe.hexerei.world.structure.structures;
 
 import com.mojang.serialization.Codec;
 import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.block.ModBlocks;
-import net.minecraft.data.worldgen.ProcessorLists;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelSimulatedReader;
-import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
-import net.minecraft.core.Registry;
-import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
 
-import java.util.*;
+import java.util.Optional;
 
 public class HexereiAbstractTreeFeature extends Feature<TreeConfiguration> {
 

@@ -3,22 +3,14 @@ package net.joefoxe.hexerei.block.connected.behavior;
 
 import net.joefoxe.hexerei.block.connected.CTSpriteShiftEntry;
 import net.joefoxe.hexerei.block.connected.ConnectedTextureBehaviour;
-import net.joefoxe.hexerei.block.custom.ConnectingCarpet;
-import net.joefoxe.hexerei.block.custom.ConnectingCarpetDyed;
 import net.joefoxe.hexerei.block.custom.ConnectingCarpetStairs;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CarpetBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.Half;
 import org.jetbrains.annotations.Nullable;
 

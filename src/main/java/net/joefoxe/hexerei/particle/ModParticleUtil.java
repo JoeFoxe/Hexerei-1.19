@@ -1,7 +1,6 @@
 package net.joefoxe.hexerei.particle;
 
 import net.joefoxe.hexerei.Hexerei;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;

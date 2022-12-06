@@ -1,6 +1,5 @@
 package net.joefoxe.hexerei.tileentity;
 
-import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.custom.ModChest;
 import net.joefoxe.hexerei.sounds.ModSounds;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
@@ -21,7 +20,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
@@ -31,8 +29,6 @@ import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.function.Supplier;
 
 public class ModChestBlockEntity extends ChestBlockEntity {
     public ModChestBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {

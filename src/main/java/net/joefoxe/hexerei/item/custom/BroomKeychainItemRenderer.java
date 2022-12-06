@@ -1,9 +1,7 @@
 package net.joefoxe.hexerei.item.custom;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.joefoxe.hexerei.item.ModItems;
-import net.joefoxe.hexerei.tileentity.renderer.HerbJarRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -18,8 +16,6 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.client.model.data.ModelData;
-
-import javax.annotation.Nullable;
 
 public class BroomKeychainItemRenderer extends CustomItemRenderer {
 

@@ -1,17 +1,11 @@
 package net.joefoxe.hexerei.item.custom;
 
-import com.mojang.datafixers.util.Pair;
-import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.client.renderer.entity.model.BroomKeychainChainModel;
-import net.joefoxe.hexerei.client.renderer.entity.model.BroomKeychainModel;
-import net.joefoxe.hexerei.client.renderer.entity.model.BroomMediumSatchelModel;
 import net.joefoxe.hexerei.util.HexereiUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeableLeatherItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
 public class SatchelItem extends BroomAttachmentItem implements DyeableLeatherItem {

@@ -1,15 +1,12 @@
 package net.joefoxe.hexerei.tileentity;
 
 import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.custom.SageBurningPlate;
 import net.joefoxe.hexerei.config.HexConfig;
-import net.joefoxe.hexerei.events.SageBurningPlateEvent;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.particle.ModParticleTypes;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
 import net.joefoxe.hexerei.util.message.EmitExtinguishParticlesPacket;
-import net.joefoxe.hexerei.util.message.EmitParticlesPacket;
 import net.joefoxe.hexerei.util.message.TESyncPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,7 +16,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -52,7 +48,6 @@ import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Optional;
 import java.util.Random;
 
 public class SageBurningPlateTile extends RandomizableContainerBlockEntity implements WorldlyContainer, Clearable, MenuProvider {
