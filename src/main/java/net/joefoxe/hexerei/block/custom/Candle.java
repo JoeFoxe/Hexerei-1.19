@@ -596,16 +596,18 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
 
     public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
         BlockEntity tileentity = worldIn.getBlockEntity(pos);
-        if (tileentity instanceof CandleTile) {
-            ((CandleTile)tileentity).entityInside(entityIn);
+        if (tileentity instanceof CandleTile tile) {
+            tile.entityInside(entityIn);
         }
 
     }
 
     public static boolean canBeLit(BlockState state, BlockPos pos, Level world) {
-        CandleTile tile = ((CandleTile)world.getBlockEntity(pos));
-        if(tile == null) return false;
-        return !state.getValue(BlockStateProperties.WATERLOGGED) && (!tile.candles.get(0).lit || (!tile.candles.get(1).lit && tile.candles.get(1).hasCandle) || (!tile.candles.get(2).lit && tile.candles.get(2).hasCandle) || (!tile.candles.get(3).lit && tile.candles.get(3).hasCandle));
+        BlockEntity entity = world.getBlockEntity(pos);
+        if (entity instanceof CandleTile tile) {
+            return !state.getValue(BlockStateProperties.WATERLOGGED) && (!tile.candles.get(0).lit || (!tile.candles.get(1).lit && tile.candles.get(1).hasCandle) || (!tile.candles.get(2).lit && tile.candles.get(2).hasCandle) || (!tile.candles.get(3).lit && tile.candles.get(3).hasCandle));
+        }
+        return false;
     }
 
     @SuppressWarnings("deprecation")
