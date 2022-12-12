@@ -144,7 +144,8 @@ public class ModChestBlockEntity extends ChestBlockEntity {
 
     @Override
     public void onChunkUnloaded() {
-        sync();
+        super.onChunkUnloaded();
+//        sync();
     }
 
     public void sync() {
