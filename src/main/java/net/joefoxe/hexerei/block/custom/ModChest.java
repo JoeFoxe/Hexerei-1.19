@@ -372,6 +372,8 @@ public class ModChest extends AbstractChestBlock<ModChestBlockEntity> implements
     public enum WoodType implements StringRepresentable {
         WILLOW("willow", ModBlocks.WILLOW_PLANKS),
         POLISHED_WILLOW("polished_willow", ModBlocks.POLISHED_WILLOW_PLANKS),
+        WITCH_HAZEL("witch_hazel", ModBlocks.WITCH_HAZEL_PLANKS),
+        POLISHED_WITCH_HAZEL("polished_witch_hazel", ModBlocks.POLISHED_WITCH_HAZEL_PLANKS),
         MAHOGANY("mahogany", ModBlocks.MAHOGANY_PLANKS),
         POLISHED_MAHOGANY("polished_mahogany", ModBlocks.POLISHED_MAHOGANY_PLANKS);
 

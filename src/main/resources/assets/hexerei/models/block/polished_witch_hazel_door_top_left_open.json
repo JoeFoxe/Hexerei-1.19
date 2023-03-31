@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/door_top_left_open",
+  "textures": {
+    "bottom": "hexerei:block/polished_witch_hazel_door_bottom",
+    "top": "hexerei:block/polished_witch_hazel_door_top"
+  },
+  "render_type": "translucent"
+}

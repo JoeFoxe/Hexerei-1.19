@@ -20,6 +20,10 @@ public class CrowAmuletRecipe extends CustomRecipe {
 
 
     }
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
 
     @Override
     public boolean matches(CraftingContainer inventory, Level world) {

@@ -41,6 +41,7 @@ public class HexereiTags {
 		public static final TagKey<Item> CANDLES = createTag("candles");
 		public static final TagKey<Item> WILLOW_PLANKS = createTag("willow_planks");
 		public static final TagKey<Item> MAHOGANY_PLANKS = createTag("mahogany_planks");
+		public static final TagKey<Item> WITCH_HAZEL_PLANKS = createTag("witch_hazel_planks");
 		public static final TagKey<Item> FLOWER_BIPRODUCT = createTag("flower_biproduct");
 		public static final TagKey<Item> INFUSED_FABRIC_CARPET = createTag("infused_fabric_carpet");
 		public static final TagKey<Item> INFUSED_FABRIC_BLOCK = createTag("infused_fabric_block");

@@ -1,0 +1,7 @@
+{
+  "processors": [
+    {
+    "processor_type": "hexerei:nature_coven_leg_processor"
+    }
+  ]
+}

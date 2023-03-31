@@ -76,6 +76,10 @@ public class Candelabra extends Block implements SimpleWaterloggedBlock {
         return null;
     }
 
+    public BlockState rotate(BlockState pState, Rotation pRot) {
+        return pState.setValue(HorizontalDirectionalBlock.FACING, pRot.rotate(pState.getValue(HorizontalDirectionalBlock.FACING)));
+    }
+
     @Override
     public boolean isPathfindable(BlockState pState, BlockGetter pLevel, BlockPos pPos, PathComputationType pType) {
         return false;

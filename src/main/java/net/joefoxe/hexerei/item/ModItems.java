@@ -619,17 +619,26 @@ public class ModItems {
     public static final RegistryObject<Item> WILLOW_CHEST = ITEMS.register("willow_chest",
             () -> new ModChestItem(ModBlocks.WILLOW_CHEST.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
+    public static final RegistryObject<Item> WITCH_HAZEL_CHEST = ITEMS.register("witch_hazel_chest",
+            () -> new ModChestItem(ModBlocks.WITCH_HAZEL_CHEST.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+
     public static final RegistryObject<Item> MAHOGANY_CHEST = ITEMS.register("mahogany_chest",
             () -> new ModChestItem(ModBlocks.MAHOGANY_CHEST.get(),new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
     public static final RegistryObject<Item> WILLOW_SIGN = ITEMS.register("willow_sign",
             () -> new SignItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP), ModBlocks.WILLOW_SIGN.get(), ModBlocks.WILLOW_WALL_SIGN.get()));
 
+    public static final RegistryObject<Item> WITCH_HAZEL_SIGN = ITEMS.register("witch_hazel_sign",
+            () -> new SignItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP), ModBlocks.WITCH_HAZEL_SIGN.get(), ModBlocks.WITCH_HAZEL_WALL_SIGN.get()));
+
     public static final RegistryObject<Item> MAHOGANY_SIGN = ITEMS.register("mahogany_sign",
             () -> new SignItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP), ModBlocks.MAHOGANY_SIGN.get(), ModBlocks.MAHOGANY_WALL_SIGN.get()));
 
     public static final RegistryObject<Item> POLISHED_WILLOW_SIGN = ITEMS.register("polished_willow_sign",
             () -> new SignItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP), ModBlocks.POLISHED_WILLOW_SIGN.get(), ModBlocks.POLISHED_WILLOW_WALL_SIGN.get()));
+
+    public static final RegistryObject<Item> POLISHED_WITCH_HAZEL_SIGN = ITEMS.register("polished_witch_hazel_sign",
+            () -> new SignItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP), ModBlocks.POLISHED_WITCH_HAZEL_SIGN.get(), ModBlocks.POLISHED_WITCH_HAZEL_WALL_SIGN.get()));
 
     public static final RegistryObject<Item> POLISHED_MAHOGANY_SIGN = ITEMS.register("polished_mahogany_sign",
             () -> new SignItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP), ModBlocks.POLISHED_MAHOGANY_SIGN.get(), ModBlocks.POLISHED_MAHOGANY_WALL_SIGN.get()));
@@ -652,8 +661,23 @@ public class ModItems {
     public static final RegistryObject<Item> WILLOW_WINDOW_PANE = ITEMS.register("willow_window_pane",
             () -> new BlockItem(ModBlocks.WILLOW_WINDOW_PANE.get(), new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
+    public static final RegistryObject<Item> WITCH_HAZEL_WINDOW_PANE = ITEMS.register("witch_hazel_window_pane",
+            () -> new BlockItem(ModBlocks.WITCH_HAZEL_WINDOW_PANE.get(), new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+
     public static final RegistryObject<Item> WAXED_WILLOW_WINDOW_PANE = ITEMS.register("waxed_willow_window_pane",
             () -> new BlockItem(ModBlocks.WAXED_WILLOW_WINDOW_PANE.get(), new Item.Properties()){
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+                    Component cloth = Component.translatable(ModItems.CLOTH.get().getDescription().getString()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6B5B06)));
+                    Component waxing_kit = Component.translatable(ModItems.WAXING_KIT.get().getDescription().getString()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6B5B06)));
+                    tooltip.add(Component.translatable("tooltip.hexerei.waxed_connected_texture", cloth, waxing_kit).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    tooltip.add(Component.translatable("tooltip.hexerei.waxed_connected_texture_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+            });
+
+    public static final RegistryObject<Item> WAXED_WITCH_HAZEL_WINDOW_PANE = ITEMS.register("waxed_witch_hazel_window_pane",
+            () -> new BlockItem(ModBlocks.WAXED_WITCH_HAZEL_WINDOW_PANE.get(), new Item.Properties()){
                 @Override
                 public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
                     Component cloth = Component.translatable(ModItems.CLOTH.get().getDescription().getString()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6B5B06)));
@@ -670,11 +694,17 @@ public class ModItems {
     public static final RegistryObject<Item> WILLOW_WINDOW = ITEMS.register("willow_window",
             () -> new BlockItem(ModBlocks.WILLOW_WINDOW.get(), new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
+    public static final RegistryObject<Item> WITCH_HAZEL_WINDOW = ITEMS.register("witch_hazel_window",
+            () -> new BlockItem(ModBlocks.WITCH_HAZEL_WINDOW.get(), new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+
     public static final RegistryObject<Item> WAXED_MAHOGANY_WINDOW = ITEMS.register("waxed_mahogany_window",
             () -> new BlockItem(ModBlocks.WAXED_MAHOGANY_WINDOW.get(), new Item.Properties()));
 
     public static final RegistryObject<Item> WAXED_WILLOW_WINDOW = ITEMS.register("waxed_willow_window",
             () -> new BlockItem(ModBlocks.WAXED_WILLOW_WINDOW.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> WAXED_WITCH_HAZEL_WINDOW = ITEMS.register("waxed_witch_hazel_window",
+            () -> new BlockItem(ModBlocks.WAXED_WITCH_HAZEL_WINDOW.get(), new Item.Properties()));
 
     public static final RegistryObject<Item> INFUSED_FABRIC_CARPET_ORNATE = ITEMS.register("infused_fabric_carpet_ornate",
             () -> new BlockItem(ModBlocks.INFUSED_FABRIC_CARPET_ORNATE.get(), new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)){
@@ -1363,6 +1393,48 @@ public class ModItems {
             });
 
 
+
+    public static final RegistryObject<Item> WITCH_HAZEL_CONNECTED = ITEMS.register("witch_hazel_connected",
+            () -> new BlockItem(ModBlocks.WITCH_HAZEL_CONNECTED.get(), new Item.Properties()
+                    .tab(ModItemGroup.HEXEREI_GROUP)){
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+                    tooltip.add(Component.translatable("tooltip.hexerei.connected_texture").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+            });
+
+    public static final RegistryObject<Item> POLISHED_WITCH_HAZEL_CONNECTED = ITEMS.register("polished_witch_hazel_connected",
+            () -> new BlockItem(ModBlocks.POLISHED_WITCH_HAZEL_CONNECTED.get(), new Item.Properties()
+                    .tab(ModItemGroup.HEXEREI_GROUP)){
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+                    tooltip.add(Component.translatable("tooltip.hexerei.connected_texture").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+            });
+
+
+    public static final RegistryObject<Item> POLISHED_WITCH_HAZEL_PILLAR = ITEMS.register("polished_witch_hazel_pillar",
+            () -> new BlockItem(ModBlocks.POLISHED_WITCH_HAZEL_PILLAR.get(), new Item.Properties()
+                    .tab(ModItemGroup.HEXEREI_GROUP)){
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+                    tooltip.add(Component.translatable("tooltip.hexerei.connected_texture").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+            });
+    public static final RegistryObject<Item> POLISHED_WITCH_HAZEL_LAYERED = ITEMS.register("polished_witch_hazel_layered",
+            () -> new BlockItem(ModBlocks.POLISHED_WITCH_HAZEL_LAYERED.get(), new Item.Properties()
+                    .tab(ModItemGroup.HEXEREI_GROUP)){
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+                    tooltip.add(Component.translatable("tooltip.hexerei.connected_texture").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+            });
+
+
     public static final RegistryObject<Item> WAXED_POLISHED_MAHOGANY_CONNECTED = ITEMS.register("waxed_polished_mahogany_connected",
             () -> new BlockItem(ModBlocks.WAXED_POLISHED_MAHOGANY_CONNECTED.get(), new Item.Properties()){
                 @Override
@@ -1450,6 +1522,56 @@ public class ModItems {
 
     public static final RegistryObject<Item> WAXED_WILLOW_CONNECTED = ITEMS.register("waxed_willow_connected",
             () -> new BlockItem(ModBlocks.WAXED_WILLOW_CONNECTED.get(), new Item.Properties()){
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+                    Component cloth = Component.translatable(ModItems.CLOTH.get().getDescription().getString()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6B5B06)));
+                    Component waxing_kit = Component.translatable(ModItems.WAXING_KIT.get().getDescription().getString()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6B5B06)));
+                    tooltip.add(Component.translatable("tooltip.hexerei.waxed_connected_texture", cloth, waxing_kit).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    tooltip.add(Component.translatable("tooltip.hexerei.waxed_connected_texture_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+            });
+
+
+
+
+    public static final RegistryObject<Item> WAXED_POLISHED_WITCH_HAZEL_CONNECTED = ITEMS.register("waxed_polished_witch_hazel_connected",
+            () -> new BlockItem(ModBlocks.WAXED_POLISHED_WITCH_HAZEL_CONNECTED.get(), new Item.Properties()){
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+                    Component cloth = Component.translatable(ModItems.CLOTH.get().getDescription().getString()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6B5B06)));
+                    Component waxing_kit = Component.translatable(ModItems.WAXING_KIT.get().getDescription().getString()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6B5B06)));
+                    tooltip.add(Component.translatable("tooltip.hexerei.waxed_connected_texture", cloth, waxing_kit).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    tooltip.add(Component.translatable("tooltip.hexerei.waxed_connected_texture_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+            });
+
+    public static final RegistryObject<Item> WAXED_POLISHED_WITCH_HAZEL_PILLAR = ITEMS.register("waxed_polished_witch_hazel_pillar",
+            () -> new BlockItem(ModBlocks.WAXED_POLISHED_WITCH_HAZEL_PILLAR.get(), new Item.Properties()){
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+                    Component cloth = Component.translatable(ModItems.CLOTH.get().getDescription().getString()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6B5B06)));
+                    Component waxing_kit = Component.translatable(ModItems.WAXING_KIT.get().getDescription().getString()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6B5B06)));
+                    tooltip.add(Component.translatable("tooltip.hexerei.waxed_connected_texture", cloth, waxing_kit).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    tooltip.add(Component.translatable("tooltip.hexerei.waxed_connected_texture_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+            });
+    public static final RegistryObject<Item> WAXED_POLISHED_WITCH_HAZEL_LAYERED = ITEMS.register("waxed_polished_witch_hazel_layered",
+            () -> new BlockItem(ModBlocks.WAXED_POLISHED_WITCH_HAZEL_LAYERED.get(), new Item.Properties()){
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+                    Component cloth = Component.translatable(ModItems.CLOTH.get().getDescription().getString()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6B5B06)));
+                    Component waxing_kit = Component.translatable(ModItems.WAXING_KIT.get().getDescription().getString()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6B5B06)));
+                    tooltip.add(Component.translatable("tooltip.hexerei.waxed_connected_texture", cloth, waxing_kit).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    tooltip.add(Component.translatable("tooltip.hexerei.waxed_connected_texture_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+            });
+
+    public static final RegistryObject<Item> WAXED_WITCH_HAZEL_CONNECTED = ITEMS.register("waxed_witch_hazel_connected",
+            () -> new BlockItem(ModBlocks.WAXED_WITCH_HAZEL_CONNECTED.get(), new Item.Properties()){
                 @Override
                 public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
                     Component cloth = Component.translatable(ModItems.CLOTH.get().getDescription().getString()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6B5B06)));

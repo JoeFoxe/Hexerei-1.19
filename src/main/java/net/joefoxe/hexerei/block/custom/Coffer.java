@@ -91,6 +91,10 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
     }
 
 
+
+    public BlockState rotate(BlockState pState, Rotation pRot) {
+        return pState.setValue(HorizontalDirectionalBlock.FACING, pRot.rotate(pState.getValue(HorizontalDirectionalBlock.FACING)));
+    }
     public static DyeColor getDyeColorNamed(ItemStack stack) {
 
 

@@ -625,7 +625,7 @@ public class HexereiUtil {
     private static List<BlockEntity> getTileEntitiesAroundPosition(Level world, BlockPos pos, Integer radius) {
         List<BlockEntity> blockentities = new ArrayList<BlockEntity>();
 
-        int chunkradius = (int)Math.ceil(radius/16.0);
+        int chunkradius = (int)Math.ceil(radius/16.0) + 1;
         int chunkPosX = pos.getX() >> 4;
         int chunkPosZ = pos.getZ() >> 4;
 
@@ -633,9 +633,7 @@ public class HexereiUtil {
             for (int z = chunkPosZ - chunkradius; z < chunkPosZ + chunkradius; z++) {
 
                 if(world.hasChunk(x, z)){
-                    Iterator<BlockEntity> iterator = world.getChunk(x, z).getBlockEntities().values().iterator();
-                    while (iterator.hasNext()) {
-                        BlockEntity be = iterator.next();
+                    for (BlockEntity be : world.getChunk(x, z).getBlockEntities().values()) {
                         if (!blockentities.contains(be)) {
                             blockentities.add(be);
                         }

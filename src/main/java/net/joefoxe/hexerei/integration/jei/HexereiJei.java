@@ -26,6 +26,7 @@ import net.joefoxe.hexerei.fluid.PotionFluidHandler;
 import net.joefoxe.hexerei.fluid.PotionMixingRecipes;
 import net.joefoxe.hexerei.screen.BroomScreen;
 import net.joefoxe.hexerei.screen.CofferScreen;
+import net.joefoxe.hexerei.screen.CrowScreen;
 import net.joefoxe.hexerei.screen.MixingCauldronScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -44,6 +45,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import static net.joefoxe.hexerei.container.CofferContainer.OFFSET;
 
 @JeiPlugin
 public class HexereiJei implements IModPlugin {
@@ -243,6 +245,7 @@ public class HexereiJei implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.HERB_DRYING_RACK.get()), new RecipeType<>(DryingRackRecipeCategory.UID, DryingRackRecipe.class));
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.WILLOW_WOODCUTTER.get()), new RecipeType<>(WoodcutterRecipeCategory.UID, WoodcutterRecipe.class));
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.MAHOGANY_WOODCUTTER.get()), new RecipeType<>(WoodcutterRecipeCategory.UID, WoodcutterRecipe.class));
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.WITCH_HAZEL_WOODCUTTER.get()), new RecipeType<>(WoodcutterRecipeCategory.UID, WoodcutterRecipe.class));
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.PESTLE_AND_MORTAR.get()), new RecipeType<>(PestleAndMortarRecipeCategory.UID, PestleAndMortarRecipe.class));
     }
     @Override
@@ -265,11 +268,26 @@ public class HexereiJei implements IModPlugin {
                 return ret;
             }
         });
+
+        registration.addGuiContainerHandler(CrowScreen.class, new IGuiContainerHandler<>() {
+            @Override
+            public List<Rect2i> getGuiExtraAreas(CrowScreen gui) {
+                List<Rect2i> ret = new ArrayList<>();
+                Rect2i rect2i = new Rect2i(gui.getGuiLeft(), gui.getGuiTop() - OFFSET, 188, 153);
+                ret.add(rect2i);
+                rect2i = new Rect2i(gui.getGuiLeft() + 184 - 28 + (int)gui.whitelistOffset, gui.getGuiTop() + 17 - OFFSET + 3, 39, 104 - 3);
+                ret.add(rect2i);
+                rect2i = new Rect2i(gui.getGuiLeft() - 5 - (int)gui.leftPanelOffset, gui.getGuiTop() + 17 - OFFSET + 3, 39, 104 - 3);
+                ret.add(rect2i);
+                return ret;
+            }
+        });
+
         registration.addGuiContainerHandler(CofferScreen.class, new IGuiContainerHandler<>() {
             @Override
             public List<Rect2i> getGuiExtraAreas(CofferScreen gui) {
                 List<Rect2i> ret = new ArrayList<>();
-                Rect2i rect2i = new Rect2i(gui.getGuiLeft(), gui.getGuiTop(), 214, 157);
+                Rect2i rect2i = new Rect2i(gui.getGuiLeft(), gui.getGuiTop() - OFFSET, 214, 157);
                 ret.add(rect2i);
                 return ret;
             }

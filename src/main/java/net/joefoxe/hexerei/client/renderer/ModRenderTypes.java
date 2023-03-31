@@ -52,6 +52,19 @@ public class ModRenderTypes extends RenderType {
     );
 
 
+    private static final RenderType FLUID = RenderType.create("hexerei:fluid",
+            DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
+                    .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_CULL_SHADER)
+                    .setTextureState(BLOCK_SHEET_MIPPED)
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setLightmapState(LIGHTMAP)
+                    .setOverlayState(OVERLAY)
+                    .createCompositeState(true));
+
+    public static RenderType getFluid() {
+        return FLUID;
+    }
+
     public static RenderType createGenericRenderType(String name, VertexFormat format, VertexFormat.Mode mode, ShaderStateShard shader, TransparencyStateShard transparency, ResourceLocation texture) {
         RenderType type = RenderType.create(
                 Hexerei.MOD_ID + ":" + name, format, mode, 256, false, false, RenderType.CompositeState.builder()

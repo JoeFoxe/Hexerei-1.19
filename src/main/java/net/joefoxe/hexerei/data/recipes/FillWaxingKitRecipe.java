@@ -25,6 +25,10 @@ public class FillWaxingKitRecipe extends CustomRecipe {
     /**
      * Used to check if a recipe matches current crafting inventory
      */
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
     public boolean matches(CraftingContainer pInv, Level pLevel) {
         int kit = 0;
         int wax = 0;

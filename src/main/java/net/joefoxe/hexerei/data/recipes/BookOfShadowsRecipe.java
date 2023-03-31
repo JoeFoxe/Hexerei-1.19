@@ -20,6 +20,10 @@ public class BookOfShadowsRecipe extends ShapedRecipe {
     public BookOfShadowsRecipe(ShapedRecipe compose) {
         super(compose.getId(), compose.getGroup(), compose.getWidth(), compose.getHeight(), compose.getIngredients(), compose.getResultItem());
     }
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
 
     @Nonnull
     @Override

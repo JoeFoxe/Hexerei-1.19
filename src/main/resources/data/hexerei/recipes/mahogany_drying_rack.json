@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BSB",
+    "@@@"
+
+  ],
+  "key": {
+    "B": {
+      "item": "hexerei:mahogany_button"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "@": {
+      "item": "hexerei:mahogany_slab"
+    }
+  },
+  "result": {
+    "item": "hexerei:mahogany_drying_rack",
+    "count": 1
+  }
+}

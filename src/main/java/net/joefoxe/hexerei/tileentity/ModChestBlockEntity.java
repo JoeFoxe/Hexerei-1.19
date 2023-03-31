@@ -75,14 +75,50 @@ public class ModChestBlockEntity extends ChestBlockEntity {
         }
     };
 
+    private net.minecraftforge.common.util.LazyOptional<net.minecraftforge.items.IItemHandlerModifiable> chestHandler;
+    @Override
+    public void setBlockState(BlockState pBlockState) {
+        super.setBlockState(pBlockState);
+        if (this.chestHandler != null) {
+            net.minecraftforge.common.util.LazyOptional<?> oldHandler = this.chestHandler;
+            this.chestHandler = null;
+            oldHandler.invalidate();
+        }
+    }
+    @Override
+    public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> cap, Direction side) {
+        if (!this.remove && cap == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            if (this.chestHandler == null)
+                this.chestHandler = net.minecraftforge.common.util.LazyOptional.of(this::createHandler);
+            return this.chestHandler.cast();
+        }
+        return super.getCapability(cap, side);
+    }
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        if (chestHandler != null) {
+            chestHandler.invalidate();
+            chestHandler = null;
+        }
+    }
+    private net.minecraftforge.items.IItemHandlerModifiable createHandler() {
+        BlockState state = this.getBlockState();
+        if (!(state.getBlock() instanceof ModChest)) {
+            return new net.minecraftforge.items.wrapper.InvWrapper(this);
+        }
+        Container inv = ModChest.getContainer((ModChest) state.getBlock(), state, getLevel(), getBlockPos(), true);
+        return new net.minecraftforge.items.wrapper.InvWrapper(inv == null ? this : inv);
+    }
+
     static void playSound(Level pLevel, BlockPos pPos, BlockState pState, SoundEvent pSound) {
-        ChestType chesttype = pState.getValue(ChestBlock.TYPE);
+        ChestType chesttype = pState.getValue(ModChest.TYPE);
         if (chesttype != ChestType.LEFT) {
             double d0 = (double)pPos.getX() + 0.5D;
             double d1 = (double)pPos.getY() + 0.5D;
             double d2 = (double)pPos.getZ() + 0.5D;
             if (chesttype == ChestType.RIGHT) {
-                Direction direction = ChestBlock.getConnectedDirection(pState);
+                Direction direction = ModChest.getConnectedDirection(pState);
                 d0 += (double)direction.getStepX() * 0.5D;
                 d2 += (double)direction.getStepZ() * 0.5D;
             }

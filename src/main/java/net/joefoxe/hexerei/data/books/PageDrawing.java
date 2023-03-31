@@ -1577,15 +1577,15 @@ public class PageDrawing {
         if(this.drawTooltipStack && tileEntityIn.turnPage == 0) {
             this.drawTooltipStackFlag = true;
             this.drawTooltipTextFlag = false;
-            this.drawTooltipScale = moveTo(this.drawTooltipScale, 1.5f, 0.04f);
+            this.drawTooltipScale = moveTo(this.drawTooltipScale, 1f, 0.02f);
         }
         else if(this.drawTooltipText && tileEntityIn.turnPage == 0) {
             this.drawTooltipTextFlag = true;
             this.drawTooltipStackFlag = false;
-            this.drawTooltipScale = moveTo(this.drawTooltipScale, 1.5f, 0.04f);
+            this.drawTooltipScale = moveTo(this.drawTooltipScale, 1f, 0.02f);
         }
         else {
-            this.drawTooltipScale = moveTo(this.drawTooltipScale, 0, 0.05f);
+            this.drawTooltipScale = moveTo(this.drawTooltipScale, 0, 0.025f);
             if(this.drawTooltipScale == 0) {
                 this.drawTooltipStackFlag = false;
                 this.drawTooltipTextFlag = false;
@@ -2163,7 +2163,7 @@ public class PageDrawing {
 
 
 
-            if(drawBack && !isItem){
+            if(!isItem){
                 Vector3f vector3f = new Vector3f(0, 0, 0);
                 Vector3f vector3f_1 = new Vector3f(0.35f - -0.5f * 0.064f, 0.5f - 7.25f * 0.061f, -0.03f);
 
@@ -2183,7 +2183,9 @@ public class PageDrawing {
                 BookImageEffect bookImageEffect_scale = new BookImageEffect("scale", 50, 1.15f);
                 BookImageEffect bookImageEffect_tilt = new BookImageEffect("tilt", 35, 10f);
 
-                String loc = "hexerei:textures/book/back_page.png";
+                String loc = "hexerei:textures/book/font_button.png";
+                if(drawBack)
+                    loc = "hexerei:textures/book/back_page.png";
 
                 boolean flag = false;
 
@@ -2194,10 +2196,17 @@ public class PageDrawing {
                 if (flag) {
                     effects.add(bookImageEffect_scale);
                     effects.add(bookImageEffect_tilt);
-                    loc = "hexerei:textures/book/back_page_hover.png";
-
                     List<Component> list = new ArrayList<>();
-                    list.add(Component.translatable("Back").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
+                    if(drawBack) {
+                        list.add(Component.translatable("Back").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
+
+                        loc = "hexerei:textures/book/back_page_hover.png";
+                    } else {
+                        list.add(Component.translatable("Change Font").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
+
+                        loc = "hexerei:textures/book/font_button_hover.png";
+                    }
+
                     this.tooltipText = list;
                     this.tooltipStack = ItemStack.EMPTY;
                     this.drawTooltipText = true;
@@ -2564,7 +2573,7 @@ public class PageDrawing {
         }
 
         Vec3 vec31 = vec3.add((double)f6 * d0, (double)f5 * d0, (double)f7 * d0);
-        return level.clip(new ClipContext(vec3, vec31, net.minecraft.world.level.ClipContext.Block.OUTLINE, p_41438_, null));
+        return level.clip(new ClipContext(vec3, vec31, ClipContext.Block.OUTLINE, p_41438_, null));
     }
 
 
@@ -2623,6 +2632,13 @@ public class PageDrawing {
                                     if (altarTile.slotClicked == -1 && clickedBack(altarTile)) {
                                         altarTile.setTurnPage(clicked);
 
+                                        playerIn.swing(InteractionHand.MAIN_HAND);
+                                        event.setCanceled(true);
+                                        event.setResult(Event.Result.DENY);
+                                        break;
+                                    } else if (altarTile.slotClicked == -1) {
+
+                                        ClientProxy.fontIndex++;
                                         playerIn.swing(InteractionHand.MAIN_HAND);
                                         event.setCanceled(true);
                                         event.setResult(Event.Result.DENY);
@@ -3905,8 +3921,8 @@ public class PageDrawing {
         Matrix3f normal = matrixStack.last().normal();
         int u = 0;
         int v = 0;
-        int imageWidth = 18;
-        int imageHeight = 18;
+        int imageWidth = 32;
+        int imageHeight = 32;
         int width = 18;
         int height = 18;
         float u1 = (u + 0.0F) / (float)imageWidth;
@@ -4096,6 +4112,30 @@ public class PageDrawing {
 
     }
 
+    private float easeInOutElastic(double x){
+
+        double c5 = (2 * Math.PI) / 4.5;
+
+        return (float)(x == 0
+                ? 0
+                : x == 1
+                ? 1
+                : x < 0.5
+                ? 4 * x * x * x
+                : (Math.pow(2, -20 * x + 10) * Math.sin((20 * x - 11.125) * c5)) / 2 + 1);
+
+
+//        double c1 = 1.70158;
+//        double c2 = c1 * 1.525;
+//
+//        return x == 0
+//                ? 0
+//                : x == 1
+//                ? 1
+//                : x < 0.5
+//                ? (float)((1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2)
+//                : (float)((Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2);
+    }
 
     @OnlyIn(Dist.CLIENT)
     public void drawTooltipImage(ItemStack stack, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float zLevel, int light, int overlay, boolean isItem) {
@@ -4112,7 +4152,8 @@ public class PageDrawing {
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStack.translate(0.25f,-(1 - (this.drawTooltipScale < 0.5f ? this.drawTooltipScale * 2f : 1)) / 12f,0);
-        matrixStack.scale(this.drawTooltipScale < 0.5f ? this.drawTooltipScale * 2f : 1,this.drawTooltipScale < 0.5f ? this.drawTooltipScale * 2f : 1,this.drawTooltipScale < 0.5f ? this.drawTooltipScale * 2f : 1);
+        float scale = easeInOutElastic(this.drawTooltipScale);
+        matrixStack.scale(scale ,scale ,scale);
 
         RenderSystem.setShader(GameRenderer::getNewEntityShader);
 
@@ -4190,7 +4231,9 @@ public class PageDrawing {
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(270));
         float scale = Math.min(this.drawTooltipScale, 1);
         matrixStack.translate(0.25f,-(1 - (scale < 0.5f ? scale * 2f : 1)) / 12f,0);
-        matrixStack.scale(scale < 0.5f ? scale * 2f : 1,scale < 0.5f ? scale * 2f : 1,scale < 0.5f ? scale * 2f : 1);
+        scale = easeInOutElastic(this.drawTooltipScale);
+        if(scale < 0) scale = 0;
+        matrixStack.scale(scale ,scale ,scale);
 
         RenderSystem.setShader(GameRenderer::getNewEntityShader);
 
@@ -4781,8 +4824,8 @@ public class PageDrawing {
         Matrix3f normal = matrixStack.last().normal();
         int u = 0;
         int v = 0;
-        int imageWidth = 100;
-        int imageHeight = 26;
+        int imageWidth = 128;
+        int imageHeight = 128;
         int width = 100;
         int height = 26;
         float u1 = (u + 0.0F) / (float)imageWidth;
@@ -4879,195 +4922,212 @@ public class PageDrawing {
 
 
 
-        boolean drawSpecialFont = HexConfig.FANCY_FONT_IN_BOOK.get();
+        boolean drawSpecialFont = false;// HexConfig.FANCY_FONT_IN_BOOK.get();
+//
+//
+//        if(drawSpecialFont){
+//            boolean findNewWord = true;
+//            String[] words = pageText.getString().trim().split("\\s+");
+//            String pageTextString = pageText.getString();
+//            int itor = -1;
+//            for(String word : words){
+//                itor++;
+//                if(word.length() > 2) {
+//                    StringBuilder stringBuilder = new StringBuilder();
+//                    if (word.charAt(0) == '%' && word.charAt(1) == 'k') {
+//                        for(int i = 2; i < word.length(); i++){
+//                            stringBuilder.append(word.charAt(i));
+//                        }
+//                        String temp = stringBuilder.toString();
+//
+//                        String alt = "key." + temp;
+//
+//                        for (KeyMapping k : ClientProxy.keys) {
+//                            String name = k.getName();
+//                            if (name.equals(temp) || name.equals(alt)) {
+//                                String keyName = k.getTranslatedKeyMessage().getString();
+//                                if(keyName.length() <= 1)
+//                                    keyName = keyName.toUpperCase(Locale.ROOT);
+//                                words[itor] = keyName;
+//                                pageTextString = pageTextString.replaceAll(word, words[itor]);
+//                            }
+//                        }
+//
+//                    }
+//                }
+//            }
+//            char[] text = pageTextString.toCharArray();
+//
+//            int[] wordLength = new int[words.length];
+//            float[] wordWidths = new float[words.length];
+//            for (int k = 0; k < words.length; k++) {
+//                wordLength[k] = words[k].length();
+//                char[] wordText = words[k].toCharArray();
+//                for (char character : wordText) {
+//                    if (ClientProxy.TEXT.containsKey(character))
+//                        wordWidths[k] += ClientProxy.TEXT_WIDTH.get(character);
+//                    else
+//                        wordWidths[k] += ClientProxy.TEXT_WIDTH.get(' ');
+//                }
+//            }
+//
+//            boolean breakBool = false;
+//            for (int i = 0; i < text.length; i = i) {
+//                if (breakBool)
+//                    break;
+//                if (text[i] == '\n') {
+//                    this.lineWidth = 0;
+//                    this.lineHeight += 0.05f;
+//                    if (this.lineHeight >= activeElement.height * 0.05f) {
+//                        activeElement = resetLinesNewBox(bookParagraph, boxOn++);
+//                        if (activeElement == null) {
+//                            breakBool = true;
+//                            break;
+//
+//                        }
+//                    }
+//                    i++;
+//                } else if (text[i] == ' ') {
+//                    findNewWord = true;
+//                    drawCharacter(' ', tileEntityIn, matrixStack, bufferSource, 0, 0, (int) activeElement.x, (int) activeElement.y, 0, light, overlay, pageOn, isItem);
+//                    this.lineWidth += ClientProxy.TEXT_WIDTH.get(' ');
+//                    if (this.lineWidth > activeElement.width * 0.02) {
+//                        this.lineWidth = 0;
+//                        this.lineHeight += 0.05f;
+//                        if (this.lineHeight >= activeElement.height * 0.05f) {
+//                            activeElement = resetLinesNewBox(bookParagraph, boxOn++);
+//                            if (activeElement == null) {
+//                                breakBool = true;
+//                                break;
+//
+//                            }
+//                        }
+//                    }
+//                    i++;
+//                } else if (findNewWord) {
+//                    wordNumber++;
+//
+//                    char[] wordText = words[wordNumber].toCharArray();
+//                    if (this.lineWidth + wordWidths[wordNumber] > activeElement.width * 0.02) {
+//                        this.lineWidth = 0;
+//                        this.lineHeight += 0.05f;
+//                        if (this.lineHeight >= activeElement.height * 0.05f) {
+//                            activeElement = resetLinesNewBox(bookParagraph, boxOn++);
+//                            if (activeElement == null) {
+//                                breakBool = true;
+//                                break;
+//
+//                            }
+//                        }
+//                    }
+//                    for (char character : wordText) {
+//                        if (ClientProxy.TEXT.containsKey(character)) {
+//                            drawCharacter(character, tileEntityIn, matrixStack, bufferSource, 0, 0, (int) activeElement.x, (int) activeElement.y, 0, light, overlay, pageOn, isItem);
+//                            this.lineWidth += ClientProxy.TEXT_WIDTH.get(character);
+//                            if (this.lineWidth > activeElement.width * 0.02) {
+//                                this.lineWidth = 0;
+//                                this.lineHeight += 0.05f;
+//                                if (this.lineHeight >= activeElement.height * 0.05f) {
+//                                    activeElement = resetLinesNewBox(bookParagraph, boxOn++);
+//                                    if (activeElement == null) {
+//                                        breakBool = true;
+//                                        break;
+//
+//                                    }
+//                                }
+//                            }
+//                        } else {
+//                            drawCharacter(' ', tileEntityIn, matrixStack, bufferSource, 0, 0, (int) activeElement.x, (int) activeElement.y, 0, light, overlay, pageOn, isItem);
+//                            this.lineWidth += ClientProxy.TEXT_WIDTH.get(' ');
+//                            if (this.lineWidth > activeElement.width * 0.02) {
+//                                this.lineWidth = 0;
+//                                this.lineHeight += 0.05f;
+//                                if (this.lineHeight >= activeElement.height * 0.05f) {
+//                                    activeElement = resetLinesNewBox(bookParagraph, boxOn++);
+//                                    if (activeElement == null) {
+//                                        breakBool = true;
+//                                        break;
+//
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                    i += wordLength[wordNumber];
+//                }
+//            }
+//        }
 
 
-        if(drawSpecialFont){
-            boolean findNewWord = true;
-            String[] words = pageText.getString().trim().split("\\s+");
-            String pageTextString = pageText.getString();
-            int itor = -1;
-            for(String word : words){
-                itor++;
-                if(word.length() > 2) {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    if (word.charAt(0) == '%' && word.charAt(1) == 'k') {
-                        for(int i = 2; i < word.length(); i++){
-                            stringBuilder.append(word.charAt(i));
-                        }
-                        String temp = stringBuilder.toString();
+        Font font = Hexerei.font();
+        boolean findNewWord = true;
+        String[] words = pageText.getString().trim().split("\\s+");
+        String pageTextString = pageText.getString();
 
-                        String alt = "key." + temp;
 
-                        for (KeyMapping k : ClientProxy.keys) {
-                            String name = k.getName();
-                            if (name.equals(temp) || name.equals(alt)) {
-                                String keyName = k.getTranslatedKeyMessage().getString();
-                                if(keyName.length() <= 1)
-                                    keyName = keyName.toUpperCase(Locale.ROOT);
-                                words[itor] = keyName;
-                                pageTextString = pageTextString.replaceAll(word, words[itor]);
-                            }
-                        }
-
+        int itor = -1;
+        for(String word : words){
+            itor++;
+            if(word.length() > 2) {
+                StringBuilder stringBuilder = new StringBuilder();
+                if (word.charAt(0) == '%' && word.charAt(1) == 'k') {
+                    for(int i = 2; i < word.length(); i++){
+                        stringBuilder.append(word.charAt(i));
                     }
+                    String temp = stringBuilder.toString();
+
+                    String alt = "key." + temp;
+
+                    for (KeyMapping k : ClientProxy.keys) {
+                        String name = k.getName();
+                        if (name.equals(temp) || name.equals(alt)) {
+                            String keyName = k.getTranslatedKeyMessage().getString();
+                            if(keyName.length() <= 1)
+                                keyName = keyName.toUpperCase(Locale.ROOT);
+                            words[itor] = keyName;
+                            pageTextString = pageTextString.replaceAll(word, words[itor]);
+                        }
+                    }
+
                 }
             }
-            char[] text = pageTextString.toCharArray();
 
-            int[] wordLength = new int[words.length];
-            float[] wordWidths = new float[words.length];
-            for (int k = 0; k < words.length; k++) {
-                wordLength[k] = words[k].length();
-                char[] wordText = words[k].toCharArray();
-                for (char character : wordText) {
-                    if (ClientProxy.TEXT.containsKey(character))
-                        wordWidths[k] += ClientProxy.TEXT_WIDTH.get(character);
-                    else
-                        wordWidths[k] += ClientProxy.TEXT_WIDTH.get(' ');
-                }
-            }
+        }
+        char[] text = pageTextString.toCharArray();
 
-            boolean breakBool = false;
-            for (int i = 0; i < text.length; i = i) {
-                if (breakBool)
-                    break;
-                if (text[i] == '\n') {
-                    this.lineWidth = 0;
-                    this.lineHeight += 0.05f;
-                    if (this.lineHeight >= activeElement.height * 0.05f) {
-                        activeElement = resetLinesNewBox(bookParagraph, boxOn++);
-                        if (activeElement == null) {
-                            breakBool = true;
-                            break;
-
-                        }
-                    }
-                    i++;
-                } else if (text[i] == ' ') {
-                    findNewWord = true;
-                    drawCharacter(' ', tileEntityIn, matrixStack, bufferSource, 0, 0, (int) activeElement.x, (int) activeElement.y, 0, light, overlay, pageOn, isItem);
-                    this.lineWidth += ClientProxy.TEXT_WIDTH.get(' ');
-                    if (this.lineWidth > activeElement.width * 0.02) {
-                        this.lineWidth = 0;
-                        this.lineHeight += 0.05f;
-                        if (this.lineHeight >= activeElement.height * 0.05f) {
-                            activeElement = resetLinesNewBox(bookParagraph, boxOn++);
-                            if (activeElement == null) {
-                                breakBool = true;
-                                break;
-
-                            }
-                        }
-                    }
-                    i++;
-                } else if (findNewWord) {
-                    wordNumber++;
-
-                    char[] wordText = words[wordNumber].toCharArray();
-                    if (this.lineWidth + wordWidths[wordNumber] > activeElement.width * 0.02) {
-                        this.lineWidth = 0;
-                        this.lineHeight += 0.05f;
-                        if (this.lineHeight >= activeElement.height * 0.05f) {
-                            activeElement = resetLinesNewBox(bookParagraph, boxOn++);
-                            if (activeElement == null) {
-                                breakBool = true;
-                                break;
-
-                            }
-                        }
-                    }
-                    for (char character : wordText) {
-                        if (ClientProxy.TEXT.containsKey(character)) {
-                            drawCharacter(character, tileEntityIn, matrixStack, bufferSource, 0, 0, (int) activeElement.x, (int) activeElement.y, 0, light, overlay, pageOn, isItem);
-                            this.lineWidth += ClientProxy.TEXT_WIDTH.get(character);
-                            if (this.lineWidth > activeElement.width * 0.02) {
-                                this.lineWidth = 0;
-                                this.lineHeight += 0.05f;
-                                if (this.lineHeight >= activeElement.height * 0.05f) {
-                                    activeElement = resetLinesNewBox(bookParagraph, boxOn++);
-                                    if (activeElement == null) {
-                                        breakBool = true;
-                                        break;
-
-                                    }
-                                }
-                            }
-                        } else {
-                            drawCharacter(' ', tileEntityIn, matrixStack, bufferSource, 0, 0, (int) activeElement.x, (int) activeElement.y, 0, light, overlay, pageOn, isItem);
-                            this.lineWidth += ClientProxy.TEXT_WIDTH.get(' ');
-                            if (this.lineWidth > activeElement.width * 0.02) {
-                                this.lineWidth = 0;
-                                this.lineHeight += 0.05f;
-                                if (this.lineHeight >= activeElement.height * 0.05f) {
-                                    activeElement = resetLinesNewBox(bookParagraph, boxOn++);
-                                    if (activeElement == null) {
-                                        breakBool = true;
-                                        break;
-
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    i += wordLength[wordNumber];
-                }
-            }
+        int[] wordLength = new int[words.length];
+        float[] wordWidths = new float[words.length];
+        for (int k = 0; k < words.length; k++) {
+            wordLength[k] = words[k].length();
+            wordWidths[k] = font.width(words[k]);
         }
 
-        if(!drawSpecialFont){
-
-            Font font = Minecraft.getInstance().font;
-            boolean findNewWord = true;
-            String[] words = pageText.getString().trim().split("\\s+");
-            String pageTextString = pageText.getString();
-
-
-            int itor = -1;
-            for(String word : words){
-                itor++;
-                if(word.length() > 2) {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    if (word.charAt(0) == '%' && word.charAt(1) == 'k') {
-                        for(int i = 2; i < word.length(); i++){
-                            stringBuilder.append(word.charAt(i));
-                        }
-                        String temp = stringBuilder.toString();
-
-                        String alt = "key." + temp;
-
-                        for (KeyMapping k : ClientProxy.keys) {
-                            String name = k.getName();
-                            if (name.equals(temp) || name.equals(alt)) {
-                                String keyName = k.getTranslatedKeyMessage().getString();
-                                if(keyName.length() <= 1)
-                                    keyName = keyName.toUpperCase(Locale.ROOT);
-                                words[itor] = keyName;
-                                pageTextString = pageTextString.replaceAll(word, words[itor]);
-                            }
-                        }
+        boolean breakBool = false;
+        ArrayList<String> strings = new ArrayList<>();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < text.length; i = i) {
+            if (breakBool)
+                break;
+            if (text[i] == '\n') {
+                this.lineWidth = 0;
+                this.lineHeight++;
+                strings.add(stringBuilder.toString());
+                stringBuilder = new StringBuilder();
+                if (this.lineHeight >= activeElement.height) {
+                    activeElement = resetLinesNewBox(bookParagraph, boxOn++);
+                    if (activeElement == null) {
+                        breakBool = true;
+                        break;
 
                     }
                 }
-
-            }
-            char[] text = pageTextString.toCharArray();
-
-            int[] wordLength = new int[words.length];
-            float[] wordWidths = new float[words.length];
-            for (int k = 0; k < words.length; k++) {
-                wordLength[k] = words[k].length();
-                wordWidths[k] = font.width(words[k]);
-            }
-
-            boolean breakBool = false;
-            ArrayList<String> strings = new ArrayList<>();
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < text.length; i = i) {
-                if (breakBool)
-                    break;
-                if (text[i] == '\n') {
+                i++;
+            } else if (text[i] == ' ') {
+                findNewWord = true;
+                stringBuilder.append(' ');
+                this.lineWidth += font.width(" ");
+                if (this.lineWidth > activeElement.width * 3.75f) {
                     this.lineWidth = 0;
                     this.lineHeight++;
                     strings.add(stringBuilder.toString());
@@ -5080,11 +5140,29 @@ public class PageDrawing {
 
                         }
                     }
-                    i++;
-                } else if (text[i] == ' ') {
-                    findNewWord = true;
-                    stringBuilder.append(' ');
-                    this.lineWidth += font.width(" ");
+                }
+                i++;
+            } else if (findNewWord) {
+                wordNumber++;
+
+                char[] wordText = words[wordNumber].toCharArray();
+                if (this.lineWidth + wordWidths[wordNumber] > activeElement.width * 3.75f) {
+                    this.lineWidth = 0;
+                    this.lineHeight++;
+                    strings.add(stringBuilder.toString());
+                    stringBuilder = new StringBuilder();
+                    if (this.lineHeight >= activeElement.height) {
+                        activeElement = resetLinesNewBox(bookParagraph, boxOn++);
+                        if (activeElement == null) {
+                            breakBool = true;
+                            break;
+
+                        }
+                    }
+                }
+                for (char character : wordText) {
+                    stringBuilder.append(character);
+                    this.lineWidth += font.width(String.valueOf(character));
                     if (this.lineWidth > activeElement.width * 3.75f) {
                         this.lineWidth = 0;
                         this.lineHeight++;
@@ -5099,118 +5177,81 @@ public class PageDrawing {
                             }
                         }
                     }
-                    i++;
-                } else if (findNewWord) {
-                    wordNumber++;
-
-                    char[] wordText = words[wordNumber].toCharArray();
-                    if (this.lineWidth + wordWidths[wordNumber] > activeElement.width * 3.75f) {
-                        this.lineWidth = 0;
-                        this.lineHeight++;
-                        strings.add(stringBuilder.toString());
-                        stringBuilder = new StringBuilder();
-                        if (this.lineHeight >= activeElement.height) {
-                            activeElement = resetLinesNewBox(bookParagraph, boxOn++);
-                            if (activeElement == null) {
-                                breakBool = true;
-                                break;
-
-                            }
-                        }
-                    }
-                    for (char character : wordText) {
-                        stringBuilder.append(character);
-                        this.lineWidth += font.width(String.valueOf(character));
-                        if (this.lineWidth > activeElement.width * 3.75f) {
-                            this.lineWidth = 0;
-                            this.lineHeight++;
-                            strings.add(stringBuilder.toString());
-                            stringBuilder = new StringBuilder();
-                            if (this.lineHeight >= activeElement.height) {
-                                activeElement = resetLinesNewBox(bookParagraph, boxOn++);
-                                if (activeElement == null) {
-                                    breakBool = true;
-                                    break;
-
-                                }
-                            }
-                        }
-                    }
-
-                    i += wordLength[wordNumber];
                 }
+
+                i += wordLength[wordNumber];
             }
+        }
 
-            if(!stringBuilder.toString().isEmpty())
-                strings.add(stringBuilder.toString());
+        if(!stringBuilder.toString().isEmpty())
+            strings.add(stringBuilder.toString());
 
-            matrixStack.pushPose();
+        matrixStack.pushPose();
 
-            if(pageOn == PageOn.LEFT_PAGE)
-                translateToLeftPage(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-            else if(pageOn == PageOn.LEFT_PAGE_UNDER)
-                translateToLeftPageUnder(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-            else if(pageOn == PageOn.LEFT_PAGE_PREV)
-                translateToLeftPagePrevious(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-            if(pageOn == PageOn.RIGHT_PAGE)
-                translateToRightPage(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-            else if(pageOn == PageOn.RIGHT_PAGE_UNDER)
-                translateToRightPageUnder(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-            else if(pageOn == PageOn.RIGHT_PAGE_PREV)
-                translateToRightPagePrevious(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
+        if(pageOn == PageOn.LEFT_PAGE)
+            translateToLeftPage(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
+        else if(pageOn == PageOn.LEFT_PAGE_UNDER)
+            translateToLeftPageUnder(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
+        else if(pageOn == PageOn.LEFT_PAGE_PREV)
+            translateToLeftPagePrevious(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
+        if(pageOn == PageOn.RIGHT_PAGE)
+            translateToRightPage(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
+        else if(pageOn == PageOn.RIGHT_PAGE_UNDER)
+            translateToRightPageUnder(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
+        else if(pageOn == PageOn.RIGHT_PAGE_PREV)
+            translateToRightPagePrevious(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
 
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
-            matrixStack.translate(-8.35f / 16f, 4.5f / 16f, -0.01f / 16f);
-            matrixStack.scale(0.00272f,0.00272f,0.00272f);
-            matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
+        matrixStack.translate(-8.35f / 16f, 4.5f / 16f, -0.01f / 16f);
+        matrixStack.scale(0.00272f,0.00272f,0.00272f);
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
 
-            MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 //            font.drawInBatch(s1, (activeElement.x * 9f) - 24, (activeElement.y * 9f) - 4, 16777216, false, matrixStack.last().pose(), bufferSource, false, 0, light);
 
 
-            int boxId = 0;
-            int linenumber = 0;
-            boolean flag = true;
-            while(flag) {
-                ArrayList<String> remainder = new ArrayList<>();
-                if(bookParagraph.paragraphElements.size() > boxId && bookParagraph.paragraphElements.get(boxId)!=null) {
+        int boxId = 0;
+        int linenumber = 0;
+        boolean flag = true;
+        while(flag) {
+            ArrayList<String> remainder = new ArrayList<>();
+            if(bookParagraph.paragraphElements.size() > boxId && bookParagraph.paragraphElements.get(boxId)!=null) {
 
-                    BookParagraphElements box = bookParagraph.paragraphElements.get(boxId);
+                BookParagraphElements box = bookParagraph.paragraphElements.get(boxId);
 
-                    for (String s1 : strings) {
-                        if((linenumber+1) * font.lineHeight <= Math.round(box.height * font.lineHeight) + 1) {
-                            float offsetX = 0;
-                            if(bookParagraph.align.equals("middle"))
-                                offsetX = (font.width(s1)) / 2;
+                for (String s1 : strings) {
+                    if((linenumber+1) * font.lineHeight <= Math.round(box.height * font.lineHeight) + 1) {
+                        float offsetX = 0;
+                        if(bookParagraph.align.equals("middle"))
+                            offsetX = (font.width(s1)) / 2;
 
-                            font.drawInBatch(s1, (box.x * 8f) - 24 - offsetX, ((box.y) * (font.lineHeight) + Math.round(linenumber * font.lineHeight)) - 4, HexereiUtil.getColorValue(0.12f,0.12f,0.12f), false, matrixStack.last().pose(), bufferSource, false, 0, light);
-                            matrixStack.pushPose();
-                            matrixStack.translate(0.25f, 0.25f, 1 / 16f);
-                            font.drawInBatch(s1, (box.x * 8f) - 24 - offsetX, ((box.y) * (font.lineHeight) + Math.round(linenumber * font.lineHeight)) - 4, 16777216, false, matrixStack.last().pose(), bufferSource, false, 0, light);
-                            matrixStack.popPose();
-                        }
-                        else {
-                            remainder.add(s1);
-                        }
-                        ++linenumber;
+                        font.drawInBatch(s1, (box.x * 8f) - 24 - offsetX, ((box.y) * (font.lineHeight) + Math.round(linenumber * font.lineHeight)) - 4, HexereiUtil.getColorValue(0.12f,0.12f,0.12f), false, matrixStack.last().pose(), bufferSource, false, 0, light);
+                        matrixStack.pushPose();
+                        matrixStack.translate(0.25f, 0.25f, 1 / 16f);
+                        font.drawInBatch(s1, (box.x * 8f) - 24 - offsetX, ((box.y) * (font.lineHeight) + Math.round(linenumber * font.lineHeight)) - 4, 16777216, false, matrixStack.last().pose(), bufferSource, false, 0, light);
+                        matrixStack.popPose();
                     }
-                }
-                else
-                    flag = false;
-                if(remainder.isEmpty())
-                    flag = false;
-                else {
-                    boxId ++;
-                    linenumber = 0;
-                    strings = remainder;
+                    else {
+                        remainder.add(s1);
+                    }
+                    ++linenumber;
                 }
             }
+            else
+                flag = false;
+            if(remainder.isEmpty())
+                flag = false;
+            else {
+                boxId ++;
+                linenumber = 0;
+                strings = remainder;
+            }
+        }
 
 //            font.drawInBatch(pageText, (xIn * 9f) - 24, (yIn * 9f) - 4, 16777216, false, matrixStack.last().pose(), bufferSource, false, 0, light);
 
-            multibuffersource$buffersource.endBatch();
-            matrixStack.popPose();
-        }
+        multibuffersource$buffersource.endBatch();
+        matrixStack.popPose();
 
         resetLines();
 

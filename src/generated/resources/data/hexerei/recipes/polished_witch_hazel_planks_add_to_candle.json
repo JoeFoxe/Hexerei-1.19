@@ -1,0 +1,10 @@
+{
+  "type": "hexerei:add_to_candle",
+  "input": {
+    "item": "hexerei:polished_witch_hazel_planks"
+  },
+  "output": {
+    "item": "hexerei:candle",
+    "nbt": "{base:{layer:\"hexerei:polished_witch_hazel_planks\",layerFromBlockLocation:1b}}"
+  }
+}

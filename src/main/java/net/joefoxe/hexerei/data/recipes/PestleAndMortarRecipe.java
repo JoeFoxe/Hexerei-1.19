@@ -26,6 +26,10 @@ public class PestleAndMortarRecipe implements Recipe<SimpleContainer> {
     protected static final List<Boolean> itemMatchesSlot = new ArrayList<>();
 
 
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
     public PestleAndMortarRecipe(ResourceLocation id, ItemStack output,
                                  NonNullList<Ingredient> recipeItems, int grindingTime) {
         this.id = id;

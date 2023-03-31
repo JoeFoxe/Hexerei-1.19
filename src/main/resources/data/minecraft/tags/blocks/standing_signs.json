@@ -2,8 +2,10 @@
   "replace": false,
   "values": [
     "hexerei:willow_sign",
+    "hexerei:witch_hazel_sign",
     "hexerei:mahogany_sign",
     "hexerei:polished_willow_sign",
+    "hexerei:polished_witch_hazel_sign",
     "hexerei:polished_mahogany_sign"
   ]
 }

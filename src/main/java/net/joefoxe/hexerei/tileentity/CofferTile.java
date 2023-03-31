@@ -54,6 +54,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Worl
     public int degreesOpened;
     public int buttonToggled = 0;
     public static final int lidOpenAmount = 112;
+    public int degreesOpenedPrev = 0;
     public int dyeColor = 0x422F1E;
 
     public Component customName;
@@ -161,17 +162,16 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Worl
             CompoundTag tag = this.self.getOrCreateTag();
             CompoundTag inv = this.itemStackHandler.serializeNBT();
 
-            boolean flag = false;
-            for(int i = 0; i < 36; i++)
-            {
-                if(!this.itemStackHandler.getStackInSlot(i).isEmpty())
-                {
-                    flag = true;
-                    break;
-                }
-            }
-            if(flag)
-                tag.put("Inventory", inv);
+//            boolean flag = false;
+//            for(int i = 0; i < 36; i++)
+//            {
+//                if(!this.itemStackHandler.getStackInSlot(i).isEmpty())
+//                {
+//                    flag = true;
+//                    break;
+//                }
+//            }
+            tag.put("Inventory", inv);
 
             if(self.getItem() instanceof DyeableLeatherItem dyeableLeatherItem)
                 dyeableLeatherItem.setColor(this.self, this.dyeColor);
@@ -511,6 +511,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Worl
 //        if(level.isClientSide)
 //            return;
 
+        this.degreesOpenedPrev = this.degreesOpened;
         boolean flag = false;
         Player playerEntity = this.level.getNearestPlayer(this.worldPosition.getX(),this.worldPosition.getY(),this.worldPosition.getZ(), 5D, false);
         if(playerEntity != null) {

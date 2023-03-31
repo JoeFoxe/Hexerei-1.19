@@ -2,8 +2,10 @@
   "replace": false,
   "values": [
     "hexerei:willow_button",
+    "hexerei:witch_hazel_button",
     "hexerei:mahogany_button",
     "hexerei:polished_willow_button",
+    "hexerei:polished_witch_hazel_button",
     "hexerei:polished_mahogany_button"
   ]
 }

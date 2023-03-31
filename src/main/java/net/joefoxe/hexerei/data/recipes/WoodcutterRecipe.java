@@ -22,6 +22,11 @@ public class WoodcutterRecipe extends SingleItemRecipe {
         this.ingredientCount = ingredientCount;
     }
 
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
     /**
      * Used to check if a recipe matches current crafting inventory
      */

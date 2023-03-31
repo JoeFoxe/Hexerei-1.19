@@ -1,0 +1,8 @@
+{
+  "parent": "hexerei:item/pane",
+  "textures": {
+    "edge": "hexerei:block/witch_hazel_planks",
+    "pane": "hexerei:block/waxed_polished_smooth_witch_hazel_glass_pane"
+  },
+  "render_type": "cutout_mipped"
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BSB",
+    "@@@"
+
+  ],
+  "key": {
+    "B": {
+      "item": "hexerei:willow_button"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "@": {
+      "item": "hexerei:willow_slab"
+    }
+  },
+  "result": {
+    "item": "hexerei:willow_drying_rack",
+    "count": 1
+  }
+}

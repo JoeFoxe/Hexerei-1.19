@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "hexerei:polished_witch_hazel_layered"
+  },
+  "ingredient_count": 2,
+  "result": "hexerei:witch_hazel_door"
+}

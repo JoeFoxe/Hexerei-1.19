@@ -1,0 +1,7 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "hexerei:polished_witch_hazel_planks"
+  },
+  "result": "hexerei:polished_witch_hazel_connected"
+}

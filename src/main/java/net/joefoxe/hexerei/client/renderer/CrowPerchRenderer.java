@@ -7,19 +7,28 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.entity.custom.CrowEntity;
+import net.joefoxe.hexerei.events.CrowWhitelistEvent;
 import net.joefoxe.hexerei.item.custom.CrowFluteItem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.ScreenEvent;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -48,14 +57,11 @@ public class CrowPerchRenderer {
         }
     }
 
-
-
-
     @SubscribeEvent
     public static void renderWorldLastEvent(RenderLevelStageEvent event) {
-        if(lastStackMain.getItem() instanceof CrowFluteItem && event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS){
-            int command = lastStackMain.getOrCreateTag().getInt("commandMode");
-            if (command == 2) { // Perch
+
+        if(event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS){
+            if (CrowWhitelistEvent.whiteListingCrow != null) { // Select
                 MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
                 PoseStack matrixStack = event.getPoseStack();
 
@@ -63,48 +69,64 @@ public class CrowPerchRenderer {
 
                 Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
                 matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
-                renderPerch(buffer, matrixStack, lastStackMain);
+                renderWhitelisting(buffer, matrixStack, CrowWhitelistEvent.whiteListingCrow);
 
                 matrixStack.popPose();
             }
-            if (command == 1 || command == 2) { // Select
-                MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-                PoseStack matrixStack = event.getPoseStack();
 
-                matrixStack.pushPose();
+            if (lastStackMain.getItem() instanceof CrowFluteItem) {
+                int command = lastStackMain.getOrCreateTag().getInt("commandMode");
+                if (command == 2) { // Perch
+                    MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
+                    PoseStack matrixStack = event.getPoseStack();
 
-                Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-                matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
-                renderSelect(buffer, matrixStack, lastStackMain);
+                    matrixStack.pushPose();
 
-                matrixStack.popPose();
+                    Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+                    matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
+                    renderPerch(buffer, matrixStack, lastStackMain);
+
+                    matrixStack.popPose();
+                }
+                if (command == 1 || command == 2) { // Select
+                    MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
+                    PoseStack matrixStack = event.getPoseStack();
+
+                    matrixStack.pushPose();
+
+                    Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+                    matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
+                    renderSelect(buffer, matrixStack, lastStackMain);
+
+                    matrixStack.popPose();
+                }
             }
-        }
-        if(lastStackOff.getItem() instanceof CrowFluteItem && event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS){
-            int command = lastStackOff.getOrCreateTag().getInt("commandMode");
-            if (command == 2) { // Perch
-                MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-                PoseStack matrixStack = event.getPoseStack();
+            if (lastStackOff.getItem() instanceof CrowFluteItem) {
+                int command = lastStackOff.getOrCreateTag().getInt("commandMode");
+                if (command == 2) { // Perch
+                    MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
+                    PoseStack matrixStack = event.getPoseStack();
 
-                matrixStack.pushPose();
+                    matrixStack.pushPose();
 
-                Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-                matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
-                renderPerch(buffer, matrixStack, lastStackOff);
+                    Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+                    matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
+                    renderPerch(buffer, matrixStack, lastStackOff);
 
-                matrixStack.popPose();
-            }
-            if (command == 1 || command == 2) { // Select
-                MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-                PoseStack matrixStack = event.getPoseStack();
+                    matrixStack.popPose();
+                }
+                if (command == 1 || command == 2) { // Select
+                    MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
+                    PoseStack matrixStack = event.getPoseStack();
 
-                matrixStack.pushPose();
+                    matrixStack.pushPose();
 
-                Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-                matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
-                renderSelect(buffer, matrixStack, lastStackOff);
+                    Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+                    matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
+                    renderSelect(buffer, matrixStack, lastStackOff);
 
-                matrixStack.popPose();
+                    matrixStack.popPose();
+                }
             }
         }
     }
@@ -385,8 +407,6 @@ public class CrowPerchRenderer {
 
 //                Vec3 vec3 = new Vec3(pos.getX(), pos.getY() + topOffset, pos.getZ());
 
-
-
                 matrixStack.pushPose();
                 matrixStack.translate(pos.x, pos.y + 0.45f, pos.z);
                 Matrix4f posMat = matrixStack.last().pose();
@@ -412,35 +432,17 @@ public class CrowPerchRenderer {
                 if(crow.getDyeColorId() != -1)
                     color = crow.getDyeColor().getMaterialColor().col;
 
-
-
                 int r = (color & 0xFF0000) >> 16;
                 int g = (color & 0xFF00) >> 8;
                 int b = color & 0xFF;
                 int alpha = 80;
 
-//                System.out.println(Hexerei.getClientTicks());
                 matrixStack.translate(0, Mth.sin((Hexerei.getClientTicks() + (crowId * 20)) / 10f) / 10f, 0);
                 matrixStack.mulPose(Vector3f.YP.rotationDegrees(Hexerei.getClientTicks() + (crowId * 20)));
                 matrixStack.translate(-0.5f, 0, -0.5f);
                 matrixStack.translate(BOX_START, BOX_START, BOX_START);
                 matrixStack.scale(0.35f, 0.35f, 0.35f);
                 matrixStack.translate(0.5f, 0, 0.5f);
-
-//                renderPillar(buffer, matrixStack, BOX_SIZE * -0.1f, 0, BOX_SIZE * -0.1f);
-//                renderPillar(buffer, matrixStack, BOX_SIZE, 0, BOX_SIZE * -0.1f);
-//                renderPillar(buffer, matrixStack, BOX_SIZE * -0.1f, 0, BOX_SIZE);
-//                renderPillar(buffer, matrixStack, BOX_SIZE, 0, BOX_SIZE);
-
-//                renderHorizontalPillar(buffer, matrixStack, BOX_SIZE * 0.1f,  -BOX_SIZE * 0.1f, 0);
-//                renderHorizontalPillar(buffer, matrixStack, -BOX_SIZE,  -BOX_SIZE * 0.1f, 0);
-//                renderHorizontalPillarTurned(buffer, matrixStack, 0,  -BOX_SIZE * 0.1f, BOX_SIZE * 0.1f);
-//                renderHorizontalPillarTurned(buffer, matrixStack, 0,  -BOX_SIZE * 0.1f, -BOX_SIZE);
-//
-//                renderHorizontalPillar(buffer, matrixStack, BOX_SIZE * 0.1f,  BOX_SIZE, 0);
-//                renderHorizontalPillar(buffer, matrixStack, -BOX_SIZE,  BOX_SIZE, 0);
-//                renderHorizontalPillarTurned(buffer, matrixStack, 0,  BOX_SIZE, BOX_SIZE * 0.1f);
-//                renderHorizontalPillarTurned(buffer, matrixStack, 0,  BOX_SIZE, -BOX_SIZE);
 
                 VertexConsumer lineBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HILIGHT_FACE);
 
@@ -480,9 +482,66 @@ public class CrowPerchRenderer {
                 matrixStack.popPose();
 
             }
-//            tag.putInt("ID", (Hexerei.proxy.getPlayer().level).getEntity(crowId).getId());
-//            crows.add((CrowEntity) ((ServerLevel) player.level).getEntity(crowId));
         }
+
+    }
+    private static void renderWhitelisting(MultiBufferSource.BufferSource buffer, PoseStack matrixStack, CrowEntity crow) {
+
+        Vec3 pos = crow.position();
+
+        matrixStack.pushPose();
+        matrixStack.translate(pos.x, pos.y + 0.45f, pos.z);
+        Matrix4f posMat = matrixStack.last().pose();
+        int color = 0xE2E2E2;
+
+        int r = (color & 0xFF0000) >> 16;
+        int g = (color & 0xFF00) >> 8;
+        int b = color & 0xFF;
+        int alpha = 80;
+
+        matrixStack.translate(0, Mth.sin((Hexerei.getClientTicks()) / 10f) / 10f, 0);
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(Hexerei.getClientTicks()));
+        matrixStack.translate(-0.5f, 0, -0.5f);
+        matrixStack.translate(BOX_START, BOX_START, BOX_START);
+        matrixStack.scale(0.35f, 0.35f, 0.35f);
+        matrixStack.translate(0.5f, 0, 0.5f);
+
+        VertexConsumer lineBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HILIGHT_FACE);
+
+        lineBuilder.vertex(posMat, 0, 0, 0).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, 0, BOX_SIZE, 0).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, BOX_SIZE, BOX_SIZE, 0).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, BOX_SIZE, 0, 0).color(r, g, b, alpha).endVertex();
+
+        lineBuilder.vertex(posMat, BOX_SIZE, 0, BOX_SIZE).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, BOX_SIZE, BOX_SIZE, BOX_SIZE).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, 0, BOX_SIZE, BOX_SIZE).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, 0, 0, BOX_SIZE).color(r, g, b, alpha).endVertex();
+
+        lineBuilder.vertex(posMat, 0, 0, 0).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, 0, 0, BOX_SIZE).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, 0, BOX_SIZE, BOX_SIZE).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, 0, BOX_SIZE, 0).color(r, g, b, alpha).endVertex();
+
+        lineBuilder.vertex(posMat, BOX_SIZE, BOX_SIZE, 0).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, BOX_SIZE, BOX_SIZE, BOX_SIZE).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, BOX_SIZE, 0, BOX_SIZE).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, BOX_SIZE, 0, 0).color(r, g, b, alpha).endVertex();
+
+        lineBuilder.vertex(posMat, 0, 0, 0).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, BOX_SIZE, 0, 0).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, BOX_SIZE, 0, BOX_SIZE).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, 0, 0, BOX_SIZE).color(r, g, b, alpha).endVertex();
+
+        lineBuilder.vertex(posMat, 0, BOX_SIZE, BOX_SIZE).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, BOX_SIZE, BOX_SIZE, BOX_SIZE).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, BOX_SIZE, BOX_SIZE, 0).color(r, g, b, alpha).endVertex();
+        lineBuilder.vertex(posMat, 0, BOX_SIZE, 0).color(r, g, b, alpha).endVertex();
+
+        RenderSystem.disableDepthTest();
+        buffer.endBatch(ModRenderTypes.BLOCK_HILIGHT_FACE);
+
+        matrixStack.popPose();
 
     }
 

@@ -1,0 +1,130 @@
+{
+  "multipart": [
+    {
+      "when": {
+
+        "facing" : "east",
+        "north" : "true"
+      },
+      "apply": {
+        "model": "hexerei:block/mahogany_drying_rack_left",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+
+        "facing" : "east",
+        "south" : "true"
+      },
+      "apply": {
+        "model": "hexerei:block/mahogany_drying_rack_right",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+
+        "facing" : "west",
+        "south" : "true"
+      },
+      "apply": {
+        "model": "hexerei:block/mahogany_drying_rack_left",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+
+        "facing" : "west",
+        "north" : "true"
+      },
+      "apply": {
+        "model": "hexerei:block/mahogany_drying_rack_right",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+
+        "facing" : "south",
+        "east" : "true"
+      },
+      "apply": {
+        "model": "hexerei:block/mahogany_drying_rack_left",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+
+        "facing" : "south",
+        "west" : "true"
+      },
+      "apply": {
+        "model": "hexerei:block/mahogany_drying_rack_right",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+
+        "facing" : "north",
+        "west" : "true"
+      },
+      "apply": {
+        "model": "hexerei:block/mahogany_drying_rack_left",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+
+        "facing" : "north",
+        "east" : "true"
+      },
+      "apply": {
+        "model": "hexerei:block/mahogany_drying_rack_right",
+        "y": 180
+      }
+    },
+
+
+    {
+      "when": {
+        "facing" : "east"
+      },
+      "apply": {
+        "model": "hexerei:block/mahogany_drying_rack",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing" : "north"
+      },
+      "apply": {
+        "model": "hexerei:block/mahogany_drying_rack",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing" : "south"
+      },
+      "apply": {
+        "model": "hexerei:block/mahogany_drying_rack",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "facing" : "west"
+      },
+      "apply": {
+        "model": "hexerei:block/mahogany_drying_rack",
+        "y": 90
+      }
+    }
+  ]
+}

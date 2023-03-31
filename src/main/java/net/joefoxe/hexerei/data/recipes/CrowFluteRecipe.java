@@ -21,6 +21,10 @@ public class CrowFluteRecipe extends ShapedRecipe {
         super(compose.getId(), compose.getGroup(), compose.getWidth(), compose.getHeight(), compose.getIngredients(), compose.getResultItem());
     }
 
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
     @Nonnull
     @Override
     public ItemStack assemble(CraftingContainer inv) {

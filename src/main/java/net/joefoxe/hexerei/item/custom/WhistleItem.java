@@ -33,13 +33,13 @@ public class WhistleItem extends Item {
 
         if(itemstack.hasTag()){
             CompoundTag tag = itemstack.getOrCreateTag();
-            if(tag.contains("UUID")){
+            if(tag.contains("broomUUID")){
                 playerIn.level.playSound(null, playerIn.getX() + playerIn.getLookAngle().x(), playerIn.getY() + playerIn.getEyeHeight(), playerIn.getZ() + playerIn.getLookAngle().z(), ModSounds.BROOM_WHISTLE.get(), SoundSource.PLAYERS, 1.0F, 0.8F + 0.4F * new Random().nextFloat());
                 BroomEntity broomFound = null;
-                UUID broomUUID = tag.getUUID("UUID");
+                UUID broomUUID = tag.getUUID("broomUUID");
                 List<BroomEntity> list = level.getEntitiesOfClass(BroomEntity.class, playerIn.getBoundingBox().inflate(64.0D));
                 for(BroomEntity broom : list){
-                    if(broom.broomUUID.toString().equals(broomUUID.toString()) && !broom.hasPassenger(playerIn)){
+                    if(broom.broomUUID != null && broom.broomUUID.toString().equals(broomUUID.toString()) && !broom.hasPassenger(playerIn)){
                         broomFound = broom;
                         broomFound.broomCalled = true;
                         broomFound.floatMode = true;
@@ -87,10 +87,10 @@ public class WhistleItem extends Item {
             boolean flag = false;
             if(stack.hasTag()) {
                 CompoundTag tag = stack.getOrCreateTag();
-                if (tag.contains("UUID")) {
+                if (tag.contains("broomUUID")) {
 
                     flag = true;
-                    tooltip.add(Component.translatable("Bound to: %s", tag.getUUID("UUID")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x119911))));
+                    tooltip.add(Component.translatable("Bound to: %s", tag.getUUID("broomUUID")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x119911))));
 
                 }
             }
@@ -104,7 +104,7 @@ public class WhistleItem extends Item {
             boolean flag = false;
             if(stack.hasTag()) {
                 CompoundTag tag = stack.getOrCreateTag();
-                if (tag.contains("UUID")) {
+                if (tag.contains("broomUUID")) {
 
                     flag = true;
                     tooltip.add(Component.translatable("Bound").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x119911))));

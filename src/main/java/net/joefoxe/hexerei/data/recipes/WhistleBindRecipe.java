@@ -21,6 +21,10 @@ public class WhistleBindRecipe extends CustomRecipe {
     }
 
     @Override
+    public boolean isSpecial() {
+        return true;
+    }
+    @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingContainer p_44004_) {
         NonNullList<ItemStack> nonnulllist = NonNullList.withSize(p_44004_.getContainerSize(), ItemStack.EMPTY);
 
@@ -82,10 +86,10 @@ public class WhistleBindRecipe extends CustomRecipe {
         }
 
         if(broomUUID != null)
-            whistleItem.getOrCreateTag().putUUID("UUID", broomUUID);
+            whistleItem.getOrCreateTag().putUUID("broomUUID", broomUUID);
         else {
             if(whistleItem.hasTag())
-                whistleItem.getOrCreateTag().remove("UUID");
+                whistleItem.getOrCreateTag().remove("broomUUID");
         }
 
         return whistleItem;

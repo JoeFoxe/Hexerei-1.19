@@ -1,0 +1,42 @@
+{
+  "name": "minecraft:village/plains/terminators",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "hexerei:coven/nature_coven/terminators/terminator_01",
+        "processors": "hexerei:coven/nature_coven/nature_coven_legs",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "hexerei:coven/nature_coven/terminators/terminator_02",
+        "processors": "hexerei:coven/nature_coven/nature_coven_legs",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "hexerei:coven/nature_coven/terminators/terminator_03",
+        "processors": "hexerei:coven/nature_coven/nature_coven_legs",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "hexerei:coven/nature_coven/terminators/terminator_04",
+        "processors": "hexerei:coven/nature_coven/nature_coven_legs",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

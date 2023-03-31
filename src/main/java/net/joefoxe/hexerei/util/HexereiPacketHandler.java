@@ -231,6 +231,38 @@ public class HexereiPacketHandler {
                 CrowAskForSyncPacket::consume
         );
 
+        instance.registerMessage(
+                ++ id,
+                CrowWhitelistSyncToServer.class,
+                CrowWhitelistSyncToServer::encode,
+                CrowWhitelistSyncToServer::decode,
+                CrowWhitelistSyncToServer::consume
+        );
+
+        instance.registerMessage(
+                ++ id,
+                CrowInteractionRangeToServer.class,
+                CrowInteractionRangeToServer::encode,
+                CrowInteractionRangeToServer::decode,
+                CrowInteractionRangeToServer::consume
+        );
+
+        instance.registerMessage(
+                ++ id,
+                CrowCanAttackToServer.class,
+                CrowCanAttackToServer::encode,
+                CrowCanAttackToServer::decode,
+                CrowCanAttackToServer::consume
+        );
+
+        instance.registerMessage(
+                ++ id,
+                PlayerWhitelistingForCrowSyncToServer.class,
+                PlayerWhitelistingForCrowSyncToServer::encode,
+                PlayerWhitelistingForCrowSyncToServer::decode,
+                PlayerWhitelistingForCrowSyncToServer::consume
+        );
+
 
         instance.registerMessage(
                 ++ id,

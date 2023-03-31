@@ -1,0 +1,8 @@
+{
+  "type": "hexerei:woodcutting",
+  "ingredient": {
+    "item": "hexerei:witch_hazel_connected"
+  },
+  "ingredient_count": 3,
+  "result": "minecraft:barrel"
+}

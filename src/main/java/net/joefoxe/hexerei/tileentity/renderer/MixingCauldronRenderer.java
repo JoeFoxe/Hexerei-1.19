@@ -1,20 +1,19 @@
 package net.joefoxe.hexerei.tileentity.renderer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.custom.HerbJar;
 import net.joefoxe.hexerei.block.custom.MixingCauldron;
+import net.joefoxe.hexerei.client.renderer.ModRenderTypes;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.tileentity.MixingCauldronTile;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BiomeColors;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -24,15 +23,22 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 import java.awt.*;
 import java.util.Objects;
@@ -61,7 +67,7 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
         float dist = Math.abs(tileEntityIn.fluidRenderLevel - tileEntityIn.getFluidStack().getAmount()) / 1000f;
         tileEntityIn.fluidRenderLevel = HexereiUtil.moveTo(tileEntityIn.fluidRenderLevel, tileEntityIn.getFluidStack().getAmount(),  (25 + 50 * dist) * partialTicks);
 
-        renderBlock(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, ModBlocks.MIXING_CAULDRON.get().defaultBlockState().setValue(HerbJar.GUI_RENDER, true).setValue(HerbJar.DYED, tileEntityIn.dyeColor != 0x422F1E && tileEntityIn.dyeColor != 0), null, tileEntityIn.getDyeColor());
+        renderBlock(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, ModBlocks.MIXING_CAULDRON_DYE.get().defaultBlockState(), null, tileEntityIn.getDyeColor());
 
         float fillPercentage = 0;
         boolean flag = false;
@@ -72,12 +78,17 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
         }
         if(!fluidStack.isEmpty()) {
             matrixStackIn.pushPose();
+
+            Color color2 = new Color(BiomeColors.getAverageWaterColor(tileEntityIn.getLevel(), new BlockPos(tileEntityIn.getPos().getX(), tileEntityIn.getPos().getY(), tileEntityIn.getPos().getZ())));
+            int waterColor = HexereiUtil.getColorValue(color2.getRed()/255f, color2.getGreen()/255f, color2.getBlue()/255f);
+
+
             fillPercentage = Math.min(1, (float) (flag ? tileEntityIn.fluidRenderLevel : fluidStack.getAmount()) / tileEntityIn.getTankCapacity(0));
 //            matrixStackIn.scale(1.05f, 1, 1.05f);
             if (fluidStack.getFluid().is(Tags.Fluids.GASEOUS))
-                renderFluid(matrixStackIn, bufferIn, fluidStack, fillPercentage, 1, combinedLightIn, tileEntityIn);
+                renderFluid(matrixStackIn, bufferIn, fluidStack, fillPercentage, 1, combinedLightIn, tileEntityIn, waterColor);
             else
-                renderFluid(matrixStackIn, bufferIn, fluidStack, 1, fillPercentage, combinedLightIn, tileEntityIn);
+                renderFluid(matrixStackIn, bufferIn, fluidStack, 1, fillPercentage, combinedLightIn, tileEntityIn, waterColor);
             matrixStackIn.popPose();
         }
         float height = MIN_Y + (MAX_Y - MIN_Y) * fillPercentage;
@@ -153,26 +164,189 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
         }
     }
 
-    private static void renderFluid(PoseStack matrixStack, MultiBufferSource renderTypeBuffer, FluidStack fluidStack, float alpha, float heightPercentage, int combinedLight, MixingCauldronTile tileEntityIn){
-        VertexConsumer vertexBuilder = renderTypeBuffer.getBuffer(RenderType.translucentNoCrumbling());
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(IClientFluidTypeExtensions.of(fluidStack.getFluid()).getStillTexture(fluidStack));
-        Color color2 = new Color(BiomeColors.getAverageWaterColor(tileEntityIn.getLevel(), new BlockPos(tileEntityIn.getPos().getX(), tileEntityIn.getPos().getY(), tileEntityIn.getPos().getZ())));
-        int color = IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor(fluidStack);
-
-        alpha *= (color >> 24 & 255) / 255f;
 
 
-        float red = (color >> 16 & 255) / 255f;
-        float green = (color >> 8 & 255) / 255f;
-        float blue = (color & 255) / 255f;
+    public static void renderFluidBox(FluidStack fluidStack, float xMin, float yMin, float zMin, float xMax, float yMax,
+                                      float zMax, MultiBufferSource buffer, PoseStack ms, int light, boolean renderBottom, int waterColor) {
+        renderFluidBox(fluidStack, xMin, yMin, zMin, xMax, yMax, zMax, buffer.getBuffer(ModRenderTypes.getFluid()), ms, light,
+                renderBottom, waterColor);
+    }
 
-        if(tileEntityIn.getFluidStack().isFluidEqual(new FluidStack(Fluids.WATER, 1))) {
-            red = color2.getRed()/255f;
-            green = color2.getGreen()/255f;
-            blue = color2.getBlue()/255f;
+    public static void renderFluidBox(FluidStack fluidStack, float xMin, float yMin, float zMin, float xMax, float yMax,
+                                      float zMax, VertexConsumer builder, PoseStack matrixStack, int light, boolean renderBottom, int waterColor) {
+        Fluid fluid = fluidStack.getFluid();
+        IClientFluidTypeExtensions clientFluid = IClientFluidTypeExtensions.of(fluid);
+        FluidType fluidAttributes = fluid.getFluidType();
+        TextureAtlasSprite fluidTexture = Minecraft.getInstance()
+                .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                .apply(clientFluid.getStillTexture(fluidStack));
+
+        int color = clientFluid.getTintColor(fluidStack);
+        int a = (color >> 24) & 255;
+
+        if(fluidStack.isFluidEqual(new FluidStack(Fluids.WATER, 1)))
+            color = a << 24 | waterColor;
+
+        int blockLightIn = (light >> 4) & 0xF;
+        int luminosity = Math.max(blockLightIn, fluidAttributes.getLightLevel(fluidStack));
+        light = (light & 0xF00000) | luminosity << 4;
+
+        matrixStack.pushPose();
+        for (Direction side : Direction.values()) {
+            if (side == Direction.DOWN && !renderBottom)
+                continue;
+
+            boolean positive = side.getAxisDirection() == Direction.AxisDirection.POSITIVE;
+            if (side.getAxis()
+                    .isHorizontal()) {
+                if (side.getAxis() == Direction.Axis.X) {
+                    renderStillTiledFace(side, zMin, yMin, zMax, yMax, positive ? xMax : xMin, builder, matrixStack, light,
+                            color, fluidTexture);
+                } else {
+                    renderStillTiledFace(side, xMin, yMin, xMax, yMax, positive ? zMax : zMin, builder, matrixStack, light,
+                            color, fluidTexture);
+                }
+            } else {
+                renderStillTiledFace(side, xMin, zMin, xMax, zMax, positive ? yMax : yMin, builder, matrixStack, light, color,
+                        fluidTexture);
+            }
         }
 
-        renderQuads(matrixStack.last().pose(), vertexBuilder, sprite, red, green, blue, alpha, heightPercentage, combinedLight);
+        matrixStack.popPose();
+    }
+
+    public static void renderStillTiledFace(Direction dir, float left, float down, float right, float up, float depth,
+                                            VertexConsumer builder, PoseStack ms, int light, int color, TextureAtlasSprite texture) {
+        renderTiledFace(dir, left, down, right, up, depth, builder, ms, light, color, texture, 1);
+    }
+
+    public static void renderFlowingTiledFace(Direction dir, float left, float down, float right, float up, float depth,
+                                              VertexConsumer builder, PoseStack ms, int light, int color, TextureAtlasSprite texture) {
+        renderTiledFace(dir, left, down, right, up, depth, builder, ms, light, color, texture, 0.5f);
+    }
+
+    public static void renderTiledFace(Direction dir, float left, float down, float right, float up, float depth,
+                                       VertexConsumer builder, PoseStack ms, int light, int color, TextureAtlasSprite texture, float textureScale) {
+        boolean positive = dir.getAxisDirection() == Direction.AxisDirection.POSITIVE;
+        boolean horizontal = dir.getAxis()
+                .isHorizontal();
+        boolean x = dir.getAxis() == Direction.Axis.X;
+
+        float shrink = texture.uvShrinkRatio() * 0.25f * textureScale;
+        float centerU = texture.getU0() + (texture.getU1() - texture.getU0()) * 0.5f * textureScale;
+        float centerV = texture.getV0() + (texture.getV1() - texture.getV0()) * 0.5f * textureScale;
+
+        float f;
+        float x2 = 0;
+        float y2 = 0;
+        float u1, u2;
+        float v1, v2;
+        for (float x1 = left; x1 < right; x1 = x2) {
+            f = Mth.floor(x1);
+            x2 = Math.min(f + 1, right);
+            if (dir == Direction.NORTH || dir == Direction.EAST) {
+                f = Mth.ceil(x2);
+                u1 = texture.getU((f - x2) * 16 * textureScale);
+                u2 = texture.getU((f - x1) * 16 * textureScale);
+            } else {
+                u1 = texture.getU((x1 - f) * 16 * textureScale);
+                u2 = texture.getU((x2 - f) * 16 * textureScale);
+            }
+            u1 = Mth.lerp(shrink, u1, centerU);
+            u2 = Mth.lerp(shrink, u2, centerU);
+            for (float y1 = down; y1 < up; y1 = y2) {
+                f = Mth.floor(y1);
+                y2 = Math.min(f + 1, up);
+                if (dir == Direction.UP) {
+                    v1 = texture.getV((y1 - f) * 16 * textureScale);
+                    v2 = texture.getV((y2 - f) * 16 * textureScale);
+                } else {
+                    f = Mth.ceil(y2);
+                    v1 = texture.getV((f - y2) * 16 * textureScale);
+                    v2 = texture.getV((f - y1) * 16 * textureScale);
+                }
+                v1 = Mth.lerp(shrink, v1, centerV);
+                v2 = Mth.lerp(shrink, v2, centerV);
+
+                if (horizontal) {
+                    if (x) {
+                        putVertex(builder, ms, depth, y2, positive ? x2 : x1, color, u1, v1, dir, light);
+                        putVertex(builder, ms, depth, y1, positive ? x2 : x1, color, u1, v2, dir, light);
+                        putVertex(builder, ms, depth, y1, positive ? x1 : x2, color, u2, v2, dir, light);
+                        putVertex(builder, ms, depth, y2, positive ? x1 : x2, color, u2, v1, dir, light);
+                    } else {
+                        putVertex(builder, ms, positive ? x1 : x2, y2, depth, color, u1, v1, dir, light);
+                        putVertex(builder, ms, positive ? x1 : x2, y1, depth, color, u1, v2, dir, light);
+                        putVertex(builder, ms, positive ? x2 : x1, y1, depth, color, u2, v2, dir, light);
+                        putVertex(builder, ms, positive ? x2 : x1, y2, depth, color, u2, v1, dir, light);
+                    }
+                } else {
+                    putVertex(builder, ms, x1, depth, positive ? y1 : y2, color, u1, v1, dir, light);
+                    putVertex(builder, ms, x1, depth, positive ? y2 : y1, color, u1, v2, dir, light);
+                    putVertex(builder, ms, x2, depth, positive ? y2 : y1, color, u2, v2, dir, light);
+                    putVertex(builder, ms, x2, depth, positive ? y1 : y2, color, u2, v1, dir, light);
+                }
+            }
+        }
+    }
+
+    private static void putVertex(VertexConsumer builder, PoseStack ms, float x, float y, float z, int color, float u,
+                                  float v, Direction face, int light) {
+
+        Vec3i normal = face.getNormal();
+        PoseStack.Pose peek = ms.last();
+        int a = color >> 24 & 0xff;
+        int r = color >> 16 & 0xff;
+        int g = color >> 8 & 0xff;
+        int b = color & 0xff;
+
+        builder.vertex(peek.pose(), x, y, z)
+                .color(r, g, b, a)
+                .uv(u, v)
+                .overlayCoords(OverlayTexture.NO_OVERLAY)
+                .uv2(light)
+                .normal(peek.normal(), normal.getX(), normal.getY(), normal.getZ())
+                .endVertex();
+    }
+
+
+    private static void renderFluid(PoseStack matrixStack, MultiBufferSource renderTypeBuffer, FluidStack fluidStack, float alpha, float heightPercentage, int combinedLight, MixingCauldronTile tileEntityIn, int waterColor){
+
+//        (FluidStack fluidStack, float xMin, float yMin, float zMin, float xMax, float yMax,
+//        float zMax, MultiBufferSource buffer, PoseStack ms, int light, boolean renderBottom)
+
+        float from = 2f / 16f;
+        float to = 14f / 16f;
+        renderFluidBox(fluidStack, from, MIN_Y, from, to, MIN_Y + (MAX_Y - MIN_Y) * heightPercentage, to, renderTypeBuffer, matrixStack, LightTexture.FULL_BRIGHT, false, waterColor);
+//        if (fluidStack.isEmpty()) {
+//            return;
+//        }
+//
+//        Fluid fluid = fluidStack.getFluid();
+//        int displayLevel = 4 + (int)(11 * heightPercentage);
+//        IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid);
+//        ResourceLocation texture = renderProperties.getStillTexture(fluidStack);
+//        TextureAtlasSprite still = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
+//        renderTiledFluidTextureAtlas(matrixStack, still, renderProperties.getTintColor(), 0, 0, displayLevel, alpha);
+//        VertexConsumer vertexBuilder = renderTypeBuffer.getBuffer(RenderType.translucentNoCrumbling());
+//        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(IClientFluidTypeExtensions.of(fluidStack.getFluid()).getStillTexture(fluidStack));
+//        Color color2 = new Color(BiomeColors.getAverageWaterColor(tileEntityIn.getLevel(), new BlockPos(tileEntityIn.getPos().getX(), tileEntityIn.getPos().getY(), tileEntityIn.getPos().getZ())));
+//        int color = IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor(fluidStack);
+//
+//        alpha *= (color >> 24 & 255) / 255f;
+//
+//
+//        float red = (color >> 16 & 255) / 255f;
+//        float green = (color >> 8 & 255) / 255f;
+//        float blue = (color & 255) / 255f;
+//        Color color2 = new Color(BiomeColors.getAverageWaterColor(tileEntityIn.getLevel(), new BlockPos(tileEntityIn.getPos().getX(), tileEntityIn.getPos().getY(), tileEntityIn.getPos().getZ())));
+//        if(tileEntityIn.getFluidStack().isFluidEqual(new FluidStack(Fluids.WATER, 1))) {
+//            red = color2.getRed()/255f;
+//            green = color2.getGreen()/255f;
+//            blue = color2.getBlue()/255f;
+//        }
+//
+//        renderQuads(matrixStack.last().pose(), vertexBuilder, sprite, red, green, blue, alpha, heightPercentage, combinedLight);
     }
 
     public static void renderFluidGUI(PoseStack matrixStack, MultiBufferSource renderTypeBuffer, FluidStack fluidStack, float alpha, float heightPercentage, int combinedLight){

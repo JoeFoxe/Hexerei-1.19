@@ -52,6 +52,132 @@ public class ConnectingCarpetStairs extends CarpetBlock implements Waxed {
 //    public static final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
 
 
+    public BlockState rotate(BlockState pState, Rotation pRot) {
+        boolean east = pState.getValue(EAST);
+        boolean west = pState.getValue(WEST);
+        North northState = pState.getValue(NORTH);
+        South southState = pState.getValue(SOUTH);
+        boolean north = northState == North.ALL || northState == North.JUST_NORTH || northState == North.NORTH_AND_NORTH_EAST || northState == North.NORTH_AND_NORTH_WEST;
+        boolean north_east = northState == North.ALL || northState == North.JUST_NORTH_EAST || northState == North.NORTH_AND_NORTH_EAST || northState == North.NORTH_EAST_AND_NORTH_WEST;
+        boolean north_west = northState == North.ALL || northState == North.JUST_NORTH_WEST || northState == North.NORTH_AND_NORTH_WEST || northState == North.NORTH_EAST_AND_NORTH_WEST;
+        boolean south = southState == South.ALL || southState == South.JUST_SOUTH || southState == South.SOUTH_AND_SOUTH_EAST || southState == South.SOUTH_AND_SOUTH_WEST;
+        boolean south_east = southState == South.ALL || southState == South.JUST_SOUTH_EAST || southState == South.SOUTH_AND_SOUTH_EAST || southState == South.SOUTH_EAST_AND_SOUTH_WEST;
+        boolean south_west = southState == South.ALL || southState == South.JUST_SOUTH_WEST || southState == South.SOUTH_AND_SOUTH_WEST || southState == South.SOUTH_EAST_AND_SOUTH_WEST;
+
+        switch (pRot){
+            case NONE -> {
+                return pState;
+            }
+            case CLOCKWISE_90 -> {
+                North northTemp = North.NONE;
+                South southTemp = South.NONE;
+                if(south_east && east && north_east)
+                    southTemp = South.ALL;
+                else if(!south_east && east && north_east)
+                    southTemp = South.SOUTH_AND_SOUTH_EAST;
+                else if(south_east && east && !north_east)
+                    southTemp = South.SOUTH_AND_SOUTH_WEST;
+                else if(south_east && !east && north_east)
+                    southTemp = South.SOUTH_EAST_AND_SOUTH_WEST;
+                else if(!south_east && east && !north_east)
+                    southTemp = South.JUST_SOUTH;
+                else if(!south_east && !east && north_east)
+                    southTemp = South.JUST_SOUTH_EAST;
+                else if(south_east && !east && !north_east)
+                    southTemp = South.JUST_SOUTH_WEST;
+
+                if(south_west && west && north_west)
+                    northTemp = North.ALL;
+                else if(!south_west && west && north_west)
+                    northTemp = North.NORTH_AND_NORTH_EAST;
+                else if(south_west && west && !north_west)
+                    northTemp = North.NORTH_AND_NORTH_WEST;
+                else if(south_west && !west && north_west)
+                    northTemp = North.NORTH_EAST_AND_NORTH_WEST;
+                else if(!south_west && west && !north_west)
+                    northTemp = North.JUST_NORTH;
+                else if(!south_west && !west && north_west)
+                    northTemp = North.JUST_NORTH_EAST;
+                else if(south_west && !west && !north_west)
+                    northTemp = North.JUST_NORTH_WEST;
+
+                return pState.setValue(EAST, north).setValue(WEST, south).setValue(NORTH, northTemp).setValue(SOUTH, southTemp);
+            }
+            case CLOCKWISE_180 -> {
+                North northTemp = North.NONE;
+                South southTemp = South.NONE;
+                if(north && north_east && north_west)
+                    southTemp = South.ALL;
+                else if(north && north_west && !north_east)
+                    southTemp = South.SOUTH_AND_SOUTH_EAST;
+                else if(north && north_east && !north_west)
+                    southTemp = South.SOUTH_AND_SOUTH_WEST;
+                else if(north_west && north_east && !north)
+                    southTemp = South.SOUTH_EAST_AND_SOUTH_WEST;
+                else if(!north_west && !north_east && north)
+                    southTemp = South.JUST_SOUTH;
+                else if(north_west && !north_east && !north)
+                    southTemp = South.JUST_SOUTH_EAST;
+                else if(!north_west && north_east && !north)
+                    southTemp = South.JUST_SOUTH_WEST;
+
+                if(south && south_east && south_west)
+                    northTemp = North.ALL;
+                else if(south && south_west && !south_east)
+                    northTemp = North.NORTH_AND_NORTH_EAST;
+                else if(south && south_east && !south_west)
+                    northTemp = North.NORTH_AND_NORTH_WEST;
+                else if(south_west && south_east && !south)
+                    northTemp = North.NORTH_EAST_AND_NORTH_WEST;
+                else if(!south_west && !south_east && south)
+                    northTemp = North.JUST_NORTH;
+                else if(south_west && !south_east && !south)
+                    northTemp = North.JUST_NORTH_EAST;
+                else if(!south_west && south_east && !south)
+                    northTemp = North.JUST_NORTH_WEST;
+
+                return pState.setValue(EAST, west).setValue(WEST, east).setValue(NORTH, northTemp).setValue(SOUTH, southTemp);
+
+            }
+            case COUNTERCLOCKWISE_90 -> {
+                North northTemp = North.NONE;
+                South southTemp = South.NONE;
+                if(north_west && west && south_west)
+                    southTemp = South.ALL;
+                else if(!north_west && west && south_west)
+                    southTemp = South.SOUTH_AND_SOUTH_EAST;
+                else if(north_west && west && !south_west)
+                    southTemp = South.SOUTH_AND_SOUTH_WEST;
+                else if(north_west && !west && south_west)
+                    southTemp = South.SOUTH_EAST_AND_SOUTH_WEST;
+                else if(!north_west && west && !south_west)
+                    southTemp = South.JUST_SOUTH;
+                else if(!north_west && !west && south_west)
+                    southTemp = South.JUST_SOUTH_EAST;
+                else if(north_west && !west && !south_west)
+                    southTemp = South.JUST_SOUTH_WEST;
+
+                if(north_east && east && south_east)
+                    northTemp = North.ALL;
+                else if(!north_east && east && south_east)
+                    northTemp = North.NORTH_AND_NORTH_EAST;
+                else if(north_east && east && !south_east)
+                    northTemp = North.NORTH_AND_NORTH_WEST;
+                else if(north_east && !east && south_east)
+                    northTemp = North.NORTH_EAST_AND_NORTH_WEST;
+                else if(!north_east && east && !south_east)
+                    northTemp = North.JUST_NORTH;
+                else if(!north_east && !east && south_east)
+                    northTemp = North.JUST_NORTH_EAST;
+                else if(north_east && !east && !south_east)
+                    northTemp = North.JUST_NORTH_WEST;
+
+                return pState.setValue(EAST, south).setValue(WEST, north).setValue(NORTH, northTemp).setValue(SOUTH, southTemp);
+            }
+        }
+        return pState;
+//        return pState.setValue(HorizontalDirectionalBlock.FACING, pRot.rotate(pState.getValue(HorizontalDirectionalBlock.FACING)));
+    }
     public Block parentBlock;
     protected static final VoxelShape VOXEL_SHAPE = Stream.of(
             Block.box(8, 0, 2, 16, 1, 14),

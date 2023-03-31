@@ -2,8 +2,10 @@
   "replace": false,
   "values": [
     "hexerei:willow_fence",
+    "hexerei:witch_hazel_fence",
     "hexerei:mahogany_fence",
     "hexerei:polished_willow_fence",
+    "hexerei:polished_witch_hazel_fence",
     "hexerei:polished_mahogany_fence"
   ]
 }

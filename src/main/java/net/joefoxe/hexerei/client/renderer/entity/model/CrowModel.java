@@ -294,7 +294,7 @@ public class CrowModel<T extends CrowEntity> extends ColorableAgeableListModel<T
         leftTail_dyed.copyFrom(leftTail);
         rightTail_dyed.copyFrom(rightTail);
 
-        if(entity.playingDead > 0) {
+        if(entity.playingDead > 0 && !entity.isDeadOrDying()) {
             body.zRot = HexereiUtil.moveTo(body.zRot, (float) (80 / 360f * (Math.PI * 2)), 0.025f);
             body.y -=(4 * body.zRot / (float) Math.PI);
             head.visible = false;

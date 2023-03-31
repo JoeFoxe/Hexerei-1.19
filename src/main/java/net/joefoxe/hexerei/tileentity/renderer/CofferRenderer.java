@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
@@ -59,33 +60,35 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
             matrixStackIn.translate(4D / 16D, 4D / 16D, 8D / 16D);
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         }
-        matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(tileEntityIn.degreesOpened));
+        float lerpDegreesOpened = (float) (Mth.lerp(partialTicks, tileEntityIn.degreesOpenedPrev, tileEntityIn.degreesOpened));
+
+        matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(lerpDegreesOpened));
         renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_LID.get().defaultBlockState(), tileEntityIn.getDyeColor());
         matrixStackIn.popPose();
 
-        float sideRotation = (((float)tileEntityIn.degreesOpened / (float)tileEntityIn.lidOpenAmount) * 135);
+        float sideRotation = (((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135);
 
         if (tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).getValue(HorizontalDirectionalBlock.FACING) == Direction.NORTH || tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(11.7299D / 16D, 2.4772D / 16D, 5.475D / 16D);
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-((float)tileEntityIn.degreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_HINGE.get().defaultBlockState());
             matrixStackIn.popPose();
             matrixStackIn.pushPose();
             matrixStackIn.translate(11.7299D / 16D, 2.4772D / 16D, 10.525D / 16D);
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-((float)tileEntityIn.degreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_HINGE.get().defaultBlockState());
             matrixStackIn.popPose();
             matrixStackIn.pushPose();
             matrixStackIn.translate(4.2701/ 16D, 2.4772D / 16D, 5.475D / 16D);
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((float)tileEntityIn.degreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_HINGE.get().defaultBlockState());
             matrixStackIn.popPose();
             matrixStackIn.pushPose();
             matrixStackIn.translate(4.2701 / 16D, 2.4772D / 16D, 10.525D / 16D);
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((float)tileEntityIn.degreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_HINGE.get().defaultBlockState());
             matrixStackIn.popPose();
@@ -106,21 +109,21 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
             matrixStackIn.translate(0D / 16D, 0D / 16D, 16D / 16D);
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
             matrixStackIn.translate(11.7299D / 16D, 2.4772D / 16D, 5.475D / 16D);
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-((float)tileEntityIn.degreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_HINGE.get().defaultBlockState());
             matrixStackIn.popPose();
             matrixStackIn.pushPose();
             matrixStackIn.translate(0D / 16D, 0D / 16D, 16D / 16D);
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
             matrixStackIn.translate(11.7299D / 16D, 2.4772D / 16D, 10.525D / 16D);
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-((float)tileEntityIn.degreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_HINGE.get().defaultBlockState());
             matrixStackIn.popPose();
             matrixStackIn.pushPose();
             matrixStackIn.translate(0D / 16D, 0D / 16D, 16D / 16D);
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
             matrixStackIn.translate(4.2701/ 16D, 2.4772D / 16D, 5.475D / 16D);
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((float)tileEntityIn.degreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_HINGE.get().defaultBlockState());
             matrixStackIn.popPose();
@@ -128,7 +131,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
             matrixStackIn.translate(0D / 16D, 0D / 16D, 16D / 16D);
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
             matrixStackIn.translate(4.2701 / 16D, 2.4772D / 16D, 10.525D / 16D);
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((float)tileEntityIn.degreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_HINGE.get().defaultBlockState());
             matrixStackIn.popPose();
@@ -148,7 +151,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         }
 
         //render items only if its at least slightly opened
-        if((float)tileEntityIn.degreesOpened > 2)
+        if((float)lerpDegreesOpened > 2)
         {
             if (tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).getValue(HorizontalDirectionalBlock.FACING) == Direction.NORTH)
                 renderItemsNorth(tileEntityIn, partialTicks, matrixStackIn, bufferIn, combinedLightIn);
@@ -167,7 +170,8 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
     private void renderItemsNorth(CofferTile tileEntityIn, float partialTicks, PoseStack matrixStackIn,
                                   MultiBufferSource bufferIn, int combinedLightIn)
     {
-        float sideRotation = (((float)tileEntityIn.degreesOpened / (float)tileEntityIn.lidOpenAmount) * 135);
+        float lerpDegreesOpened = (float) (Mth.lerp(partialTicks, tileEntityIn.degreesOpenedPrev, tileEntityIn.degreesOpened));
+        float sideRotation = (((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135);
 
         // item row 1
         matrixStackIn.pushPose();
@@ -614,7 +618,8 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
     private void renderItemsSouth(CofferTile tileEntityIn, float partialTicks, PoseStack matrixStackIn,
                                  MultiBufferSource bufferIn, int combinedLightIn)
     {
-        float sideRotation = (((float)tileEntityIn.degreesOpened / (float)tileEntityIn.lidOpenAmount) * 135);
+        float lerpDegreesOpened = (float) (Mth.lerp(partialTicks, tileEntityIn.degreesOpenedPrev, tileEntityIn.degreesOpened));
+        float sideRotation = (((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135);
 
         // item row 1
         matrixStackIn.pushPose();
@@ -984,7 +989,8 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
     private void renderItemsWest(CofferTile tileEntityIn, float partialTicks, PoseStack matrixStackIn,
                                  MultiBufferSource bufferIn, int combinedLightIn)
     {
-        float sideRotation = (((float)tileEntityIn.degreesOpened / (float)tileEntityIn.lidOpenAmount) * 135);
+        float lerpDegreesOpened = (float) (Mth.lerp(partialTicks, tileEntityIn.degreesOpenedPrev, tileEntityIn.degreesOpened));
+        float sideRotation = (((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135);
 
         // item row 1
         matrixStackIn.pushPose();
@@ -1468,7 +1474,8 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
     private void renderItemsEast(CofferTile tileEntityIn, float partialTicks, PoseStack matrixStackIn,
                                  MultiBufferSource bufferIn, int combinedLightIn)
     {
-        float sideRotation = (((float)tileEntityIn.degreesOpened / (float)tileEntityIn.lidOpenAmount) * 135);
+        float lerpDegreesOpened = (float) (Mth.lerp(partialTicks, tileEntityIn.degreesOpenedPrev, tileEntityIn.degreesOpened));
+        float sideRotation = (((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135);
 
         // item row 1
         matrixStackIn.pushPose();

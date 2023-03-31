@@ -1,6 +1,8 @@
 package net.joefoxe.hexerei.item.custom;
 
 import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.block.CustomFlintAndSteelDispenserBehavior;
+import net.joefoxe.hexerei.block.CustomVanillaItemDispenseBehavior;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.custom.Candle;
 import net.joefoxe.hexerei.item.ModItems;
@@ -54,51 +56,52 @@ public class CandleItem extends BlockItem implements DyeableLeatherItem {
         super(block, properties);
         DispenserBlock.registerBehavior(this, Candle.DISPENSE_ITEM_BEHAVIOR);
 
-        DispenserBlock.registerBehavior(Items.FLINT_AND_STEEL, new OptionalDispenseItemBehavior() {
-            /**
-             * Dispense the specified stack, play the dispense sound and spawn particles.
-             */
-            protected ItemStack execute(BlockSource p_123412_, ItemStack p_123413_) {
-                Level level = p_123412_.getLevel();
-                this.setSuccess(true);
-                Direction direction = p_123412_.getBlockState().getValue(DispenserBlock.FACING);
-                BlockPos blockpos = p_123412_.getPos().relative(direction);
-                BlockState blockstate = level.getBlockState(blockpos);
-                if (Candle.canBeLit(blockstate, blockpos, level)) {
-
-                    CandleTile tile = ((CandleTile) level.getBlockEntity(blockpos));
-                    boolean flag = false;
-
-                    if(tile != null){
-                        if (tile.candles.get(0).hasCandle && !tile.candles.get(0).lit)
-                            tile.candles.get(0).lit = true;
-                        else if (tile.candles.get(1).hasCandle && !tile.candles.get(1).lit)
-                            tile.candles.get(1).lit = true;
-                        else if (tile.candles.get(2).hasCandle && !tile.candles.get(2).lit)
-                            tile.candles.get(2).lit = true;
-                        else if (tile.candles.get(3).hasCandle && !tile.candles.get(3).lit)
-                            tile.candles.get(3).lit = true;
-                        else {
-                            flag = true;
-                        }
-                    }
-
-                    if(!flag){
-                        level.playSound((Player) null, blockpos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, RandomSource.create().nextFloat() * 0.4F + 1.0F);
-//                    p_123413_.hurtAndBreak(1, player, player1 -> player1.broadcastBreakEvent(pContext.getHand()));
-
-                        level.setBlockAndUpdate(blockpos, blockstate.setValue(BlockStateProperties.LIT, Boolean.valueOf(true)));
-                        level.gameEvent((Entity) null, GameEvent.BLOCK_CHANGE, blockpos);
-                    }
-                }
-
-                if (this.isSuccess() && p_123413_.hurt(1, level.random, (ServerPlayer)null)) {
-                    p_123413_.setCount(0);
-                }
-
-                return p_123413_;
-            }
-        });
+//        DispenserBlock.registerBehavior(Items.FLINT_AND_STEEL, new OptionalDispenseItemBehavior() {
+//            /**
+//             * Dispense the specified stack, play the dispense sound and spawn particles.
+//             */
+//            protected ItemStack execute(BlockSource p_123412_, ItemStack p_123413_) {
+//                Level level = p_123412_.getLevel();
+//                this.setSuccess(true);
+//                Direction direction = p_123412_.getBlockState().getValue(DispenserBlock.FACING);
+//                BlockPos blockpos = p_123412_.getPos().relative(direction);
+//                BlockState blockstate = level.getBlockState(blockpos);
+//                if (Candle.canBeLit(blockstate, blockpos, level)) {
+//
+//                    CandleTile tile = ((CandleTile) level.getBlockEntity(blockpos));
+//                    boolean flag = false;
+//
+//                    if(blockstate.getBlock() instanceof Candle && tile != null){
+//                        if (tile.candles.get(0).hasCandle && !tile.candles.get(0).lit)
+//                            tile.candles.get(0).lit = true;
+//                        else if (tile.candles.get(1).hasCandle && !tile.candles.get(1).lit)
+//                            tile.candles.get(1).lit = true;
+//                        else if (tile.candles.get(2).hasCandle && !tile.candles.get(2).lit)
+//                            tile.candles.get(2).lit = true;
+//                        else if (tile.candles.get(3).hasCandle && !tile.candles.get(3).lit)
+//                            tile.candles.get(3).lit = true;
+//                        else {
+//                            flag = true;
+//                        }
+//                    }
+//
+//                    if(!flag){
+//                        level.playSound((Player) null, blockpos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, RandomSource.create().nextFloat() * 0.4F + 1.0F);
+////                    p_123413_.hurtAndBreak(1, player, player1 -> player1.broadcastBreakEvent(pContext.getHand()));
+//
+//                        if(blockstate.hasProperty(BlockStateProperties.LIT))
+//                            level.setBlockAndUpdate(blockpos, blockstate.setValue(BlockStateProperties.LIT, true));
+//                        level.gameEvent((Entity) null, GameEvent.BLOCK_CHANGE, blockpos);
+//                    }
+//                }
+//
+//                if (this.isSuccess() && p_123413_.hurt(1, level.random, (ServerPlayer)null)) {
+//                    p_123413_.setCount(0);
+//                }
+//
+//                return p_123413_;
+//            }
+//        });
 
 
     }

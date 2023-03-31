@@ -3,6 +3,7 @@ package net.joefoxe.hexerei.tileentity.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.joefoxe.hexerei.block.ModBlocks;
+import net.joefoxe.hexerei.block.custom.WallDryingRack;
 import net.joefoxe.hexerei.tileentity.DryingRackTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -33,18 +34,21 @@ public class DryingRackRenderer implements BlockEntityRenderer<DryingRackTile> {
     public void render(DryingRackTile tileEntityIn, float partialTicks, PoseStack matrixStackIn,
                        MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
 
-        if(!tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).hasBlockEntity() || !(tileEntityIn.getLevel().getBlockEntity(tileEntityIn.getBlockPos()) instanceof DryingRackTile))
+        if(!tileEntityIn.hasLevel())
+            return;
+        BlockState state = tileEntityIn.getBlockState();
+        if(!state.hasBlockEntity())
             return;
 
         float rotation = 0;
 
-        if (tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).getValue(HorizontalDirectionalBlock.FACING) == Direction.NORTH) {
+        if (state.getValue(HorizontalDirectionalBlock.FACING) == Direction.NORTH) {
             rotation = 180;
-        } else if (tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH) {
+        } else if (state.getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH) {
             rotation = 0;
-        } else if (tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST) {
+        } else if (state.getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST) {
             rotation = 90;
-        } else if (tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST) {
+        } else if (state.getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST) {
             rotation = 270;
         }
 
@@ -101,6 +105,8 @@ public class DryingRackRenderer implements BlockEntityRenderer<DryingRackTile> {
                 matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(rotation));
                 matrixStackIn.translate(-0.5f, 0.0f, -0.5f);
                 matrixStackIn.translate(0.25f, 0.22f, 0.525f);
+                if(state.getBlock() instanceof WallDryingRack)
+                    matrixStackIn.translate(0, 0.1f, 0.275f);
                 matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(15));
                 matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
                 matrixStackIn.scale(0.45f, 0.45f, 0.45f);
@@ -114,6 +120,8 @@ public class DryingRackRenderer implements BlockEntityRenderer<DryingRackTile> {
                     matrixStackIn.translate(-0.5f, 0.0f, -0.5f);
                     matrixStackIn.translate(0.25f, 0.22f, 0.525f);
                     matrixStackIn.translate(0.075f, 0.05f, -0.025f);
+                    if(state.getBlock() instanceof WallDryingRack)
+                        matrixStackIn.translate(0, 0.1f, 0.275f);
                     matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(15));
                     matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
                     matrixStackIn.scale(0.45f, 0.45f, 0.45f);
@@ -128,6 +136,8 @@ public class DryingRackRenderer implements BlockEntityRenderer<DryingRackTile> {
                     matrixStackIn.translate(-0.5f, 0.0f, -0.5f);
                     matrixStackIn.translate(0.25f, 0.22f, 0.525f);
                     matrixStackIn.translate(-0.075f, 0.025f, -0.025f);
+                    if(state.getBlock() instanceof WallDryingRack)
+                        matrixStackIn.translate(0, 0.1f, 0.275f);
                     matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(15));
                     matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
                     matrixStackIn.scale(0.45f, 0.45f, 0.45f);
@@ -190,6 +200,8 @@ public class DryingRackRenderer implements BlockEntityRenderer<DryingRackTile> {
                 matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(rotation));
                 matrixStackIn.translate(-0.5f, 0.0f, -0.5f);
                 matrixStackIn.translate(0.5f, 0.22f, 0.525f);
+                if(state.getBlock() instanceof WallDryingRack)
+                    matrixStackIn.translate(0, 0.1f, 0.275f);
                 matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(15));
                 matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
                 matrixStackIn.scale(0.45f, 0.45f, 0.45f);
@@ -203,6 +215,8 @@ public class DryingRackRenderer implements BlockEntityRenderer<DryingRackTile> {
                     matrixStackIn.translate(-0.5f, 0.0f, -0.5f);
                     matrixStackIn.translate(0.5f, 0.22f, 0.525f);
                     matrixStackIn.translate(0.075f, 0.05f, -0.025f);
+                    if(state.getBlock() instanceof WallDryingRack)
+                        matrixStackIn.translate(0, 0.1f, 0.275f);
                     matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(15));
                     matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
                     matrixStackIn.scale(0.45f, 0.45f, 0.45f);
@@ -217,6 +231,8 @@ public class DryingRackRenderer implements BlockEntityRenderer<DryingRackTile> {
                     matrixStackIn.translate(-0.5f, 0.0f, -0.5f);
                     matrixStackIn.translate(0.5f, 0.22f, 0.525f);
                     matrixStackIn.translate(-0.075f, 0.025f, -0.025f);
+                    if(state.getBlock() instanceof WallDryingRack)
+                        matrixStackIn.translate(0, 0.1f, 0.275f);
                     matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(15));
                     matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
                     matrixStackIn.scale(0.45f, 0.45f, 0.45f);
@@ -279,6 +295,8 @@ public class DryingRackRenderer implements BlockEntityRenderer<DryingRackTile> {
                 matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(rotation));
                 matrixStackIn.translate(-0.5f, 0.0f, -0.5f);
                 matrixStackIn.translate(0.75f, 0.22f, 0.525f);
+                if(state.getBlock() instanceof WallDryingRack)
+                    matrixStackIn.translate(0, 0.1f, 0.275f);
                 matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(15));
                 matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
                 matrixStackIn.scale(0.45f, 0.45f, 0.45f);
@@ -292,6 +310,8 @@ public class DryingRackRenderer implements BlockEntityRenderer<DryingRackTile> {
                     matrixStackIn.translate(-0.5f, 0.0f, -0.5f);
                     matrixStackIn.translate(0.75f, 0.22f, 0.525f);
                     matrixStackIn.translate(0.075f, 0.05f, -0.025f);
+                    if(state.getBlock() instanceof WallDryingRack)
+                        matrixStackIn.translate(0, 0.1f, 0.275f);
                     matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(15));
                     matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
                     matrixStackIn.scale(0.45f, 0.45f, 0.45f);
@@ -306,6 +326,8 @@ public class DryingRackRenderer implements BlockEntityRenderer<DryingRackTile> {
                     matrixStackIn.translate(-0.5f, 0.0f, -0.5f);
                     matrixStackIn.translate(0.75f, 0.22f, 0.525f);
                     matrixStackIn.translate(-0.075f, 0.025f, -0.025f);
+                    if(state.getBlock() instanceof WallDryingRack)
+                        matrixStackIn.translate(0, 0.1f, 0.275f);
                     matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(15));
                     matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
                     matrixStackIn.scale(0.45f, 0.45f, 0.45f);

@@ -73,7 +73,7 @@ public class WoodcutterContainer extends AbstractContainerMenu {
 
             @Override
             public boolean mayPickup(Player pPlayer) {
-                if(WoodcutterContainer.this.selectedRecipeIndex.get() == -1 || recipes.isEmpty() || WoodcutterContainer.this.container.getItem(0).getCount() < recipes.get(WoodcutterContainer.this.selectedRecipeIndex.get()).ingredientCount)
+                if(WoodcutterContainer.this.selectedRecipeIndex.get() == -1 || recipes.isEmpty() || recipes.size() < WoodcutterContainer.this.selectedRecipeIndex.get() || WoodcutterContainer.this.container.getItem(0).getCount() < recipes.get(WoodcutterContainer.this.selectedRecipeIndex.get()).ingredientCount)
                     return false;
 
                 return super.mayPickup(pPlayer);
@@ -137,7 +137,7 @@ public class WoodcutterContainer extends AbstractContainerMenu {
      * Determines whether supplied player can use this container
      */
     public boolean stillValid(Player pPlayer) {
-        return stillValid(this.access, pPlayer, ModBlocks.WILLOW_WOODCUTTER.get()) || stillValid(this.access, pPlayer, ModBlocks.MAHOGANY_WOODCUTTER.get());
+        return stillValid(this.access, pPlayer, ModBlocks.WILLOW_WOODCUTTER.get()) || stillValid(this.access, pPlayer, ModBlocks.MAHOGANY_WOODCUTTER.get()) || stillValid(this.access, pPlayer, ModBlocks.WITCH_HAZEL_WOODCUTTER.get());
     }
 
     /**

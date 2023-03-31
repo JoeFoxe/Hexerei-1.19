@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "@@@",
+    "# #",
+    "# #"
+  ],
+  "key": {
+    "#": {
+      "item": "hexerei:witch_hazel_planks"
+    },
+    "@": {
+      "item": "hexerei:witch_hazel_slab"
+    }
+  },
+  "result": {
+    "item": "hexerei:witch_hazel_altar"
+  }
+}

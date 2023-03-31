@@ -68,6 +68,10 @@ public class HerbDryingRack extends Block implements ITileEntity<DryingRackTile>
     ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
 
+    public BlockState rotate(BlockState pState, Rotation pRot) {
+        return pState.setValue(HorizontalDirectionalBlock.FACING, pRot.rotate(pState.getValue(HorizontalDirectionalBlock.FACING)));
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {

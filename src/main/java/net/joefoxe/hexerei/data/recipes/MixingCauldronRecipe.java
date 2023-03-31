@@ -38,6 +38,10 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
     private final FluidMixingRecipe.HeatCondition heatCondition;
 
 
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
     public MixingCauldronRecipe(ResourceLocation id, ItemStack output,
                                 NonNullList<Ingredient> recipeItems, FluidStack liquid, FluidStack liquidOutput, int fluidLevelsConsumed) {
         this.id = id;

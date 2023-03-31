@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "hexerei:block/polished_witch_hazel_cap",
+    "side": "hexerei:block/polished_witch_hazel_pillar"
+  }
+}

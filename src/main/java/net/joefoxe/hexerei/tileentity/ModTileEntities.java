@@ -27,7 +27,7 @@ public class ModTileEntities {
             "crystal_ball_entity", () -> BlockEntityType.Builder.of(CrystalBallTile::new, ModBlocks.CRYSTAL_BALL.get()).build(null));
 
     public static final RegistryObject<BlockEntityType<BookOfShadowsAltarTile>> BOOK_OF_SHADOWS_ALTAR_TILE = TILE_ENTITIES.register(
-            "book_of_shadows_altar_entity", () -> BlockEntityType.Builder.of(BookOfShadowsAltarTile::new, ModBlocks.BOOK_OF_SHADOWS_ALTAR.get()).build(null));
+            "book_of_shadows_altar_entity", () -> BlockEntityType.Builder.of(BookOfShadowsAltarTile::new, ModBlocks.BOOK_OF_SHADOWS_ALTAR.get(), ModBlocks.WILLOW_ALTAR.get(), ModBlocks.WITCH_HAZEL_ALTAR.get()).build(null));
 
     public static final RegistryObject<BlockEntityType<CandleTile>> CANDLE_TILE = TILE_ENTITIES.register(
             "candle_entity", () -> BlockEntityType.Builder.of(CandleTile::new, ModBlocks.CANDLE.get(), ModBlocks.CANDLE_BLUE.get(), ModBlocks.CANDLE_BLACK.get(), ModBlocks.CANDLE_LIME.get(), ModBlocks.CANDLE_ORANGE.get(), ModBlocks.CANDLE_PINK.get(), ModBlocks.CANDLE_PURPLE.get(), ModBlocks.CANDLE_RED.get(), ModBlocks.CANDLE_CYAN.get(), ModBlocks.CANDLE_YELLOW.get()).build(null));
@@ -36,7 +36,7 @@ public class ModTileEntities {
             "candle_dipper_entity", () -> BlockEntityType.Builder.of(CandleDipperTile::new, ModBlocks.CANDLE_DIPPER.get()).build(null));
 
     public static final RegistryObject<BlockEntityType<DryingRackTile>> DRYING_RACK_TILE = TILE_ENTITIES.register(
-            "drying_rack_entity", () -> BlockEntityType.Builder.of(DryingRackTile::new, ModBlocks.HERB_DRYING_RACK.get()).build(null));
+            "drying_rack_entity", () -> BlockEntityType.Builder.of(DryingRackTile::new, ModBlocks.HERB_DRYING_RACK.get(), ModBlocks.MAHOGANY_DRYING_RACK.get(), ModBlocks.WILLOW_DRYING_RACK.get(), ModBlocks.WITCH_HAZEL_DRYING_RACK.get()).build(null));
 
     public static final RegistryObject<BlockEntityType<PestleAndMortarTile>> PESTLE_AND_MORTAR_TILE = TILE_ENTITIES.register(
             "pestle_and_mortar_entity", () -> BlockEntityType.Builder.of(PestleAndMortarTile::new, ModBlocks.PESTLE_AND_MORTAR.get()).build(null));
@@ -45,10 +45,10 @@ public class ModTileEntities {
             "sage_burning_plate_entity", () -> BlockEntityType.Builder.of(SageBurningPlateTile::new, ModBlocks.SAGE_BURNING_PLATE.get()).build(null));
 
     public static final RegistryObject<BlockEntityType<ModChestBlockEntity>> CHEST_TILE = TILE_ENTITIES.register(
-            "chest_entity", () -> BlockEntityType.Builder.of(ModChestBlockEntity::new, ModBlocks.WILLOW_CHEST.get(), ModBlocks.MAHOGANY_CHEST.get()).build(null));
+            "chest_entity", () -> BlockEntityType.Builder.of(ModChestBlockEntity::new, ModBlocks.WILLOW_CHEST.get(), ModBlocks.WITCH_HAZEL_CHEST.get(), ModBlocks.MAHOGANY_CHEST.get()).build(null));
 
     public static final RegistryObject<BlockEntityType<ModSignBlockEntity>> SIGN_TILE = TILE_ENTITIES.register(
-            "sign_entity", () -> BlockEntityType.Builder.of(ModSignBlockEntity::new, ModBlocks.WILLOW_SIGN.get(), ModBlocks.MAHOGANY_SIGN.get(), ModBlocks.WILLOW_WALL_SIGN.get(), ModBlocks.MAHOGANY_WALL_SIGN.get(), ModBlocks.POLISHED_WILLOW_SIGN.get(), ModBlocks.POLISHED_MAHOGANY_SIGN.get(), ModBlocks.POLISHED_WILLOW_WALL_SIGN.get(), ModBlocks.POLISHED_MAHOGANY_WALL_SIGN.get()).build(null));
+            "sign_entity", () -> BlockEntityType.Builder.of(ModSignBlockEntity::new, ModBlocks.WILLOW_SIGN.get(), ModBlocks.WITCH_HAZEL_SIGN.get(), ModBlocks.MAHOGANY_SIGN.get(), ModBlocks.WILLOW_WALL_SIGN.get(), ModBlocks.WITCH_HAZEL_WALL_SIGN.get(), ModBlocks.MAHOGANY_WALL_SIGN.get(), ModBlocks.POLISHED_WILLOW_SIGN.get(), ModBlocks.POLISHED_WITCH_HAZEL_SIGN.get(), ModBlocks.POLISHED_MAHOGANY_SIGN.get(), ModBlocks.POLISHED_WILLOW_WALL_SIGN.get(), ModBlocks.POLISHED_WITCH_HAZEL_WALL_SIGN.get(), ModBlocks.POLISHED_MAHOGANY_WALL_SIGN.get()).build(null));
 
     public static final RegistryObject<BlockEntityType<CuttingCrystalTile>> CUTTING_CRYSTAL_TILE = TILE_ENTITIES.register(
             "cutting_crystal_entity", () -> BlockEntityType.Builder.of(CuttingCrystalTile::new, ModBlocks.CUTTING_CRYSTAL.get()).build(null));

@@ -39,6 +39,10 @@ public class FluidMixingRecipe implements Recipe<SimpleContainer> {
 
     private final HeatCondition heatCondition;
 
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
 
     public FluidMixingRecipe(ResourceLocation id, NonNullList<Ingredient> recipeItems, FluidStack liquid, FluidStack liquidOutput) {
         this.id = id;

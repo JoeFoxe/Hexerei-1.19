@@ -68,6 +68,10 @@ public class PestleAndMortar extends Block implements ITileEntity<PestleAndMorta
 //    }
 
 
+    public BlockState rotate(BlockState pState, Rotation pRot) {
+        return pState.setValue(HorizontalDirectionalBlock.FACING, pRot.rotate(pState.getValue(HorizontalDirectionalBlock.FACING)));
+    }
+
 
     // hitbox REMEMBER TO DO THIS
     public static final VoxelShape SHAPE = Stream.of(

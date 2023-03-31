@@ -16,6 +16,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
+import static net.joefoxe.hexerei.container.CofferContainer.OFFSET;
 
 
 public class CrowContainer extends AbstractContainerMenu {
@@ -36,7 +37,7 @@ public class CrowContainer extends AbstractContainerMenu {
         this.playerInventory = new InvWrapper(playerInventory);
 
         crowEntity.sync();
-        layoutPlayerInventorySlots(14, 147);
+        layoutPlayerInventorySlots(14, 147 - OFFSET);
 
         //add slots for crow
         if(crowEntity != null) {
@@ -45,7 +46,7 @@ public class CrowContainer extends AbstractContainerMenu {
 //                addSlot(EquipmentSlot.HEAD)
 
 
-                addSlot(new SlotItemHandler(h, 0, 86, 50){
+                addSlot(new SlotItemHandler(h, 0, 86, 50 - OFFSET){
 
                     @Override
                     public int getMaxStackSize() {
@@ -67,7 +68,7 @@ public class CrowContainer extends AbstractContainerMenu {
                 });
 
                 //satchel slot
-                addSlot(new SlotItemHandler(h, 1, 37, 50) {
+                addSlot(new SlotItemHandler(h, 1, 37, 50 - OFFSET) {
 
                     @Override
                     public int getMaxStackSize() {
@@ -80,7 +81,7 @@ public class CrowContainer extends AbstractContainerMenu {
                     }
 
                 });
-                addSlot(new SlotItemHandler(h, 2, 134, 50){
+                addSlot(new SlotItemHandler(h, 2, 134, 50 - OFFSET){
 
                     @Override
                     public int getMaxStackSize() {

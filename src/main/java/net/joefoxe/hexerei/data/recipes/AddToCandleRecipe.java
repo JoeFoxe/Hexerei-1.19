@@ -33,6 +33,10 @@ public class AddToCandleRecipe extends CustomRecipe {
         this.newInputs = newInputs;
         this.output = output;
     }
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
 
     /**
      * Used to check if a recipe matches current crafting inventory

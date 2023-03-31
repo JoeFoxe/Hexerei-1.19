@@ -1,0 +1,18 @@
+
+{
+  "structures": [
+    {
+      "structure": "hexerei:nature_coven",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "salt": 14098767140,
+
+    "spacing": 29,
+
+    "separation": 11,
+
+    "type": "minecraft:random_spread"
+  }
+}

@@ -239,7 +239,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
     public void setItem(int index, ItemStack stack) {
         if (index >= 0 && index < this.items.size()) {
             ItemStack itemStack = stack.copy();
-            itemStack.setCount(1);
+//            itemStack.setCount(1);
             this.items.set(index, itemStack);
         }
 
@@ -432,6 +432,17 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
         return super.getCapability(capability, facing);
     }
 
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        for (LazyOptional<? extends IItemHandler> handler : handlers) handler.invalidate();
+    }
+
+    @Override
+    public void reviveCaps() {
+        super.reviveCaps();
+        this.handlers = net.minecraftforge.items.wrapper.SidedInvWrapper.create(this, Direction.UP, Direction.DOWN, Direction.NORTH);
+    }
 
     public Item getItemInSlot(int slot) {
         return this.items.get(slot).getItem();
@@ -526,7 +537,9 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
         //check if there is a slot open  getFirstOpenSlot
         if (getFirstOpenSlot() >= 0)
         {
-            this.setItem(getFirstOpenSlot(), itemstack);
+            ItemStack temp = itemstack.copy();
+            temp.setCount(1);
+            this.setItem(getFirstOpenSlot(), temp);
 //            this.itemHandler.insertItem(getFirstOpenSlot(), itemstack, false);
             itemEntity.getItem().shrink(1);
             //((MixingCauldron)this.getBlockState().getBlock()).emitCraftCompletedParticles();
@@ -612,10 +625,10 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
             FluidStack containerFluid = this.getFluidStack();
 
             boolean fluidEqual = recipeFluid.isFluidEqual(containerFluid);
-            boolean outputEmpty = (inv.getItem(8) == ItemStack.EMPTY || inv.getItem(8).getCount() == 0);
+            boolean outputClear = (inv.getItem(8) == ItemStack.EMPTY || inv.getItem(8).getCount() == 0) || (inv.getItem(8).sameItem(output) && inv.getItem(8).getCount() + output.getCount() <= inv.getItem(8).getMaxStackSize());
             boolean hasEnoughFluid = iRecipe.getFluidLevelsConsumed() <= this.getFluidStack().getAmount();
             boolean needsHeat = iRecipe.getHeatCondition() != FluidMixingRecipe.HeatCondition.NONE;
-            if (fluidEqual && !this.crafted && hasEnoughFluid) {
+            if (fluidEqual && !this.crafted && hasEnoughFluid && outputClear) {
                 BlockState heatSource = level.getBlockState(getPos().below());
                 if(!needsHeat || heatSource.is(HexereiTags.Blocks.HEAT_SOURCES)){
                     if(!heatSource.hasProperty(LIT) || heatSource.getValue(LIT)){
@@ -724,7 +737,10 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
         this.setItem(5, ItemStack.EMPTY);
         this.setItem(6, ItemStack.EMPTY);
         this.setItem(7, ItemStack.EMPTY);
-        this.setItem(8, output);
+        if(this.getItem(8).sameItem(output)){
+            this.getItem(8).setCount(this.getItem(8).getCount() + output.getCount());
+        } else
+            this.setItem(8, output);
 //        itemHandler.setStackInSlot(0, ItemStack.EMPTY);
 //        itemHandler.setStackInSlot(1, ItemStack.EMPTY);
 //        itemHandler.setStackInSlot(2, ItemStack.EMPTY);

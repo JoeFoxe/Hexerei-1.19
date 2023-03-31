@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "GGG"
+
+  ],
+  "key": {
+    "G": {
+      "item": "hexerei:witch_hazel_window"
+    }
+  },
+  "result": {
+    "item": "hexerei:witch_hazel_window_pane",
+    "count": 16
+  }
+}

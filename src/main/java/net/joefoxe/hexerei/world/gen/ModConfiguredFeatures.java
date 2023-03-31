@@ -76,6 +76,14 @@ public class ModConfiguredFeatures {
                     new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 4),
                     new TwoLayersFeatureSize(1, 0, 2)).build());
 
+    public static final Holder<ConfiguredFeature<TreeConfiguration, ?>> WITCH_HAZEL =
+            FeatureUtils.register("hexerei:witch_hazel_tree", ModFeatures.WITCH_HAZEL_TREE.get(), new TreeConfiguration.TreeConfigurationBuilder(
+                    BlockStateProvider.simple(ModBlocks.WITCH_HAZEL_LOG.get()),
+                    new StraightTrunkPlacer(5, 6, 3),
+                    BlockStateProvider.simple(ModBlocks.WITCH_HAZEL_LEAVES.get()),
+                    new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 4),
+                    new TwoLayersFeatureSize(1, 0, 2)).build());
+
     public static final Holder<ConfiguredFeature<TreeConfiguration, ?>> MAHOGANY =
             FeatureUtils.register("hexerei:mahogany_tree", ModFeatures.MAHOGANY_TREE.get(), new TreeConfiguration.TreeConfigurationBuilder(
                     BlockStateProvider.simple(ModBlocks.MAHOGANY_LOG.get()),
@@ -87,12 +95,20 @@ public class ModConfiguredFeatures {
     public static final Holder<PlacedFeature> WILLOW_CHECKED = PlacementUtils.register("hexerei:willow_checked", WILLOW,
             PlacementUtils.filteredByBlockSurvival(ModBlocks.WILLOW_SAPLING.get()));
 
+    public static final Holder<PlacedFeature> WITCH_HAZEL_CHECKED = PlacementUtils.register("hexerei:witch_hazel_checked", WITCH_HAZEL,
+            PlacementUtils.filteredByBlockSurvival(ModBlocks.WITCH_HAZEL_SAPLING.get()));
+
     public static final Holder<PlacedFeature> MAHOGANY_CHECKED = PlacementUtils.register("hexerei:mahogany_checked", MAHOGANY,
             PlacementUtils.filteredByBlockSurvival(ModBlocks.MAHOGANY_SAPLING.get()));
     public static final Holder<ConfiguredFeature<RandomFeatureConfiguration, ?>> WILLOW_SPAWN =
             FeatureUtils.register("hexerei:willow_spawn", Feature.RANDOM_SELECTOR,
                     new RandomFeatureConfiguration(List.of(new WeightedPlacedFeature(WILLOW_CHECKED,
                             0.5F)), WILLOW_CHECKED));
+
+    public static final Holder<ConfiguredFeature<RandomFeatureConfiguration, ?>> WITCH_HAZEL_SPAWN =
+            FeatureUtils.register("hexerei:witch_hazel_spawn", Feature.RANDOM_SELECTOR,
+                    new RandomFeatureConfiguration(List.of(new WeightedPlacedFeature(WITCH_HAZEL_CHECKED,
+                            0.5F)), WITCH_HAZEL_CHECKED));
 
     public static final Holder<ConfiguredFeature<RandomFeatureConfiguration, ?>> MAHOGANY_SPAWN =
             FeatureUtils.register("hexerei:mahogany_spawn", Feature.RANDOM_SELECTOR,
@@ -109,5 +125,13 @@ public class ModConfiguredFeatures {
             SurfaceWaterDepthFilter.forMaxDepth(2),
             PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome(),
             BlockPredicateFilter.forPredicate(BlockPredicate.wouldSurvive(Blocks.OAK_SAPLING.defaultBlockState(), BlockPos.ZERO)));
+
+
+//    public static final Holder<PlacedFeature> TREES_WITCH_HAZEL_SWAMP = PlacementUtils.register("hexerei:trees_witch_hazel_swamp", WITCH_HAZEL,
+//            PlacementUtils.countExtra(1, 0.1F, 1),
+//            InSquarePlacement.spread(),
+//            SurfaceWaterDepthFilter.forMaxDepth(2),
+//            PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome(),
+//            BlockPredicateFilter.forPredicate(BlockPredicate.wouldSurvive(Blocks.OAK_SAPLING.defaultBlockState(), BlockPos.ZERO)));
 
 }

@@ -145,11 +145,14 @@ public class ModChestRenderer<T extends BlockEntity & LidBlockEntity> implements
     }
 
     public static final ResourceLocation WILLOW_CHEST_LOCATION = new ResourceLocation(Hexerei.MOD_ID,"textures/entity/chest/willow.png");
+    public static final ResourceLocation WITCH_HAZEL_CHEST_LOCATION = new ResourceLocation(Hexerei.MOD_ID,"textures/entity/chest/witch_hazel.png");
     public static final ResourceLocation MAHOGANY_CHEST_LOCATION = new ResourceLocation(Hexerei.MOD_ID,"textures/entity/chest/mahogany.png");
     public static final ResourceLocation HOOTY_LOCATION = new ResourceLocation(Hexerei.MOD_ID,"textures/entity/chest/hooty.png");
     public static final ResourceLocation HOOTLE_LOCATION = new ResourceLocation(Hexerei.MOD_ID,"textures/entity/chest/hootle.png");
     public static final ResourceLocation WILLOW_CHEST_LOCATION_LEFT = new ResourceLocation(Hexerei.MOD_ID,"textures/entity/chest/willow_left.png");
     public static final ResourceLocation WILLOW_CHEST_LOCATION_RIGHT = new ResourceLocation(Hexerei.MOD_ID,"textures/entity/chest/willow_right.png");
+    public static final ResourceLocation WITCH_HAZEL_CHEST_LOCATION_LEFT = new ResourceLocation(Hexerei.MOD_ID,"textures/entity/chest/witch_hazel_left.png");
+    public static final ResourceLocation WITCH_HAZEL_CHEST_LOCATION_RIGHT = new ResourceLocation(Hexerei.MOD_ID,"textures/entity/chest/witch_hazel_right.png");
     public static final ResourceLocation MAHOGANY_CHEST_LOCATION_LEFT = new ResourceLocation(Hexerei.MOD_ID,"textures/entity/chest/mahogany_left.png");
     public static final ResourceLocation MAHOGANY_CHEST_LOCATION_RIGHT = new ResourceLocation(Hexerei.MOD_ID,"textures/entity/chest/mahogany_right.png");
     protected ResourceLocation getLoc(ChestType chestType, BlockEntity block) {
@@ -183,6 +186,10 @@ public class ModChestRenderer<T extends BlockEntity & LidBlockEntity> implements
                 WILLOW_CHEST_LOCATION_LEFT;
             case WILLOW ->
                 WILLOW_CHEST_LOCATION_LEFT;
+            case POLISHED_WITCH_HAZEL ->
+                WITCH_HAZEL_CHEST_LOCATION_LEFT;
+            case WITCH_HAZEL ->
+                WITCH_HAZEL_CHEST_LOCATION_LEFT;
         };
     }
     public ResourceLocation getRight(ModChest.WoodType style) {
@@ -195,6 +202,10 @@ public class ModChestRenderer<T extends BlockEntity & LidBlockEntity> implements
                 WILLOW_CHEST_LOCATION_RIGHT;
             case WILLOW ->
                 WILLOW_CHEST_LOCATION_RIGHT;
+            case POLISHED_WITCH_HAZEL ->
+                WITCH_HAZEL_CHEST_LOCATION_RIGHT;
+            case WITCH_HAZEL ->
+                WITCH_HAZEL_CHEST_LOCATION_RIGHT;
         };
     }
     public ResourceLocation getSingle(ModChest.WoodType style) {
@@ -207,6 +218,10 @@ public class ModChestRenderer<T extends BlockEntity & LidBlockEntity> implements
                 WILLOW_CHEST_LOCATION;
             case WILLOW ->
                 WILLOW_CHEST_LOCATION;
+            case POLISHED_WITCH_HAZEL ->
+                WITCH_HAZEL_CHEST_LOCATION;
+            case WITCH_HAZEL ->
+                WITCH_HAZEL_CHEST_LOCATION;
         };
     }
 

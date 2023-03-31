@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "hexerei:block/waxed_polished_smooth_witch_hazel_glass"
+  },
+  "render_type": "cutout_mipped"
+}

@@ -30,7 +30,8 @@
     }
   ],
   "output": {
-    "item": "hexerei:infused_fabric"
+    "item": "hexerei:infused_fabric",
+    "count": 2
   },
   "liquidOutput": {
     "fluid": "minecraft:water"

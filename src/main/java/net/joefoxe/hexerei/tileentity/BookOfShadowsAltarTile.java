@@ -609,7 +609,7 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
 
             for(int k = -1; k <= 1; ++k) {
                 for(int l = -1; l <= 1; ++l) {
-                    if ((k != 0 || l != 0) && level.isEmptyBlock(worldPosition.offset(l, 0, k)) && level.isEmptyBlock(worldPosition.offset(l, 1, k))) {
+                    if ((k != 0 || l != 0)) {
                         if((level.getBlockEntity(worldPosition.offset(l * 2, 0, k * 2))) instanceof CandleTile candleTile && numberOfCandles < maxCandles)
                         {
                                 for (int i = 0; i < candleTile.numberOfCandles; i++) {
@@ -920,11 +920,11 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
 
                 if (this.degreesFlopped == 0) {
                     this.degreesOpenedTo = (float) (this.closestDist * (360 / maxDist)) / 4;
-                    this.degreesOpenedSpeed = 1f + 5 * (45 - Math.abs(45 - degreesOpened)) / 90;
+                    this.degreesOpenedSpeed = 2f + 5 * (45 - Math.abs(45 - degreesOpened)) / 90;
                 }
                 else {
                     this.degreesOpenedTo = 90;
-                    this.degreesOpenedSpeed = 1f + 6 * (45 - Math.abs(45 - degreesOpened)) / 90;
+                    this.degreesOpenedSpeed = 2f + 6 * (45 - Math.abs(45 - degreesOpened)) / 90;
                 }
                 this.degreesOpened = moveTo(this.degreesOpened, this.degreesOpenedTo, this.degreesOpenedSpeed);
 
@@ -944,7 +944,7 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                         if (this.pageOneRotation == 0 && !level.isClientSide)
                             level.playSound(null, this.worldPosition.above(), ModSounds.BOOK_TURN_PAGE_SLOW.get(), SoundSource.BLOCKS, (level.random.nextFloat() * 0.25f + 0.5f), (level.random.nextFloat() * 0.25f + 0.75f));
 
-                        this.pageOneRotationSpeed = ((float) Math.sin(this.pageOneRotation / 180 * Math.PI) * (float) Math.sin(this.pageOneRotation / 180 * Math.PI) * 15) + 4.25f;
+                        this.pageOneRotationSpeed = ((float) Math.sin(this.pageOneRotation / 180 * Math.PI) * (float) Math.sin(this.pageOneRotation / 180 * Math.PI) * 15) + 6.25f;
                         this.pageOneRotationTo = (float) 180;
                         this.pageOneRotation = moveTo(this.pageOneRotation, this.pageOneRotationTo, this.pageOneRotationSpeed);
                     }
@@ -968,7 +968,7 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                         if (this.pageTwoRotation == 0 && !level.isClientSide)
                             level.playSound(null, this.worldPosition.above(), ModSounds.BOOK_TURN_PAGE_SLOW.get(), SoundSource.BLOCKS, (level.random.nextFloat() * 0.25f + 0.5f), (level.random.nextFloat() * 0.25f + 0.75f));
 
-                        this.pageTwoRotationSpeed = ((float) Math.sin(this.pageTwoRotation / 180 * Math.PI) * (float) Math.sin(this.pageTwoRotation / 180 * Math.PI) * 15) + 4.25f;
+                        this.pageTwoRotationSpeed = ((float) Math.sin(this.pageTwoRotation / 180 * Math.PI) * (float) Math.sin(this.pageTwoRotation / 180 * Math.PI) * 15) + 6.25f;
                         this.pageTwoRotationTo = (float) 180;
                         this.pageTwoRotation = moveTo(this.pageTwoRotation, this.pageTwoRotationTo, this.pageTwoRotationSpeed);
                     }
@@ -989,12 +989,13 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                         if(page % 2 == 1)
                             page--;
 
-                        if (chapter > this.turnToChapter || (chapter == this.turnToChapter && page > this.turnToPage)) {
+                        int pagesToTurn = numPagesToDest > 90 ? 13 : numPagesToDest > 75 ? 11 : numPagesToDest > 60 ? 9 : numPagesToDest > 45 ? 7 : numPagesToDest > 30 ? 5 : numPagesToDest > 15 ? 3 : 1;
 
+                        if (chapter > this.turnToChapter || (chapter == this.turnToChapter && page > this.turnToPage)) {
 
                             if(this.pageTwoRotation == 180)
                             {
-                                clickedBack(this, numPagesToDest > 100 ? 3 : numPagesToDest > 50 ? 2 : 1);
+                                clickedBack(this, pagesToTurn);
                                 this.pageTwoRotation = 0;
                                 this.pageTwoRotationRender = 0;
                                 this.pageTwoRotationTo = 0;
@@ -1004,7 +1005,7 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                                     level.playSound(null, this.worldPosition.above(), ModSounds.BOOK_TURN_PAGE_FAST.get(), SoundSource.BLOCKS, (level.random.nextFloat() * 0.25f + 0.5f), (level.random.nextFloat() * 0.3f + 0.7f));
                                 }
 
-                                this.pageTwoRotationSpeed = (((float) Math.sin(this.pageTwoRotation / 180 * Math.PI) * 50 + 15)) * (1 + Math.min(numPagesToDest, 50) / 90f) * (1 + Math.min(numPagesToDest, 50) / 90f);
+                                this.pageTwoRotationSpeed = (((float) Math.sin(this.pageTwoRotation / 180 * Math.PI) * 50 + 15)) * (1 + Math.min(numPagesToDest, 50) / 90f) * (1 + Math.min(numPagesToDest, 50) / 90f) + 2;
                                 this.pageTwoRotationTo = (float) 180;
                                 this.pageTwoRotation = moveTo(this.pageTwoRotation, this.pageTwoRotationTo, this.pageTwoRotationSpeed);
                             }
@@ -1017,7 +1018,7 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
 
                             if(this.pageOneRotation == 180)
                             {
-                                clickedNext(this, numPagesToDest > 100 ? 3 : numPagesToDest > 50 ? 2 : 1);
+                                clickedNext(this, pagesToTurn);
                                 this.pageOneRotation = 0;
                                 this.pageOneRotationRender = 0;
                                 this.pageOneRotationTo = 0;
@@ -1027,7 +1028,7 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                                     level.playSound(null, this.worldPosition.above(), ModSounds.BOOK_TURN_PAGE_FAST.get(), SoundSource.BLOCKS, (level.random.nextFloat() * 0.25f + 0.5f), (level.random.nextFloat() * 0.3f + 0.7f));
                                 }
 
-                                this.pageOneRotationSpeed = (((float) Math.sin(this.pageOneRotation / 180 * Math.PI) * 50 + 15)) * (1 + Math.min(numPagesToDest, 50) / 90f) * (1 + Math.min(numPagesToDest, 50) / 90f);
+                                this.pageOneRotationSpeed = (((float) Math.sin(this.pageOneRotation / 180 * Math.PI) * 50 + 15)) * (1 + Math.min(numPagesToDest, 50) / 90f) * (1 + Math.min(numPagesToDest, 50) / 90f) + 2;
                                 this.pageOneRotationTo = (float) 180;
                                 this.pageOneRotation = moveTo(this.pageOneRotation, this.pageOneRotationTo, this.pageOneRotationSpeed);
                             }

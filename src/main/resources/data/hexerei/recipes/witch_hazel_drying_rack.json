@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BSB",
+    "@@@"
+
+  ],
+  "key": {
+    "B": {
+      "item": "hexerei:witch_hazel_button"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "@": {
+      "item": "hexerei:witch_hazel_slab"
+    }
+  },
+  "result": {
+    "item": "hexerei:witch_hazel_drying_rack",
+    "count": 1
+  }
+}

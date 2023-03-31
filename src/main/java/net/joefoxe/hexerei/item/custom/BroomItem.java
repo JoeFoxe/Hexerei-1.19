@@ -116,11 +116,11 @@ public class BroomItem extends Item {
     public static UUID getUUID(ItemStack stack) {
 
         CompoundTag tag = stack.getOrCreateTag();
-        if (tag.contains("UUID")) {
-            return tag.getUUID("UUID");
+        if (tag.contains("broomUUID")) {
+            return tag.getUUID("broomUUID");
         }
         UUID newUUID = UUID.randomUUID();
-        tag.putUUID("UUID", newUUID);
+        tag.putUUID("broomUUID", newUUID);
         return newUUID;
     }
 

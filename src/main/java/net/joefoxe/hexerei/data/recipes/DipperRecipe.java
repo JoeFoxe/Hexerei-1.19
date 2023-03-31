@@ -38,6 +38,10 @@ public class DipperRecipe implements Recipe<SimpleContainer> {
     protected static final List<Boolean> itemMatchesSlot = new ArrayList<>();
 
 
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
     public DipperRecipe(ResourceLocation id, NonNullList<Ingredient> inputs,
                         ItemStack output, FluidStack liquid, int fluidLevelsConsumed,
                         int dippingTime, int dryingTime, int numberOfDips, boolean useInputItemAsOutput) {

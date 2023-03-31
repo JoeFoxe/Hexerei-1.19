@@ -341,7 +341,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         tag.putBoolean("floatMode", this.floatMode);
 
         if(this.broomUUID != null)
-            tag.putUUID("UUID", this.broomUUID);
+            tag.putUUID("broomUUID", this.broomUUID);
 
         if (hasCustomName())
             if(getCustomName().getString().length() > 0)
@@ -1441,7 +1441,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         compound.put("inv", itemHandler.serializeNBT());
         compound.putBoolean("floatMode", floatMode);
         if(broomUUID != null)
-            compound.putUUID("UUID", broomUUID);
+            compound.putUUID("broomUUID", broomUUID);
     }
 
     @Override
@@ -1450,7 +1450,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         compound.put("inv", itemHandler.serializeNBT());
         compound.putBoolean("floatMode", floatMode);
         if(broomUUID != null)
-            compound.putUUID("UUID", broomUUID);
+            compound.putUUID("broomUUID", broomUUID);
         return super.save(compound);
     }
 
@@ -1465,8 +1465,8 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         }
         itemHandler.deserializeNBT(compound.getCompound("inv"));
         this.floatMode = compound.getBoolean("floatMode");
-        if (compound.contains("UUID"))
-            this.broomUUID = compound.getUUID("UUID");
+        if (compound.contains("broomUUID"))
+            this.broomUUID = compound.getUUID("broomUUID");
 
 
     }
@@ -1483,8 +1483,8 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         }
         itemHandler.deserializeNBT(compound.getCompound("inv"));
         this.floatMode = compound.getBoolean("floatMode");
-        if (compound.contains("UUID"))
-            this.broomUUID = compound.getUUID("UUID");
+        if (compound.contains("broomUUID"))
+            this.broomUUID = compound.getUUID("broomUUID");
 
 
     }
@@ -1564,7 +1564,6 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         } else if (this.outOfControlTicks < 60.0F) {
             if (!this.level.isClientSide) {
                 if(player.startRiding(this) ) {
-                    //this.setDeltaMovement(getDeltaMovement().getX(), getDeltaMovement().getY() - 1, getDeltaMovement().getZ());
                     if(this.itemHandler.getStackInSlot(3).is(HexereiTags.Items.BROOM_BRUSH))
                         this.push(0,0.25,0);
                     return InteractionResult.CONSUME;

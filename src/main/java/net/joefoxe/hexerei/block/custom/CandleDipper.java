@@ -67,6 +67,10 @@ public class CandleDipper extends BaseEntityBlock implements ITileEntity<CandleD
         return null;
     }
 
+    public BlockState rotate(BlockState pState, Rotation pRot) {
+        return pState.setValue(HorizontalDirectionalBlock.FACING, pRot.rotate(pState.getValue(HorizontalDirectionalBlock.FACING)));
+    }
+
     @Override
     public void destroy(LevelAccessor worldIn, BlockPos pos, BlockState p_49862_) {
 

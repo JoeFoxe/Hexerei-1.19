@@ -25,6 +25,10 @@ public class DryingRackRecipe implements Recipe<SimpleContainer> {
     private final int dryingTime;
     protected static final List<Boolean> itemMatchesSlot = new ArrayList<>();
 
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
 
     public DryingRackRecipe(ResourceLocation id, NonNullList<Ingredient> inputs,
                             ItemStack output, int dryingTime) {

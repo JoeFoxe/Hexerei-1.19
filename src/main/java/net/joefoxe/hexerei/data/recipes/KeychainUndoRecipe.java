@@ -20,6 +20,10 @@ public class KeychainUndoRecipe extends CustomRecipe {
     }
 
     @Override
+    public boolean isSpecial() {
+        return true;
+    }
+    @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingContainer p_44004_) {
         NonNullList<ItemStack> nonnulllist = NonNullList.withSize(p_44004_.getContainerSize(), ItemStack.EMPTY);
 

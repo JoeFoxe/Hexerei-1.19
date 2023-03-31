@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " I ",
+    "#A#"
+  ],
+  "key": {
+    "#": {
+      "item": "hexerei:witch_hazel_planks"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "A": {
+      "item": "minecraft:andesite"
+    }
+  },
+  "result": {
+    "item": "hexerei:witch_hazel_woodcutter"
+  }
+}

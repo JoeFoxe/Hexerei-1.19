@@ -41,6 +41,8 @@ import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -203,76 +205,82 @@ public class DryingRackTile extends RandomizableContainerBlockEntity implements 
     }
 
     public void craft(){
-        SimpleContainer inv = new SimpleContainer(3);
+        List<SimpleContainer> inv = new ArrayList<>();
+        inv.add(new SimpleContainer(1));
+        inv.add(new SimpleContainer(1));
+        inv.add(new SimpleContainer(1));
         for (int i = 0; i < 3; i++) {
-            inv.setItem(i, this.items.get(i));
+            inv.get(i).setItem(0, this.items.get(i));
+
+            Optional<DryingRackRecipe> recipe = level.getRecipeManager()
+                    .getRecipeFor(DryingRackRecipe.Type.INSTANCE, inv.get(i), level);
+
+            BlockEntity blockEntity = level.getBlockEntity(this.worldPosition);
+            if(blockEntity instanceof DryingRackTile) {
+                final int j = i;
+                recipe.ifPresent(iRecipe -> {
+                    ItemStack recipeOutput = iRecipe.getResultItem();
+                    ItemStack input = iRecipe.getIngredients().get(0).getItems()[0];
+
+                    if (input.getItem() == this.items.get(j).getItem()) {
+                        // FIRST SLOT MATCHES
+
+                        if (!crafting[j]) {
+                            crafting[j] = true;
+                            output[j] = recipeOutput.copy();
+                            dryingTimeMax[j] = iRecipe.getDryingTime();
+                            dryingTime[j] = dryingTimeMax[j];
+                            sync();
+                        }
+
+                    } else {
+                        if (crafting[j]) {
+                            crafting[j] = false;
+                            sync();
+                        }
+                    }
+//
+//                    if (input.getItem() == this.items.get(j).getItem()) {
+//                        // SECOND SLOT MATCHES
+//
+//                        if (!crafting[j]) {
+//                            crafting[j] = true;
+//                            output[j] = recipeOutput.copy();;
+//                            dryingTimeMax[j] = iRecipe.getDryingTime();
+//                            dryingTime[j] = dryingTimeMax[j];
+//                            sync();
+//                        }
+//
+//                    } else {
+//                        if (crafting[j]) {
+//                            crafting[j] = false;
+//                            sync();
+//                        }
+//                    }
+//
+//                    if (input.getItem() == this.items.get(2).getItem()) {
+//                        // THIRD SLOT MATCHES
+//
+//                        if (!crafting[2]) {
+//                            crafting[2] = true;
+//                            output[2] = recipeOutput.copy();
+//                            dryingTimeMax[2] = iRecipe.getDryingTime();
+//                            dryingTime[2] = dryingTimeMax[2];
+//                            sync();
+//                        }
+//
+//                    } else {
+//                        if (crafting[2]) {
+//                            crafting[2] = false;
+//                            sync();
+//                        }
+//                    }
+
+                });
+            }
         }
 
-        Optional<DryingRackRecipe> recipe = level.getRecipeManager()
-                .getRecipeFor(DryingRackRecipe.Type.INSTANCE, inv, level);
 
-        BlockEntity blockEntity = level.getBlockEntity(this.worldPosition);
-        if(blockEntity instanceof DryingRackTile) {
-            recipe.ifPresent(iRecipe -> {
-                ItemStack recipeOutput = iRecipe.getResultItem();
-                ItemStack input = iRecipe.getIngredients().get(0).getItems()[0];
-
-                if (input.getItem() == this.items.get(0).getItem()) {
-                    // FIRST SLOT MATCHES
-
-                    if (!crafting[0]) {
-                        crafting[0] = true;
-                        output[0] = recipeOutput.copy();
-                        dryingTimeMax[0] = iRecipe.getDryingTime();
-                        dryingTime[0] = dryingTimeMax[0];
-                        sync();
-                    }
-
-                } else {
-                    if (crafting[0]) {
-                        crafting[0] = false;
-                        sync();
-                    }
-                }
-
-                if (input.getItem() == this.items.get(1).getItem()) {
-                    // SECOND SLOT MATCHES
-
-                    if (!crafting[1]) {
-                        crafting[1] = true;
-                        output[1] = recipeOutput.copy();;
-                        dryingTimeMax[1] = iRecipe.getDryingTime();
-                        dryingTime[1] = dryingTimeMax[1];
-                        sync();
-                    }
-
-                } else {
-                    if (crafting[1]) {
-                        crafting[1] = false;
-                        sync();
-                    }
-                }
-
-                if (input.getItem() == this.items.get(2).getItem()) {
-                    // THIRD SLOT MATCHES
-
-                    if (!crafting[2]) {
-                        crafting[2] = true;
-                        output[2] = recipeOutput.copy();
-                        dryingTimeMax[2] = iRecipe.getDryingTime();
-                        dryingTime[2] = dryingTimeMax[2];
-                        sync();
-                    }
-
-                } else {
-                    if (crafting[2]) {
-                        crafting[2] = false;
-                        sync();
-                    }
-                }
-
-            });
-        }
 //
 
     }
@@ -672,23 +680,24 @@ public class DryingRackTile extends RandomizableContainerBlockEntity implements 
 
         if(level instanceof ServerLevel) {
             craft();
-        }
-
-        for(int i = 0; i < 3; i++){
-            if(items.get(i).isEmpty())
-                placedTime[i] = 0;
-            else
-                placedTime[i]++;
-            if (crafting[i]) {
-                if (dryingTime[i] > 0)
-                    dryingTime[i]--;
-                if (dryingTime[i] == 0) {
-                    crafted[i] = true;
-                    crafting[i] = false;
-                    craftTheItem(output[i], i);
+            for(int i = 0; i < 3; i++){
+                if(items.get(i).isEmpty())
+                    placedTime[i] = 0;
+                else
+                    placedTime[i]++;
+                if (crafting[i]) {
+                    if (dryingTime[i] > 0)
+                        dryingTime[i]--;
+                    if (dryingTime[i] == 0) {
+                        crafted[i] = true;
+                        crafting[i] = false;
+                        craftTheItem(output[i], i);
+                    }
                 }
             }
         }
+
+
     }
 
     @Override

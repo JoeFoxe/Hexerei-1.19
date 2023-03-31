@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tterrag.registrate.Registrate;
+import net.joefoxe.hexerei.block.CustomFlintAndSteelDispenserBehavior;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.ModWoodType;
 import net.joefoxe.hexerei.client.renderer.CrowPerchRenderer;
@@ -15,10 +16,7 @@ import net.joefoxe.hexerei.data.datagen.ModRecipeProvider;
 import net.joefoxe.hexerei.data.recipes.ModRecipeTypes;
 import net.joefoxe.hexerei.data.tags.ModBiomeTagsProvider;
 import net.joefoxe.hexerei.event.ModLootModifiers;
-import net.joefoxe.hexerei.events.CrowFluteEvent;
-import net.joefoxe.hexerei.events.GlassesZoomKeyPressEvent;
-import net.joefoxe.hexerei.events.SageBurningPlateEvent;
-import net.joefoxe.hexerei.events.WitchArmorEvent;
+import net.joefoxe.hexerei.events.*;
 import net.joefoxe.hexerei.fluid.ModFluidTypes;
 import net.joefoxe.hexerei.fluid.ModFluids;
 import net.joefoxe.hexerei.integration.HexereiModNameTooltipCompat;
@@ -35,10 +33,13 @@ import net.joefoxe.hexerei.world.gen.ModFeatures;
 import net.joefoxe.hexerei.world.gen.ModPlacedFeatures;
 import net.joefoxe.hexerei.world.processor.DarkCovenLegProcessor;
 import net.joefoxe.hexerei.world.processor.MangroveTreeLegProcessor;
+import net.joefoxe.hexerei.world.processor.NatureCovenLegProcessor;
 import net.joefoxe.hexerei.world.processor.WitchHutLegProcessor;
 import net.joefoxe.hexerei.world.structure.ModStructures;
 import net.joefoxe.hexerei.world.terrablender.ModRegion;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.font.FontManager;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -50,10 +51,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ComposterBlock;
-import net.minecraft.world.level.block.FlowerPotBlock;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
@@ -80,7 +79,10 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import static net.joefoxe.hexerei.util.ClientProxy.MODEL_SWAPPER;
 
@@ -93,9 +95,23 @@ public class Hexerei {
 
 	public static SidedProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
-
 	public static GlassesZoomKeyPressEvent glassesZoomKeyPressEvent;
 	public static boolean entityClicked = false;
+
+	@OnlyIn(Dist.CLIENT)
+	public static Font font() {
+		if(ClientProxy.fontIndex == 0)
+			return Minecraft.getInstance().font;
+		else {
+			int index = ClientProxy.fontIndex % HexConfig.FONT_LIST.get().size();
+			Font toReturn = ClientProxy.fontList.get(HexConfig.FONT_LIST.get().get(index));
+			return toReturn == null ? Minecraft.getInstance().font : toReturn;
+		}
+//		if(clientTicks % 40 > 20)
+//			return fontList.values().stream().toList().get(0);
+//		return fontList.values().stream().toList().get(1);
+//		return font;
+	}
 
 	public static Registrate registrate() {
 		return REGISTRATE.get();
@@ -116,6 +132,7 @@ public class Hexerei {
 
 	public static StructureProcessorType<WitchHutLegProcessor> WITCH_HUT_LEG_PROCESSOR = () -> WitchHutLegProcessor.CODEC;
 	public static StructureProcessorType<DarkCovenLegProcessor> DARK_COVEN_LEG_PROCESSOR = () -> DarkCovenLegProcessor.CODEC;
+	public static StructureProcessorType<NatureCovenLegProcessor> NATURE_COVEN_LEG_PROCESSOR = () -> NatureCovenLegProcessor.CODEC;
 	public static StructureProcessorType<MangroveTreeLegProcessor> MANGROVE_TREE_LEG_PROCESSOR = () -> MangroveTreeLegProcessor.CODEC;
 
 	public static LinkedList<BlockPos> sageBurningPlateTileList = new LinkedList<>();
@@ -195,6 +212,7 @@ public class Hexerei {
 		// some preinit code
 
 		event.enqueueWork(() -> {
+			DispenserBlock.registerBehavior(Items.FLINT_AND_STEEL, new CustomFlintAndSteelDispenserBehavior(DispenserBlock.DISPENSER_REGISTRY.get(Items.FLINT_AND_STEEL)));
 
 			AxeItem.STRIPPABLES = new ImmutableMap.Builder<Block, Block>().putAll(AxeItem.STRIPPABLES)
 							.put(ModBlocks.MAHOGANY_LOG.get(), ModBlocks.STRIPPED_MAHOGANY_LOG.get())
@@ -205,11 +223,14 @@ public class Hexerei {
 //            ModConfiguredStructures.registerConfiguredStructures();
 			WoodType.register(ModWoodType.MAHOGANY);
 			WoodType.register(ModWoodType.WILLOW);
+			WoodType.register(ModWoodType.WITCH_HAZEL);
 			WoodType.register(ModWoodType.POLISHED_MAHOGANY);
 			WoodType.register(ModWoodType.POLISHED_WILLOW);
+			WoodType.register(ModWoodType.POLISHED_WITCH_HAZEL);
 
 			Registry.register(Registry.STRUCTURE_PROCESSOR, new ResourceLocation(MOD_ID, "witch_hut_leg_processor"), WITCH_HUT_LEG_PROCESSOR);
 			Registry.register(Registry.STRUCTURE_PROCESSOR, new ResourceLocation(MOD_ID, "dark_coven_leg_processor"), DARK_COVEN_LEG_PROCESSOR);
+			Registry.register(Registry.STRUCTURE_PROCESSOR, new ResourceLocation(MOD_ID, "nature_coven_leg_processor"), NATURE_COVEN_LEG_PROCESSOR);
 			Registry.register(Registry.STRUCTURE_PROCESSOR, new ResourceLocation(MOD_ID, "mangrove_tree_leg_processor"), MANGROVE_TREE_LEG_PROCESSOR);
 
 			HexereiPacketHandler.register();
@@ -264,8 +285,10 @@ public class Hexerei {
 		event.enqueueWork(() -> {
 			Sheets.addWoodType(ModWoodType.MAHOGANY);
 			Sheets.addWoodType(ModWoodType.WILLOW);
+			Sheets.addWoodType(ModWoodType.WITCH_HAZEL);
 			Sheets.addWoodType(ModWoodType.POLISHED_MAHOGANY);
 			Sheets.addWoodType(ModWoodType.POLISHED_WILLOW);
+			Sheets.addWoodType(ModWoodType.POLISHED_WITCH_HAZEL);
 
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.QUICKSILVER_FLUID.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ModFluids.QUICKSILVER_FLOWING.get(), RenderType.translucent());
@@ -302,6 +325,15 @@ public class Hexerei {
 	public void clientTickEvent(TickEvent.ClientTickEvent event) {
 		if (event.type == TickEvent.Type.CLIENT)
 			clientTicks += 1;
+		if(ClientProxy.fontList.isEmpty()) {
+			List<? extends String> fonts = HexConfig.FONT_LIST.get();
+			for (String str : fonts) {
+				if (!ClientProxy.fontList.containsKey(str))
+					ClientProxy.fontList.put(str, new Font((p_95014_) -> {
+						return Minecraft.getInstance().fontManager.fontSets.getOrDefault(new ResourceLocation(str), Minecraft.getInstance().fontManager.missingFontSet);
+					}, false));
+			}
+		}
 	}
 
 
@@ -344,6 +376,7 @@ public class Hexerei {
 		MinecraftForge.EVENT_BUS.register(new SageBurningPlateEvent());
 		MinecraftForge.EVENT_BUS.register(new WitchArmorEvent());
 		MinecraftForge.EVENT_BUS.register(new CrowFluteEvent());
+		MinecraftForge.EVENT_BUS.register(new CrowWhitelistEvent());
 
 		MinecraftForge.EVENT_BUS.register(new PageDrawing());
 		glassesZoomKeyPressEvent = new GlassesZoomKeyPressEvent();

@@ -74,6 +74,10 @@ public class SageBurningPlate extends Block implements ITileEntity<SageBurningPl
         return SHAPE;
     }
 
+    public BlockState rotate(BlockState pState, Rotation pRot) {
+        return pState.setValue(HorizontalDirectionalBlock.FACING, pRot.rotate(pState.getValue(HorizontalDirectionalBlock.FACING)));
+    }
+
 
     @SuppressWarnings("deprecation")
     @Override

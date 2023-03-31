@@ -2,15 +2,22 @@ package net.joefoxe.hexerei.item.custom;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import com.mojang.datafixers.util.Pair;
+import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
 import net.joefoxe.hexerei.util.message.DowsingRodUpdatePositionPacket;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -27,9 +34,11 @@ import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class DowsingRodItem extends Item {
 
+    public static final TagKey<Biome> BT_SWAMP = createBiomeTag("has_structure/dark_coven_biomes");
     public BlockPos nearestPos = null;
     public boolean swampMode = true;
 
@@ -95,13 +104,19 @@ public class DowsingRodItem extends Item {
 
                 playerIn.displayClientMessage(Component.translatable(s), true);
             }
+            playerIn.swing(handIn);
         }
         else
         {
-            if (this.swampMode)
+            if (this.swampMode) {
                 findSwamp(worldIn, playerIn);
-            else
+                playerIn.displayClientMessage(Component.translatable("display.hexerei.dowsing_rod_swamp_new"), true);
+            }
+            else {
                 findJungle(worldIn, playerIn);
+                playerIn.displayClientMessage(Component.translatable("display.hexerei.dowsing_rod_jungle_new"), true);
+            }
+            playerIn.swing(handIn);
 
         }
         if(!worldIn.isClientSide && this.nearestPos != null)
@@ -112,18 +127,11 @@ public class DowsingRodItem extends Item {
 
     public void findSwamp(Level worldIn, Entity entity)
     {
-        if(!worldIn.isClientSide){
-            Biome biome = null;
-            try {
-                biome = entity.getServer().registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getOptional(Biomes.SWAMP).orElseThrow(() -> {
-                    return ERROR_INVALID_BIOME.create(Biomes.SWAMP);
-                });
-            } catch (CommandSyntaxException e) {
-                e.printStackTrace();
-            }
-
-            this.nearestPos = findNearestBiome(entity, new ResourceLocation("minecraft:swamp"));
-
+        if(worldIn instanceof ServerLevel serverLevel){
+            Predicate<Holder<Biome>> SWAMP = (p_211672_) ->  BuiltinRegistries.BIOME.getOrCreateTag(BT_SWAMP).contains(p_211672_);
+            Pair<BlockPos, Holder<Biome>> pair = serverLevel.findClosestBiome3d(SWAMP, entity.blockPosition(), 6400, 32, 64);
+            if(pair != null)
+                this.nearestPos = pair.getFirst();
         }
     }
 
@@ -131,110 +139,18 @@ public class DowsingRodItem extends Item {
 
     public void findJungle(Level worldIn, Entity entity)
     {
-        if(!worldIn.isClientSide){
-            Biome biome = null;
-            try {
-                biome = entity.getServer().registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getOptional(Biomes.JUNGLE).orElseThrow(() -> {
-                    return ERROR_INVALID_BIOME.create(Biomes.SWAMP);
-                });
-            } catch (CommandSyntaxException e) {
-                e.printStackTrace();
-            }
-
-
-            this.nearestPos = findNearestBiome(entity, new ResourceLocation("minecraft:jungle"));
-//            this.nearestPos = ((ServerLevel) worldIn).findNearestBiome(biome, entity.blockPosition(), 6400, 8);
-
+        if(worldIn instanceof ServerLevel serverLevel){
+            Predicate<Holder<Biome>> JUNGLE = (p_211672_) ->  BuiltinRegistries.BIOME.getOrCreateTag(BiomeTags.IS_JUNGLE).contains(p_211672_);
+            Pair<BlockPos, Holder<Biome>> pair = serverLevel.findClosestBiome3d(JUNGLE, entity.blockPosition(), 6400, 32, 64);
+            if(pair != null)
+                this.nearestPos = pair.getFirst();
         }
     }
 
-
-    @Nullable
-    private BlockPos findNearestBiome(Entity player, ResourceLocation biome) {
-
-        BlockPos pos1 = player.blockPosition();
-
-        this.playerPos = player.blockPosition();
-        // If we are in a valid spot, we point to ourselves.
-        BlockPos coordinates = getChunkCoordinates(pos1, player.level, biome);
-        if (coordinates != null) {
-            angleI = 0;
-            radiusI = 0;
-            return pos1;
-        }
-
-        double angleDif = (2.0f * Math.asin(distBetweenChecks / (2.0 * distBetweenChecks * (radiusI + 1))));
-
-        angleDif = 2.0 * Math.PI / Math.round(2.0 * Math.PI / angleDif);
-
-        for (int i = 0; i < numOfChecks; i++) {
-
-            double angle = angleDif * this.angleI;
-            if (angle > 2.0 * Math.PI) {
-                this.angleI = 0;
-                this.radiusI++;
-                if (this.radiusI > this.maxRadiusI) {
-                    this.angleI = 0;
-                    this.radiusI = 0;
-                    this.playerPos = pos1;
-                }
-                return null;
-            } else {
-                this.angleI++;
-            }
-
-            BlockPos pos = playerPos.offset(Math.round((float) (distBetweenChecks * (radiusI + 1) * Math.cos(angle))), 0, Math.round((float) (distBetweenChecks * (radiusI + 1) * Math.sin(angle))));
-
-            coordinates = getChunkCoordinates(pos, player.level, biome);
-            if (coordinates != null) {
-                angleI = 0;
-                radiusI = 0;
-                return coordinates;
-            }
-        }
-
-        return null;
+    private static TagKey<Biome> createBiomeTag(String name) {
+        return TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(Hexerei.MOD_ID, name));
     }
 
-    @Nullable
-    private static BlockPos getChunkCoordinates(BlockPos pos, Level world, ResourceLocation biomes) {
-        Biome biome;
-
-        Biome biomeToFind = world.registryAccess().registry(Registry.BIOME_REGISTRY).get().get(biomes);
-        if(biomeToFind == null)
-            return null;
-
-        biome = world.getBiome(pos).value();
-        if (!biomeToFind.equals(biome)) {
-            return null;
-        }
-
-        biome = world.getBiome(pos.offset(-searchOffset, 0, 0)).value();
-        if (!biomeToFind.equals(biome)) {
-            return null;
-        }
-
-        biome = world.getBiome(pos.offset(searchOffset, 0, 0)).value();
-        if (!biomeToFind.equals(biome)) {
-            return null;
-        }
-
-        biome = world.getBiome(pos.offset(0, 0, -searchOffset)).value();
-        if (!biomeToFind.equals(biome)) {
-            return null;
-        }
-
-        biome = world.getBiome(pos.offset(0, 0, searchOffset)).value();
-        if (!biomeToFind.equals(biome)) {
-            return null;
-        }
-
-        return pos;
-    }
-
-
-
-    //BlockPos blockpos1 = p_137843_.getLevel().findNearestBiome(biome, blockpos, 6400, 8);
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
         if(Screen.hasShiftDown()) {

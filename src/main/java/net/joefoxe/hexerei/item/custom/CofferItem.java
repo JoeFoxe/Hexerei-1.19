@@ -123,7 +123,7 @@ public class CofferItem extends BlockItem implements DyeableLeatherItem {
 
         playerIn.startUsingItem(handIn);
         if (!level.isClientSide) {
-            if (playerIn.isShiftKeyDown()) {
+            if (playerIn.isShiftKeyDown() && itemstack.getCount() == 1) {
 
                 MenuProvider containerProvider = createContainerProvider(itemstack, handIn, itemstack.getTag());
 

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "hexerei:block/polished_witch_hazel_planks",
+    "top": "hexerei:block/polished_witch_hazel_planks",
+    "side": "hexerei:block/polished_witch_hazel_planks"
+  }
+}

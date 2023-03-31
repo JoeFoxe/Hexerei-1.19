@@ -2,6 +2,7 @@ package net.joefoxe.hexerei.item.custom;
 
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.util.HexereiUtil;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -10,10 +11,14 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class MixingCauldronItem extends BlockItem implements DyeableLeatherItem {
 
@@ -85,6 +90,27 @@ public class MixingCauldronItem extends BlockItem implements DyeableLeatherItem 
                 return 64;
             }
         };
+    }
+
+
+
+    @Override
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        super.initializeClient(consumer);
+        MixingCauldronItemRenderer renderer = createItemRenderer();
+        if (renderer != null) {
+            consumer.accept(new IClientItemExtensions() {
+                @Override
+                public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                    return renderer.getRenderer();
+                }
+            });
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public MixingCauldronItemRenderer createItemRenderer() {
+        return new MixingCauldronItemRenderer();
     }
 
 }

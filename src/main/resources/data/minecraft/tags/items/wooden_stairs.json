@@ -2,8 +2,10 @@
   "replace": false,
   "values": [
     "hexerei:willow_stairs",
+    "hexerei:witch_hazel_stairs",
     "hexerei:mahogany_stairs",
     "hexerei:polished_willow_stairs",
+    "hexerei:polished_witch_hazel_stairs",
     "hexerei:polished_mahogany_stairs"
   ]
 }

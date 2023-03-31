@@ -44,7 +44,7 @@ public class HexConfig {
     public static ForgeConfigSpec.ConfigValue<Integer> WILLOW_SWAMP_RARITY;
 
 
-    public static ForgeConfigSpec.BooleanValue FANCY_FONT_IN_BOOK;
+    public static ForgeConfigSpec.ConfigValue<List<? extends String>> FONT_LIST;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -174,11 +174,12 @@ public class HexConfig {
 
         builder.push("Settings");
         builder.pop();
-        builder.push("Fancy font in book");
-        FANCY_FONT_IN_BOOK = builder
-                .comment("Enabling this allows fancy cursive font for the book (english only not fully implemented)")
-                .translation("hexerei.config.fancy_font_in_book")
-                .define("fancy_font_in_book", false);
+
+        builder.push("List of Extra Fonts");
+        FONT_LIST = builder
+                .comment("list of fonts that can be used, mainly for the book of shadows")
+                .translation("hexerei.config.font_list")
+                .defineList("font_list", List.of("minecraft:default", "hexerei:fancy", "hexerei:bloody", "hexerei:earth", "hexerei:seattle", "hexerei:medieval", "hexerei:augusta"),(o) -> true);
         builder.pop();
 
 

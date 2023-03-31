@@ -22,6 +22,10 @@ public class KeychainRecipe extends CustomRecipe {
     }
 
     @Override
+    public boolean isSpecial() {
+        return true;
+    }
+    @Override
     public boolean matches(CraftingContainer inventory, Level world) {
         int keychain = 0;
         int other = 0;

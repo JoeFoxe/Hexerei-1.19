@@ -1,0 +1,14 @@
+
+{
+  "variants": {
+    "type=bottom": {
+      "model": "hexerei:block/polished_witch_hazel_slab"
+    },
+    "type=double": {
+      "model": "hexerei:block/polished_witch_hazel_planks"
+    },
+    "type=top": {
+      "model": "hexerei:block/polished_witch_hazel_slab_top"
+    }
+  }
+}

@@ -18,6 +18,10 @@ public class CutCandleRecipe extends CustomRecipe {
         super(pId);
     }
 
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
     /**
      * Used to check if a recipe matches current crafting inventory
      */

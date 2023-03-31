@@ -9,6 +9,7 @@ import net.joefoxe.hexerei.block.connected.behavior.*;
 import net.joefoxe.hexerei.block.custom.*;
 import net.joefoxe.hexerei.block.custom.trees.MahoganyTree;
 import net.joefoxe.hexerei.block.custom.trees.WillowTree;
+import net.joefoxe.hexerei.block.custom.trees.WitchHazelTree;
 import net.joefoxe.hexerei.item.ModItemGroup;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.tileentity.ModTileEntities;
@@ -98,6 +99,52 @@ public class ModBlocks {
 			.register();
 
 
+
+	public static final BlockEntry<Block> WITCH_HAZEL_CONNECTED = REGISTRATE.block("witch_hazel_connected", Block::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WITCH_HAZEL_CONNECTED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WITCH_HAZEL_CONNECTED)))
+			.register();
+	public static final BlockEntry<WaxedLayeredBlock> WAXED_WITCH_HAZEL_CONNECTED = REGISTRATE.block("waxed_witch_hazel_connected", WaxedLayeredBlock::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_WITCH_HAZEL_CONNECTED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_WITCH_HAZEL_CONNECTED)))
+			.defaultBlockstate()
+			.register();
+
+	public static final BlockEntry<Block> POLISHED_WITCH_HAZEL_CONNECTED = REGISTRATE.block("polished_witch_hazel_connected", Block::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_WITCH_HAZEL_CONNECTED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_WITCH_HAZEL_CONNECTED)))
+			.register();
+
+	public static final BlockEntry<WaxedLayeredBlock> WAXED_POLISHED_WITCH_HAZEL_CONNECTED = REGISTRATE.block("waxed_polished_witch_hazel_connected", WaxedLayeredBlock::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WITCH_HAZEL_CONNECTED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_WITCH_HAZEL_CONNECTED)))
+			.register();
+
+	public static final BlockEntry<ConnectedPillarBlock> POLISHED_WITCH_HAZEL_PILLAR = REGISTRATE.block("polished_witch_hazel_pillar", ConnectedPillarBlock::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
+			.onRegister(connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.POLISHED_WITCH_HAZEL_PILLAR_SIDE, AllSpriteShifts.POLISHED_WITCH_HAZEL_PILLAR_TOP)))
+			.register();
+
+	public static final BlockEntry<WaxedConnectedRotatedPillarBlock> WAXED_POLISHED_WITCH_HAZEL_PILLAR = REGISTRATE.block("waxed_polished_witch_hazel_pillar", WaxedConnectedRotatedPillarBlock::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
+			.onRegister(connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WITCH_HAZEL_PILLAR_SIDE, AllSpriteShifts.WAXED_POLISHED_WITCH_HAZEL_PILLAR_TOP)))
+			.register();
+
+	public static final BlockEntry<LayeredBlock> POLISHED_WITCH_HAZEL_LAYERED = REGISTRATE.block("polished_witch_hazel_layered", LayeredBlock::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
+			.onRegister(connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.POLISHED_WITCH_HAZEL_LAYERED, AllSpriteShifts.POLISHED_SMOOTH_WITCH_HAZEL)))
+			.register();
+
+	public static final BlockEntry<WaxedLayeredBlock> WAXED_POLISHED_WITCH_HAZEL_LAYERED = REGISTRATE.block("waxed_polished_witch_hazel_layered", WaxedLayeredBlock::new)
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
+			.onRegister(connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WITCH_HAZEL_LAYERED, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WITCH_HAZEL)))
+			.register();
+
+
 	public static final BlockEntry<Block> MAHOGANY_CONNECTED = REGISTRATE.block("mahogany_connected", Block::new)
 			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_RED))
 			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.MAHOGANY_CONNECTED)))
@@ -170,6 +217,20 @@ public class ModBlocks {
 			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW_GLASS_PANE)))
 			.register();
 
+
+	public static final BlockEntry<WaxedGlassPaneBlock> WITCH_HAZEL_WINDOW_PANE = REGISTRATE.block("witch_hazel_window_pane", (properties) -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.copy(Blocks.GLASS_PANE)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.GLASS_PANE).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_WITCH_HAZEL_GLASS_PANE)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_WITCH_HAZEL_GLASS_PANE)))
+			.register();
+
+
+	public static final BlockEntry<WaxedGlassPaneBlock> WAXED_WITCH_HAZEL_WINDOW_PANE = REGISTRATE.block("waxed_witch_hazel_window_pane", (properties) -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.copy(Blocks.GLASS_PANE)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.GLASS_PANE).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_WITCH_HAZEL_GLASS_PANE)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WITCH_HAZEL_GLASS_PANE)))
+			.register();
+
 	public static final BlockEntry<GlassBlock> MAHOGANY_WINDOW = REGISTRATE.block("mahogany_window", (properties) -> new GlassBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE)))
 			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE).color(MaterialColor.TERRACOTTA_RED))
 			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_MAHOGANY_GLASS)))
@@ -192,6 +253,18 @@ public class ModBlocks {
 			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE).color(MaterialColor.TERRACOTTA_RED))
 			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW_GLASS)))
 			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW_GLASS)))
+			.register();
+
+	public static final BlockEntry<GlassBlock> WITCH_HAZEL_WINDOW = REGISTRATE.block("witch_hazel_window", (properties) -> new GlassBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_WITCH_HAZEL_GLASS)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_WITCH_HAZEL_GLASS)))
+			.register();
+
+	public static final BlockEntry<WaxedGlassBlock> WAXED_WITCH_HAZEL_WINDOW = REGISTRATE.block("waxed_witch_hazel_window", (properties) -> new WaxedGlassBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_WITCH_HAZEL_GLASS)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WITCH_HAZEL_GLASS)))
 			.register();
 
 	public static final BlockEntry<ConnectingCarpet> INFUSED_FABRIC_CARPET_ORNATE = REGISTRATE.block("infused_fabric_carpet_ornate", ConnectingCarpet::new)
@@ -769,7 +842,10 @@ public class ModBlocks {
 			() -> new Altar(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).explosionResistance(2f)));
 
 	public static final RegistryObject<ConnectingTable> WILLOW_ALTAR = registerBlock("willow_altar",
-			() -> new ConnectingTable(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).explosionResistance(2f)));
+			() -> new Altar(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).explosionResistance(2f)));
+
+	public static final RegistryObject<ConnectingTable> WITCH_HAZEL_ALTAR = registerBlock("witch_hazel_altar",
+			() -> new Altar(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).explosionResistance(2f)));
 
 	public static final RegistryObject<Woodcutter> MAHOGANY_WOODCUTTER = registerBlock("mahogany_woodcutter",
 			() -> new Woodcutter(BlockBehaviour.Properties.copy(Blocks.STONECUTTER).explosionResistance(4f).requiresCorrectToolForDrops().strength(3)));
@@ -777,8 +853,14 @@ public class ModBlocks {
 	public static final RegistryObject<Woodcutter> WILLOW_WOODCUTTER = registerBlock("willow_woodcutter",
 			() -> new Woodcutter(BlockBehaviour.Properties.copy(Blocks.STONECUTTER).explosionResistance(4f).requiresCorrectToolForDrops().strength(3)));
 
+	public static final RegistryObject<Woodcutter> WITCH_HAZEL_WOODCUTTER = registerBlock("witch_hazel_woodcutter",
+			() -> new Woodcutter(BlockBehaviour.Properties.copy(Blocks.STONECUTTER).explosionResistance(4f).requiresCorrectToolForDrops().strength(3)));
+
 	public static final RegistryObject<ModChest> WILLOW_CHEST = registerBlockNoItem("willow_chest",
 			() -> new ModChest(BlockBehaviour.Properties.copy(Blocks.CHEST).explosionResistance(4f).strength(3), ModTileEntities.CHEST_TILE::get, ModChest.WoodType.WILLOW));
+
+	public static final RegistryObject<ModChest> WITCH_HAZEL_CHEST = registerBlockNoItem("witch_hazel_chest",
+			() -> new ModChest(BlockBehaviour.Properties.copy(Blocks.CHEST).explosionResistance(4f).strength(3), ModTileEntities.CHEST_TILE::get, ModChest.WoodType.WITCH_HAZEL));
 
 	public static final RegistryObject<ModChest> MAHOGANY_CHEST = registerBlockNoItem("mahogany_chest",
 			() -> new ModChest(BlockBehaviour.Properties.copy(Blocks.CHEST).explosionResistance(4f).strength(3), ModTileEntities.CHEST_TILE::get, ModChest.WoodType.MAHOGANY));
@@ -789,11 +871,17 @@ public class ModBlocks {
 	public static final RegistryObject<ModSign> WILLOW_SIGN = registerBlockNoItem("willow_sign",
 			() -> new ModSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModWoodType.WILLOW));
 
+	public static final RegistryObject<ModSign> WITCH_HAZEL_SIGN = registerBlockNoItem("witch_hazel_sign",
+			() -> new ModSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModWoodType.WITCH_HAZEL));
+
 	public static final RegistryObject<ModWallSign> MAHOGANY_WALL_SIGN = registerBlockNoItem("mahogany_wall_sign",
 			() -> new ModWallSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.MAHOGANY));
 
 	public static final RegistryObject<ModWallSign> WILLOW_WALL_SIGN = registerBlockNoItem("willow_wall_sign",
 			() -> new ModWallSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.WILLOW));
+
+	public static final RegistryObject<ModWallSign> WITCH_HAZEL_WALL_SIGN = registerBlockNoItem("witch_hazel_wall_sign",
+			() -> new ModWallSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.WITCH_HAZEL));
 
 	public static final RegistryObject<ModSign> POLISHED_MAHOGANY_SIGN = registerBlockNoItem("polished_mahogany_sign",
 			() -> new ModSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModWoodType.POLISHED_MAHOGANY));
@@ -801,11 +889,17 @@ public class ModBlocks {
 	public static final RegistryObject<ModSign> POLISHED_WILLOW_SIGN = registerBlockNoItem("polished_willow_sign",
 			() -> new ModSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModWoodType.POLISHED_WILLOW));
 
+	public static final RegistryObject<ModSign> POLISHED_WITCH_HAZEL_SIGN = registerBlockNoItem("polished_witch_hazel_sign",
+			() -> new ModSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModWoodType.POLISHED_WITCH_HAZEL));
+
 	public static final RegistryObject<ModWallSign> POLISHED_MAHOGANY_WALL_SIGN = registerBlockNoItem("polished_mahogany_wall_sign",
 			() -> new ModWallSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.POLISHED_MAHOGANY));
 
 	public static final RegistryObject<ModWallSign> POLISHED_WILLOW_WALL_SIGN = registerBlockNoItem("polished_willow_wall_sign",
 			() -> new ModWallSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.POLISHED_WILLOW));
+
+	public static final RegistryObject<ModWallSign> POLISHED_WITCH_HAZEL_WALL_SIGN = registerBlockNoItem("polished_witch_hazel_wall_sign",
+			() -> new ModWallSign(BlockBehaviour.Properties.copy(Blocks.OAK_SIGN).explosionResistance(4f).strength(3).noCollission().noOcclusion(), ModTileEntities.SIGN_TILE::get, ModWoodType.POLISHED_WITCH_HAZEL));
 
 //    public static final RegistryObject<Block> SAGE_BUNDLE_PLATE = registerBlock("sage_bundle_plate",
 //            () -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).explosionResistance(2f)));
@@ -830,6 +924,16 @@ public class ModBlocks {
 
 	public static final RegistryObject<HerbDryingRack> HERB_DRYING_RACK = registerBlock("herb_drying_rack",
 					() -> new HerbDryingRack(BlockBehaviour.Properties.of(Material.WOOD).strength(1).explosionResistance(2f)));
+
+	public static final RegistryObject<WallDryingRack> MAHOGANY_DRYING_RACK = registerBlock("mahogany_drying_rack",
+			() -> new WallDryingRack(BlockBehaviour.Properties.of(Material.WOOD).strength(1).explosionResistance(2f)));
+
+	public static final RegistryObject<WallDryingRack> WILLOW_DRYING_RACK = registerBlock("willow_drying_rack",
+			() -> new WallDryingRack(BlockBehaviour.Properties.of(Material.WOOD).strength(1).explosionResistance(2f)));
+
+	public static final RegistryObject<WallDryingRack> WITCH_HAZEL_DRYING_RACK = registerBlock("witch_hazel_drying_rack",
+			() -> new WallDryingRack(BlockBehaviour.Properties.of(Material.WOOD).strength(1).explosionResistance(2f)));
+
 
 	public static final RegistryObject<Candelabra> CANDELABRA = registerBlock("candelabra",
 					() -> new Candelabra(BlockBehaviour.Properties.of(Material.METAL).strength(1).explosionResistance(2f).lightLevel(state -> state.getValue(Candelabra.LIT) ? 15 : 0)));
@@ -864,7 +968,7 @@ public class ModBlocks {
 	public static final RegistryObject<Candle> CANDLE_YELLOW = registerBlockNoItem("candle_yellow",
 					() -> new Candle(BlockBehaviour.Properties.of(Material.VEGETABLE).noCollission().noOcclusion().strength(1).explosionResistance(0.5f).lightLevel(state -> Math.min(state.getValue(Candle.CANDLES_LIT) * 12, 15))));
 
-
+// MAHOGANY
 	public static final RegistryObject<MahoganyLog> MAHOGANY_LOG = registerBlock("mahogany_log",
 					() -> new MahoganyLog(BlockBehaviour.Properties.copy(Blocks.OAK_LOG)));
 
@@ -940,25 +1044,7 @@ public class ModBlocks {
 			() -> new TrapDoorBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noOcclusion()));
 
 
-//	public static final RegistryObject<Block> WAXED_MAHOGANY_CONNECTED = registerBlock("waxed_mahogany_connected",
-//			() -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)){
-//
-//				@Nullable
-//				@Override
-//				public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate) {
-//
-//
-//					boolean cloth = CleaningClothItem.CLOTH_WAX_OFF.equals(toolAction);
-//					BlockState toReturn = ModBlocks.WAXED_MAHOGANY_CONNECTED.get().defaultBlockState();
-//
-//					if(cloth){
-//						toReturn = ModBlocks.MAHOGANY_CONNECTED.get().defaultBlockState();
-//					}
-//
-//					return toReturn;
-//				}
-//			});
-
+//	WILLOW
 
 	public static final RegistryObject<WillowLog> WILLOW_LOG = registerBlock("willow_log",
 					() -> new WillowLog(BlockBehaviour.Properties.copy(Blocks.OAK_LOG)));
@@ -1040,83 +1126,90 @@ public class ModBlocks {
 
 	public static final RegistryObject<TrapDoorBlock> POLISHED_WILLOW_TRAPDOOR = registerBlock("polished_willow_trapdoor",
 			() -> new TrapDoorBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noOcclusion()));
+
+// WITCH HAZEL
+
+
+	public static final RegistryObject<WillowLog> WITCH_HAZEL_LOG = registerBlock("witch_hazel_log",
+			() -> new WillowLog(BlockBehaviour.Properties.copy(Blocks.OAK_LOG)));
+
+	public static final RegistryObject<WillowWood> WITCH_HAZEL_WOOD = registerBlock("witch_hazel_wood",
+			() -> new WillowWood(BlockBehaviour.Properties.copy(Blocks.OAK_WOOD)));
+
+	public static final RegistryObject<RotatedPillarBlock> STRIPPED_WITCH_HAZEL_LOG = registerBlock("stripped_witch_hazel_log",
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.STRIPPED_OAK_LOG)));
+
+	public static final RegistryObject<RotatedPillarBlock> STRIPPED_WITCH_HAZEL_WOOD = registerBlock("stripped_witch_hazel_wood",
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.STRIPPED_OAK_WOOD)));
+
+	public static final RegistryObject<Block> WITCH_HAZEL_PLANKS = registerBlock("witch_hazel_planks",
+			() -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<StairBlock> WITCH_HAZEL_STAIRS = registerBlock("witch_hazel_stairs",
+			() -> new StairBlock(() -> WITCH_HAZEL_PLANKS.get().defaultBlockState(),
+					BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
 //
-//	public static final RegistryObject<Block> WAXED_POLISHED_WILLOW_CONNECTED = registerBlock("waxed_polished_willow_connected",
-//			() -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)){
+//	public static final RegistryObject<Block> WITCH_HAZEL_VINES = registerBlock("witch_hazel_vines",
+//			() -> new WillowVinesBlock(BlockBehaviour.Properties.of(Material.PLANT).noCollission().instabreak().sound(SoundType.WEEPING_VINES)));
 //
-//				@Nullable
-//				@Override
-//				public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate) {
-//
-//
-//					boolean cloth = CleaningClothItem.CLOTH_WAX_OFF.equals(toolAction);
-//					BlockState toReturn = ModBlocks.WAXED_POLISHED_WILLOW_CONNECTED.get().defaultBlockState();
-//
-//					if(cloth){
-//						toReturn = ModBlocks.POLISHED_WILLOW_CONNECTED.get().defaultBlockState();
-//					}
-//
-//					return toReturn;
-//				}
-//			});
-//
-//	public static final RegistryObject<Block> WAXED_POLISHED_WILLOW_LAYERED = registerBlock("waxed_polished_willow_layered",
-//			() -> new LayeredBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)){
-//
-//				@Nullable
-//				@Override
-//				public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate) {
-//
-//
-//					boolean cloth = CleaningClothItem.CLOTH_WAX_OFF.equals(toolAction);
-//					BlockState toReturn = ModBlocks.WAXED_POLISHED_WILLOW_LAYERED.get().defaultBlockState().setValue(AXIS, state.getValue(AXIS));
-//
-//					if(cloth){
-//						toReturn = ModBlocks.POLISHED_WILLOW_LAYERED.get().defaultBlockState().setValue(AXIS, state.getValue(AXIS));
-//					}
-//
-//					return toReturn;
-//				}
-//			});
-//
-//	public static final RegistryObject<Block> WAXED_POLISHED_WILLOW_PILLAR = registerBlock("waxed_polished_willow_pillar",
-//			() -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)){
-//
-//				@Nullable
-//				@Override
-//				public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate) {
-//
-//
-//					boolean cloth = CleaningClothItem.CLOTH_WAX_OFF.equals(toolAction);
-//					BlockState toReturn = ModBlocks.WAXED_POLISHED_WILLOW_PILLAR.get().defaultBlockState().setValue(AXIS, state.getValue(AXIS));
-//
-//					if(cloth){
-//						toReturn = ModBlocks.POLISHED_WILLOW_PILLAR.get().defaultBlockState().setValue(AXIS, state.getValue(AXIS));
-//					}
-//
-//					return toReturn;
-//				}
-//			});
-//
-//	public static final RegistryObject<Block> WAXED_WILLOW_CONNECTED = registerBlock("waxed_willow_connected",
-//			() -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)){
-//
-//				@Nullable
-//				@Override
-//				public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate) {
-//
-//
-//					boolean cloth = CleaningClothItem.CLOTH_WAX_OFF.equals(toolAction);
-//					BlockState toReturn = ModBlocks.WAXED_WILLOW_CONNECTED.get().defaultBlockState();
-//
-//					if(cloth){
-//						toReturn = ModBlocks.WILLOW_CONNECTED.get().defaultBlockState();
-//					}
-//
-//					return toReturn;
-//				}
-//			});
-//
+//	public static final RegistryObject<Block> WITCH_HAZEL_VINES_PLANT = registerBlockNoItem("witch_hazel_vines_plant",
+//			() -> new WillowVinesPlantBlock(BlockBehaviour.Properties.of(Material.PLANT).noCollission().instabreak().sound(SoundType.WEEPING_VINES)));
+
+	public static final RegistryObject<FenceBlock> WITCH_HAZEL_FENCE = registerBlock("witch_hazel_fence",
+			() -> new FenceBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<FenceGateBlock> WITCH_HAZEL_FENCE_GATE = registerBlock("witch_hazel_fence_gate",
+			() -> new FenceGateBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<SlabBlock> WITCH_HAZEL_SLAB = registerBlock("witch_hazel_slab",
+			() -> new SlabBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<WoodButtonBlock> WITCH_HAZEL_BUTTON = registerBlock("witch_hazel_button",
+			() -> new WoodButtonBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noCollission()));
+
+	public static final RegistryObject<PressurePlateBlock> WITCH_HAZEL_PRESSURE_PLATE = registerBlock("witch_hazel_pressure_plate",
+			() -> new PressurePlateBlock(PressurePlateBlock.Sensitivity.EVERYTHING, BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noCollission()));
+
+	public static final RegistryObject<DoorBlock> WITCH_HAZEL_DOOR = registerBlock("witch_hazel_door",
+			() -> new DoorBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noOcclusion()));
+
+	public static final RegistryObject<TrapDoorBlock> WITCH_HAZEL_TRAPDOOR = registerBlock("witch_hazel_trapdoor",
+			() -> new TrapDoorBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noOcclusion()));
+
+	public static final RegistryObject<LeavesBlock> WITCH_HAZEL_LEAVES = registerBlock("witch_hazel_leaves",
+			() -> new LeavesBlock(BlockBehaviour.Properties.of(Material.LEAVES).strength(0.2F).randomTicks().sound(SoundType.AZALEA_LEAVES).noOcclusion().isSuffocating(Properties::never).isViewBlocking(Properties::never)));
+
+	public static final RegistryObject<SaplingBlock> WITCH_HAZEL_SAPLING = registerBlock("witch_hazel_sapling",
+			() -> new SaplingBlock(new WitchHazelTree(), BlockBehaviour.Properties.copy(Blocks.OAK_SAPLING)));
+
+
+	public static final RegistryObject<Block> POLISHED_WITCH_HAZEL_PLANKS = registerBlock("polished_witch_hazel_planks",
+			() -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<StairBlock> POLISHED_WITCH_HAZEL_STAIRS = registerBlock("polished_witch_hazel_stairs",
+			() -> new StairBlock(() -> POLISHED_WITCH_HAZEL_PLANKS.get().defaultBlockState(),
+					BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<FenceBlock> POLISHED_WITCH_HAZEL_FENCE = registerBlock("polished_witch_hazel_fence",
+			() -> new FenceBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<FenceGateBlock> POLISHED_WITCH_HAZEL_FENCE_GATE = registerBlock("polished_witch_hazel_fence_gate",
+			() -> new FenceGateBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<SlabBlock> POLISHED_WITCH_HAZEL_SLAB = registerBlock("polished_witch_hazel_slab",
+			() -> new SlabBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+
+	public static final RegistryObject<WoodButtonBlock> POLISHED_WITCH_HAZEL_BUTTON = registerBlock("polished_witch_hazel_button",
+			() -> new WoodButtonBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noCollission()));
+
+	public static final RegistryObject<PressurePlateBlock> POLISHED_WITCH_HAZEL_PRESSURE_PLATE = registerBlock("polished_witch_hazel_pressure_plate",
+			() -> new PressurePlateBlock(PressurePlateBlock.Sensitivity.EVERYTHING, BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noCollission()));
+
+	public static final RegistryObject<DoorBlock> POLISHED_WITCH_HAZEL_DOOR = registerBlock("polished_witch_hazel_door",
+			() -> new DoorBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noOcclusion()));
+
+	public static final RegistryObject<TrapDoorBlock> POLISHED_WITCH_HAZEL_TRAPDOOR = registerBlock("polished_witch_hazel_trapdoor",
+			() -> new TrapDoorBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).noOcclusion()));
 
 	public static final RegistryObject<FloweringLilyPadBlock> LILY_PAD_BLOCK = registerBlockNoItem("flowering_lily_pad",
 					() -> new FloweringLilyPadBlock(BlockBehaviour.Properties.of(Material.VEGETABLE).instabreak().sound(SoundType.LILY_PAD).noOcclusion()));
@@ -1215,6 +1308,9 @@ public class ModBlocks {
 					() -> new Block(BlockBehaviour.Properties.of(Material.STONE).strength(2).requiresCorrectToolForDrops().explosionResistance(5f)));
 
 	// BLOCK PARTIALS
+
+	public static final RegistryObject<Block> MIXING_CAULDRON_DYE = registerBlockNoItem("mixing_cauldron_dye",
+			() -> new Block(BlockBehaviour.Properties.of(Material.STONE).strength(2).requiresCorrectToolForDrops().explosionResistance(5f)));
 
 	public static final RegistryObject<Block> CANDLE_DIPPER_WICK_BASE = registerBlockNoItem("candle_dipper_wick_base",
 					() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(0).noCollission().explosionResistance(1f)));

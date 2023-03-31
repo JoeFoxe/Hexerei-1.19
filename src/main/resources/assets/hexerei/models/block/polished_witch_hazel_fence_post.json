@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/fence_post",
+  "textures": {
+    "texture": "hexerei:block/polished_witch_hazel_planks"
+  }
+}

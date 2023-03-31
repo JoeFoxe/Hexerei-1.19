@@ -24,6 +24,11 @@ public class ModPlacedFeatures {
                     ModConfiguredFeatures.WILLOW_SPAWN, VegetationPlacements.treePlacement(
                     PlacementUtils.countExtra(2, 0.1F, 1))));
 
+    public static final RegistryObject<PlacedFeature> WITCH_HAZEL_PLACED = PLACED_FEATURES.register("witch_hazel_placed",
+            () -> new PlacedFeature((Holder<ConfiguredFeature<?,?>>)(Holder<? extends ConfiguredFeature<?,?>>)
+                    ModConfiguredFeatures.WITCH_HAZEL_SPAWN, VegetationPlacements.treePlacement(
+                    PlacementUtils.countExtra(2, 0.1F, 1))));
+
     public static final RegistryObject<PlacedFeature> MAHOGANY_PLACED = PLACED_FEATURES.register("mahogany_placed",
             () -> new PlacedFeature((Holder<ConfiguredFeature<?,?>>)(Holder<? extends ConfiguredFeature<?,?>>)
                     ModConfiguredFeatures.MAHOGANY_SPAWN, VegetationPlacements.treePlacement(

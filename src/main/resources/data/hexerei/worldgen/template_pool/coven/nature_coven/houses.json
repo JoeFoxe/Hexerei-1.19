@@ -1,0 +1,114 @@
+{
+  "name": "hexerei:coven/nature_coven/houses",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 150,
+      "element": {
+        "location": "hexerei:coven/nature_coven/houses/pots_shop",
+        "processors": "hexerei:coven/nature_coven/nature_coven_legs",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 150,
+      "element": {
+        "location": "hexerei:coven/nature_coven/houses/witch_house_1",
+        "processors": "hexerei:coven/nature_coven/nature_coven_legs",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 150,
+      "element": {
+        "location": "hexerei:coven/nature_coven/houses/witch_house_2",
+        "processors": "hexerei:coven/nature_coven/nature_coven_legs",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 150,
+      "element": {
+        "location": "hexerei:coven/nature_coven/houses/witch_house_3",
+        "processors": "hexerei:coven/nature_coven/nature_coven_legs",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 150,
+      "element": {
+        "location": "hexerei:coven/nature_coven/houses/witch_house_4",
+        "processors": "hexerei:coven/nature_coven/nature_coven_legs",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 150,
+      "element": {
+        "location": "hexerei:coven/nature_coven/houses/witch_house_5",
+        "processors": "hexerei:coven/nature_coven/nature_coven_legs",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 150,
+      "element": {
+        "location": "hexerei:coven/nature_coven/houses/witch_house_6",
+        "processors": "hexerei:coven/nature_coven/nature_coven_legs",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 150,
+      "element": {
+        "location": "hexerei:coven/nature_coven/houses/garden_2",
+        "processors": "hexerei:coven/nature_coven/nature_coven_legs",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 150,
+      "element": {
+        "location": "hexerei:coven/nature_coven/houses/gazebo_1",
+        "processors": "hexerei:coven/nature_coven/nature_coven_legs",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 150,
+      "element": {
+        "location": "hexerei:coven/nature_coven/houses/gazebo_2",
+        "processors": "hexerei:coven/nature_coven/nature_coven_legs",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 150,
+      "element": {
+        "location": "hexerei:coven/nature_coven/houses/flower_garden_1",
+        "processors": "hexerei:coven/nature_coven/nature_coven_legs",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "hexerei:coven/nature_coven/houses/empty",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

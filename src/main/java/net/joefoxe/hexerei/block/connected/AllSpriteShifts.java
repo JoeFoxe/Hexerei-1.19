@@ -18,10 +18,14 @@ public class AllSpriteShifts {
     public static final CTSpriteShiftEntry WAXED_POLISHED_SMOOTH_MAHOGANY_GLASS = omni("waxed_polished_smooth_mahogany_glass","polished_smooth_mahogany_glass_pane_connected");
     public static final CTSpriteShiftEntry POLISHED_SMOOTH_WILLOW_GLASS = omni("polished_smooth_willow_glass","polished_smooth_willow_glass_pane_connected");
     public static final CTSpriteShiftEntry WAXED_POLISHED_SMOOTH_WILLOW_GLASS = omni("waxed_polished_smooth_willow_glass","polished_smooth_willow_glass_pane_connected");
+    public static final CTSpriteShiftEntry POLISHED_SMOOTH_WITCH_HAZEL_GLASS = omni("polished_smooth_witch_hazel_glass","polished_smooth_witch_hazel_glass_pane_connected");
+    public static final CTSpriteShiftEntry WAXED_POLISHED_SMOOTH_WITCH_HAZEL_GLASS = omni("waxed_polished_smooth_witch_hazel_glass","polished_smooth_witch_hazel_glass_pane_connected");
     public static final CTSpriteShiftEntry POLISHED_SMOOTH_MAHOGANY_GLASS_PANE = omni("polished_smooth_mahogany_glass_pane");
     public static final CTSpriteShiftEntry WAXED_POLISHED_SMOOTH_MAHOGANY_GLASS_PANE = omni("waxed_polished_smooth_mahogany_glass_pane","polished_smooth_mahogany_glass_pane_connected");
     public static final CTSpriteShiftEntry POLISHED_SMOOTH_WILLOW_GLASS_PANE = omni("polished_smooth_willow_glass_pane");
     public static final CTSpriteShiftEntry WAXED_POLISHED_SMOOTH_WILLOW_GLASS_PANE = omni("waxed_polished_smooth_willow_glass_pane","polished_smooth_willow_glass_pane_connected");
+    public static final CTSpriteShiftEntry POLISHED_SMOOTH_WITCH_HAZEL_GLASS_PANE = omni("polished_smooth_witch_hazel_glass_pane");
+    public static final CTSpriteShiftEntry WAXED_POLISHED_SMOOTH_WITCH_HAZEL_GLASS_PANE = omni("waxed_polished_smooth_witch_hazel_glass_pane","polished_smooth_witch_hazel_glass_pane_connected");
     public static final CTSpriteShiftEntry WAXED_MAHOGANY_CONNECTED = omni("waxed_mahogany_connected", "mahogany_planks_connected");
     public static final CTSpriteShiftEntry WAXED_POLISHED_MAHOGANY_CONNECTED = omni("waxed_polished_mahogany", "polished_mahogany_connected");
     public static final CTSpriteShiftEntry WAXED_POLISHED_MAHOGANY_PILLAR_SIDE = pillar("waxed_polished_mahogany_pillar", "polished_mahogany_pillar_connected");
@@ -46,6 +50,19 @@ public class AllSpriteShifts {
     public static final CTSpriteShiftEntry WAXED_POLISHED_WILLOW_PILLAR_TOP = omni("waxed_polished_willow_cap", "polished_willow_connected");
     public static final CTSpriteShiftEntry WAXED_POLISHED_WILLOW_LAYERED = layered("waxed_polished_willow_layered", "polished_willow_layered_connected");
     public static final CTSpriteShiftEntry WAXED_POLISHED_SMOOTH_WILLOW = omniRandom("waxed_polished_smooth_willow", "polished_smooth_willow_connected");
+
+    public static final CTSpriteShiftEntry WITCH_HAZEL_CONNECTED = omni("witch_hazel_connected", "witch_hazel_planks_connected");
+    public static final CTSpriteShiftEntry POLISHED_WITCH_HAZEL_CONNECTED = omni("polished_witch_hazel");
+    public static final CTSpriteShiftEntry POLISHED_WITCH_HAZEL_PILLAR_SIDE = pillar("polished_witch_hazel_pillar");
+    public static final CTSpriteShiftEntry POLISHED_WITCH_HAZEL_PILLAR_TOP = omni("polished_witch_hazel_cap", "polished_witch_hazel_connected");
+    public static final CTSpriteShiftEntry POLISHED_WITCH_HAZEL_LAYERED = layered("polished_witch_hazel_layered");
+    public static final CTSpriteShiftEntry POLISHED_SMOOTH_WITCH_HAZEL = omniRandom("polished_smooth_witch_hazel");
+    public static final CTSpriteShiftEntry WAXED_WITCH_HAZEL_CONNECTED = omni("waxed_witch_hazel_connected", "witch_hazel_planks_connected");
+    public static final CTSpriteShiftEntry WAXED_POLISHED_WITCH_HAZEL_CONNECTED = omni("waxed_polished_witch_hazel", "polished_witch_hazel_connected");
+    public static final CTSpriteShiftEntry WAXED_POLISHED_WITCH_HAZEL_PILLAR_SIDE = pillar("waxed_polished_witch_hazel_pillar", "polished_witch_hazel_pillar_connected");
+    public static final CTSpriteShiftEntry WAXED_POLISHED_WITCH_HAZEL_PILLAR_TOP = omni("waxed_polished_witch_hazel_cap", "polished_witch_hazel_connected");
+    public static final CTSpriteShiftEntry WAXED_POLISHED_WITCH_HAZEL_LAYERED = layered("waxed_polished_witch_hazel_layered", "polished_witch_hazel_layered_connected");
+    public static final CTSpriteShiftEntry WAXED_POLISHED_SMOOTH_WITCH_HAZEL = omniRandom("waxed_polished_smooth_witch_hazel", "polished_smooth_witch_hazel_connected");
 
     private static CTSpriteShiftEntry omni(String name) {
         return getCT(AllCTTypes.OMNIDIRECTIONAL, name);

@@ -251,9 +251,9 @@ public class FluidMixingRecipeCategory implements IRecipeCategory<FluidMixingRec
             BlockState blockState = ModBlocks.MIXING_CAULDRON.get().defaultBlockState().setValue(MixingCauldron.GUI_RENDER, true);
 
             ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
-            BlockRenderDispatcher rendererer = Minecraft.getInstance().getBlockRenderer();
-            rendererer.getBlockModel(blockState);
-            BakedModel bakedModel = rendererer.getBlockModel(blockState);//renderer.getModel(new ItemStack(ModBlocks.WILLOW_ALTAR.get()), null, null, 0);
+//            BlockRenderDispatcher rendererer = Minecraft.getInstance().getBlockRenderer();
+//            rendererer.getBlockModel(blockState);
+//            BakedModel bakedModel = rendererer.getBlockModel(blockState);//renderer.getModel(new ItemStack(ModBlocks.WILLOW_ALTAR.get()), null, null, 0);
 
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
             RenderSystem.enableBlend();

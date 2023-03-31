@@ -3,10 +3,14 @@
   "values": [
     "hexerei:book_of_shadows_altar",
     "hexerei:willow_altar",
+    "hexerei:witch_hazel_altar",
     "hexerei:willow_chest",
+    "hexerei:witch_hazel_chest",
     "hexerei:mahogany_chest",
     "hexerei:herb_drying_rack_full",
     "hexerei:herb_drying_rack",
-    "hexerei:book_of_shadows_altar"
+    "hexerei:mahogany_drying_rack",
+    "hexerei:willow_drying_rack",
+    "hexerei:witch_hazel_drying_rack"
   ]
 }

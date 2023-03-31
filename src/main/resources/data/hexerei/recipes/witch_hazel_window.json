@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "hexerei:witch_hazel_planks"
+    },
+    {
+      "tag": "forge:glass"
+    }
+  ],
+
+  "result": {
+    "item": "hexerei:witch_hazel_window",
+    "count": 2
+  }
+}

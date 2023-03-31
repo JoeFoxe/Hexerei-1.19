@@ -3,6 +3,7 @@
   "values": [
     "minecraft:pumpkin",
     "minecraft:melon",
+    "minecraft:sugar_cane",
     {
       "id": "immersiveengineering:hemp",
       "required": false
