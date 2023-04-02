@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "hexerei:block/stone_window"
+  },
+  "render_type": "cutout_mipped"
+}

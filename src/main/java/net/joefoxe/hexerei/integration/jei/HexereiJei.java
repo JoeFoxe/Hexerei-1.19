@@ -226,6 +226,8 @@ public class HexereiJei implements IModPlugin {
         registration.addRecipeCategories(
                 new MixingCauldronRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new AddToCandleRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
+                new FluteRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
+                new BookOfShadowsRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new KeychainApplyRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new FluidMixingRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new FluidMixingRecipeCategory(registration.getJeiHelpers().getGuiHelper(), "Potion"),
@@ -318,13 +320,24 @@ public class HexereiJei implements IModPlugin {
 
         if(Minecraft.getInstance().level != null) {
             List<CraftingRecipe> add_to_candle_recipes = Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING);//rm.getAllRecipesFor(AddToCandleRecipe.Type.INSTANCE);
+            List<CraftingRecipe> flute_dye_recipes = new ArrayList<>(add_to_candle_recipes);
+            List<CraftingRecipe> book_recipe = new ArrayList<>(add_to_candle_recipes);
+            List<CraftingRecipe> keychainRecipe = new ArrayList<>(add_to_candle_recipes);
             add_to_candle_recipes = add_to_candle_recipes.stream().filter((craftingRecipe) -> {
                 return craftingRecipe instanceof AddToCandleRecipe;
             }).toList();
             registration.addRecipes(new RecipeType<>(AddToCandleRecipeCategory.UID, AddToCandleRecipe.class), add_to_candle_recipes);
-        }
-        if(Minecraft.getInstance().level != null) {
-            List<CraftingRecipe> keychainRecipe = Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING);//rm.getAllRecipesFor(AddToCandleRecipe.Type.INSTANCE);
+
+            flute_dye_recipes = flute_dye_recipes.stream().filter((craftingRecipe) -> {
+                return craftingRecipe instanceof CrowFluteRecipe;
+            }).toList();
+            registration.addRecipes(new RecipeType<>(FluteRecipeCategory.UID, CrowFluteRecipe.class), flute_dye_recipes);
+
+            book_recipe = book_recipe.stream().filter((craftingRecipe) -> {
+                return craftingRecipe instanceof BookOfShadowsRecipe;
+            }).toList();
+            registration.addRecipes(new RecipeType<>(BookOfShadowsRecipeCategory.UID, BookOfShadowsRecipe.class), book_recipe);
+
             keychainRecipe = keychainRecipe.stream().filter((craftingRecipe) -> {
                 return craftingRecipe instanceof KeychainRecipe;
             }).toList();

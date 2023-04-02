@@ -3,12 +3,14 @@ package net.joefoxe.hexerei.data.recipes;
 import com.google.gson.JsonObject;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.custom.CrowFluteItem;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
@@ -17,8 +19,15 @@ import javax.annotation.Nonnull;
 
 public class CrowFluteRecipe extends ShapedRecipe {
 
+    NonNullList<Ingredient> inputs;
+    ItemStack output;
+
     public CrowFluteRecipe(ShapedRecipe compose) {
         super(compose.getId(), compose.getGroup(), compose.getWidth(), compose.getHeight(), compose.getIngredients(), compose.getResultItem());
+
+
+        this.inputs = compose.getIngredients();
+        this.output = compose.getResultItem();
     }
 
     @Override
@@ -48,10 +57,21 @@ public class CrowFluteRecipe extends ShapedRecipe {
         return CrowFluteItem.withColors(first != -1 ? first : 0, 0);
     }
 
-    @Nonnull
+
+
+
+
     @Override
     public ItemStack getResultItem() {
-        return new ItemStack(ModItems.CROW_FLUTE.get());
+        return getOutput();
+    }
+
+    public ItemStack getOutput() {
+        return output.copy();
+    }
+
+    public NonNullList<Ingredient> getInputs() {
+        return inputs;
     }
 
     public static class Serializer implements RecipeSerializer<CrowFluteRecipe> {

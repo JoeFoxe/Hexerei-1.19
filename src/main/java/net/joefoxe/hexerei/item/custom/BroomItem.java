@@ -1,5 +1,6 @@
 package net.joefoxe.hexerei.item.custom;
 
+import net.joefoxe.hexerei.client.renderer.entity.BroomType;
 import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
 import net.joefoxe.hexerei.client.renderer.entity.custom.BroomEntity;
 import net.joefoxe.hexerei.config.ModKeyBindings;
@@ -39,9 +40,9 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class BroomItem extends Item {
+public class BroomItem extends BroomStickItem {
     private static final Predicate<Entity> field_219989_a = EntitySelector.NO_SPECTATORS.and(Entity::canBeCollidedWith);
-    private final BroomEntity.Type type;
+    private final String type;
 
     private final CachedMap<ItemStack, BroomEntity> cachedBroom;
 
@@ -88,7 +89,7 @@ public class BroomItem extends Item {
     }
 
 
-    public BroomItem(BroomEntity.Type broomType, Item.Properties properties) {
+    public BroomItem(String broomType, Item.Properties properties) {
         super(properties);
         this.type = broomType;
         cachedBroom = new CachedMap<>(10_000, ITEM_COMPARATOR);
@@ -132,7 +133,8 @@ public class BroomItem extends Item {
             broom.itemHandler.deserializeNBT(stack.getOrCreateTag().getCompound("Inventory"));
         else
             broom.itemHandler.setStackInSlot(2, new ItemStack(ModItems.BROOM_BRUSH.get()));
-        broom.setBroomType(this.type);
+        if(stack.getItem() instanceof BroomItem broomItem)
+            broom.setBroomType(broomItem.type);
         broom.isItem = true;
         broom.selfItem = stack.copy();
 
@@ -147,12 +149,6 @@ public class BroomItem extends Item {
     public BroomEntity getBroomFast(Level world, ItemStack stack) {
         return cachedBroom.get(stack, () -> getBroom(world, stack));
     }
-
-
-//    @Override
-//    public Object getRenderPropertiesInternal() {
-//        return new BroomRenderProperties();
-//    }
 
     /**
      * Called to trigger the item's "innate" right click behavior. To handle when this item is used on a Block, see
@@ -180,7 +176,8 @@ public class BroomItem extends Item {
 
             if (raytraceresult.getType() == HitResult.Type.BLOCK) {
                 BroomEntity broom = new BroomEntity(worldIn, raytraceresult.getLocation().x, raytraceresult.getLocation().y, raytraceresult.getLocation().z);
-                broom.setBroomType(this.type);
+                if(itemstack.getItem() instanceof BroomItem broomItem)
+                    broom.setBroomType(broomItem.type);
                 broom.broomUUID = BroomItem.getUUID(itemstack);
                 broom.setYRot(playerIn.getYRot());
                 broom.itemHandler.deserializeNBT(itemstack.getOrCreateTag().getCompound("Inventory"));

@@ -3,12 +3,14 @@ package net.joefoxe.hexerei.data.recipes;
 import com.google.gson.JsonObject;
 import net.joefoxe.hexerei.data.books.HexereiBookItem;
 import net.joefoxe.hexerei.item.ModItems;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
@@ -17,8 +19,12 @@ import javax.annotation.Nonnull;
 
 public class BookOfShadowsRecipe extends ShapedRecipe {
 
+    NonNullList<Ingredient> inputs;
+    ItemStack output;
     public BookOfShadowsRecipe(ShapedRecipe compose) {
         super(compose.getId(), compose.getGroup(), compose.getWidth(), compose.getHeight(), compose.getIngredients(), compose.getResultItem());
+        this.inputs = compose.getIngredients();
+        this.output = compose.getResultItem();
     }
     @Override
     public boolean isSpecial() {
@@ -41,12 +47,24 @@ public class BookOfShadowsRecipe extends ShapedRecipe {
         return HexereiBookItem.withColors(0);
     }
 
-    @Nonnull
+//    @Nonnull
+//    @Override
+//    public ItemStack getResultItem() {
+//        return new ItemStack(ModItems.BOOK_OF_SHADOWS.get());
+//    }
+
     @Override
     public ItemStack getResultItem() {
-        return new ItemStack(ModItems.BOOK_OF_SHADOWS.get());
+        return getOutput();
     }
 
+    public ItemStack getOutput() {
+        return output.copy();
+    }
+
+    public NonNullList<Ingredient> getInputs() {
+        return inputs;
+    }
     public static class Serializer implements RecipeSerializer<BookOfShadowsRecipe> {
         @Nonnull
         @Override

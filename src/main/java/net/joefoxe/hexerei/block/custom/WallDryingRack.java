@@ -175,16 +175,6 @@ public class WallDryingRack extends HerbDryingRack {
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
-            BlockEntity tileentity = level.getBlockEntity(pos);
-            if (tileentity != null) {
-                DryingRackTile te = (DryingRackTile) level.getBlockEntity(pos);
-                if (!te.getItems().get(0).isEmpty())
-                    te.getLevel().addFreshEntity(new ItemEntity(te.getLevel(), pos.getX() + 0.5f, pos.getY() - 0.5f, pos.getZ() + 0.5f, te.getItems().get(0)));
-                if (!te.getItems().get(1).isEmpty())
-                    te.getLevel().addFreshEntity(new ItemEntity(te.getLevel(), pos.getX() + 0.5f, pos.getY() - 0.5f, pos.getZ() + 0.5f, te.getItems().get(1)));
-                if (!te.getItems().get(2).isEmpty())
-                    te.getLevel().addFreshEntity(new ItemEntity(te.getLevel(), pos.getX() + 0.5f, pos.getY() - 0.5f, pos.getZ() + 0.5f, te.getItems().get(2)));
-            }
             super.onRemove(state, level, pos, newState, isMoving);
         }
     }

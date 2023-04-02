@@ -190,6 +190,19 @@ public class ModBlocks {
 			.register();
 
 
+	public static final BlockEntry<WaxedGlassPaneBlock> STONE_WINDOW_PANE = REGISTRATE.block("stone_window_pane", (properties) -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.copy(Blocks.GLASS_PANE)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.GLASS_PANE).color(MaterialColor.STONE))
+			.onRegister(connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.STONE_WINDOW_PANE_CONNECTED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.STONE_WINDOW_PANE_CONNECTED)))
+			.register();
+
+	public static final BlockEntry<GlassBlock> STONE_WINDOW = REGISTRATE.block("stone_window", (properties) -> new GlassBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE)))
+			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE).color(MaterialColor.TERRACOTTA_RED))
+			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.STONE_WINDOW_CONNECTED)))
+			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.STONE_WINDOW_CONNECTED)))
+			.register();
+
+
 	public static final BlockEntry<WaxedGlassPaneBlock> MAHOGANY_WINDOW_PANE = REGISTRATE.block("mahogany_window_pane", (properties) -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.copy(Blocks.GLASS_PANE)))
 			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.GLASS_PANE).color(MaterialColor.TERRACOTTA_RED))
 			.onRegister(connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_MAHOGANY_GLASS_PANE)))

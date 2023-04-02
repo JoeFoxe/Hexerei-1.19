@@ -1,0 +1,14 @@
+{
+  "broom_types": [
+    {
+      "name": "willow",
+      "texture": "hexerei:entity/willow_broom",
+      "model": "hexerei:entity/willow_broom"
+    },
+    {
+      "name": "mahogany",
+      "texture": "hexerei:entity/mahogany_broom",
+      "model": "hexerei:entity/mahogany_broom"
+    }
+  ]
+}

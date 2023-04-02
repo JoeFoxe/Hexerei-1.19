@@ -8,6 +8,7 @@ import net.joefoxe.hexerei.block.CustomFlintAndSteelDispenserBehavior;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.ModWoodType;
 import net.joefoxe.hexerei.client.renderer.CrowPerchRenderer;
+import net.joefoxe.hexerei.client.renderer.entity.BroomType;
 import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
 import net.joefoxe.hexerei.config.HexConfig;
 import net.joefoxe.hexerei.container.ModContainers;
@@ -169,6 +170,8 @@ public class Hexerei {
 		ModLootModifiers.init();
 		HexereiModNameTooltipCompat.init();
 
+//		BroomType.loadBroomTypes();
+
 		IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
 
 		eventBus.addListener(this::loadComplete);
@@ -227,6 +230,9 @@ public class Hexerei {
 			WoodType.register(ModWoodType.POLISHED_MAHOGANY);
 			WoodType.register(ModWoodType.POLISHED_WILLOW);
 			WoodType.register(ModWoodType.POLISHED_WITCH_HAZEL);
+
+			BroomType.create("mahogany", ModItems.MAHOGANY_BROOM.get(), 0.8f);
+			BroomType.create("willow", ModItems.WILLOW_BROOM.get(), 0.4f);
 
 			Registry.register(Registry.STRUCTURE_PROCESSOR, new ResourceLocation(MOD_ID, "witch_hut_leg_processor"), WITCH_HUT_LEG_PROCESSOR);
 			Registry.register(Registry.STRUCTURE_PROCESSOR, new ResourceLocation(MOD_ID, "dark_coven_leg_processor"), DARK_COVEN_LEG_PROCESSOR);

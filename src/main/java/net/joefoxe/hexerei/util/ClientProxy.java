@@ -5,6 +5,7 @@ import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.connected.BlockConnectivity;
 import net.joefoxe.hexerei.block.connected.ModelSwapper;
 import net.joefoxe.hexerei.block.connected.StitchedSprite;
+import net.joefoxe.hexerei.client.renderer.entity.BroomType;
 import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
 import net.joefoxe.hexerei.client.renderer.entity.model.*;
 import net.joefoxe.hexerei.client.renderer.entity.render.BroomRenderer;
@@ -151,6 +152,8 @@ public class ClientProxy implements SidedProxy {
         event.registerLayerDefinition(BroomKeychainChainModel.LAYER_LOCATION, BroomKeychainChainModel::createBodyLayer);
         event.registerLayerDefinition(BroomNetheriteTipModel.LAYER_LOCATION, BroomNetheriteTipModel::createBodyLayer);
         event.registerLayerDefinition(BroomWaterproofTipModel.LAYER_LOCATION, BroomWaterproofTipModel::createBodyLayer);
+        event.registerLayerDefinition(BroomThrusterBrushModel.LAYER_LOCATION, BroomThrusterBrushModel::createBodyLayerNone);
+        event.registerLayerDefinition(BroomThrusterBrushModel.POWER_LAYER_LOCATION, BroomThrusterBrushModel::createBodyLayerEnlarge);
         event.registerLayerDefinition(ClientProxy.WITCH_ARMOR_LAYER, WitchArmorModel::createBodyLayer);
         event.registerLayerDefinition(ClientProxy.MUSHROOM_WITCH_ARMOR_LAYER, MushroomWitchArmorModel::createBodyLayer);
         event.registerLayerDefinition(ClientProxy.CANDLE_HERB_LAYER, CandleHerbLayer::createBodyLayer);
