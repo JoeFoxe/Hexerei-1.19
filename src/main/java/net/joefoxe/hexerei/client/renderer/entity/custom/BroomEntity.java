@@ -1609,8 +1609,8 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         return this.entityData.get(FORWARD_DIRECTION);
     }
 
-    public void setBroomType(String boatType) {
-        this.entityData.set(BROOM_TYPE, BroomType.byName(boatType).getName());
+    public void setBroomType(String broomType) {
+        this.entityData.set(BROOM_TYPE, BroomType.byName(broomType).getName());
     }
     public BroomType getBroomType() {
         return BroomType.byName(this.entityData.get(BROOM_TYPE));

@@ -36,6 +36,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
@@ -99,6 +100,24 @@ public class ModItems {
                     this.outter_model = new BroomStickBaseModel(context.bakeLayer(BroomStickBaseModel.POWER_LAYER_LOCATION));
                     this.texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/willow_broom.png");
                     this.dye_texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/willow_broom.png");
+                }
+            });
+
+    public static final RegistryObject<Item> WITCH_HAZEL_BROOM = ITEMS.register("witch_hazel_broom",
+            () -> new BroomItem("witch_hazel", new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).stacksTo(1)){
+
+                @Override
+                public Vec3 getBrushOffset(){
+                    return new Vec3(0, 0, 0.025f);
+                }
+                @OnlyIn(Dist.CLIENT)
+                @Override
+                public void bakeModels() {
+                    EntityModelSet context = Minecraft.getInstance().getEntityModels();
+                    this.model = new WitchHazelBroomStickModel(context.bakeLayer(WitchHazelBroomStickModel.LAYER_LOCATION));
+                    this.outter_model = new WitchHazelBroomStickModel(context.bakeLayer(WitchHazelBroomStickModel.POWER_LAYER_LOCATION));
+                    this.texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/witch_hazel_broom.png");
+                    this.dye_texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/witch_hazel_broom.png");
                 }
             });
 
@@ -456,6 +475,33 @@ public class ModItems {
                     this.list.add(new Tuple<>(ParticleTypes.FLAME, 2));
                     this.list.add(new Tuple<>(ParticleTypes.SMOKE, 8));
                     this.list.add(new Tuple<>(ParticleTypes.LARGE_SMOKE, 50));
+                }
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+
+                    tooltip.add(Component.translatable("tooltip.hexerei.broom_attachments").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+            });
+
+    public static final RegistryObject<Item> MOON_DUST_BRUSH = ITEMS.register("moon_dust_brush",
+            () -> new BroomBrushItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.BROOM_BRUSH_DURABILITY.get()*/100)){
+
+                @OnlyIn(Dist.CLIENT)
+                @Override
+                public void bakeModels() {
+                    EntityModelSet context = Minecraft.getInstance().getEntityModels();
+                    this.model = new MoonDustBrushModel(context.bakeLayer(MoonDustBrushModel.LAYER_LOCATION));
+                    this.texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/moon_dust_brush.png");
+                    this.dye_texture = null;
+                    this.list = new ArrayList<>();
+                    this.list.add(new Tuple<>(ParticleTypes.END_ROD, 5));
+                    this.list.add(new Tuple<>(ParticleTypes.ELECTRIC_SPARK, 2));
+                    this.list.add(new Tuple<>(ModParticleTypes.BROOM_3.get(), 8));
+                    this.list.add(new Tuple<>(ModParticleTypes.BROOM_4.get(), 50));
+                    this.list.add(new Tuple<>(ModParticleTypes.BROOM_5.get(), 50));
+                    this.list.add(new Tuple<>(ModParticleTypes.BROOM_6.get(), 50));
+                    this.glow_on_full_moon = true;
                 }
                 @Override
                 public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {

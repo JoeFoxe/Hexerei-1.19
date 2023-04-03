@@ -14,6 +14,7 @@ import net.joefoxe.hexerei.item.custom.*;
 import net.joefoxe.hexerei.util.HexereiTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -28,6 +29,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -39,14 +41,11 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
     protected static final ResourceLocation TEXTURE =
             new ResourceLocation(Hexerei.MOD_ID, "textures/entity/broom.png");
     private static final ResourceLocation POWER_LOCATION = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/power_layer_light.png");
-    private final BroomStickBaseModel broomPowerModel;
 
     public BroomRenderer(EntityRendererProvider.Context context)
     {
         super(context);
         this.shadowRadius = 0.0F;
-        this.broomPowerModel = new BroomStickBaseModel(context.bakeLayer(BroomStickBaseModel.POWER_LAYER_LOCATION));
-
     }
     @Override
     public ResourceLocation getTextureLocation(BroomEntity p_114482_) {
@@ -110,10 +109,19 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
 
         if(entityIn.itemHandler.getStackInSlot(2).is(HexereiTags.Items.BROOM_BRUSH)) {
 
+            matrixStackIn.pushPose();
             if(brushStack.getItem() instanceof BroomBrushItem brushItem && brushItem.model != null){
+
+                if(broomType.getItem() instanceof BroomItem broomItem) {
+                    matrixStackIn.translate(broomItem.getBrushOffset().x(), broomItem.getBrushOffset().y(), broomItem.getBrushOffset().z());
+                }
+                int light = packedLightIn;
+                if(brushItem.glow_on_full_moon && Minecraft.getInstance().level != null && Minecraft.getInstance().level.getMoonPhase() == 0){
+                    light = LightTexture.FULL_BRIGHT;
+                }
                 Model broomBrushModel = brushItem.model;
                 VertexConsumer brushVertexConsumer = bufferIn.getBuffer(broomBrushModel.renderType(brushItem.texture));
-                broomBrushModel.renderToBuffer(matrixStackIn, brushVertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                broomBrushModel.renderToBuffer(matrixStackIn, brushVertexConsumer, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
                 if (entityIn.hasCustomName() && BroomEntity.getDyeColorNamed(entityIn) != null) {
 
@@ -123,9 +131,10 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
                         afloat = dyeColor.getTextureDiffuseColors();
                     float offset = Hexerei.getClientTicks() + partialTicks;
                     VertexConsumer vertexconsumer = bufferIn.getBuffer(RenderType.energySwirl(POWER_LOCATION, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
-                    broomBrushModel.renderToBuffer(matrixStackIn, vertexconsumer, packedLightIn, OverlayTexture.NO_OVERLAY, afloat[0], afloat[1], afloat[2], 1.0F);
+                    broomBrushModel.renderToBuffer(matrixStackIn, vertexconsumer, light, OverlayTexture.NO_OVERLAY, afloat[0], afloat[1], afloat[2], 1.0F);
                 }
             }
+            matrixStackIn.popPose();
         }
 
         ItemStack satchelStack = entityIn.itemHandler.getStackInSlot(1);

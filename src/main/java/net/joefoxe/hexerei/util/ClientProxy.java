@@ -143,6 +143,8 @@ public class ClientProxy implements SidedProxy {
         event.registerLayerDefinition(BroomBrushBaseModel.POWER_LAYER_LOCATION, BroomBrushBaseModel::createBodyLayerEnlarge);
         event.registerLayerDefinition(BroomStickBaseModel.LAYER_LOCATION, BroomStickBaseModel::createBodyLayerNone);
         event.registerLayerDefinition(BroomStickBaseModel.POWER_LAYER_LOCATION, BroomStickBaseModel::createBodyLayerEnlarge);
+        event.registerLayerDefinition(WitchHazelBroomStickModel.LAYER_LOCATION, WitchHazelBroomStickModel::createBodyLayerNone);
+        event.registerLayerDefinition(WitchHazelBroomStickModel.POWER_LAYER_LOCATION, WitchHazelBroomStickModel::createBodyLayerEnlarge);
         event.registerLayerDefinition(BroomRingsModel.LAYER_LOCATION, BroomRingsModel::createBodyLayer);
         event.registerLayerDefinition(BroomRingsModel.LAYER_LOCATION, BroomRingsModel::createBodyLayer);
         event.registerLayerDefinition(BroomSmallSatchelModel.LAYER_LOCATION, BroomSmallSatchelModel::createBodyLayer);
@@ -154,6 +156,8 @@ public class ClientProxy implements SidedProxy {
         event.registerLayerDefinition(BroomWaterproofTipModel.LAYER_LOCATION, BroomWaterproofTipModel::createBodyLayer);
         event.registerLayerDefinition(BroomThrusterBrushModel.LAYER_LOCATION, BroomThrusterBrushModel::createBodyLayerNone);
         event.registerLayerDefinition(BroomThrusterBrushModel.POWER_LAYER_LOCATION, BroomThrusterBrushModel::createBodyLayerEnlarge);
+        event.registerLayerDefinition(MoonDustBrushModel.LAYER_LOCATION, MoonDustBrushModel::createBodyLayerNone);
+        event.registerLayerDefinition(MoonDustBrushModel.POWER_LAYER_LOCATION, MoonDustBrushModel::createBodyLayerEnlarge);
         event.registerLayerDefinition(ClientProxy.WITCH_ARMOR_LAYER, WitchArmorModel::createBodyLayer);
         event.registerLayerDefinition(ClientProxy.MUSHROOM_WITCH_ARMOR_LAYER, MushroomWitchArmorModel::createBodyLayer);
         event.registerLayerDefinition(ClientProxy.CANDLE_HERB_LAYER, CandleHerbLayer::createBodyLayer);

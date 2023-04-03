@@ -233,6 +233,7 @@ public class Hexerei {
 
 			BroomType.create("mahogany", ModItems.MAHOGANY_BROOM.get(), 0.8f);
 			BroomType.create("willow", ModItems.WILLOW_BROOM.get(), 0.4f);
+			BroomType.create("witch_hazel", ModItems.WITCH_HAZEL_BROOM.get(), 0.6f);
 
 			Registry.register(Registry.STRUCTURE_PROCESSOR, new ResourceLocation(MOD_ID, "witch_hut_leg_processor"), WITCH_HUT_LEG_PROCESSOR);
 			Registry.register(Registry.STRUCTURE_PROCESSOR, new ResourceLocation(MOD_ID, "dark_coven_leg_processor"), DARK_COVEN_LEG_PROCESSOR);

@@ -95,6 +95,17 @@ public class BroomItem extends BroomStickItem {
         cachedBroom = new CachedMap<>(10_000, ITEM_COMPARATOR);
     }
 
+    //override in item creation to change the offset for brooms that have a different brush placement
+    public Vec3 getBrushOffset(){
+        return new Vec3(0, 0, 0);
+    }
+    public Vec3 SatchelOffset(){
+        return new Vec3(0, 0, 0);
+    }
+    public Vec3 getTipOffset(){
+        return new Vec3(0, 0, 0);
+    }
+
     @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         super.initializeClient(consumer);

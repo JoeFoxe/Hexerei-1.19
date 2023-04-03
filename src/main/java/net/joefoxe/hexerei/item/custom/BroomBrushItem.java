@@ -22,6 +22,7 @@ public class BroomBrushItem extends BroomAttachmentItem {
 
     public ResourceLocation texture;
     public ResourceLocation dye_texture;
+    public boolean glow_on_full_moon = false;
     // list of particles and their respective random delay
     public List<Tuple<ParticleOptions, Integer>> list = null;
     public BroomBrushItem(Properties properties) {
@@ -41,6 +42,11 @@ public class BroomBrushItem extends BroomAttachmentItem {
         this.list.add(new Tuple<>(ModParticleTypes.BROOM_4.get(), 500));
         this.list.add(new Tuple<>(ModParticleTypes.BROOM_5.get(), 500));
         this.list.add(new Tuple<>(ModParticleTypes.BROOM_6.get(), 500));
+    }
+
+    //override for the broom brush to have a speed modifier
+    public float getSpeedModifier(){
+        return 0f;
     }
 
 }
