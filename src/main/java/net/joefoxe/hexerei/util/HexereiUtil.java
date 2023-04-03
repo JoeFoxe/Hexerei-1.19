@@ -247,6 +247,34 @@ public class HexereiUtil {
         return input;
     }
 
+    public static float moveToAngle(float input, float movedTo, float speed) {
+        float distance = movedTo - input;
+
+        if (Math.abs(distance) <= speed) {
+            return movedTo;
+        }
+
+        if (distance > 0) {
+            if (Math.abs(distance) < 180)
+                input += speed;
+            else
+                input -= speed;
+        } else {
+            if (Math.abs(distance) < 180)
+                input -= speed;
+            else
+                input += speed;
+        }
+
+        if (input < -90) {
+            input += 360;
+        }
+        if (input > 270)
+            input -= 360;
+
+        return input;
+    }
+
     public static String intToRoman(int number)
     {
         String[] thousands = {"", "M", "MM", "MMM"};

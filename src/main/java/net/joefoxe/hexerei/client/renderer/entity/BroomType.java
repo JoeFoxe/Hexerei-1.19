@@ -1,49 +1,13 @@
 package net.joefoxe.hexerei.client.renderer.entity;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.item.ModItems;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.common.Mod;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class BroomType {
+
+//@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+public record BroomType(String name, Item item, float speedMultiplier) {
     private static final Set<BroomType> VALUES = new HashSet<>();
-
-    private final String name;
-    private final Item item;
-    private final float speedMultiplier;
-
-    public BroomType(String name, Item item, float speedMultiplier) {
-        this.name = name;
-        this.item = item;
-        this.speedMultiplier = speedMultiplier;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
-    public float getSpeedMultiplier() {
-        return speedMultiplier;
-    }
-
 
     public static BroomType create(String name, Item item, float speedMultiplier) {
         BroomType broomType = new BroomType(name, item, speedMultiplier);
@@ -63,8 +27,9 @@ public class BroomType {
         }
         return VALUES.stream().toList().get(0);
     }
+
     public static BroomType byId(int id) {
-        if(id >= 0 && id < VALUES.size())
+        if (id >= 0 && id < VALUES.size())
             return VALUES.stream().toList().get(id);
         return VALUES.stream().toList().get(0);
     }

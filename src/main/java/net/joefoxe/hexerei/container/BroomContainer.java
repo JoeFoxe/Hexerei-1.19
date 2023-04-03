@@ -33,7 +33,6 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
     public ItemStack satchel;
 
 
-
 //    public BroomContainer(int windowId, BroomEntity broom, Inventory inv) {
 //        this(windowId, inv, new SimpleContainer(5));
 //    }
@@ -50,19 +49,19 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
 
         int offset = 0;
         broomEntity.sync();
-        if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.SMALL_SATCHELS))
+        if (broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.SMALL_SATCHELS))
             offset = 21;
-        if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.MEDIUM_SATCHELS))
+        if (broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.MEDIUM_SATCHELS))
             offset = 42;
-        if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.LARGE_SATCHELS))
+        if (broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.LARGE_SATCHELS))
             offset = 63;
         layoutPlayerInventorySlots(11, 106 + offset - OFFSET);
 
         //add slots for mixing cauldron
-        if(broomEntity != null) {
+        if (broomEntity != null) {
             broomEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
 
-                addSlot(new SlotItemHandler(h, 0, 37, 47 - OFFSET){
+                addSlot(new SlotItemHandler(h, 0, 37, 47 - OFFSET) {
 
                     @Override
                     public int getMaxStackSize() {
@@ -75,7 +74,7 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
                     }
                 });
 
-                //satchel slot
+                //satchel slots
                 addSlot(new SlotItemHandler(h, 1, 99, 47 - OFFSET) {
 
                     @Override
@@ -91,89 +90,26 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
                     @Override
                     public boolean mayPickup(Player playerIn) {
 
-                        if(broomEntity.isEnder())
+                        if (broomEntity.isEnder())
                             return true;
 
-                        if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.SMALL_SATCHELS)) {
-                            if (broomEntity.itemHandler.getStackInSlot(3).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(4).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(5).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(6).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(7).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(8).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(9).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(10).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(11).getItem() == (ItemStack.EMPTY.getItem())
-
-                            )
-                                return true;
-                            else
-                                return false;
+                        ItemStack satchel = broomEntity.getModule(BroomEntity.BroomSlot.SATCHEL);
+                        if (satchel.is(HexereiTags.Items.SMALL_SATCHELS)) {
+                            return broomEntity.getSatchelSlots(9).stream().allMatch(ItemStack::isEmpty);
                         }
-                        if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.MEDIUM_SATCHELS)) {
-                            if (broomEntity.itemHandler.getStackInSlot(3).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(4).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(5).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(6).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(7).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(8).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(9).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(10).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(11).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(12).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(13).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(14).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(15).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(16).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(17).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(18).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(19).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(20).getItem() == (ItemStack.EMPTY.getItem())
-
-                            )
-                                return true;
-                            else
-                                return false;
+                        if (satchel.is(HexereiTags.Items.MEDIUM_SATCHELS)) {
+                            return broomEntity.getSatchelSlots(18).stream().allMatch(ItemStack::isEmpty);
                         }
-                        if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.LARGE_SATCHELS)) {
-                            if (broomEntity.itemHandler.getStackInSlot(3).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(4).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(5).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(6).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(7).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(8).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(9).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(10).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(11).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(12).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(13).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(14).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(15).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(16).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(17).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(18).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(19).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(20).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(21).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(22).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(23).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(24).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(25).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(26).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(27).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(28).getItem() == (ItemStack.EMPTY.getItem()) &&
-                                    broomEntity.itemHandler.getStackInSlot(29).getItem() == (ItemStack.EMPTY.getItem())
-
-                            )
-                                return true;
-                            else
-                                return false;
+                        if (satchel.is(HexereiTags.Items.LARGE_SATCHELS)) {
+                            return broomEntity.getSatchelSlots(27).stream().allMatch(ItemStack::isEmpty);
                         }
 
                         return true;
                     }
                 });
-                addSlot(new SlotItemHandler(h, 2, 160, 47 - OFFSET){
+
+                //brush slot
+                addSlot(new SlotItemHandler(h, 2, 160, 47 - OFFSET) {
 
                     @Override
                     public int getMaxStackSize() {
@@ -186,16 +122,16 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
                     }
                 });
 
-                for(int i = 0; i < 3; i++)
-                    for(int j = 0; j < 9; j++)
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 9; j++)
                         addSlot(new SlotItemHandler(h, 3 + (i * 9) + j, 15 + 21 * j, 21 * i + 82 - OFFSET) {
                             @Override
                             public boolean mayPlace(@NotNull ItemStack stack) {
                                 return !(stack.is(ModItems.WILLOW_BROOM.get()) || stack.is(ModItems.MAHOGANY_BROOM.get()));
                             }
                         });
-                for(int i = 0; i < 3; i++)
-                    for(int j = 0; j < 9; j++)
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 9; j++)
                         addSlot(new SlotItemHandler(playerEnderInventory, (i * 9) + j, 15 + 21 * j, 21 * i + 82 - OFFSET) {
                             @Override
                             public boolean mayPlace(@NotNull ItemStack stack) {
@@ -205,7 +141,7 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
 
                 int offset2 = 0;
                 if (!broomEntity.isEnder()) {
-                    if (broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.SMALL_SATCHELS)) {
+                    if (broomEntity.getModule(BroomEntity.BroomSlot.SATCHEL).is(HexereiTags.Items.SMALL_SATCHELS)) {
                         offset2 = 21;
 
                         for (int i = 0; i < 1; i++)
@@ -217,7 +153,7 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
                             for (int j = 0; j < 9; j++)
                                 this.slots.get(39 + (i * 9) + j).y = -999;
                     }
-                    if (broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.MEDIUM_SATCHELS)) {
+                    if (broomEntity.getModule(BroomEntity.BroomSlot.SATCHEL).is(HexereiTags.Items.MEDIUM_SATCHELS)) {
                         offset2 = 42;
 
                         for (int i = 0; i < 2; i++)
@@ -229,7 +165,7 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
                             for (int j = 0; j < 9; j++)
                                 this.slots.get(39 + (i * 9) + j).y = -999;
                     }
-                    if (broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.LARGE_SATCHELS)) {
+                    if (broomEntity.getModule(BroomEntity.BroomSlot.SATCHEL).is(HexereiTags.Items.LARGE_SATCHELS)) {
                         offset2 = 63;
 
                         for (int i = 0; i < 3; i++)
@@ -252,18 +188,17 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
                             this.slots.get(39 + (i * 9) + j).y = -999;
                 }
 
-                for(int i = 0; i < 3; i++)
-                    for(int j = 0; j < 9; j++)
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 9; j++)
                         this.slots.get((i * 9) + j).y = 106 + (i * 18) + offset2 - OFFSET;
 
-                for(int k = 0; k < 9; k++)
+                for (int k = 0; k < 9; k++)
                     this.slots.get(27 + k).y = 106 + 58 + offset2 - OFFSET;
 
 
-                if(offset2 == 0)
-                {
-                    for(int i = 0; i < 3; i++)
-                        for(int j = 0; j < 9; j++)
+                if (offset2 == 0) {
+                    for (int i = 0; i < 3; i++)
+                        for (int j = 0; j < 9; j++)
                             this.slots.get(39 + (i * 9) + j).y = -999;
                 }
             });
@@ -274,12 +209,12 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
             public void set(int value) {
                 broomEntity.setFloatMode(value != 0);
             }
+
             @Override
             public int get() {
                 return broomEntity.getFloatMode() ? 1 : 0;
             }
         });
-
 
 
     }
@@ -289,7 +224,7 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
         if (pPlayer instanceof ServerPlayer) {
             ItemStack itemstack = this.getCarried();
             if (!itemstack.isEmpty()) {
-                if (pPlayer.isAlive() && !((ServerPlayer)pPlayer).hasDisconnected()) {
+                if (pPlayer.isAlive() && !((ServerPlayer) pPlayer).hasDisconnected()) {
                     pPlayer.getInventory().placeItemBackInInventory(itemstack);
                 } else {
                     pPlayer.drop(itemstack, false);
@@ -307,19 +242,19 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
         super.clicked(p_150400_, p_150401_, p_150402_, p_150403_);
         int offset = 0;
 
-        if(satchel != broomEntity.itemHandler.getStackInSlot(1)){
+        if (satchel != broomEntity.getModule(BroomEntity.BroomSlot.SATCHEL)) {
 
-            if(!satchel.isEmpty())
+            if (!satchel.isEmpty())
                 playSoundClose(isEnder);
             else
                 playSoundOpen(broomEntity.isEnder());
 
-            satchel = broomEntity.itemHandler.getStackInSlot(1);
+            satchel = broomEntity.getModule(BroomEntity.BroomSlot.SATCHEL);
             isEnder = broomEntity.isEnder();
         }
 
         if (!broomEntity.isEnder()) {
-            if (broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.SMALL_SATCHELS)) {
+            if (broomEntity.getModule(BroomEntity.BroomSlot.SATCHEL).is(HexereiTags.Items.SMALL_SATCHELS)) {
                 offset = 21;
 
                 for (int i = 0; i < 1; i++)
@@ -331,7 +266,7 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
                     for (int j = 0; j < 9; j++)
                         this.slots.get(39 + (i * 9) + j).y = -999;
             }
-            if (broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.MEDIUM_SATCHELS)) {
+            if (broomEntity.getModule(BroomEntity.BroomSlot.SATCHEL).is(HexereiTags.Items.MEDIUM_SATCHELS)) {
                 offset = 42;
 
                 for (int i = 0; i < 2; i++)
@@ -343,7 +278,7 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
                     for (int j = 0; j < 9; j++)
                         this.slots.get(39 + (i * 9) + j).y = -999;
             }
-            if (broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.LARGE_SATCHELS)) {
+            if (broomEntity.getModule(BroomEntity.BroomSlot.SATCHEL).is(HexereiTags.Items.LARGE_SATCHELS)) {
                 offset = 63;
 
                 for (int i = 0; i < 3; i++)
@@ -366,18 +301,17 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
                     this.slots.get(39 + (i * 9) + j).y = -999;
         }
 
-        for(int i = 0; i < 3; i++)
-            for(int j = 0; j < 9; j++)
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 9; j++)
                 this.slots.get((i * 9) + j).y = 106 + (i * 18) + offset - OFFSET;
 
-        for(int k = 0; k < 9; k++)
+        for (int k = 0; k < 9; k++)
             this.slots.get(27 + k).y = 106 + 58 + offset - OFFSET;
 
 
-        if(offset == 0)
-        {
-            for(int i = 0; i < 3; i++)
-                for(int j = 0; j < 9; j++)
+        if (offset == 0) {
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 9; j++)
                     this.slots.get(39 + (i * 9) + j).y = -999;
         }
 
@@ -385,33 +319,35 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
     }
 
     public void playSound() {
-        this.broomEntity.getLevel().playSound((Player)null, this.broomEntity.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 1.0F, 1.0F);;
+        this.broomEntity.getLevel().playSound(null, this.broomEntity.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
     public void playSoundOpen(boolean isEnder) {
         SoundEvent sound = SoundEvents.ARMOR_EQUIP_LEATHER;
         float volume = 0.75f;
-        if(isEnder) {
+        if (isEnder) {
             sound = SoundEvents.ENDER_CHEST_OPEN;
             volume = 0.5f;
         }
 
-        this.broomEntity.getLevel().playSound((Player)null, (double)this.broomEntity.getX(), (double)this.broomEntity.getY() + 0.5D, (double)this.broomEntity.getZ(), sound, SoundSource.BLOCKS, volume, this.broomEntity.getLevel().random.nextFloat() * 0.1F + 0.9F);
+        this.broomEntity.getLevel().playSound(null, this.broomEntity.getX(), this.broomEntity.getY() + 0.5D, this.broomEntity.getZ(), sound, SoundSource.BLOCKS, volume, this.broomEntity.getLevel().random.nextFloat() * 0.1F + 0.9F);
     }
+
     public void playSoundClose(boolean isEnder) {
         SoundEvent sound = SoundEvents.ARMOR_EQUIP_LEATHER;
         float pitch = 0.4f;
         float volume = 0.75f;
-        if(isEnder) {
+        if (isEnder) {
             sound = SoundEvents.ENDER_CHEST_CLOSE;
             pitch = 0.9f;
             volume = 0.5f;
         }
 
-        this.broomEntity.getLevel().playSound((Player)null, (double)this.broomEntity.getX(), (double)this.broomEntity.getY() + 0.5D, (double)this.broomEntity.getZ(), sound, SoundSource.BLOCKS, volume, this.broomEntity.getLevel().random.nextFloat() * 0.1F + pitch);
+        this.broomEntity.getLevel().playSound(null, this.broomEntity.getX(), this.broomEntity.getY() + 0.5D, this.broomEntity.getZ(), sound, SoundSource.BLOCKS, volume, this.broomEntity.getLevel().random.nextFloat() * 0.1F + pitch);
     }
+
     public void playSound(SoundEvent event) {
-        this.broomEntity.getLevel().playSound((Player)null, this.broomEntity.blockPosition(), event, SoundSource.BLOCKS, 1.0F, 1.0F);;
+        this.broomEntity.getLevel().playSound(null, this.broomEntity.blockPosition(), event, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
     public boolean getFloatMode() {
@@ -482,21 +418,21 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {
-        Slot sourceSlot = slots.get(index);
-        if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
+        Slot sourceSlot = slots.get(index); //Nonnull list
+        if (!sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
         ItemStack sourceStack = sourceSlot.getItem();
         ItemStack copyOfSourceStack = sourceStack.copy();
 
         int count = 0;
 
-        if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.SMALL_SATCHELS))
+        if (broomEntity.getModule(BroomEntity.BroomSlot.SATCHEL).is(HexereiTags.Items.SMALL_SATCHELS))
             count = 9;
-        if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.MEDIUM_SATCHELS))
+        if (broomEntity.getModule(BroomEntity.BroomSlot.SATCHEL).is(HexereiTags.Items.MEDIUM_SATCHELS))
             count = 18;
-        if(broomEntity.itemHandler.getStackInSlot(1).is(HexereiTags.Items.LARGE_SATCHELS))
+        if (broomEntity.getModule(BroomEntity.BroomSlot.SATCHEL).is(HexereiTags.Items.LARGE_SATCHELS))
             count = 27;
 
-        if(broomEntity.isEnder())
+        if (broomEntity.isEnder())
             count += 27;
 
 
@@ -504,7 +440,7 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
         if (index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
             // This is a vanilla container slot so merge the stack into the tile inventory
             if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX + (broomEntity.isEnder() ? 30 : 0), TE_INVENTORY_FIRST_SLOT_INDEX
-                    + TE_INVENTORY_SLOT_COUNT + count, false)) {
+                                                                                                                + TE_INVENTORY_SLOT_COUNT + count, false)) {
                 return ItemStack.EMPTY;  // EMPTY_ITEM
             }
         } else if (index < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT + count) {
