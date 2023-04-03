@@ -4,21 +4,15 @@ import net.joefoxe.hexerei.block.custom.Candle;
 import net.joefoxe.hexerei.block.custom.SageBurningPlate;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.tileentity.CandleTile;
-import net.joefoxe.hexerei.tileentity.SageBurningPlateTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -57,12 +51,12 @@ public class CustomFlintAndSteelDispenserBehavior extends CustomVanillaItemDispe
             }
 
             if(!flag){
-                level.playSound((Player) null, blockpos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, RandomSource.create().nextFloat() * 0.4F + 1.0F);
+                level.playSound(null, blockpos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, RandomSource.create().nextFloat() * 0.4F + 1.0F);
 //                    p_123413_.hurtAndBreak(1, player, player1 -> player1.broadcastBreakEvent(pContext.getHand()));
 
                 if(blockstate.hasProperty(BlockStateProperties.LIT))
                     level.setBlockAndUpdate(blockpos, blockstate.setValue(BlockStateProperties.LIT, true));
-                level.gameEvent((Entity) null, GameEvent.BLOCK_CHANGE, blockpos);
+                level.gameEvent(null, GameEvent.BLOCK_CHANGE, blockpos);
 
                 if (this.isSuccess() && p_123413_.hurt(1, level.random, null)) {
                     p_123413_.setCount(0);
@@ -78,7 +72,7 @@ public class CustomFlintAndSteelDispenserBehavior extends CustomVanillaItemDispe
 
                     if(blockstate.hasProperty(BlockStateProperties.LIT))
                         level.setBlockAndUpdate(blockpos, blockstate.setValue(BlockStateProperties.LIT, true));
-                    level.gameEvent((Entity) null, GameEvent.BLOCK_CHANGE, blockpos);
+                    level.gameEvent(null, GameEvent.BLOCK_CHANGE, blockpos);
 
                     if (this.isSuccess() && p_123413_.hurt(1, level.random, null)) {
                         p_123413_.setCount(0);

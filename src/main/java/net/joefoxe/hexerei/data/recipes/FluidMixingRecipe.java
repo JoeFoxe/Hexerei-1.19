@@ -97,11 +97,11 @@ public class FluidMixingRecipe implements Recipe<SimpleContainer> {
         boolean flag = false;
 
         // cycle through each recipe slot
-        for(int j = 0; j < recipeItems.size(); j++) {
+        for (Ingredient recipeItem : recipeItems) {
             //cycle through each slot for each recipe slot
             for (int i = 0; i < 8; i++) {
                 //if the recipe matches a slot
-                if (recipeItems.get(j).test(inv.getItem(i))) {
+                if (recipeItem.test(inv.getItem(i))) {
                     // if the slot is not taken up
                     if (!itemMatchesSlot.get(i)) {
                         //mark the slot as taken up
@@ -112,12 +112,12 @@ public class FluidMixingRecipe implements Recipe<SimpleContainer> {
                 }
             }
             //this is where it breaks out early to stop the craft
-            if(!flag)
+            if (!flag)
                 break;
             //reset the flag for the next iteration
             flag = false;
         }
-        // checks if a slot is not taken up, if its not taken up then itll not craft
+        // checks if a slot is not taken up, if it's not taken up then itll not craft
         for(int i = 0; i < 8; i++) {
             if (!itemMatchesSlot.get(i))
                 return false;

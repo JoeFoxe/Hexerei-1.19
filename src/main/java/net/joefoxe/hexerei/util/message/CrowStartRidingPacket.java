@@ -46,7 +46,7 @@ public class CrowStartRidingPacket {
 
             if(world.getEntity(packet.sourceIdCrow) != null) {
                 if((world.getEntity(packet.sourceIdCrow)) instanceof CrowEntity) {
-                    ((CrowEntity) world.getEntity(packet.sourceIdCrow)).startRiding((world.getEntity(packet.sourceIdPlayer)), true);
+                    world.getEntity(packet.sourceIdCrow).startRiding((world.getEntity(packet.sourceIdPlayer)), true);
                 }
             }
         });

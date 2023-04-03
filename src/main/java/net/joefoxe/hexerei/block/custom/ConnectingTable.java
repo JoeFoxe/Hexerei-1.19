@@ -314,7 +314,6 @@ public class ConnectingTable extends Block implements SimpleWaterloggedBlock {
         return updateCorners(iblockreader, blockpos, super.getStateForPlacement(context));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(WEST, EAST, NORTH, SOUTH, WATERLOGGED);

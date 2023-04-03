@@ -31,7 +31,7 @@ public abstract class ScreenEffectRendererMixin {
         BlockPos blockpos = new BlockPos(camera.getPosition().x(), d0, camera.getPosition().z());
         if(player.level.getBlockEntity(blockpos) instanceof MixingCauldronTile tile){
             if(tile.renderedFluid != null) {
-                double d1 = (double) ((float) blockpos.getY() + tile.renderedFluid.getAmount() / 2000f);
+                double d1 = (float) blockpos.getY() + tile.renderedFluid.getAmount() / 2000f;
                 if (d1 > d0) {
                     if(!tile.renderedFluid.getFluid().isSame(Fluids.WATER))
                         IClientFluidTypeExtensions.of(tile.renderedFluid.getFluid()).renderOverlay(pMinecraft, pPoseStack);

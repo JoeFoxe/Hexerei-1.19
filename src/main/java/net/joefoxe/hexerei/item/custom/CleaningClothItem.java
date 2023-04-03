@@ -54,9 +54,7 @@ public class CleaningClothItem extends Item {
             level.setBlock(blockpos, cleanedState, 11);
             level.gameEvent(GameEvent.BLOCK_CHANGE, blockpos, GameEvent.Context.of(player, cleanedState));
             if (player != null) {
-                itemstack.hurtAndBreak(1, player, (p_150686_) -> {
-                    p_150686_.broadcastBreakEvent(pContext.getHand());
-                });
+                itemstack.hurtAndBreak(1, player, (p_150686_) -> p_150686_.broadcastBreakEvent(pContext.getHand()));
             }
 
             return InteractionResult.sidedSuccess(level.isClientSide);

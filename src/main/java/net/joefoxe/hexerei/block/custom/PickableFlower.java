@@ -55,7 +55,7 @@ public class PickableFlower extends BushBlock implements BonemealableBlock {
         this.secondOutput = secondOutput;
         this.maxSecondOutput = maxSecondOutput;
 
-        this.registerDefaultState(this.stateDefinition.any().setValue(AGE, Integer.valueOf(0)));
+        this.registerDefaultState(this.stateDefinition.any().setValue(AGE, 0));
 
     }
     public PickableFlower(MobEffect p_53512_, int p_53513_, BlockBehaviour.Properties p_53514_, RegistryObject<FlowerOutputItem> firstOutput , int maxFirstOutput) {
@@ -71,7 +71,7 @@ public class PickableFlower extends BushBlock implements BonemealableBlock {
         this.maxFirstOutput = maxFirstOutput;
         this.secondOutput = null;
 
-        this.registerDefaultState(this.stateDefinition.any().setValue(AGE, Integer.valueOf(0)));
+        this.registerDefaultState(this.stateDefinition.any().setValue(AGE, 0));
 
     }
 
@@ -107,7 +107,7 @@ public class PickableFlower extends BushBlock implements BonemealableBlock {
     public void randomTick(BlockState p_57286_, ServerLevel p_57287_, BlockPos p_57288_, RandomSource p_57289_) {
         int i = p_57286_.getValue(AGE);
         if (i < 3 && p_57287_.getRawBrightness(p_57288_.above(), 0) >= 9 && net.minecraftforge.common.ForgeHooks.onCropsGrowPre(p_57287_, p_57288_, p_57286_,p_57289_.nextInt(5) == 0)) {
-            p_57287_.setBlock(p_57288_, p_57286_.setValue(AGE, Integer.valueOf(i + 1)), 2);
+            p_57287_.setBlock(p_57288_, p_57286_.setValue(AGE, i + 1), 2);
             net.minecraftforge.common.ForgeHooks.onCropsGrowPost(p_57287_, p_57288_, p_57286_);
         }
 
@@ -122,17 +122,17 @@ public class PickableFlower extends BushBlock implements BonemealableBlock {
 
             ItemStack firstOutput = new ItemStack(this.firstOutput.get(), this.maxFirstOutput);
             ItemStack secondOutput = ItemStack.EMPTY;
-            if(this.secondOutput != null)
+            if (this.secondOutput != null)
                 secondOutput = new ItemStack(this.secondOutput.get(), this.maxSecondOutput);
             int j = Math.max(1, p_57276_.random.nextInt(firstOutput.getCount()));
             int k = 0;
-            if(this.secondOutput != null)
+            if (this.secondOutput != null)
                 k = Math.max(1, p_57276_.random.nextInt(secondOutput.getCount()));
-            popResource(p_57276_, p_57277_, new ItemStack(firstOutput.getItem(), (int)Math.floor(j/2f) + (flag ? (int)Math.ceil(j/2f) : 0)));
+            popResource(p_57276_, p_57277_, new ItemStack(firstOutput.getItem(), (int) Math.floor(j / 2f) + (flag ? (int) Math.ceil(j / 2f) : 0)));
             if (p_57276_.random.nextInt(2) == 0 && this.secondOutput != null)
-                popResource(p_57276_, p_57277_, new ItemStack(secondOutput.getItem(), (int)Math.floor(k/2f) + (flag ? (int)Math.ceil(k/2f) : 0)));
-            p_57276_.playSound((Player) null, p_57277_, SoundEvents.CAVE_VINES_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + p_57276_.random.nextFloat() * 0.4F);
-            p_57276_.setBlock(p_57277_, p_57275_.setValue(AGE, Integer.valueOf(0)), 2);
+                popResource(p_57276_, p_57277_, new ItemStack(secondOutput.getItem(), (int) Math.floor(k / 2f) + (flag ? (int) Math.ceil(k / 2f) : 0)));
+            p_57276_.playSound(null, p_57277_, SoundEvents.CAVE_VINES_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + p_57276_.random.nextFloat() * 0.4F);
+            p_57276_.setBlock(p_57277_, p_57275_.setValue(AGE, 0), 2);
 
 
             return InteractionResult.sidedSuccess(p_57276_.isClientSide);
@@ -155,6 +155,6 @@ public class PickableFlower extends BushBlock implements BonemealableBlock {
 
     public void performBonemeal(ServerLevel p_57251_, RandomSource p_57252_, BlockPos p_57253_, BlockState p_57254_) {
         int i = Math.min(3, p_57254_.getValue(AGE) + 1);
-        p_57251_.setBlock(p_57253_, p_57254_.setValue(AGE, Integer.valueOf(i)), 2);
+        p_57251_.setBlock(p_57253_, p_57254_.setValue(AGE, i), 2);
     }
 }

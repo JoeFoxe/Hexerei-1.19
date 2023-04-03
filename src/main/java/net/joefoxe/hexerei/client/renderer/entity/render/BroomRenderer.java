@@ -240,7 +240,7 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
             else if(miscStack.is(ModItems.BROOM_NETHERITE_TIP.get()))
             {
                 if(miscStack.getItem() instanceof BroomAttachmentItem miscItem && miscItem.model != null) {
-                    int light = (int) (packedLightIn / 15 * (15 - (int) (8 * (((miscStack.getDamageValue()) / (float) miscStack.getMaxDamage())))));
+                    int light = packedLightIn / 15 * (15 - (int) (8 * (((miscStack.getDamageValue()) / (float) miscStack.getMaxDamage()))));
 
                     Model miscModel = miscItem.model;
                     VertexConsumer vertexConsumer = bufferIn.getBuffer(miscModel.renderType(miscItem.texture));
@@ -261,7 +261,7 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
             else if(miscStack.is(ModItems.BROOM_WATERPROOF_TIP.get()))
             {
                 if(miscStack.getItem() instanceof BroomAttachmentItem miscItem && miscItem.model != null) {
-                    int light = (int)(packedLightIn / 15 * (15 - (int)(8 * (((miscStack.getDamageValue()) / (float)miscStack.getMaxDamage())))));
+                    int light = packedLightIn / 15 * (15 - (int) (8 * (((miscStack.getDamageValue()) / (float) miscStack.getMaxDamage()))));
 
                     Model miscModel = miscItem.model;
                     VertexConsumer vertexConsumer = bufferIn.getBuffer(miscModel.renderType(miscItem.texture));
@@ -297,7 +297,7 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
                             int i = (col & 16711680) >> 16;
                             int j = (col & '\uff00') >> 8;
                             int k = (col & 255);
-                            float afloat[] = new float[]{(float) i / 255.0F, (float) j / 255.0F, (float) k / 255.0F};
+                            float[] afloat = new float[]{(float) i / 255.0F, (float) j / 255.0F, (float) k / 255.0F};
                             VertexConsumer vertexConsumerDye = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutoutNoCull(miscItem.dye_texture), false, false);
                             miscModel.renderToBuffer(matrixStackIn, vertexConsumerDye, packedLightIn, OverlayTexture.NO_OVERLAY, afloat[0], afloat[1], afloat[2], 1.0F);
                         }

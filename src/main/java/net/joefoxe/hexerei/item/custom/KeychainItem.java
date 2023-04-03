@@ -30,6 +30,7 @@ import java.util.function.Consumer;
 
 public class KeychainItem extends BroomAttachmentItem {
     public Pair<ResourceLocation, Model> chain_resources = null;
+
     public KeychainItem(Properties properties) {
         super(properties);
 
@@ -52,22 +53,22 @@ public class KeychainItem extends BroomAttachmentItem {
         CompoundTag compoundtag = tagList.getCompound(0);
         CompoundTag itemTags = tagList.getCompound(0);
 
-        MutableComponent itemText = (MutableComponent) Component.translatable(ItemStack.of(compoundtag).getDescriptionId()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x998800)));
+        MutableComponent itemText = Component.translatable(ItemStack.of(compoundtag).getDescriptionId()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x998800)));
 
-        if(Screen.hasShiftDown()) {
+        if (Screen.hasShiftDown()) {
             tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
 
-            if(!ItemStack.of(itemTags).isEmpty())
-            tooltip.add(Component.translatable("tooltip.hexerei.keychain_with_item").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            if (!ItemStack.of(itemTags).isEmpty())
+                tooltip.add(Component.translatable("tooltip.hexerei.keychain_with_item").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             else
-            tooltip.add(Component.translatable("tooltip.hexerei.keychain_without_item").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                tooltip.add(Component.translatable("tooltip.hexerei.keychain_without_item").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
         } else {
             tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             tooltip.add(Component.translatable("tooltip.hexerei.broom_attachments").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
         }
 
 
-        if(!ItemStack.of(itemTags).isEmpty()) {
+        if (!ItemStack.of(itemTags).isEmpty()) {
             tooltip.add(Component.translatable("tooltip.hexerei.keychain_contains", itemText).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
         }
 

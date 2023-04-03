@@ -60,7 +60,7 @@ public class ModEntityTypes {
 
     public static final RegistryObject<EntityType<CrowEntity>> CROW =
             ENTITY_TYPES.register("crow",
-                    () -> EntityType.Builder.<CrowEntity>of(CrowEntity::new,
+                    () -> EntityType.Builder.of(CrowEntity::new,
                                     MobCategory.CREATURE).sized(0.375F, 0.5F).setTrackingRange(64).setUpdateInterval(1)
                             .build(new ResourceLocation(Hexerei.MOD_ID, "crow").toString()));
 //    public static final RegistryObject<EntityType<CrowEntity>> CROW = addEntityWithEgg("crow", 0x161616, 0x333333, 0.375F, 0.5F, CrowEntity::new, MobCategory.CREATURE);
@@ -88,12 +88,12 @@ public class ModEntityTypes {
 //    public static final RegistryObject<SpawnEggItem> CROW_SPAWN_EGG = ModItems.ITEMS.register("crow_spawn_egg", () -> new SpawnEggItem(ModEntityTypes.CROW.get(), 0x161616, 0x333333, new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
     static <T extends Mob> RegistryObject<EntityType<T>> addEntityWithEgg(String name, int color1, int color2, float width, float height, EntityType.EntityFactory<T> factory, MobCategory kind) {
-        EntityType<T> type = EntityType.Builder.<T>of(factory, kind)
+        EntityType<T> type = EntityType.Builder.of(factory, kind)
                 .setTrackingRange(64)
                 .setUpdateInterval(1)
                 .sized(width, height)
                 .build(Hexerei.MOD_ID + ":" + name);
-        ModItems.ITEMS.register(name + "_spawn_egg", () -> new SpawnEggItem((EntityType<? extends T>) type, color1, color2, new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+        ModItems.ITEMS.register(name + "_spawn_egg", () -> new SpawnEggItem(type, color1, color2, new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
         return ENTITY_TYPES.register(name, () -> type);
     }
 

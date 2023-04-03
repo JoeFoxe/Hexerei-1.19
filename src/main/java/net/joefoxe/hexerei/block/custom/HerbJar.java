@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -79,9 +78,9 @@ public class HerbJar extends Block implements ITileEntity<HerbJarTile>, EntityBl
 
         for(Direction direction : context.getNearestLookingDirections()) {
             if (direction.getAxis() == Direction.Axis.Y) {
-                BlockState blockstate = this.defaultBlockState().setValue(HANGING, Boolean.valueOf(direction == Direction.UP));
+                BlockState blockstate = this.defaultBlockState().setValue(HANGING, direction == Direction.UP);
                 if (blockstate.canSurvive(context.getLevel(), context.getClickedPos())) {
-                    return blockstate.setValue(WATERLOGGED, Boolean.valueOf(fluidstate.getType() == Fluids.WATER)).setValue(GUI_RENDER, false).setValue(DYED, HexereiUtil.getColorStatic(context.getItemInHand()) != 0x422F1E).setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection());
+                    return blockstate.setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER).setValue(GUI_RENDER, false).setValue(DYED, HexereiUtil.getColorStatic(context.getItemInHand()) != 0x422F1E).setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection());
                 }
             }
         }
@@ -159,7 +158,7 @@ public class HerbJar extends Block implements ITileEntity<HerbJarTile>, EntityBl
             if (tileentity != null) {
                 ItemStack cloneItemStack = getCloneItemStack(level, pos, state);
                 if(!level.isClientSide())
-                    popResource((ServerLevel)level, pos, cloneItemStack);
+                    popResource(level, pos, cloneItemStack);
             }
             super.onRemove(state, level, pos, newState, isMoving);
         }
@@ -223,10 +222,9 @@ public class HerbJar extends Block implements ITileEntity<HerbJarTile>, EntityBl
 
     public HerbJar(Properties properties) {
         super(properties.noOcclusion());
-        this.registerDefaultState(this.stateDefinition.any().setValue(HANGING, Boolean.valueOf(false)).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(GUI_RENDER, false).setValue(DYED, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(HANGING, Boolean.FALSE).setValue(WATERLOGGED, Boolean.FALSE).setValue(GUI_RENDER, false).setValue(DYED, false));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(HorizontalDirectionalBlock.FACING, HANGING, WATERLOGGED, GUI_RENDER, DYED);
@@ -319,7 +317,7 @@ public class HerbJar extends Block implements ITileEntity<HerbJarTile>, EntityBl
     public boolean placeLiquid(LevelAccessor worldIn, BlockPos pos, BlockState state, FluidState fluidStateIn) {
         if (!state.getValue(BlockStateProperties.WATERLOGGED) && fluidStateIn.getType() == Fluids.WATER) {
 
-            worldIn.setBlock(pos, state.setValue(WATERLOGGED, Boolean.valueOf(true)), 3);
+            worldIn.setBlock(pos, state.setValue(WATERLOGGED, Boolean.TRUE), 3);
             worldIn.scheduleTick(pos, fluidStateIn.getType(), fluidStateIn.getType().getTickDelay(worldIn));
             return true;
         } else {

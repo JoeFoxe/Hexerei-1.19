@@ -31,7 +31,7 @@ public class ModItemProperties {
             private long lastUpdateTick;
 
             public float unclampedCall(ItemStack itemStack, @Nullable ClientLevel level, @Nullable LivingEntity p_174667_, int p_174668_) {
-                Entity entity = (Entity)(p_174667_ != null ? p_174667_ : itemStack.getEntityRepresentation());
+                Entity entity = p_174667_ != null ? p_174667_ : itemStack.getEntityRepresentation();
 
                 if (!(entity instanceof Player) || ((DowsingRodItem)itemStack.getItem()).nearestPos == null) {
                     return 0.3F;

@@ -8,6 +8,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
+import static net.joefoxe.hexerei.util.HexereiUtil.moveTo;
+
 
 public class CrystalBallTile extends BlockEntity {
 
@@ -45,25 +47,6 @@ public class CrystalBallTile extends BlockEntity {
         return Math.sqrt((deltaX * deltaX) + (deltaY * deltaY) + (deltaZ * deltaZ));
     }
 
-    private static float moveTo(float input, float movedTo, float speed)
-    {
-        float distance = movedTo - input;
-
-        if(Math.abs(distance) <= speed)
-        {
-            return movedTo;
-        }
-
-        if(distance > 0)
-        {
-            input += speed;
-        } else {
-            input -= speed;
-        }
-
-        return input;
-    }
-
     //TODO find where they moved this to
 //    @Override
 //    public double getMaxRenderDistanceSquared() {
@@ -72,24 +55,23 @@ public class CrystalBallTile extends BlockEntity {
 
     @Override
     public AABB getRenderBoundingBox() {
-        AABB aabb = super.getRenderBoundingBox().inflate(5, 5, 5);
-        return aabb;
+        return super.getRenderBoundingBox().inflate(5, 5, 5);
     }
 
 //    @Override
     public void tick() {
-        if(level.isClientSide) {
-            float currentTime = this.getLevel().getGameTime();
+        if (level != null && level.isClientSide) {
+            float currentTime = level.getGameTime();
 
-            if(largeRingOffset > -7f) {
-            if(degreesSpun + 1 < 112)
-                degreesSpun += 1;
-            else
-                degreesSpun = 0;
+            if (largeRingOffset > -7f) {
+                if (degreesSpun + 1 < 112)
+                    degreesSpun += 1;
+                else
+                    degreesSpun = 0;
             }
 
-            if(this.level.getNearestPlayer(this.worldPosition.getX(),this.worldPosition.getY(),this.worldPosition.getZ(), 4D, false) != null) {
-                orbOffset = moveTo(orbOffset, (float)Math.sin(Math.PI * (currentTime) / 10) / 4f, 0.25f) ;
+            if (this.level.getNearestPlayer(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), 4D, false) != null) {
+                orbOffset = moveTo(orbOffset, (float) Math.sin(Math.PI * (currentTime) / 10) / 4f, 0.25f);
                 smallRingOffset = moveTo(smallRingOffset, (float)Math.sin(Math.PI * (currentTime + 20) / 15) / 4f, 0.25f);
                 largeRingOffset = moveTo(largeRingOffset, (float)Math.sin(Math.PI * (currentTime + 40) / 20) / 4f, 0.35f);
 

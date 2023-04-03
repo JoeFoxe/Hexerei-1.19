@@ -1,6 +1,5 @@
 package net.joefoxe.hexerei.client.renderer.entity.custom;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
 import com.mojang.math.Vector3f;
 import net.joefoxe.hexerei.Hexerei;
@@ -88,15 +87,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
@@ -107,6 +99,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class CrowEntity extends TamableAnimal implements ContainerListener, FlyingAnimal, ITargetsDroppedItems, Container, MenuProvider, PowerableMob {
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.of(ModItems.SEED_MIXTURE.get());
@@ -268,16 +261,16 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                     super.tick();
             }
         });
-        this.goalSelector.addGoal(10, new RandomLookAroundGoal(this){
+        this.goalSelector.addGoal(10, new RandomLookAroundGoal(this) {
             @Override
             public void tick() {
-                if(!CrowEntity.this.isPlayingDead())
+                if (!CrowEntity.this.isPlayingDead())
                     super.tick();
             }
         });
-        this.targetSelector.addGoal(2, new CrowGatherItems(this, false, false, 40, this.interactionRange));
+        this.targetSelector.addGoal(2, new CrowGatherItems<>(this, false, false, 40, this.interactionRange));
         this.goalSelector.addGoal(2, new CrowDepositCoffer(this));
-        this.goalSelector.addGoal(2, new CrowHarvestGoal((double)1.5F, this.interactionRange, 6));
+        this.goalSelector.addGoal(2, new CrowHarvestGoal(1.5F, this.interactionRange, 6));
         this.goalSelector.addGoal(2, new CrowPickpocketVillager(this));
         this.targetSelector.addGoal(1, new OwnerHurtByTargetGoal(this));
         this.targetSelector.addGoal(1, new OwnerHurtTargetGoal(this));
@@ -499,7 +492,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
             }
 
         });
-        pStack.setEntityRepresentation((Entity)null);
+        pStack.setEntityRepresentation(null);
     }
 
 
@@ -1022,14 +1015,10 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 
     @Override
     public ItemStack getItemBySlot(EquipmentSlot slot) {
-        switch(slot.getType()) {
-            case HAND:
-                return this.itemHandler.getStackInSlot(1);
-            case ARMOR:
-                return this.itemHandler.getStackInSlot(0);
-            default:
-                return ItemStack.EMPTY;
-        }
+        return switch (slot.getType()) {
+            case HAND -> this.itemHandler.getStackInSlot(1);
+            case ARMOR -> this.itemHandler.getStackInSlot(0);
+        };
     }
 
     @Override
@@ -1659,7 +1648,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 
     @Override
     public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable net.minecraft.core.Direction facing) {
-        if (this.isAlive() && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        if (this.isAlive() && capability == ForgeCapabilities.ITEM_HANDLER)
             return handler.cast();
         return super.getCapability(capability, facing);
     }
@@ -1814,7 +1803,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
             Vec3 vec3 = this.mob.getViewVector(0.0F);
             int i = 8;
             Vec3 vec31 = HoverRandomPos.getPos(this.mob, 8, 7, vec3.x, vec3.z, ((float)Math.PI / 2F), 3, 1);
-            return vec31 != null ? vec31 : AirAndWaterRandomPos.getPos(this.mob, 8, 4, -2, vec3.x, vec3.z, (double)((float)Math.PI / 2F));
+            return vec31 != null ? vec31 : AirAndWaterRandomPos.getPos(this.mob, 8, 4, -2, vec3.x, vec3.z, (float) Math.PI / 2F);
         }
     }
 
@@ -1841,12 +1830,9 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
             this.tickThreshold = ticksExisted;
             this.hunter = (ITargetsDroppedItems) creature;
             this.theNearestAttackableTargetSorter = new CrowGatherItems.Sorter(creature);
-            this.targetEntitySelector = new Predicate<ItemEntity>() {
-                @Override
-                public boolean apply(@Nullable ItemEntity item) {
-                    ItemStack stack = item.getItem();
-                    return !stack.isEmpty()  && hunter.canTargetItem(stack) && item.tickCount > tickThreshold;
-                }
+            this.targetEntitySelector = (Predicate<ItemEntity>) item -> {
+                ItemStack stack = item.getItem();
+                return !stack.isEmpty() && hunter.canTargetItem(stack) && item.tickCount > tickThreshold;
             };
             this.setFlags(EnumSet.of(Goal.Flag.MOVE));
         }
@@ -1882,7 +1868,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                     CrowEntity.this.setInSittingPose(false);
                     CrowEntity.this.setOrderedToSit(false);
                 }
-                Collections.sort(list, this.theNearestAttackableTargetSorter);
+                list.sort(this.theNearestAttackableTargetSorter);
                 this.targetEntity = list.get(0);
                 this.mustUpdate = false;
                 if(targetEntity == null)
@@ -1979,20 +1965,20 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
             if (this.targetEntity == null || this.targetEntity != null && !this.targetEntity.isAlive()) {
                 this.stop();
                 this.mob.getNavigation().stop();
-            }else{
+            } else {
                 moveTo();
             }
-            if(targetEntity != null && this.mob.hasLineOfSight(targetEntity) && this.mob.getBbWidth() > ((CrowEntity) hunter).getMaxDistToItem() && this.mob.isOnGround()){
+            if (targetEntity != null && this.mob.hasLineOfSight(targetEntity) && this.mob.getBbWidth() > hunter.getMaxDistToItem() && this.mob.isOnGround()) {
                 this.mob.getMoveControl().setWantedPosition(targetEntity.getX(), targetEntity.getY() + 0.5f, targetEntity.getZ(), 1.5f);
             }
             if (this.targetEntity != null && this.targetEntity.isAlive() && this.mob.distanceToSqr(this.targetEntity) < this.hunter.getMaxDistToItem() && CrowEntity.this.itemHandler.getStackInSlot(1).isEmpty()) {
-                if(!((CrowEntity) hunter).peck){
+                if (!((CrowEntity) hunter).peck) {
                     hunter.peck();
                     HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> ((CrowEntity) hunter).level.getChunkAt(((CrowEntity) hunter).blockPosition())), new CrowPeckPacket(this.mob));
                 }
 
 
-                if(((CrowEntity) hunter).peckTiltAngleActual > 40){
+                if (((CrowEntity) hunter).peckTiltAngleActual > 40) {
                     hunter.onGetItem(targetEntity);
                     CrowEntity.this.depositItemBeforePerch = true;
                     this.targetEntity.getItem().shrink(1);
@@ -2313,7 +2299,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                         CrowEntity.this.playSound(blockstate.getSoundType().getBreakSound(), 1.0F, 1.0F);
                         HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(blockPosition())), new CrowPeckPacket(CrowEntity.this));
                     }
-                    ((ServerLevel) level).setBlock(this.blockPos, Blocks.AIR.defaultBlockState(), 3);
+                    level.setBlock(this.blockPos, Blocks.AIR.defaultBlockState(), 3);
                 }
             }
         }
@@ -2324,7 +2310,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 
         private void pickSweetBerries(BlockState p_148929_) {
             int i = p_148929_.getValue(SweetBerryBushBlock.AGE);
-            p_148929_.setValue(SweetBerryBushBlock.AGE, Integer.valueOf(1));
+            p_148929_.setValue(SweetBerryBushBlock.AGE, 1);
             int j = 1 + CrowEntity.this.level.random.nextInt(2) + (i == 3 ? 1 : 0);
             ItemStack itemstack = CrowEntity.this.getItemBySlot(EquipmentSlot.MAINHAND);
             if (itemstack.isEmpty()) {
@@ -2337,7 +2323,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
             }
 
             CrowEntity.this.playSound(SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, 1.0F, 1.0F);
-            CrowEntity.this.level.setBlock(this.blockPos, p_148929_.setValue(SweetBerryBushBlock.AGE, Integer.valueOf(1)), 2);
+            CrowEntity.this.level.setBlock(this.blockPos, p_148929_.setValue(SweetBerryBushBlock.AGE, 1), 2);
         }
 
         public boolean canUse() {
@@ -2445,7 +2431,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                 else
                     return false;
 
-                Collections.sort(this.entity.cofferHerbJarList, this.theNearestAttackableTargetSorter);
+                this.entity.cofferHerbJarList.sort(this.theNearestAttackableTargetSorter);
                 boolean flag = false;
                 for(BlockPos pos : this.entity.cofferHerbJarList){
                     this.targetEntity = level.getBlockEntity(pos);
@@ -2591,7 +2577,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                 if (CrowEntity.this.distanceToSqr(targetEntity.getBlockPos().getX() + 0.5f, targetEntity.getBlockPos().getY(), targetEntity.getBlockPos().getZ() + 0.5f) < this.entity.getMaxDistToItem() * 1.25f) {
                     try{
                         BlockEntity entity = targetEntity;
-                        LazyOptional<IItemHandler> handler = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN);
+                        LazyOptional<IItemHandler> handler = entity.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.DOWN);
                         if(handler.orElse(null) != null && cooldown == 0) {
                             ItemStack duplicate = CrowEntity.this.itemHandler.getStackInSlot(1).copy();
                             ItemStack insertSimulate = ItemHandlerHelper.insertItem(handler.orElse(null), duplicate, true);
@@ -2599,16 +2585,16 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                                 ItemStack shrunkenStack = ItemHandlerHelper.insertItem(handler.orElse(null), duplicate, false);
                                 if(shrunkenStack.isEmpty()){
                                     CrowEntity.this.itemHandler.setStackInSlot(1, ItemStack.EMPTY);
-                                }else{
+                                } else {
                                     CrowEntity.this.itemHandler.setStackInSlot(1, shrunkenStack);
                                 }
                                 CrowEntity.this.peck();
                                 HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(blockPosition())), new CrowPeckPacket(CrowEntity.this));
-                            }else{
+                            } else {
                                 cooldown = 20;
                             }
                         }
-                    }catch (Exception e){
+                    } catch (Exception ignored) {
                     }
                     this.stop();
                 }
@@ -2703,7 +2689,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                         CrowEntity.this.setOrderedToSit(false);
                     }
                 }
-                Collections.sort(this.entity.villagerList, this.theNearestAttackableTargetSorter);
+                this.entity.villagerList.sort(this.theNearestAttackableTargetSorter);
                 this.targetEntity = this.entity.villagerList.get(0);
                 this.mustUpdate = false;
                 if(!CrowEntity.this.itemHandler.getStackInSlot(1).isEmpty()){
@@ -2970,7 +2956,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
             } else if (!this.canTeleportTo(new BlockPos(p_25304_, p_25305_, p_25306_))) {
                 return false;
             } else {
-                this.tamable.moveTo((double)p_25304_ + 0.5D, (double)p_25305_, (double)p_25306_ + 0.5D, this.tamable.getYRot(), this.tamable.getXRot());
+                this.tamable.moveTo((double) p_25304_ + 0.5D, p_25305_, (double) p_25306_ + 0.5D, this.tamable.getYRot(), this.tamable.getXRot());
                 this.navigation.stop();
                 return true;
             }
@@ -3127,7 +3113,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                         return false;
                     }
 
-                    if (Math.abs((double)this.player.getXRot() - this.pRotX) > 5.0D || Math.abs((double)this.player.getYRot() - this.pRotY) > 5.0D) {
+                    if (Math.abs((double) this.player.getXRot() - this.pRotX) > 5.0D || Math.abs((double) this.player.getYRot() - this.pRotY) > 5.0D) {
                         return false;
                     }
                 } else {
@@ -3136,8 +3122,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                     this.pz = this.player.getZ();
                 }
 
-                this.pRotX = (double)this.player.getXRot();
-                this.pRotY = (double)this.player.getYRot();
+                this.pRotX = this.player.getXRot();
+                this.pRotY = this.player.getYRot();
             }
 
             return this.canUse();
@@ -3276,7 +3262,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         public void stop() {
             LivingEntity livingentity = this.mob.getTarget();
             if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
-                this.mob.setTarget((LivingEntity)null);
+                this.mob.setTarget(null);
             }
 
             this.mob.setAggressive(false);
@@ -3360,12 +3346,11 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
             boolean flag = p_21372_.hurt(DamageSource.mobAttack(CrowEntity.this), f);
             if (flag) {
                 if (f1 > 0.0F && p_21372_ instanceof LivingEntity) {
-                    ((LivingEntity)p_21372_).knockback((double)(f1 * 0.5F), (double)Mth.sin(CrowEntity.this.getYRot() * ((float)Math.PI / 180F)), (double)(-Mth.cos(CrowEntity.this.getYRot() * ((float)Math.PI / 180F))));
+                    ((LivingEntity) p_21372_).knockback(f1 * 0.5F, Mth.sin(CrowEntity.this.getYRot() * ((float) Math.PI / 180F)), -Mth.cos(CrowEntity.this.getYRot() * ((float) Math.PI / 180F)));
                     CrowEntity.this.setDeltaMovement(CrowEntity.this.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));
                 }
 
-                if (p_21372_ instanceof Player) {
-                    Player player = (Player)p_21372_;
+                if (p_21372_ instanceof Player player) {
                     maybeDisableShield(player, CrowEntity.this.itemHandler.getStackInSlot(1), player.isUsingItem() ? player.getUseItem() : ItemStack.EMPTY);
                 }
 
@@ -3406,7 +3391,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         }
 
         protected double getAttackReachSqr(LivingEntity p_25556_) {
-            return (double)(this.mob.getBbWidth() * 2.5F * this.mob.getBbWidth() * 2.5F + p_25556_.getBbWidth());
+            return this.mob.getBbWidth() * 2.5F * this.mob.getBbWidth() * 2.5F + p_25556_.getBbWidth();
         }
     }
 
@@ -3670,7 +3655,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                         ((CrowEntity) this.partner).itemHandler.setStackInSlot(1, stack2);
                         CrowEntity.this.itemHandler.setStackInSlot(1, ItemStack.EMPTY);
                         ItemEntity itemEntity = new ItemEntity(this.partner.getLevel(), this.partner.position().x, this.partner.position().y, this.partner.position().z, stack);
-                        ((CrowEntity) this.partner).getLevel().addFreshEntity(itemEntity);
+                        this.partner.getLevel().addFreshEntity(itemEntity);
 
                         if (CrowEntity.this.breedNuggetGivenByPlayerUUID != null && level.getPlayerByUUID(CrowEntity.this.breedNuggetGivenByPlayerUUID) != null) {
                             ((CrowEntity) this.partner).breedNuggetGivenByPlayerUUID = CrowEntity.this.breedNuggetGivenByPlayerUUID;

@@ -1,11 +1,7 @@
 package net.joefoxe.hexerei.event;
 
 import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.block.CustomFlintAndSteelDispenserBehavior;
-import net.joefoxe.hexerei.block.custom.Candle;
 import net.joefoxe.hexerei.client.renderer.CrowWhitelistRenderer;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

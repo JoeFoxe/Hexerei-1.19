@@ -60,35 +60,35 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
             matrixStackIn.translate(4D / 16D, 4D / 16D, 8D / 16D);
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         }
-        float lerpDegreesOpened = (float) (Mth.lerp(partialTicks, tileEntityIn.degreesOpenedPrev, tileEntityIn.degreesOpened));
+        float lerpDegreesOpened = Mth.lerp(partialTicks, tileEntityIn.degreesOpenedPrev, tileEntityIn.degreesOpened);
 
         matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(lerpDegreesOpened));
         renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_LID.get().defaultBlockState(), tileEntityIn.getDyeColor());
         matrixStackIn.popPose();
 
-        float sideRotation = (((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135);
+        float sideRotation = ((lerpDegreesOpened / (float) tileEntityIn.lidOpenAmount) * 135);
 
         if (tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).getValue(HorizontalDirectionalBlock.FACING) == Direction.NORTH || tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH) {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(11.7299D / 16D, 2.4772D / 16D, 5.475D / 16D);
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-(lerpDegreesOpened / (float) tileEntityIn.lidOpenAmount) * 135));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_HINGE.get().defaultBlockState());
             matrixStackIn.popPose();
             matrixStackIn.pushPose();
             matrixStackIn.translate(11.7299D / 16D, 2.4772D / 16D, 10.525D / 16D);
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-(lerpDegreesOpened / (float) tileEntityIn.lidOpenAmount) * 135));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_HINGE.get().defaultBlockState());
             matrixStackIn.popPose();
             matrixStackIn.pushPose();
-            matrixStackIn.translate(4.2701/ 16D, 2.4772D / 16D, 5.475D / 16D);
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
+            matrixStackIn.translate(4.2701 / 16D, 2.4772D / 16D, 5.475D / 16D);
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees((lerpDegreesOpened / (float) tileEntityIn.lidOpenAmount) * 135));
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_HINGE.get().defaultBlockState());
             matrixStackIn.popPose();
             matrixStackIn.pushPose();
             matrixStackIn.translate(4.2701 / 16D, 2.4772D / 16D, 10.525D / 16D);
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees((lerpDegreesOpened / (float) tileEntityIn.lidOpenAmount) * 135));
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_HINGE.get().defaultBlockState());
             matrixStackIn.popPose();
@@ -106,44 +106,44 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         if (tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST || tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST) {
 
             matrixStackIn.pushPose();
-            matrixStackIn.translate(0D / 16D, 0D / 16D, 16D / 16D);
+            matrixStackIn.translate(0D / 16D, 0D / 16D, 1.0);
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
             matrixStackIn.translate(11.7299D / 16D, 2.4772D / 16D, 5.475D / 16D);
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-(lerpDegreesOpened / (float) tileEntityIn.lidOpenAmount) * 135));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_HINGE.get().defaultBlockState());
             matrixStackIn.popPose();
             matrixStackIn.pushPose();
-            matrixStackIn.translate(0D / 16D, 0D / 16D, 16D / 16D);
+            matrixStackIn.translate(0D / 16D, 0D / 16D, 1.0);
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
             matrixStackIn.translate(11.7299D / 16D, 2.4772D / 16D, 10.525D / 16D);
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-(lerpDegreesOpened / (float) tileEntityIn.lidOpenAmount) * 135));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_HINGE.get().defaultBlockState());
             matrixStackIn.popPose();
             matrixStackIn.pushPose();
-            matrixStackIn.translate(0D / 16D, 0D / 16D, 16D / 16D);
+            matrixStackIn.translate(0D / 16D, 0D / 16D, 1.0);
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
-            matrixStackIn.translate(4.2701/ 16D, 2.4772D / 16D, 5.475D / 16D);
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
+            matrixStackIn.translate(4.2701 / 16D, 2.4772D / 16D, 5.475D / 16D);
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees((lerpDegreesOpened / (float) tileEntityIn.lidOpenAmount) * 135));
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_HINGE.get().defaultBlockState());
             matrixStackIn.popPose();
             matrixStackIn.pushPose();
-            matrixStackIn.translate(0D / 16D, 0D / 16D, 16D / 16D);
+            matrixStackIn.translate(0D / 16D, 0D / 16D, 1.0);
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
             matrixStackIn.translate(4.2701 / 16D, 2.4772D / 16D, 10.525D / 16D);
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees((lerpDegreesOpened / (float) tileEntityIn.lidOpenAmount) * 135));
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_HINGE.get().defaultBlockState());
             matrixStackIn.popPose();
 
             matrixStackIn.pushPose();
-            matrixStackIn.translate(0D / 16D, 0D / 16D, 16D / 16D);
+            matrixStackIn.translate(0D / 16D, 0D / 16D, 1.0);
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
             matrixStackIn.translate(1D / 16D - Math.sin(((sideRotation - 90)/180f)*Math.PI) * 3D/16D, 1.75D / 16D-(Math.cos(((sideRotation + 90)/180f)*Math.PI) * 3D/16D), 5D / 16D);
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_CONTAINER.get().defaultBlockState());
             matrixStackIn.popPose();
             matrixStackIn.pushPose();
-            matrixStackIn.translate(0D / 16D, 0D / 16D, 16D / 16D);
+            matrixStackIn.translate(0D / 16D, 0D / 16D, 1.0);
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
             matrixStackIn.translate(11D / 16D + Math.sin(((sideRotation - 90)/180f)*Math.PI) * 3D/16D, 1.75D / 16D-(Math.cos(((sideRotation + 90)/180f)*Math.PI) * 3D/16D), 5D / 16D);
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.COFFER_CONTAINER.get().defaultBlockState());
@@ -151,8 +151,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         }
 
         //render items only if its at least slightly opened
-        if((float)lerpDegreesOpened > 2)
-        {
+        if (lerpDegreesOpened > 2) {
             if (tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).getValue(HorizontalDirectionalBlock.FACING) == Direction.NORTH)
                 renderItemsNorth(tileEntityIn, partialTicks, matrixStackIn, bufferIn, combinedLightIn);
             if (tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST)
@@ -168,17 +167,16 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
     }
 
     private void renderItemsNorth(CofferTile tileEntityIn, float partialTicks, PoseStack matrixStackIn,
-                                  MultiBufferSource bufferIn, int combinedLightIn)
-    {
-        float lerpDegreesOpened = (float) (Mth.lerp(partialTicks, tileEntityIn.degreesOpenedPrev, tileEntityIn.degreesOpened));
-        float sideRotation = (((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135);
+                                  MultiBufferSource bufferIn, int combinedLightIn) {
+        float lerpDegreesOpened = Mth.lerp(partialTicks, tileEntityIn.degreesOpenedPrev, tileEntityIn.degreesOpened);
+        float sideRotation = ((lerpDegreesOpened / (float) tileEntityIn.lidOpenAmount) * 135);
 
         // item row 1
         matrixStackIn.pushPose();
 
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
-        matrixStackIn.translate(-1,0,-1 + 1D / 32D);
-        matrixStackIn.translate(4.5D/16D-0.5D/16D, 0.15D, 6.5D/16D);
+        matrixStackIn.translate(-1, 0, -1 + 1D / 32D);
+        matrixStackIn.translate(4.5D / 16D - 0.5D / 16D, 0.15D, 6.5D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(22.5f));
         matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(15f));
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(2.5f));
@@ -616,15 +614,14 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
     }
 
     private void renderItemsSouth(CofferTile tileEntityIn, float partialTicks, PoseStack matrixStackIn,
-                                 MultiBufferSource bufferIn, int combinedLightIn)
-    {
-        float lerpDegreesOpened = (float) (Mth.lerp(partialTicks, tileEntityIn.degreesOpenedPrev, tileEntityIn.degreesOpened));
-        float sideRotation = (((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135);
+                                 MultiBufferSource bufferIn, int combinedLightIn) {
+        float lerpDegreesOpened = Mth.lerp(partialTicks, tileEntityIn.degreesOpenedPrev, tileEntityIn.degreesOpened);
+        float sideRotation = ((lerpDegreesOpened / (float) tileEntityIn.lidOpenAmount) * 135);
 
         // item row 1
         matrixStackIn.pushPose();
         matrixStackIn.translate(0D / 16D, 0D / 16D, 0D / 16D - 1D / 32D);
-        matrixStackIn.translate(4.5D/16D-0.5D/16D, 0.15D, 6.5D/16D);
+        matrixStackIn.translate(4.5D / 16D - 0.5D / 16D, 0.15D, 6.5D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(22.5f));
         matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(15f));
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(2.5f));
@@ -987,18 +984,17 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
     }
 
     private void renderItemsWest(CofferTile tileEntityIn, float partialTicks, PoseStack matrixStackIn,
-                                 MultiBufferSource bufferIn, int combinedLightIn)
-    {
-        float lerpDegreesOpened = (float) (Mth.lerp(partialTicks, tileEntityIn.degreesOpenedPrev, tileEntityIn.degreesOpened));
-        float sideRotation = (((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135);
+                                 MultiBufferSource bufferIn, int combinedLightIn) {
+        float lerpDegreesOpened = Mth.lerp(partialTicks, tileEntityIn.degreesOpenedPrev, tileEntityIn.degreesOpened);
+        float sideRotation = ((lerpDegreesOpened / (float) tileEntityIn.lidOpenAmount) * 135);
 
         // item row 1
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
-        matrixStackIn.translate(-1,0,-1);
-        matrixStackIn.translate(4.5D/16D-0.5D/16D, 0.15D, 6.5D/16D);
+        matrixStackIn.translate(-1, 0, -1);
+        matrixStackIn.translate(4.5D / 16D - 0.5D / 16D, 0.15D, 6.5D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(22.5f));
         matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(15f));
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(2.5f));
@@ -1007,7 +1003,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1020,7 +1016,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1033,7 +1029,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1046,7 +1042,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1059,7 +1055,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1072,7 +1068,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1085,7 +1081,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1098,7 +1094,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1113,7 +1109,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         // item row 2
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1126,7 +1122,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1139,7 +1135,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1152,7 +1148,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1165,7 +1161,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1178,7 +1174,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1193,7 +1189,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         // item row 3
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1206,7 +1202,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1219,7 +1215,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1232,7 +1228,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1245,7 +1241,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1258,7 +1254,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1273,7 +1269,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         // item row 4
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1286,7 +1282,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1299,7 +1295,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1312,7 +1308,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1325,7 +1321,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1338,7 +1334,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1352,7 +1348,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
 
         // item row 5
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1365,7 +1361,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1378,7 +1374,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1391,7 +1387,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1404,7 +1400,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1417,7 +1413,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1431,7 +1427,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
 
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1444,7 +1440,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1457,7 +1453,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 16D / 16D);
+        matrixStackIn.translate(0D / 16D + 1D / 32D, 0D / 16D, 1.0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1472,18 +1468,17 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
     }
 
     private void renderItemsEast(CofferTile tileEntityIn, float partialTicks, PoseStack matrixStackIn,
-                                 MultiBufferSource bufferIn, int combinedLightIn)
-    {
-        float lerpDegreesOpened = (float) (Mth.lerp(partialTicks, tileEntityIn.degreesOpenedPrev, tileEntityIn.degreesOpened));
-        float sideRotation = (((float)lerpDegreesOpened / (float)tileEntityIn.lidOpenAmount) * 135);
+                                 MultiBufferSource bufferIn, int combinedLightIn) {
+        float lerpDegreesOpened = Mth.lerp(partialTicks, tileEntityIn.degreesOpenedPrev, tileEntityIn.degreesOpened);
+        float sideRotation = ((lerpDegreesOpened / (float) tileEntityIn.lidOpenAmount) * 135);
 
         // item row 1
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
-        matrixStackIn.translate(-1,0,-1);
-        matrixStackIn.translate(4.5D/16D-0.5D/16D, 0.15D, 6.5D/16D);
+        matrixStackIn.translate(-1, 0, -1);
+        matrixStackIn.translate(4.5D / 16D - 0.5D / 16D, 0.15D, 6.5D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(22.5f));
         matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(15f));
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(2.5f));
@@ -1492,7 +1487,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1505,7 +1500,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1518,7 +1513,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1531,7 +1526,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1544,7 +1539,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1557,7 +1552,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1570,7 +1565,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1583,7 +1578,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1598,7 +1593,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         // item row 2
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1611,7 +1606,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1624,7 +1619,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1637,7 +1632,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1650,7 +1645,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1663,7 +1658,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1678,7 +1673,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         // item row 3
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1691,7 +1686,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1704,7 +1699,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1717,7 +1712,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1730,7 +1725,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1743,7 +1738,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1758,7 +1753,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         // item row 4
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1771,7 +1766,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1784,7 +1779,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1797,7 +1792,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1810,7 +1805,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1823,7 +1818,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1837,7 +1832,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
 
         // item row 5
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1850,7 +1845,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1863,7 +1858,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1876,7 +1871,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1889,7 +1884,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1902,7 +1897,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1916,7 +1911,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
 
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1929,7 +1924,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1942,7 +1937,7 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
         matrixStackIn.popPose();
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(16D / 16D -1D / 32D, 0D / 16D, 0D / 16D);
+        matrixStackIn.translate(1.0 - 1D / 32D, 0D / 16D, 0D / 16D);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         matrixStackIn.translate(-1,0,-1);
@@ -1979,19 +1974,20 @@ public class CofferRenderer implements BlockEntityRenderer<CofferTile> {
     public void renderSingleBlock(BlockState p_110913_, PoseStack p_110914_, MultiBufferSource p_110915_, int p_110916_, int p_110917_, net.minecraftforge.client.model.data.ModelData modelData, int color) {
         RenderShape rendershape = p_110913_.getRenderShape();
         if (rendershape != RenderShape.INVISIBLE) {
-            switch(rendershape) {
-                case MODEL:
+            switch (rendershape) {
+                case MODEL -> {
                     BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
                     BakedModel bakedmodel = dispatcher.getBlockModel(p_110913_);
                     int i = color;
-                    float f = (float)(i >> 16 & 255) / 255.0F;
-                    float f1 = (float)(i >> 8 & 255) / 255.0F;
-                    float f2 = (float)(i & 255) / 255.0F;
+                    float f = (float) (i >> 16 & 255) / 255.0F;
+                    float f1 = (float) (i >> 8 & 255) / 255.0F;
+                    float f2 = (float) (i & 255) / 255.0F;
                     dispatcher.getModelRenderer().renderModel(p_110914_.last(), p_110915_.getBuffer(ItemBlockRenderTypes.getRenderType(p_110913_, false)), p_110913_, bakedmodel, f, f1, f2, p_110916_, p_110917_, modelData, null);
-                    break;
-                case ENTITYBLOCK_ANIMATED:
+                }
+                case ENTITYBLOCK_ANIMATED -> {
                     ItemStack stack = new ItemStack(p_110913_.getBlock());
                     IClientItemExtensions.of(stack.getItem()).getCustomRenderer().renderByItem(stack, ItemTransforms.TransformType.NONE, p_110914_, p_110915_, p_110916_, p_110917_);
+                }
             }
 
         }

@@ -63,7 +63,7 @@ public class ModChest extends AbstractChestBlock<ModChestBlockEntity> implements
     protected static final VoxelShape WEST_AABB = Block.box(0.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
     protected static final VoxelShape EAST_AABB = Block.box(1.0D, 0.0D, 1.0D, 16.0D, 14.0D, 15.0D);
     protected static final VoxelShape AABB = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 14.0D, 15.0D);
-    private static final DoubleBlockCombiner.Combiner<ModChestBlockEntity, Optional<Container>> CHEST_COMBINER = new DoubleBlockCombiner.Combiner<ModChestBlockEntity, Optional<Container>>() {
+    private static final DoubleBlockCombiner.Combiner<ModChestBlockEntity, Optional<Container>> CHEST_COMBINER = new DoubleBlockCombiner.Combiner<>() {
         public Optional<Container> acceptDouble(ModChestBlockEntity p_51591_, ModChestBlockEntity p_51592_) {
             return Optional.of(new CompoundContainer(p_51591_, p_51592_));
         }
@@ -76,7 +76,7 @@ public class ModChest extends AbstractChestBlock<ModChestBlockEntity> implements
             return Optional.empty();
         }
     };
-    private static final DoubleBlockCombiner.Combiner<ModChestBlockEntity, Optional<MenuProvider>> MENU_PROVIDER_COMBINER = new DoubleBlockCombiner.Combiner<ModChestBlockEntity, Optional<MenuProvider>>() {
+    private static final DoubleBlockCombiner.Combiner<ModChestBlockEntity, Optional<MenuProvider>> MENU_PROVIDER_COMBINER = new DoubleBlockCombiner.Combiner<>() {
         public Optional<MenuProvider> acceptDouble(final ModChestBlockEntity p_51604_, final ModChestBlockEntity p_51605_) {
             final Container container = new CompoundContainer(p_51604_, p_51605_);
             return Optional.of(new MenuProvider() {
@@ -95,7 +95,7 @@ public class ModChest extends AbstractChestBlock<ModChestBlockEntity> implements
                     if (p_51604_.hasCustomName()) {
                         return p_51604_.getDisplayName();
                     } else {
-                        return (Component)(p_51605_.hasCustomName() ? p_51605_.getDisplayName() : Component.translatable("container.chestDouble"));
+                        return p_51605_.hasCustomName() ? p_51605_.getDisplayName() : Component.translatable("container.chestDouble");
                     }
                 }
             });
@@ -152,17 +152,12 @@ public class ModChest extends AbstractChestBlock<ModChestBlockEntity> implements
         if (pState.getValue(TYPE) == ChestType.SINGLE) {
             return AABB;
         } else {
-            switch (getConnectedDirection(pState)) {
-                case NORTH:
-                default:
-                    return NORTH_AABB;
-                case SOUTH:
-                    return SOUTH_AABB;
-                case WEST:
-                    return WEST_AABB;
-                case EAST:
-                    return EAST_AABB;
-            }
+            return switch (getConnectedDirection(pState)) {
+                default -> NORTH_AABB;
+                case SOUTH -> SOUTH_AABB;
+                case WEST -> WEST_AABB;
+                case EAST -> EAST_AABB;
+            };
         }
     }
 
@@ -196,7 +191,7 @@ public class ModChest extends AbstractChestBlock<ModChestBlockEntity> implements
             }
         }
 
-        return this.defaultBlockState().setValue(FACING, direction).setValue(TYPE, chesttype).setValue(WATERLOGGED, Boolean.valueOf(fluidstate.getType() == Fluids.WATER));
+        return this.defaultBlockState().setValue(FACING, direction).setValue(TYPE, chesttype).setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
     }
 
     public FluidState getFluidState(BlockState pState) {
@@ -264,15 +259,13 @@ public class ModChest extends AbstractChestBlock<ModChestBlockEntity> implements
 
     @Nullable
     public static Container getContainer(ModChest pChest, BlockState pState, Level pLevel, BlockPos pPos, boolean pOverride) {
-        return pChest.combine(pState, pLevel, pPos, pOverride).<Optional<Container>>apply(CHEST_COMBINER).orElse((Container)null);
+        return pChest.combine(pState, pLevel, pPos, pOverride).apply(CHEST_COMBINER).orElse(null);
     }
 
     public DoubleBlockCombiner.NeighborCombineResult<? extends ModChestBlockEntity> combine(BlockState pState, Level pLevel, BlockPos pPos, boolean pOverride) {
         BiPredicate<LevelAccessor, BlockPos> bipredicate;
         if (pOverride) {
-            bipredicate = (p_51578_, p_51579_) -> {
-                return false;
-            };
+            bipredicate = (p_51578_, p_51579_) -> false;
         } else {
             bipredicate = ModChest::isChestBlockedAt;
         }
@@ -282,15 +275,13 @@ public class ModChest extends AbstractChestBlock<ModChestBlockEntity> implements
 
     @Nullable
     public MenuProvider getMenuProvider(BlockState pState, Level pLevel, BlockPos pPos) {
-        return this.combine(pState, pLevel, pPos, false).<Optional<MenuProvider>>apply(MENU_PROVIDER_COMBINER).orElse((MenuProvider)null);
+        return this.combine(pState, pLevel, pPos, false).apply(MENU_PROVIDER_COMBINER).orElse(null);
     }
 
     public static DoubleBlockCombiner.Combiner<ModChestBlockEntity, Float2FloatFunction> opennessCombiner(final LidBlockEntity pLid) {
-        return new DoubleBlockCombiner.Combiner<ModChestBlockEntity, Float2FloatFunction>() {
+        return new DoubleBlockCombiner.Combiner<>() {
             public Float2FloatFunction acceptDouble(ModChestBlockEntity p_51633_, ModChestBlockEntity p_51634_) {
-                return (p_51638_) -> {
-                    return Math.max(p_51633_.getOpenNess(p_51638_), p_51634_.getOpenNess(p_51638_));
-                };
+                return p_51638_ -> Math.max(p_51633_.getOpenNess(p_51638_), p_51634_.getOpenNess(p_51638_));
             }
 
             public Float2FloatFunction acceptSingle(ModChestBlockEntity p_51631_) {
@@ -322,7 +313,7 @@ public class ModChest extends AbstractChestBlock<ModChestBlockEntity> implements
     }
 
     private static boolean isCatSittingOnChest(LevelAccessor pLevel, BlockPos pPos) {
-        List<Cat> list = pLevel.getEntitiesOfClass(Cat.class, new AABB((double)pPos.getX(), (double)(pPos.getY() + 1), (double)pPos.getZ(), (double)(pPos.getX() + 1), (double)(pPos.getY() + 2), (double)(pPos.getZ() + 1)));
+        List<Cat> list = pLevel.getEntitiesOfClass(Cat.class, new AABB(pPos.getX(), pPos.getY() + 1, pPos.getZ(), pPos.getX() + 1, pPos.getY() + 2, pPos.getZ() + 1));
         if (!list.isEmpty()) {
             for(Cat cat : list) {
                 if (cat.isInSittingPose()) {

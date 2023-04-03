@@ -70,32 +70,32 @@ public class ConnectingCarpetSlab extends CarpetBlock implements Waxed {
                 South southTemp = South.NONE;
                 if(south_east && east && north_east)
                     southTemp = South.ALL;
-                else if(!south_east && east && north_east)
+                else if (!south_east && east && north_east)
                     southTemp = South.SOUTH_AND_SOUTH_EAST;
-                else if(south_east && east && !north_east)
+                else if (south_east && east)
                     southTemp = South.SOUTH_AND_SOUTH_WEST;
-                else if(south_east && !east && north_east)
+                else if (south_east && north_east)
                     southTemp = South.SOUTH_EAST_AND_SOUTH_WEST;
-                else if(!south_east && east && !north_east)
+                else if (!south_east && east)
                     southTemp = South.JUST_SOUTH;
-                else if(!south_east && !east && north_east)
+                else if (!south_east && north_east)
                     southTemp = South.JUST_SOUTH_EAST;
-                else if(south_east && !east && !north_east)
+                else if (south_east)
                     southTemp = South.JUST_SOUTH_WEST;
 
                 if(south_west && west && north_west)
                     northTemp = North.ALL;
-                else if(!south_west && west && north_west)
+                else if (!south_west && west && north_west)
                     northTemp = North.NORTH_AND_NORTH_EAST;
-                else if(south_west && west && !north_west)
+                else if (south_west && west)
                     northTemp = North.NORTH_AND_NORTH_WEST;
-                else if(south_west && !west && north_west)
+                else if (south_west && north_west)
                     northTemp = North.NORTH_EAST_AND_NORTH_WEST;
-                else if(!south_west && west && !north_west)
+                else if (!south_west && west)
                     northTemp = North.JUST_NORTH;
-                else if(!south_west && !west && north_west)
+                else if (!south_west && north_west)
                     northTemp = North.JUST_NORTH_EAST;
-                else if(south_west && !west && !north_west)
+                else if (south_west)
                     northTemp = North.JUST_NORTH_WEST;
 
                 return pState.setValue(EAST, north).setValue(WEST, south).setValue(NORTH, northTemp).setValue(SOUTH, southTemp);
@@ -103,34 +103,34 @@ public class ConnectingCarpetSlab extends CarpetBlock implements Waxed {
             case CLOCKWISE_180 -> {
                 North northTemp = North.NONE;
                 South southTemp = South.NONE;
-                if(north && north_east && north_west)
+                if (north && north_east && north_west)
                     southTemp = South.ALL;
-                else if(north && north_west && !north_east)
+                else if (north && north_west)
                     southTemp = South.SOUTH_AND_SOUTH_EAST;
-                else if(north && north_east && !north_west)
+                else if (north && north_east)
                     southTemp = South.SOUTH_AND_SOUTH_WEST;
-                else if(north_west && north_east && !north)
+                else if (north_west && north_east)
                     southTemp = South.SOUTH_EAST_AND_SOUTH_WEST;
-                else if(!north_west && !north_east && north)
+                else if (!north_west && !north_east && north)
                     southTemp = South.JUST_SOUTH;
-                else if(north_west && !north_east && !north)
+                else if (north_west)
                     southTemp = South.JUST_SOUTH_EAST;
-                else if(!north_west && north_east && !north)
+                else if (north_east)
                     southTemp = South.JUST_SOUTH_WEST;
 
-                if(south && south_east && south_west)
+                if (south && south_east && south_west)
                     northTemp = North.ALL;
-                else if(south && south_west && !south_east)
+                else if (south && south_west)
                     northTemp = North.NORTH_AND_NORTH_EAST;
-                else if(south && south_east && !south_west)
+                else if (south && south_east)
                     northTemp = North.NORTH_AND_NORTH_WEST;
-                else if(south_west && south_east && !south)
+                else if (south_west && south_east)
                     northTemp = North.NORTH_EAST_AND_NORTH_WEST;
-                else if(!south_west && !south_east && south)
+                else if (!south_west && !south_east && south)
                     northTemp = North.JUST_NORTH;
-                else if(south_west && !south_east && !south)
+                else if (south_west)
                     northTemp = North.JUST_NORTH_EAST;
-                else if(!south_west && south_east && !south)
+                else if (south_east)
                     northTemp = North.JUST_NORTH_WEST;
 
                 return pState.setValue(EAST, west).setValue(WEST, east).setValue(NORTH, northTemp).setValue(SOUTH, southTemp);
@@ -141,32 +141,32 @@ public class ConnectingCarpetSlab extends CarpetBlock implements Waxed {
                 South southTemp = South.NONE;
                 if(north_west && west && south_west)
                     southTemp = South.ALL;
-                else if(!north_west && west && south_west)
+                else if (!north_west && west && south_west)
                     southTemp = South.SOUTH_AND_SOUTH_EAST;
-                else if(north_west && west && !south_west)
+                else if (north_west && west)
                     southTemp = South.SOUTH_AND_SOUTH_WEST;
-                else if(north_west && !west && south_west)
+                else if (north_west && south_west)
                     southTemp = South.SOUTH_EAST_AND_SOUTH_WEST;
-                else if(!north_west && west && !south_west)
+                else if (!north_west && west)
                     southTemp = South.JUST_SOUTH;
-                else if(!north_west && !west && south_west)
+                else if (!north_west && south_west)
                     southTemp = South.JUST_SOUTH_EAST;
-                else if(north_west && !west && !south_west)
+                else if (north_west)
                     southTemp = South.JUST_SOUTH_WEST;
 
                 if(north_east && east && south_east)
                     northTemp = North.ALL;
-                else if(!north_east && east && south_east)
+                else if (!north_east && east && south_east)
                     northTemp = North.NORTH_AND_NORTH_EAST;
-                else if(north_east && east && !south_east)
+                else if (north_east && east)
                     northTemp = North.NORTH_AND_NORTH_WEST;
-                else if(north_east && !east && south_east)
+                else if (north_east && south_east)
                     northTemp = North.NORTH_EAST_AND_NORTH_WEST;
-                else if(!north_east && east && !south_east)
+                else if (!north_east && east)
                     northTemp = North.JUST_NORTH;
-                else if(!north_east && !east && south_east)
+                else if (!north_east && south_east)
                     northTemp = North.JUST_NORTH_EAST;
-                else if(north_east && !east && !south_east)
+                else if (north_east)
                     northTemp = North.JUST_NORTH_WEST;
 
                 return pState.setValue(EAST, south).setValue(WEST, north).setValue(NORTH, northTemp).setValue(SOUTH, southTemp);
@@ -227,41 +227,24 @@ public class ConnectingCarpetSlab extends CarpetBlock implements Waxed {
         if (pColor == null) {
             return Blocks.SHULKER_BOX;
         } else {
-            switch (pColor) {
-                case WHITE:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_WHITE.get();
-                case ORANGE:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_ORANGE.get();
-                case MAGENTA:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_MAGENTA.get();
-                case LIGHT_BLUE:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIGHT_BLUE.get();
-                case YELLOW:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_YELLOW.get();
-                case LIME:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIME.get();
-                case PINK:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_PINK.get();
-                case GRAY:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_GRAY.get();
-                case LIGHT_GRAY:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIGHT_GRAY.get();
-                case CYAN:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_CYAN.get();
-                case PURPLE:
-                default:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_PURPLE.get();
-                case BLUE:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_BLUE.get();
-                case BROWN:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_BROWN.get();
-                case GREEN:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_GREEN.get();
-                case RED:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_RED.get();
-                case BLACK:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_BLACK.get();
-            }
+            return switch (pColor) {
+                case WHITE -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_WHITE.get();
+                case ORANGE -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_ORANGE.get();
+                case MAGENTA -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_MAGENTA.get();
+                case LIGHT_BLUE -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIGHT_BLUE.get();
+                case YELLOW -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_YELLOW.get();
+                case LIME -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIME.get();
+                case PINK -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_PINK.get();
+                case GRAY -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_GRAY.get();
+                case LIGHT_GRAY -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIGHT_GRAY.get();
+                case CYAN -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_CYAN.get();
+                case PURPLE -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_PURPLE.get();
+                case BLUE -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_BLUE.get();
+                case BROWN -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_BROWN.get();
+                case GREEN -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_GREEN.get();
+                case RED -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_RED.get();
+                case BLACK -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_BLACK.get();
+            };
         }
     }
 
@@ -394,7 +377,6 @@ public class ConnectingCarpetSlab extends CarpetBlock implements Waxed {
         return updateCorners(iblockreader, blockpos, super.getStateForPlacement(context));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(WEST, EAST, NORTH, SOUTH);

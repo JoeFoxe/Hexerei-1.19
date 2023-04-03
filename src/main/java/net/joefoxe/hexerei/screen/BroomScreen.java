@@ -111,11 +111,11 @@ public class BroomScreen extends AbstractContainerScreen<BroomContainer> {
 //        }
 
         List<Component> components = new ArrayList<>();
-        if (isHovering((double) mouseX, (double) mouseY, 188.25D, 89 + offset - OFFSET, 18D, 18D)) {
+        if (isHovering(mouseX, mouseY, 188.25D, 89 + offset - OFFSET, 18D, 18D)) {
             components.add(Component.translatable("tooltip.hexerei.broom_settings"));
             this.renderTooltip(matrixStack, components, Optional.empty(), mouseX, mouseY, Minecraft.getInstance().font, ItemStack.EMPTY);
         } else if (dropdownOffset > 29) {
-            if (isHovering((double) mouseX, (double) mouseY, 188.25D, 88 + offset + ((int) dropdownOffset) - OFFSET, 18D, 18D)) {
+            if (isHovering(mouseX, mouseY, 188.25D, 88 + offset + ((int) dropdownOffset) - OFFSET, 18D, 18D)) {
                 components.add(Component.translatable("tooltip.hexerei.broom_float_mode_off"));
                 if (Screen.hasShiftDown()) {
                     components.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
@@ -126,7 +126,7 @@ public class BroomScreen extends AbstractContainerScreen<BroomContainer> {
                 this.renderTooltip(matrixStack, components, Optional.empty(), mouseX, mouseY, Minecraft.getInstance().font, ItemStack.EMPTY);
             }
 
-            if (isHovering((double) mouseX, (double) mouseY, 188.25D, 60 + offset + ((int) dropdownOffset) - OFFSET, 18D, 18D)) {
+            if (isHovering(mouseX, mouseY, 188.25D, 60 + offset + ((int) dropdownOffset) - OFFSET, 18D, 18D)) {
                 components.add(Component.translatable("tooltip.hexerei.broom_float_mode_on"));
                 if (Screen.hasShiftDown()) {
                     components.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));

@@ -22,11 +22,11 @@ public class WorldUtil {
         return null;
     }
 
-    @SuppressWarnings({ "unchecked", "deprecation" })
+    @SuppressWarnings({"unchecked"})
     @Nullable
     public static <T extends Entity> T getCachedEntity(@Nullable Level worldIn, Class<T> type, @Nullable T cached, @Nullable UUID uuid) {
         if ((cached == null || cached.isRemoved()) && uuid != null && worldIn instanceof ServerLevel) {
-            Entity entity = ((ServerLevel) worldIn).getPlayerByUUID(uuid);
+            Entity entity = worldIn.getPlayerByUUID(uuid);
             if (entity != null && entity.getClass().isAssignableFrom(type)) {
                 return (T) entity;
             } else {

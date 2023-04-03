@@ -73,15 +73,11 @@ public class PotionFluidHandler {
     }
 
     public static ItemLike itemFromBottleType(PotionFluid.BottleType type) {
-        switch (type) {
-            case LINGERING:
-                return Items.LINGERING_POTION;
-            case SPLASH:
-                return Items.SPLASH_POTION;
-            case REGULAR:
-            default:
-                return Items.POTION;
-        }
+        return switch (type) {
+            case LINGERING -> Items.LINGERING_POTION;
+            case SPLASH -> Items.SPLASH_POTION;
+            case REGULAR -> Items.POTION;
+        };
     }
 
     public static int getRequiredAmountForFilledBottle(ItemStack stack, FluidStack availableFluid) {

@@ -50,7 +50,7 @@ public class MixingCauldronItem extends BlockItem implements DyeableLeatherItem 
     public static int getDyeColorNamed(String name) {
 
         if(HexereiUtil.getDyeColorNamed(name)!= null){
-            float f3 = ((float) (((Hexerei.getClientTicks()) / 10f * 4) % 16)) / (float) 16;
+            float f3 = (((Hexerei.getClientTicks()) / 10f * 4) % 16) / (float) 16;
 
             DyeColor col1 = HexereiUtil.getDyeColorNamed(name, 0);
             DyeColor col2 = HexereiUtil.getDyeColorNamed(name, 1);

@@ -54,11 +54,12 @@ public class MushroomWitchArmorItem extends WitchArmorItem {
     public void initializeClient(java.util.function.Consumer<IClientItemExtensions> consumer) {
 
         consumer.accept(new IClientItemExtensions() {
-            static MushroomWitchArmorModel model;
+            static MushroomWitchArmorModel<LivingEntity> model;
 
             @Override
-            public MushroomWitchArmorModel getGenericArmorModel(LivingEntity entity, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel _default) {
-                if (model == null) model = new MushroomWitchArmorModel(Minecraft.getInstance().getEntityModels().bakeLayer(ClientProxy.MUSHROOM_WITCH_ARMOR_LAYER));
+            public MushroomWitchArmorModel<LivingEntity> getGenericArmorModel(LivingEntity entity, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel _default) {
+                if (model == null)
+                    model = new MushroomWitchArmorModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ClientProxy.MUSHROOM_WITCH_ARMOR_LAYER));
                 float pticks = Minecraft.getInstance().getFrameTime();
                 float f = Mth.rotLerp(pticks, entity.yBodyRotO, entity.yBodyRot);
                 float f1 = Mth.rotLerp(pticks, entity.yHeadRotO, entity.yHeadRot);

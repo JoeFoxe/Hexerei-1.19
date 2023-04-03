@@ -61,13 +61,13 @@ public class ArmorModel <T extends LivingEntity> extends HumanoidModel<T> implem
     @Override
     protected Iterable<ModelPart> bodyParts() {
         if (slot == EquipmentSlot.CHEST) {
-            return ImmutableList.<ModelPart>of(modelBody, modelLeft_arm, modelRight_arm);
+            return ImmutableList.of(modelBody, modelLeft_arm, modelRight_arm);
         }
         else if (slot == EquipmentSlot.LEGS) {
-            return ImmutableList.<ModelPart>of(modelLeft_leg, modelRight_leg, modelBelt);
+            return ImmutableList.of(modelLeft_leg, modelRight_leg, modelBelt);
         }
         else if (slot == EquipmentSlot.FEET) {
-            return ImmutableList.<ModelPart>of(modelLeft_foot, modelRight_foot);
+            return ImmutableList.of(modelLeft_foot, modelRight_foot);
         }
         else return ImmutableList.of();
     }
@@ -78,7 +78,7 @@ public class ArmorModel <T extends LivingEntity> extends HumanoidModel<T> implem
         matrixStack.pushPose();
 
         if(entity != null) {
-            EntityModel entityModel =  ((LivingEntityRenderer) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity)).getModel();
+            EntityModel entityModel = ((LivingEntityRenderer<?, ?>) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity)).getModel();
             if(entityModel instanceof HumanoidModel livingModel){
                 this.attackTime = livingModel.attackTime;
                 this.riding = livingModel.riding;

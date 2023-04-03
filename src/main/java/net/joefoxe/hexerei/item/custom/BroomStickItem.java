@@ -1,7 +1,6 @@
 package net.joefoxe.hexerei.item.custom;
 
 import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.client.renderer.entity.model.BroomMediumSatchelModel;
 import net.joefoxe.hexerei.client.renderer.entity.model.BroomStickBaseModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;

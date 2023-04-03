@@ -57,7 +57,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -227,7 +226,7 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
                     if(!itemStack.hasTag() || itemStack.getOrCreateTag().isEmpty())
                         level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f, new ItemStack(ModBlocks.CANDLE.get())));
                     else
-                        popResource((ServerLevel) level, pos, itemStack);
+                        popResource(level, pos, itemStack);
                 }
             }
         }
@@ -293,31 +292,21 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        switch(state.getValue(CANDLES)) {
-            case 1:
-            default:
-                return ONE_SHAPE;
-            case 2:
-                return TWO_SHAPE;
-            case 3:
-                return THREE_SHAPE;
-            case 4:
-                return FOUR_SHAPE;
-        }
+        return switch (state.getValue(CANDLES)) {
+            default -> ONE_SHAPE;
+            case 2 -> TWO_SHAPE;
+            case 3 -> THREE_SHAPE;
+            case 4 -> FOUR_SHAPE;
+        };
     }
 
     public static VoxelShape getShape(BlockState state) {
-        switch(state.getValue(CANDLES)) {
-            case 1:
-            default:
-                return ONE_SHAPE;
-            case 2:
-                return TWO_SHAPE;
-            case 3:
-                return THREE_SHAPE;
-            case 4:
-                return FOUR_SHAPE;
-        }
+        return switch (state.getValue(CANDLES)) {
+            default -> ONE_SHAPE;
+            case 2 -> TWO_SHAPE;
+            case 3 -> THREE_SHAPE;
+            case 4 -> FOUR_SHAPE;
+        };
     }
 
 
@@ -347,7 +336,7 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
                 else
                     return InteractionResult.FAIL;
 
-                worldIn.playSound((Player) null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
+                worldIn.playSound(null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
                 itemstack.hurtAndBreak(1, player, player1 -> player1.broadcastBreakEvent(handIn));
 
                 return InteractionResult.sidedSuccess(worldIn.isClientSide());
@@ -372,7 +361,7 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
                 if (!tile.candles.get(3).hasCandle)
                     tile.candles.get(3).lit = true;
 
-                worldIn.playSound((Player) null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
+                worldIn.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
                 itemstack.shrink(1);
 
                 return InteractionResult.sidedSuccess(worldIn.isClientSide());
@@ -432,7 +421,7 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
         tile.candles.get(2).lit = false;
         tile.candles.get(3).lit = false;
         if (!level.isClientSide()) {
-            level.playSound((Player)null, pos, SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.playSound(null, pos, SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
         if (level.isClientSide()) {
             for(int i = 0; i < 10 * numLit; ++i) {
@@ -453,7 +442,7 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
 
             }
 
-            worldIn.setBlock(pos, state.setValue(WATERLOGGED, Boolean.valueOf(true)), 3);
+            worldIn.setBlock(pos, state.setValue(WATERLOGGED, Boolean.TRUE), 3);
             worldIn.scheduleTick(pos, fluidStateIn.getType(), fluidStateIn.getType().getTickDelay(worldIn));
             return true;
         } else {
@@ -530,10 +519,7 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
                         else
                             te.candles.get(i).effect = new AbstractCandleEffect();
 
-                        if (effectParticle != null)
-                            te.candles.get(i).effectParticle = effectParticle;
-                        else
-                            te.candles.get(i).effectParticle = null;
+                        te.candles.get(i).effectParticle = effectParticle;
                         break;
                     }
                 }
@@ -595,7 +581,6 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
 
 
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(HorizontalDirectionalBlock.FACING, CANDLES, WATERLOGGED, POWER, CANDLES_LIT, LIT);

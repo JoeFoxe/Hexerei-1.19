@@ -25,9 +25,9 @@ public class JarHandler extends ItemStackHandler {
     }
 
     public boolean noValidSlots(){
-        return IntStream.range(0,getSlots())
+        return IntStream.range(0, getSlots())
                 .mapToObj(this::getStackInSlot)
-                .allMatch(stack -> stack.isEmpty());
+                .allMatch(ItemStack::isEmpty);
     }
 
 //    @Override

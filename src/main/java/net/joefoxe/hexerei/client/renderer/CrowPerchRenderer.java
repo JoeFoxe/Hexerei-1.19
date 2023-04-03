@@ -10,25 +10,17 @@ import net.joefoxe.hexerei.client.renderer.entity.custom.CrowEntity;
 import net.joefoxe.hexerei.events.CrowWhitelistEvent;
 import net.joefoxe.hexerei.item.custom.CrowFluteItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -273,18 +265,15 @@ public class CrowPerchRenderer {
 
             int crowId = tag.getInt("ID");
 
-            if((Hexerei.proxy.getPlayer().level).getEntity(crowId) instanceof CrowEntity && ((CrowEntity) (Hexerei.proxy.getPlayer().level).getEntity(crowId)).getPerchPos() != null)
-            {
-                CrowEntity crow = ((CrowEntity) (Hexerei.proxy.getPlayer().level).getEntity(crowId));
+            if ((Hexerei.proxy.getPlayer().level).getEntity(crowId) instanceof CrowEntity crow && ((CrowEntity) (Hexerei.proxy.getPlayer().level).getEntity(crowId)).getPerchPos() != null) {
 
                 pos = crow.getPerchPos();
                 double topOffset = Hexerei.proxy.getPlayer().level.getBlockState(pos).getBlock().getOcclusionShape(Hexerei.proxy.getPlayer().level.getBlockState(pos), Hexerei.proxy.getPlayer().level, pos).max(Direction.Axis.Y);
                 int amount;
-                if(!map.containsKey(pos)) {
+                if (!map.containsKey(pos)) {
                     amount = 1;
-                }
-                else {
-                    if(map.get(pos) >= 3)
+                } else {
+                    if (map.get(pos) >= 3)
                         continue;
                     amount = map.get(pos) + 1;
                 }
@@ -384,9 +373,7 @@ public class CrowPerchRenderer {
 
             int crowId = tag.getInt("ID");
 
-            if((Hexerei.proxy.getPlayer().level).getEntity(crowId) instanceof CrowEntity)
-            {
-                CrowEntity crow = ((CrowEntity) (Hexerei.proxy.getPlayer().level).getEntity(crowId));
+            if ((Hexerei.proxy.getPlayer().level).getEntity(crowId) instanceof CrowEntity crow) {
 
                 pos = crow.position();
 //                double topOffset = Hexerei.proxy.getPlayer().level.getBlockState(pos).getBlock().getOcclusionShape(Hexerei.proxy.getPlayer().level.getBlockState(pos), Hexerei.proxy.getPlayer().level, pos).max(Direction.Axis.Y);

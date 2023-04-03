@@ -19,9 +19,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -32,7 +30,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -43,7 +41,6 @@ public class Altar extends ConnectingTableEntityBase implements ITileEntity<Book
         super(pProperties);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public RenderShape getRenderShape(BlockState iBlockState) {
         return RenderShape.MODEL;
@@ -82,8 +79,8 @@ public class Altar extends ConnectingTableEntityBase implements ITileEntity<Book
         if (state.getBlock() != newState.getBlock()) {
             BlockEntity tileentity = level.getBlockEntity(pos);
             if (tileentity instanceof BookOfShadowsAltarTile te) {
-                te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-                    if(!h.getStackInSlot(0).isEmpty())
+                te.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+                    if (!h.getStackInSlot(0).isEmpty())
                         level.addFreshEntity(new ItemEntity(level, pos.getX() + 0.5f, pos.getY() + 1f, pos.getZ() + 0.5f, h.getStackInSlot(0)));
                 });
             }
@@ -91,7 +88,6 @@ public class Altar extends ConnectingTableEntityBase implements ITileEntity<Book
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(WEST, EAST, NORTH, SOUTH, WATERLOGGED);

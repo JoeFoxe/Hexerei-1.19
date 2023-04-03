@@ -29,16 +29,15 @@ public class BottleBloodtem extends Item {
 
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entityLiving) {
-        if (!world.isClientSide && entityLiving instanceof ServerPlayer) {
-            ServerPlayer player = (ServerPlayer) entityLiving;
+        if (!world.isClientSide && entityLiving instanceof ServerPlayer player) {
             ItemStack itemstack3 = new ItemStack(Items.GLASS_BOTTLE);
-            ItemStack itemstack = ((ServerPlayer) entityLiving).getItemInHand(InteractionHand.MAIN_HAND);
+            ItemStack itemstack = entityLiving.getItemInHand(InteractionHand.MAIN_HAND);
             entityLiving.curePotionEffects(new ItemStack(Items.MILK_BUCKET));
             if (itemstack.isEmpty()) {
                 player.setItemInHand(InteractionHand.MAIN_HAND, itemstack3);
             } else if (!player.inventory.add(itemstack3)) {
                 player.drop(itemstack3, false);
-            } else if (player instanceof ServerPlayer) {
+            } else {
                 player.initMenu(player.containerMenu);
             }
         }

@@ -12,8 +12,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -35,7 +35,7 @@ public class MixingCauldronContainer extends AbstractContainerMenu {
 
         //add slots for mixing cauldron
         if(tileEntity != null) {
-            tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
+            tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
                 this.addSlot(new SlotItemHandler(h, 9, 42, 24));
                 this.addSlot(new SlotItemHandler(h, 0, 105, 17));
                 this.addSlot(new SlotItemHandler(h, 1, 127, 26));
@@ -84,24 +84,18 @@ public class MixingCauldronContainer extends AbstractContainerMenu {
     }
 
     public float getCraftPercent() {
-        if(tileEntity instanceof MixingCauldronTile)
-        {
-            MixingCauldronTile cauldronTile = (MixingCauldronTile) tileEntity;
-            if(!cauldronTile.getCrafted())
-            {
-                return (float)cauldronTile.craftDelay / (float) MixingCauldronTile.craftDelayMax;
+        if (tileEntity instanceof MixingCauldronTile cauldronTile) {
+            if (!cauldronTile.getCrafted()) {
+                return (float) cauldronTile.craftDelay / (float) MixingCauldronTile.craftDelayMax;
             }
         }
         return 0;
     }
 
     public float getCraftPercentHalf() {
-        if(tileEntity instanceof MixingCauldronTile)
-        {
-            MixingCauldronTile cauldronTile = (MixingCauldronTile) tileEntity;
+        if (tileEntity instanceof MixingCauldronTile cauldronTile) {
             float delayHalf = cauldronTile.craftDelay - MixingCauldronTile.craftDelayMax / 2f;
-            if(!cauldronTile.getCrafted())
-            {
+            if (!cauldronTile.getCrafted()) {
 
                 return delayHalf / (float) MixingCauldronTile.craftDelayMax;
             }

@@ -91,7 +91,7 @@ public class PotionFluid extends ForgeFlowingFluid {
     }
 
     public enum BottleType {
-        REGULAR, SPLASH, LINGERING;
+        REGULAR, SPLASH, LINGERING
     }
 
     public static <V> ResourceLocation getKeyOrThrow(Potion value) {

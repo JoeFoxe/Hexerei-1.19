@@ -84,7 +84,7 @@ public abstract class TallowFluid extends ForgeFlowingFluid {
 
 	@Override
 	protected BlockState createLegacyBlock(FluidState state) {
-		return ModFluids.TALLOW_BLOCK.get().defaultBlockState().setValue(LiquidBlock.LEVEL, Integer.valueOf(getLegacyLevel(state)));
+		return ModFluids.TALLOW_BLOCK.get().defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(state));
 	}
 
 	@Override

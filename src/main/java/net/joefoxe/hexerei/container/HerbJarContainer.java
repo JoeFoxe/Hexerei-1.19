@@ -11,7 +11,7 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -40,9 +40,7 @@ public class HerbJarContainer extends AbstractContainerMenu {
         layoutPlayerInventorySlots(11, 147 - OFFSET);
 
         if(tileEntity != null) {
-            tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-                addSlot(new JarSlot(h, 0, 83, 74 - OFFSET));
-            });
+            tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> addSlot(new JarSlot(h, 0, 83, 74 - OFFSET)));
 
 
 

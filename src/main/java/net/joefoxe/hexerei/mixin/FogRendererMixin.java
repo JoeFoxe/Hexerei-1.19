@@ -68,7 +68,7 @@ public abstract class FogRendererMixin {
             double d0 = pCamera.getPosition().y() - (double) 0.11111111F;
             BlockPos blockpos = new BlockPos(pCamera.getPosition().x(), d0, pCamera.getPosition().z());
             if (tile.renderedFluid != null) {
-                double d1 = (double) ((float) blockpos.getY() + tile.renderedFluid.getAmount() / 2000f);
+                double d1 = (float) blockpos.getY() + tile.renderedFluid.getAmount() / 2000f;
                 if (d1 > d0) {
                     FogType fogtype = getFluidInCamera(tile.renderedFluid);
                     Entity entity = pCamera.getEntity();
@@ -112,7 +112,7 @@ public abstract class FogRendererMixin {
                         RenderSystem.clearColor(fogRed, fogGreen, fogBlue, 0.0F);
                     } else {
                         float f4 = 0.25F + 0.75F * (float)pRenderDistanceChunks / 32.0F;
-                        f4 = 1.0F - (float)Math.pow((double)f4, 0.25D);
+                        f4 = 1.0F - (float) Math.pow(f4, 0.25D);
                         Vec3 vec3 = pLevel.getSkyColor(pCamera.getPosition(), pPartialTicks);
                         float f6 = (float)vec3.x;
                         float f8 = (float)vec3.y;
@@ -196,8 +196,7 @@ public abstract class FogRendererMixin {
                         }
                     } else {
                         label86: {
-                            if (entity instanceof LivingEntity) {
-                                LivingEntity livingentity1 = (LivingEntity)entity;
+                            if (entity instanceof LivingEntity livingentity1) {
                                 if (livingentity1.hasEffect(MobEffects.NIGHT_VISION) && !livingentity1.hasEffect(MobEffects.DARKNESS)) {
                                     f7 = GameRenderer.getNightVisionScale(livingentity1, pPartialTicks);
                                     break label86;
@@ -240,7 +239,7 @@ public abstract class FogRendererMixin {
             double d0 = pCamera.getPosition().y() - (double) 0.11111111F;
             BlockPos blockpos = new BlockPos(pCamera.getPosition().x(), d0, pCamera.getPosition().z());
             if (tile.renderedFluid != null) {
-                double d1 = (double) ((float) blockpos.getY() + tile.renderedFluid.getAmount() / 2000f);
+                double d1 = (float) blockpos.getY() + tile.renderedFluid.getAmount() / 2000f;
                 if (d1 > d0) {
                     FogType fogtype = getFluidInCamera(tile.renderedFluid);
                     Entity entity = pCamera.getEntity();

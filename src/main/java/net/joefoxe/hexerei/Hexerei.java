@@ -40,7 +40,6 @@ import net.joefoxe.hexerei.world.structure.ModStructures;
 import net.joefoxe.hexerei.world.terrablender.ModRegion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.font.FontManager;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -80,10 +79,8 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import static net.joefoxe.hexerei.util.ClientProxy.MODEL_SWAPPER;
 

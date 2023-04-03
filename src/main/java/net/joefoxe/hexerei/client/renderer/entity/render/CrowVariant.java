@@ -12,7 +12,7 @@ public enum CrowVariant {
     GRAY(5),
     DARKBROWN(6);
 
-    private static final CrowVariant[] BY_ID = (CrowVariant[]) Arrays.stream(values()).sorted(Comparator.comparingInt(CrowVariant::getId)).toArray(CrowVariant[]::new);
+    private static final CrowVariant[] BY_ID = Arrays.stream(values()).sorted(Comparator.comparingInt(CrowVariant::getId)).toArray(CrowVariant[]::new);
     private final int id;
 
     private CrowVariant(int pId) {

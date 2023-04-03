@@ -15,7 +15,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -59,7 +59,7 @@ public class BroomContainer extends AbstractContainerMenu implements HasCustomIn
 
         //add slots for mixing cauldron
         if (broomEntity != null) {
-            broomEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
+            broomEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
 
                 addSlot(new SlotItemHandler(h, 0, 37, 47 - OFFSET) {
 

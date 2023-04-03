@@ -52,6 +52,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.data.ModelData;
 
 import java.util.HashMap;
@@ -395,7 +396,7 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
         public LayerCrowHelmet(CrowRenderer renderer, EntityRendererProvider.Context renderManagerIn){
             super(renderer);
             this.renderer = renderer;
-            defaultBipedModel = new HumanoidModel(renderManagerIn.bakeLayer(ModelLayers.ARMOR_STAND_OUTER_ARMOR));
+            defaultBipedModel = new HumanoidModel<>(renderManagerIn.bakeLayer(ModelLayers.ARMOR_STAND_OUTER_ARMOR));
 
         }
 
@@ -404,18 +405,17 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
 
             matrixStackIn.pushPose();
             ItemStack itemstack = crow.itemHandler.getStackInSlot(0);
-            if (itemstack.getItem() instanceof ArmorItem) {
-                ArmorItem armoritem = (ArmorItem) itemstack.getItem();
+            if (itemstack.getItem() instanceof ArmorItem armoritem) {
 
-                HumanoidModel a = getArmorModelHook(crow, itemstack, EquipmentSlot.HEAD, defaultBipedModel);
+                HumanoidModel<?> a = getArmorModelHook(crow, itemstack, EquipmentSlot.HEAD, defaultBipedModel);
 //                    this.setModelSlotVisible(a, EquipmentSlot.HEAD);
                 this.setModelSlotVisible(a, EquipmentSlot.HEAD);
                 boolean flag1 = itemstack.hasFoil();
                 boolean notAVanillaModel = a != defaultBipedModel;
                 translateToHand(matrixStackIn);
-                if(notAVanillaModel && Registry.ITEM.getKey(itemstack.getItem()).getNamespace().equals(Hexerei.MOD_ID)) {
+                if (notAVanillaModel && Registry.ITEM.getKey(itemstack.getItem()).getNamespace().equals(Hexerei.MOD_ID)) {
                     matrixStackIn.scale(0.35F, 0.35F, 0.35F);
-                    matrixStackIn.translate(0f,  -0.15F, -0.25F);
+                    matrixStackIn.translate(0f, -0.15F, -0.25F);
                 }
                 else {
                     matrixStackIn.scale(0.48F, 0.48F, 0.48F);
@@ -430,7 +430,7 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
                     renderArmor(crow, matrixStackIn, bufferIn, packedLightIn, flag1, a, f, f1, f2, getArmorResource(crow, itemstack, EquipmentSlot.HEAD, null));
                     renderArmor(crow, matrixStackIn, bufferIn, packedLightIn, flag1, a, 1.0F, 1.0F, 1.0F, getArmorResource(crow, itemstack, EquipmentSlot.HEAD, "overlay"));
                 } else
-                renderArmor(crow, matrixStackIn, bufferIn, packedLightIn, flag1, a, 1.0F, 1.0F, 1.0F, getArmorResource(crow, itemstack, EquipmentSlot.HEAD, null));
+                    renderArmor(crow, matrixStackIn, bufferIn, packedLightIn, flag1, a, 1.0F, 1.0F, 1.0F, getArmorResource(crow, itemstack, EquipmentSlot.HEAD, null));
             }
             else if((Block.byItem(itemstack.getItem())) instanceof AbstractSkullBlock)
             {
@@ -484,18 +484,16 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
             String texture = item.getMaterial().getName();
             String domain = "minecraft";
             int idx = texture.indexOf(':');
-            if (idx != -1)
-            {
+            if (idx != -1) {
                 domain = texture.substring(0, idx);
                 texture = texture.substring(idx + 1);
             }
             String s1 = String.format("%s:textures/models/armor/%s_layer_%d%s.png", domain, texture, (1), type == null ? "" : String.format("_%s", type));
 
-            s1 = net.minecraftforge.client.ForgeHooksClient.getArmorTexture(entity, stack, s1, slot, type);
-            ResourceLocation resourcelocation = (ResourceLocation)ARMOR_TEXTURE_RES_MAP.get(s1);
+            s1 = ForgeHooksClient.getArmorTexture(entity, stack, s1, slot, type);
+            ResourceLocation resourcelocation = ARMOR_TEXTURE_RES_MAP.get(s1);
 
-            if (resourcelocation == null)
-            {
+            if (resourcelocation == null) {
                 resourcelocation = new ResourceLocation(s1);
                 ARMOR_TEXTURE_RES_MAP.put(s1, resourcelocation);
             }
@@ -506,22 +504,21 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
         protected void setModelSlotVisible(HumanoidModel humanoidModel, EquipmentSlot slotIn) {
             this.setModelVisible(humanoidModel);
             switch (slotIn) {
-                case HEAD:
-                    humanoidModel.head.visible = true;
-                    break;
-                case CHEST:
+                case HEAD -> humanoidModel.head.visible = true;
+                case CHEST -> {
                     humanoidModel.body.visible = true;
                     humanoidModel.rightArm.visible = true;
                     humanoidModel.leftArm.visible = true;
-                    break;
-                case LEGS:
+                }
+                case LEGS -> {
                     humanoidModel.body.visible = true;
                     humanoidModel.rightLeg.visible = true;
                     humanoidModel.leftLeg.visible = true;
-                    break;
-                case FEET:
+                }
+                case FEET -> {
                     humanoidModel.rightLeg.visible = true;
                     humanoidModel.leftLeg.visible = true;
+                }
             }
         }
 
@@ -531,7 +528,7 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
         }
 
         protected HumanoidModel<?> getArmorModelHook(LivingEntity entity, ItemStack itemStack, EquipmentSlot slot, HumanoidModel model) {
-            Model basicModel = net.minecraftforge.client.ForgeHooksClient.getArmorModel(entity, itemStack, slot, model);
+            Model basicModel = ForgeHooksClient.getArmorModel(entity, itemStack, slot, model);
             return basicModel instanceof HumanoidModel ? (HumanoidModel<?>) basicModel : model;
         }
 

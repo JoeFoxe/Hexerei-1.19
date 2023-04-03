@@ -33,8 +33,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
@@ -109,7 +109,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Worl
 
     @Override
     public ItemStack removeItem(int p_59613_, int p_59614_) {
-        this.unpackLootTable((Player)null);
+        this.unpackLootTable(null);
         ItemStack itemstack = p_59613_ >= 0 && p_59613_ < this.itemStackHandler.getSlots() && !this.itemStackHandler.getStackInSlot(p_59613_).isEmpty() && p_59614_ > 0 ? this.getItems().get(p_59613_).split(p_59614_) : ItemStack.EMPTY;
         if (!itemstack.isEmpty()) {
             this.sync();
@@ -120,7 +120,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Worl
 
     @Override
     public ItemStack removeItemNoUpdate(int p_59630_) {
-        this.unpackLootTable((Player)null);
+        this.unpackLootTable(null);
         if(p_59630_ >= 0 && p_59630_ < this.itemStackHandler.getSlots())
         {
             this.itemStackHandler.setStackInSlot(p_59630_, ItemStack.EMPTY);
@@ -132,13 +132,13 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Worl
 
     @Override
     public ItemStack getItem(int p_59611_) {
-        this.unpackLootTable((Player)null);
+        this.unpackLootTable(null);
         return this.itemStackHandler.getStackInSlot(p_59611_);
     }
 
     @Override
     public void setItem(int p_59616_, ItemStack p_59617_) {
-        this.unpackLootTable((Player)null);
+        this.unpackLootTable(null);
         this.itemStackHandler.setStackInSlot(p_59616_, p_59617_);
         if (p_59617_.getCount() > this.getMaxStackSize()) {
             p_59617_.setCount(this.getMaxStackSize());
@@ -239,8 +239,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Worl
 
     @Override
     public AABB getRenderBoundingBox() {
-        AABB aabb = super.getRenderBoundingBox().inflate(5, 5, 5);
-        return aabb;
+        return super.getRenderBoundingBox().inflate(5, 5, 5);
     }
 
     @Override
@@ -384,7 +383,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Worl
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
             return handler.cast();
         }
         return super.getCapability(cap, side);
@@ -393,7 +392,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Worl
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
-        if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
             return handler.cast();
         }
         return super.getCapability(cap);

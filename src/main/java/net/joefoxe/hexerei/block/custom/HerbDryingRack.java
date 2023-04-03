@@ -31,14 +31,11 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class HerbDryingRack extends Block implements ITileEntity<DryingRackTile>, EntityBlock, SimpleWaterloggedBlock {
 
@@ -55,17 +52,13 @@ public class HerbDryingRack extends Block implements ITileEntity<DryingRackTile>
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
-        return this.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection()).setValue(WATERLOGGED, Boolean.valueOf(fluidstate.getType() == Fluids.WATER));
+        return this.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection()).setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
     }
 
     // hitbox REMEMBER TO DO THIS
-    public static final VoxelShape SHAPE = Stream.of(
-            Block.box(0.5, 5.5, 7.5, 15.5, 16, 8.5)
-    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+    public static final VoxelShape SHAPE = java.util.Optional.of(Block.box(0.5, 5.5, 7.5, 15.5, 16, 8.5)).get();
 
-    public static final VoxelShape SHAPE_TURNED = Stream.of(
-            Block.box(7.5, 5.5, 0.5, 8.5, 16, 15.5)
-    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+    public static final VoxelShape SHAPE_TURNED = java.util.Optional.of(Block.box(7.5, 5.5, 0.5, 8.5, 16, 15.5)).get();
 
 
     public BlockState rotate(BlockState pState, Rotation pRot) {
@@ -109,7 +102,6 @@ public class HerbDryingRack extends Block implements ITileEntity<DryingRackTile>
         super(properties.noCollission());
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(HorizontalDirectionalBlock.FACING, WATERLOGGED);

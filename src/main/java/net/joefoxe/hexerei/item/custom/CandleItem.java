@@ -1,33 +1,23 @@
 package net.joefoxe.hexerei.item.custom;
 
 import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.block.CustomFlintAndSteelDispenserBehavior;
-import net.joefoxe.hexerei.block.CustomVanillaItemDispenseBehavior;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.custom.Candle;
 import net.joefoxe.hexerei.item.ModItems;
-import net.joefoxe.hexerei.tileentity.CandleTile;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
-import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Sheep;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.ItemLike;
@@ -35,8 +25,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
@@ -376,7 +364,7 @@ public class CandleItem extends BlockItem implements DyeableLeatherItem {
     public static int getDyeColorNamed(String name) {
 
         if(HexereiUtil.getDyeColorNamed(name)!= null){
-            float f3 = ((float) (((Hexerei.getClientTicks()) / 10f * 4) % 16)) / (float) 16;
+            float f3 = (((Hexerei.getClientTicks()) / 10f * 4) % 16) / (float) 16;
 
             DyeColor col1 = HexereiUtil.getDyeColorNamed(name, 0);
             DyeColor col2 = HexereiUtil.getDyeColorNamed(name, 1);

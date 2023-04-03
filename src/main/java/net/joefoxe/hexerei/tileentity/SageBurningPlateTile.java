@@ -40,8 +40,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.network.PacketDistributor;
@@ -52,7 +52,7 @@ import java.util.Random;
 
 public class SageBurningPlateTile extends RandomizableContainerBlockEntity implements WorldlyContainer, Clearable, MenuProvider {
 
-//    public final ItemStackHandler itemHandler = createHandler();
+    //    public final ItemStackHandler itemHandler = createHandler();
 //    private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
     protected NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
 
@@ -87,7 +87,7 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
     public void sync() {
         setChanged();
 
-        if(level != null){
+        if (level != null) {
             if (!level.isClientSide)
                 HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new TESyncPacket(worldPosition, save(new CompoundTag())));
 
@@ -102,7 +102,7 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (facing != null && capability == ForgeCapabilities.ITEM_HANDLER) {
             if (facing == Direction.UP)
                 return handlers[0].cast();
             else if (facing == Direction.DOWN)
@@ -143,7 +143,7 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
 
     @Override
     public void onLoad() {
-        if(Hexerei.sageBurningPlateTileList.contains(this.worldPosition))
+        if (Hexerei.sageBurningPlateTileList.contains(this.worldPosition))
             Hexerei.sageBurningPlateTileList.remove(this.worldPosition);
         Hexerei.sageBurningPlateTileList.add(this.worldPosition);
         super.onLoad();
@@ -151,7 +151,7 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
 
 
     public SageBurningPlateTile(BlockPos blockPos, BlockState blockState) {
-        this(ModTileEntities.SAGE_BURNING_PLATE_TILE.get(),blockPos, blockState);
+        this(ModTileEntities.SAGE_BURNING_PLATE_TILE.get(), blockPos, blockState);
     }
 
     @Override
@@ -167,14 +167,14 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
 
     @Override
     public ItemStack removeItem(int index, int p_59614_) {
-        this.unpackLootTable((Player)null);
-        if(level.getBlockState(worldPosition).getValue(BlockStateProperties.LIT)) {
+        this.unpackLootTable(null);
+        if (level.getBlockState(worldPosition).getValue(BlockStateProperties.LIT)) {
             Random random = new Random();
             level.setBlock(worldPosition, level.getBlockState(worldPosition).setValue(BlockStateProperties.LIT, false), 11);
-            this.level.playSound((Player) null, worldPosition, SoundEvents.CANDLE_EXTINGUISH, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
+            this.level.playSound(null, worldPosition, SoundEvents.CANDLE_EXTINGUISH, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
 
             sync();
-            if(!level.isClientSide)
+            if (!level.isClientSide)
                 HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new EmitExtinguishParticlesPacket(worldPosition));
         }
 
@@ -197,9 +197,9 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
 //        if (nbt.contains("CustomName", 8))
 //            this.customName = Component.Serializer.fromJson(nbt.getString("CustomName"));
 
-        if (nbt.contains("burnTime",  Tag.TAG_INT))
+        if (nbt.contains("burnTime", Tag.TAG_INT))
             burnTime = nbt.getInt("burnTime");
-        if (nbt.contains("burnTimeMax",  Tag.TAG_INT))
+        if (nbt.contains("burnTimeMax", Tag.TAG_INT))
             burnTimeMax = nbt.getInt("burnTimeMax");
         super.load(nbt);
 
@@ -224,7 +224,7 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
     }
 
 
-//    @Override
+    //    @Override
     public CompoundTag save(CompoundTag compound) {
         super.saveAdditional(compound);
 //        compound.put("inv", itemHandler.serializeNBT());
@@ -240,8 +240,7 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
     }
 
     @Override
-    public CompoundTag getUpdateTag()
-    {
+    public CompoundTag getUpdateTag() {
         return this.save(new CompoundTag());
     }
 
@@ -252,8 +251,7 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
     }
 
     @Override
-    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt)
-    {
+    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt) {
         this.deserializeNBT(pkt.getTag());
     }
 
@@ -280,64 +278,13 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
 
     @Override
     public AABB getRenderBoundingBox() {
-        AABB aabb = super.getRenderBoundingBox().inflate(5, 5, 5);
-        return aabb;
-    }
-
-    private float moveTo(float input, float moveTo, float speed)
-    {
-        float distance = moveTo - input;
-
-        if(Math.abs(distance) <= speed)
-        {
-            return moveTo;
-        }
-
-        if(distance > 0)
-        {
-            input += speed;
-        } else {
-            input -= speed;
-        }
-
-        return input;
-    }
-
-    private float moveToAngle(float input, float movedTo, float speed)
-    {
-        float distance = movedTo - input;
-
-        if(Math.abs(distance) <= speed)
-        {
-            return movedTo;
-        }
-
-        if(distance > 0)
-        {
-            if(Math.abs(distance) < 180)
-                input += speed;
-            else
-                input -= speed;
-        } else {
-            if(Math.abs(distance) < 180)
-                input -= speed;
-            else
-                input += speed;
-        }
-
-        if(input < -90){
-            input += 360;
-        }
-        if(input > 270)
-            input -= 360;
-
-        return input;
+        return super.getRenderBoundingBox().inflate(5, 5, 5);
     }
 
     public float getAngle(Vec3 pos) {
         float angle = (float) Math.toDegrees(Math.atan2(pos.z() - this.getBlockPos().getZ() - 0.5f, pos.x() - this.getBlockPos().getX() - 0.5f));
 
-        if(angle < 0){
+        if (angle < 0) {
             angle += 360;
         }
 
@@ -345,19 +292,19 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
     }
 
     public float getSpeed(double pos, double posTo) {
-        return (float)(0.01f + 0.10f * (Math.abs(pos - posTo) / 3f));
+        return (float) (0.01f + 0.10f * (Math.abs(pos - posTo) / 3f));
     }
 
-    public Vec3 rotateAroundVec(Vec3 vector3dCenter,float rotation,Vec3 vector3d)
-    {
+    public Vec3 rotateAroundVec(Vec3 vector3dCenter, float rotation, Vec3 vector3d) {
         Vec3 newVec = vector3d.subtract(vector3dCenter);
-        newVec = newVec.yRot(rotation/180f*(float)Math.PI);
+        newVec = newVec.yRot(rotation / 180f * (float) Math.PI);
         newVec = newVec.add(vector3dCenter);
 
         return newVec;
     }
 
-    public int putItems (int slot, @Nonnull ItemStack stack) {
+    public int putItems(int slot, @Nonnull ItemStack stack) {
+        if (level == null) return 0;
         ItemStack stack1 = stack.copy();
         Random rand = new Random();
 
@@ -367,15 +314,15 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
             this.burnTime = this.burnTimeMax;
             sync();
             stack.shrink(1);
-            level.playSound((Player) null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, rand.nextFloat() * 0.4F + 1.0F);
+            level.playSound(null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, rand.nextFloat() * 0.4F + 1.0F);
             return 1;
         }
 
         return 0;
     }
 
-    public int interactSageBurningPlate (Player player, BlockHitResult hit) {
-        if(!player.isShiftKeyDown()) {
+    public int interactSageBurningPlate(Player player, BlockHitResult hit) {
+        if (!player.isShiftKeyDown()) {
 
             if (!player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
                 Random rand = new Random();
@@ -385,13 +332,11 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
                 }
             }
 
-        }
-        else
-        {
+        } else {
 
             if (!this.items.get(0).isEmpty()) {
                 player.inventory.placeItemBackInInventory(this.items.get(0).copy());
-                level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
+                level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
                 removeItem(0, 1);
 
 
@@ -402,130 +347,127 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
         return 0;
     }
 
-    public void extinguishParticles()
-    {
+    public void extinguishParticles() {
         Random rand = new Random();
+        if (level == null) return;
         float offsetX = 0;
         float offsetZ = 0;
-        float damageOutOf5 = (getItems().get(0).getMaxDamage()-getItems().get(0).getDamageValue())/(float)getItems().get(0).getMaxDamage()*5f;
-        if(this.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.NORTH)
-        {
-            offsetX = -0.25f;
-            if(damageOutOf5 <= 4f && damageOutOf5 > 3f)
-                offsetX += 0.09;
-            if(damageOutOf5 <= 3f && damageOutOf5 > 2f)
-                offsetX += 0.18;
-            if(damageOutOf5 <= 2f && damageOutOf5 > 1f)
-                offsetX += 0.25;
-            if(damageOutOf5 <= 1f && damageOutOf5 >= 0f)
-                offsetX += 0.33;
-        }
-        if(this.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
-        {
-            offsetX = 0.25f;
-            if(damageOutOf5 <= 4f && damageOutOf5 > 3f)
-                offsetX -= 0.09;
-            if(damageOutOf5 <= 3f && damageOutOf5 > 2f)
-                offsetX -= 0.18;
-            if(damageOutOf5 <= 2f && damageOutOf5 > 1f)
-                offsetX -= 0.25;
-            if(damageOutOf5 <= 1f && damageOutOf5 >= 0f)
-                offsetX -= 0.33;
-        }
-        if(this.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST)
-        {
-            offsetZ = 0.25f;
-            if(damageOutOf5 <= 4f && damageOutOf5 > 3f)
-                offsetZ -= 0.09;
-            if(damageOutOf5 <= 3f && damageOutOf5 > 2f)
-                offsetZ -= 0.18;
-            if(damageOutOf5 <= 2f && damageOutOf5 > 1f)
-                offsetZ -= 0.25;
-            if(damageOutOf5 <= 1f && damageOutOf5 >= 0f)
-                offsetZ -= 0.33;
-        }
-        if(this.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
-        {
-            offsetZ = -0.25f;
-            if(damageOutOf5 <= 4f && damageOutOf5 > 3f)
-                offsetZ += 0.09;
-            if(damageOutOf5 <= 3f && damageOutOf5 > 2f)
-                offsetZ += 0.18;
-            if(damageOutOf5 <= 2f && damageOutOf5 > 1f)
-                offsetZ += 0.25;
-            if(damageOutOf5 <= 1f && damageOutOf5 >= 0f)
-                offsetZ += 0.33;
+        float damageOutOf5 = (getItems().get(0).getMaxDamage() - getItems().get(0).getDamageValue()) / (float) getItems().get(0).getMaxDamage() * 5f;
+        switch (this.getBlockState().getValue(HorizontalDirectionalBlock.FACING)) {
+            case NORTH -> {
+                offsetX = -0.25f;
+                if (damageOutOf5 <= 4f && damageOutOf5 > 3f)
+                    offsetX += 0.09;
+                if (damageOutOf5 <= 3f && damageOutOf5 > 2f)
+                    offsetX += 0.18;
+                if (damageOutOf5 <= 2f && damageOutOf5 > 1f)
+                    offsetX += 0.25;
+                if (damageOutOf5 <= 1f && damageOutOf5 >= 0f)
+                    offsetX += 0.33;
+            }
+            case SOUTH -> {
+                offsetX = 0.25f;
+                if (damageOutOf5 <= 4f && damageOutOf5 > 3f)
+                    offsetX -= 0.09;
+                if (damageOutOf5 <= 3f && damageOutOf5 > 2f)
+                    offsetX -= 0.18;
+                if (damageOutOf5 <= 2f && damageOutOf5 > 1f)
+                    offsetX -= 0.25;
+                if (damageOutOf5 <= 1f && damageOutOf5 >= 0f)
+                    offsetX -= 0.33;
+            }
+            case WEST -> {
+                offsetZ = 0.25f;
+                if (damageOutOf5 <= 4f && damageOutOf5 > 3f)
+                    offsetZ -= 0.09;
+                if (damageOutOf5 <= 3f && damageOutOf5 > 2f)
+                    offsetZ -= 0.18;
+                if (damageOutOf5 <= 2f && damageOutOf5 > 1f)
+                    offsetZ -= 0.25;
+                if (damageOutOf5 <= 1f && damageOutOf5 >= 0f)
+                    offsetZ -= 0.33;
+            }
+            case EAST -> {
+                offsetZ = -0.25f;
+                if (damageOutOf5 <= 4f && damageOutOf5 > 3f)
+                    offsetZ += 0.09;
+                if (damageOutOf5 <= 3f && damageOutOf5 > 2f)
+                    offsetZ += 0.18;
+                if (damageOutOf5 <= 2f && damageOutOf5 > 1f)
+                    offsetZ += 0.25;
+                if (damageOutOf5 <= 1f && damageOutOf5 >= 0f)
+                    offsetZ += 0.33;
+            }
         }
 
-        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + offsetX, worldPosition.getY()+0.25f, worldPosition.getZ() + 0.5f + offsetZ, (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.045d, (rand.nextDouble() - 0.5d) / 50d);
-        level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, worldPosition.getX() + 0.5f + offsetX, worldPosition.getY()+0.25f, worldPosition.getZ() + 0.5f + offsetZ, (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.045d, (rand.nextDouble() - 0.5d) / 50d);
-        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + offsetX, worldPosition.getY()+0.25f, worldPosition.getZ() + 0.5f + offsetZ, (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.045d, (rand.nextDouble() - 0.5d) / 50d);
-        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + offsetX, worldPosition.getY()+0.25f, worldPosition.getZ() + 0.5f + offsetZ, (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.045d, (rand.nextDouble() - 0.5d) / 50d);
-        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + offsetX, worldPosition.getY()+0.25f, worldPosition.getZ() + 0.5f + offsetZ, (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.045d, (rand.nextDouble() - 0.5d) / 50d);
+        level.addParticle(ParticleTypes.LARGE_SMOKE, worldPosition.getX() + 0.5f + offsetX, worldPosition.getY() + 0.25f, worldPosition.getZ() + 0.5f + offsetZ, (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.045d, (rand.nextDouble() - 0.5d) / 50d);
+        level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, worldPosition.getX() + 0.5f + offsetX, worldPosition.getY() + 0.25f, worldPosition.getZ() + 0.5f + offsetZ, (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.045d, (rand.nextDouble() - 0.5d) / 50d);
+        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + offsetX, worldPosition.getY() + 0.25f, worldPosition.getZ() + 0.5f + offsetZ, (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.045d, (rand.nextDouble() - 0.5d) / 50d);
+        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + offsetX, worldPosition.getY() + 0.25f, worldPosition.getZ() + 0.5f + offsetZ, (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.045d, (rand.nextDouble() - 0.5d) / 50d);
+        level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + offsetX, worldPosition.getY() + 0.25f, worldPosition.getZ() + 0.5f + offsetZ, (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.045d, (rand.nextDouble() - 0.5d) / 50d);
 
     }
 
-    public void emitParticles(){
+    public void emitParticles() {
         Random rand = new Random();
-        if(rand.nextInt(4) == 0 && level.isClientSide) {
+        if (level == null) return;
+        if (rand.nextInt(4) == 0 && level.isClientSide) {
             float offsetX = 0;
             float offsetZ = 0;
-            float damageOutOf5 = (getItems().get(0).getMaxDamage()-getItems().get(0).getDamageValue())/(float)getItems().get(0).getMaxDamage()*5f;
-            if(this.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.NORTH)
-            {
-                offsetX = -0.25f;
-                if(damageOutOf5 <= 4f && damageOutOf5 > 3f)
-                    offsetX += 0.09;
-                if(damageOutOf5 <= 3f && damageOutOf5 > 2f)
-                    offsetX += 0.18;
-                if(damageOutOf5 <= 2f && damageOutOf5 > 1f)
-                    offsetX += 0.25;
-                if(damageOutOf5 <= 1f && damageOutOf5 > 0f)
-                    offsetX += 0.33;
-            }
-            if(this.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
-            {
-                offsetX = 0.25f;
-                if(damageOutOf5 <= 4f && damageOutOf5 > 3f)
-                    offsetX -= 0.09;
-                if(damageOutOf5 <= 3f && damageOutOf5 > 2f)
-                    offsetX -= 0.18;
-                if(damageOutOf5 <= 2f && damageOutOf5 > 1f)
-                    offsetX -= 0.25;
-                if(damageOutOf5 <= 1f && damageOutOf5 > 0f)
-                    offsetX -= 0.33;
-            }
-            if(this.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.WEST)
-            {
-                offsetZ = 0.25f;
-                if(damageOutOf5 <= 4f && damageOutOf5 > 3f)
-                    offsetZ -= 0.09;
-                if(damageOutOf5 <= 3f && damageOutOf5 > 2f)
-                    offsetZ -= 0.18;
-                if(damageOutOf5 <= 2f && damageOutOf5 > 1f)
-                    offsetZ -= 0.25;
-                if(damageOutOf5 <= 1f && damageOutOf5 > 0f)
-                    offsetZ -= 0.33;
-            }
-            if(this.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
-            {
-                offsetZ = -0.25f;
-                if(damageOutOf5 <= 4f && damageOutOf5 > 3f)
-                    offsetZ += 0.09;
-                if(damageOutOf5 <= 3f && damageOutOf5 > 2f)
-                    offsetZ += 0.18;
-                if(damageOutOf5 <= 2f && damageOutOf5 > 1f)
-                    offsetZ += 0.25;
-                if(damageOutOf5 <= 1f && damageOutOf5 > 0f)
-                    offsetZ += 0.33;
+            float damageOutOf5 = (getItems().get(0).getMaxDamage() - getItems().get(0).getDamageValue()) / (float) getItems().get(0).getMaxDamage() * 5f;
+            switch (this.getBlockState().getValue(HorizontalDirectionalBlock.FACING)) {
+                case NORTH -> {
+                    offsetX = -0.25f;
+                    if (damageOutOf5 <= 4f && damageOutOf5 > 3f)
+                        offsetX += 0.09;
+                    if (damageOutOf5 <= 3f && damageOutOf5 > 2f)
+                        offsetX += 0.18;
+                    if (damageOutOf5 <= 2f && damageOutOf5 > 1f)
+                        offsetX += 0.25;
+                    if (damageOutOf5 <= 1f && damageOutOf5 > 0f)
+                        offsetX += 0.33;
+                }
+                case SOUTH -> {
+                    offsetX = 0.25f;
+                    if (damageOutOf5 <= 4f && damageOutOf5 > 3f)
+                        offsetX -= 0.09;
+                    if (damageOutOf5 <= 3f && damageOutOf5 > 2f)
+                        offsetX -= 0.18;
+                    if (damageOutOf5 <= 2f && damageOutOf5 > 1f)
+                        offsetX -= 0.25;
+                    if (damageOutOf5 <= 1f && damageOutOf5 > 0f)
+                        offsetX -= 0.33;
+                }
+                case WEST -> {
+                    offsetZ = 0.25f;
+                    if (damageOutOf5 <= 4f && damageOutOf5 > 3f)
+                        offsetZ -= 0.09;
+                    if (damageOutOf5 <= 3f && damageOutOf5 > 2f)
+                        offsetZ -= 0.18;
+                    if (damageOutOf5 <= 2f && damageOutOf5 > 1f)
+                        offsetZ -= 0.25;
+                    if (damageOutOf5 <= 1f && damageOutOf5 > 0f)
+                        offsetZ -= 0.33;
+                }
+                case EAST -> {
+                    offsetZ = -0.25f;
+                    if (damageOutOf5 <= 4f && damageOutOf5 > 3f)
+                        offsetZ += 0.09;
+                    if (damageOutOf5 <= 3f && damageOutOf5 > 2f)
+                        offsetZ += 0.18;
+                    if (damageOutOf5 <= 2f && damageOutOf5 > 1f)
+                        offsetZ += 0.25;
+                    if (damageOutOf5 <= 1f && damageOutOf5 > 0f)
+                        offsetZ += 0.33;
+                }
             }
 
-                level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + offsetX, worldPosition.getY()+0.25f, worldPosition.getZ() + 0.5f + offsetZ, (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.045d, (rand.nextDouble() - 0.5d) / 50d);
-            if(rand.nextInt(10) == 0)
-                level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, worldPosition.getX() + 0.5f + offsetX, worldPosition.getY()+0.25f, worldPosition.getZ() + 0.5f + offsetZ, (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.045d, (rand.nextDouble() - 0.5d) / 50d);
+            level.addParticle(ParticleTypes.SMOKE, worldPosition.getX() + 0.5f + offsetX, worldPosition.getY() + 0.25f, worldPosition.getZ() + 0.5f + offsetZ, (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.045d, (rand.nextDouble() - 0.5d) / 50d);
+            if (rand.nextInt(10) == 0)
+                level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, worldPosition.getX() + 0.5f + offsetX, worldPosition.getY() + 0.25f, worldPosition.getZ() + 0.5f + offsetZ, (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.045d, (rand.nextDouble() - 0.5d) / 50d);
         }
 
-        if(this.getBlockState().getValue(SageBurningPlate.MODE) != 3){
+        if (this.getBlockState().getValue(SageBurningPlate.MODE) != 3) {
             for (int i = 0; i < 360; i++) {
                 Vec3 vec = new Vec3(Mth.sin((i / 360f) * (2 * Mth.PI)) * (rand.nextFloat() * HexConfig.SAGE_BURNING_PLATE_RANGE.get()), Mth.sin((rand.nextInt(360) / 360f) * (2 * Mth.PI)) * (rand.nextFloat() * HexConfig.SAGE_BURNING_PLATE_RANGE.get()), Mth.cos((i / 360f) * (2 * Mth.PI)) * (rand.nextFloat() * HexConfig.SAGE_BURNING_PLATE_RANGE.get()));
 
@@ -546,12 +488,12 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
         }
     }
 
-//    @Override
+    //    @Override
     public void tick() {
 
-        if(this.getBlockState().getValue(SageBurningPlate.LIT)){
+        if (this.getBlockState().getValue(SageBurningPlate.LIT)) {
             if (this.burnTime <= 0) {
-                if(!level.isClientSide){
+                if (!level.isClientSide) {
                     this.items.get(0).hurt(1, RandomSource.create(), null);
 
                     if (this.items.get(0).getDamageValue() >= this.items.get(0).getMaxDamage()) {
@@ -559,10 +501,6 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
                     } else
                         sync();
                     this.burnTime = this.burnTimeMax;
-                }
-                else {
-
-
                 }
 
             } else {

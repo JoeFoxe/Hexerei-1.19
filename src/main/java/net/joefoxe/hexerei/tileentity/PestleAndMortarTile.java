@@ -37,8 +37,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
@@ -80,7 +80,7 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
 
             @Override
             public int getSlotLimit(int slot) {
-                if(slot != 5)
+                if (slot != 5)
                     return 1;
 
                 return 64;
@@ -112,7 +112,7 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
 
     public void sync() {
 
-        if(level != null){
+        if (level != null) {
             if (!level.isClientSide)
                 HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new TESyncPacket(worldPosition, save(new CompoundTag())));
 
@@ -125,17 +125,16 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-//        if (facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+//        if (facing != null && capability == ForgeCapabilities.ITEM_HANDLER) {
 //            return handler.cast();
 //        }
 
-        if (facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (facing == Direction.UP)
-                return handlers[0].cast();
-            else if (facing == Direction.DOWN)
-                return handlers[1].cast();
-            else
-                return handlers[2].cast();
+        if (facing != null && capability == ForgeCapabilities.ITEM_HANDLER) {
+            return switch (facing) {
+                case UP -> handlers[0].cast();
+                case DOWN -> handlers[1].cast();
+                default -> handlers[2].cast();
+            };
         }
 
         return super.getCapability(capability, facing);
@@ -179,7 +178,7 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
 
 
     public PestleAndMortarTile(BlockPos blockPos, BlockState blockState) {
-        this(ModTileEntities.PESTLE_AND_MORTAR_TILE.get(),blockPos, blockState);
+        this(ModTileEntities.PESTLE_AND_MORTAR_TILE.get(), blockPos, blockState);
     }
 
     @Override
@@ -187,7 +186,7 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
         if (index >= 0 && index < this.items.size()) {
             ItemStack itemStack = stack.copy();
             this.items.set(index, itemStack);
-            if(index != 5)
+            if (index != 5)
                 this.grindingTime = this.grindingTimeMax;
         }
 
@@ -196,7 +195,7 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
 
     @Override
     public ItemStack removeItem(int index, int p_59614_) {
-        this.unpackLootTable((Player)null);
+        this.unpackLootTable(null);
         ItemStack itemstack = ContainerHelper.removeItem(this.getItems(), index, p_59614_);
         if (!itemstack.isEmpty()) {
             this.setChanged();
@@ -207,7 +206,7 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
         return itemstack;
     }
 
-    public void craft(){
+    public void craft() {
         SimpleContainer inv = new SimpleContainer(5);
         for (int i = 0; i < 5; i++) {
             inv.setItem(i, this.items.get(i));
@@ -218,13 +217,12 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
 
         BlockEntity blockEntity = level.getBlockEntity(this.worldPosition);
         AtomicBoolean matches = new AtomicBoolean(false);
-        if(blockEntity instanceof PestleAndMortarTile) {
+        if (blockEntity instanceof PestleAndMortarTile pestleAndMortarTile) {
             recipe.ifPresent(iRecipe -> {
-                ItemStack recipeOutput = iRecipe.getResultItem();
-                this.output = recipeOutput;
+                this.output = iRecipe.getResultItem();
 
                 matches.set(true);
-                if(((PestleAndMortarTile) blockEntity).getItemInSlot(5) == Items.AIR && !this.crafting) {
+                if (pestleAndMortarTile.getItemInSlot(5) == Items.AIR && !this.crafting) {
                     this.crafting = true;
                     this.grindingTimeMax = iRecipe.getGrindingTime();
                     this.grindingTime = this.grindingTimeMax;
@@ -235,9 +233,8 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
 
             });
         }
-        if(!matches.get())
-        {
-            if(this.crafting){
+        if (!matches.get()) {
+            if (this.crafting) {
                 this.crafting = false;
                 setChanged();
             }
@@ -269,13 +266,13 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
 //        if (nbt.contains("CustomName", 8))
 //            this.customName = Component.Serializer.fromJson(nbt.getString("CustomName"));
 
-        if (nbt.contains("grindingTime",  Tag.TAG_INT))
+        if (nbt.contains("grindingTime", Tag.TAG_INT))
             grindingTime = nbt.getInt("grindingTime");
-        if (nbt.contains("grindingTimeMax",  Tag.TAG_INT))
+        if (nbt.contains("grindingTimeMax", Tag.TAG_INT))
             grindingTimeMax = nbt.getInt("grindingTimeMax");
-        if (nbt.contains("crafting",  Tag.TAG_INT))
+        if (nbt.contains("crafting", Tag.TAG_INT))
             crafting = nbt.getInt("crafting") == 1;
-        if (nbt.contains("crafted",  Tag.TAG_INT))
+        if (nbt.contains("crafted", Tag.TAG_INT))
             crafted = nbt.getInt("crafted") == 1;
         super.load(nbt);
 
@@ -305,7 +302,7 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
     }
 
 
-//    @Override
+    //    @Override
     public CompoundTag save(CompoundTag compound) {
 //        compound.put("inv", itemHandler.serializeNBT());
 //        if (this.customName != null)
@@ -324,8 +321,7 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
     }
 
     @Override
-    public CompoundTag getUpdateTag()
-    {
+    public CompoundTag getUpdateTag() {
         return this.save(new CompoundTag());
     }
 
@@ -336,8 +332,7 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
     }
 
     @Override
-    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt)
-    {
+    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt) {
         this.deserializeNBT(pkt.getTag());
     }
 
@@ -364,64 +359,13 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
 
     @Override
     public AABB getRenderBoundingBox() {
-        AABB aabb = super.getRenderBoundingBox().inflate(5, 5, 5);
-        return aabb;
-    }
-
-    private float moveTo(float input, float moveTo, float speed)
-    {
-        float distance = moveTo - input;
-
-        if(Math.abs(distance) <= speed)
-        {
-            return moveTo;
-        }
-
-        if(distance > 0)
-        {
-            input += speed;
-        } else {
-            input -= speed;
-        }
-
-        return input;
-    }
-
-    private float moveToAngle(float input, float movedTo, float speed)
-    {
-        float distance = movedTo - input;
-
-        if(Math.abs(distance) <= speed)
-        {
-            return movedTo;
-        }
-
-        if(distance > 0)
-        {
-            if(Math.abs(distance) < 180)
-                input += speed;
-            else
-                input -= speed;
-        } else {
-            if(Math.abs(distance) < 180)
-                input -= speed;
-            else
-                input += speed;
-        }
-
-        if(input < -90){
-            input += 360;
-        }
-        if(input > 270)
-            input -= 360;
-
-        return input;
+        return super.getRenderBoundingBox().inflate(5, 5, 5);
     }
 
     public float getAngle(Vec3 pos) {
         float angle = (float) Math.toDegrees(Math.atan2(pos.z() - this.getBlockPos().getZ() - 0.5f, pos.x() - this.getBlockPos().getX() - 0.5f));
 
-        if(angle < 0){
+        if (angle < 0) {
             angle += 360;
         }
 
@@ -429,19 +373,18 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
     }
 
     public float getSpeed(double pos, double posTo) {
-        return (float)(0.01f + 0.10f * (Math.abs(pos - posTo) / 3f));
+        return (float) (0.01f + 0.10f * (Math.abs(pos - posTo) / 3f));
     }
 
-    public Vec3 rotateAroundVec(Vec3 vector3dCenter,float rotation,Vec3 vector3d)
-    {
+    public Vec3 rotateAroundVec(Vec3 vector3dCenter, float rotation, Vec3 vector3d) {
         Vec3 newVec = vector3d.subtract(vector3dCenter);
-        newVec = newVec.yRot(rotation/180f*(float)Math.PI);
+        newVec = newVec.yRot(rotation / 180f * (float) Math.PI);
         newVec = newVec.add(vector3dCenter);
 
         return newVec;
     }
 
-    public int putItems (int slot, @Nonnull ItemStack stack) {
+    public int putItems(int slot, @Nonnull ItemStack stack) {
         ItemStack stack1 = stack.copy();
         Random rand = new Random();
 
@@ -452,20 +395,21 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
             this.grindingTime = this.grindingTimeMax;
             setChanged();
             stack.shrink(1);
-            level.playSound((Player) null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, rand.nextFloat() * 0.4F + 1.0F);
+            level.playSound(null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, rand.nextFloat() * 0.4F + 1.0F);
             return 1;
         }
 
         return 0;
     }
 
-    public int interactPestleAndMortar (Player player, BlockHitResult hit) {
-        if(!player.isShiftKeyDown()) {
+    public int interactPestleAndMortar(Player player, BlockHitResult hit) {
+        if (level == null) return 0;
+        if (!player.isShiftKeyDown()) {
 
-            if(!level.isClientSide){
+            if (!level.isClientSide) {
                 if (!this.items.get(5).isEmpty()) {
                     player.inventory.placeItemBackInInventory(this.items.get(5).copy());
-                    level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
+                    level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
                     this.items.set(5, ItemStack.EMPTY);
                     setChanged();
                 } else if (!player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && !level.isClientSide) {
@@ -490,44 +434,42 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
             }
 
 
-        }
-        else
-        {
-            if(!level.isClientSide){
+        } else {
+            if (!level.isClientSide) {
                 if (!this.items.get(5).isEmpty()) {
                     player.inventory.placeItemBackInInventory(this.items.get(5).copy());
-                    level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
+                    level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
                     this.items.set(5, ItemStack.EMPTY);
                 }
 
                 if (!crafting) {
                     if (!this.items.get(0).isEmpty()) {
                         player.inventory.placeItemBackInInventory(this.items.get(0).copy());
-                        level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
+                        level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
                         this.items.set(0, ItemStack.EMPTY);
                         output = ItemStack.EMPTY;
                     }
                     if (!this.items.get(1).isEmpty()) {
                         player.inventory.placeItemBackInInventory(this.items.get(1).copy());
-                        level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
+                        level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
                         this.items.set(1, ItemStack.EMPTY);
                         output = ItemStack.EMPTY;
                     }
                     if (!this.items.get(2).isEmpty()) {
                         player.inventory.placeItemBackInInventory(this.items.get(2).copy());
-                        level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
+                        level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
                         this.items.set(2, ItemStack.EMPTY);
                         output = ItemStack.EMPTY;
                     }
                     if (!this.items.get(3).isEmpty()) {
                         player.inventory.placeItemBackInInventory(this.items.get(3).copy());
-                        level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
+                        level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
                         this.items.set(3, ItemStack.EMPTY);
                         output = ItemStack.EMPTY;
                     }
                     if (!this.items.get(4).isEmpty()) {
                         player.inventory.placeItemBackInInventory(this.items.get(4).copy());
-                        level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
+                        level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
                         this.items.set(4, ItemStack.EMPTY);
                         output = ItemStack.EMPTY;
                     }
@@ -539,17 +481,17 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
         return 0;
     }
 
-//    @Override
+    //    @Override
     public void tick() {
 
-        if(level instanceof ServerLevel) {
+        if (level instanceof ServerLevel) {
             craft();
         }
 
-        if(crafting){
+        if (crafting) {
             if (this.grindingTime <= 0) {
                 Random rand = new Random();
-                if(level instanceof ServerLevel)
+                if (level instanceof ServerLevel)
                     craftTheItem(output);
                 //for setting a cooldown on crafting so the animations can take place
                 this.crafted = true;
@@ -561,10 +503,10 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
                 this.grindingTime--;
                 Random rand = new Random();
                 float craftPercent2 = (this.grindingTimeMax - this.grindingTime) / 100f;
-                double pestleYOffset = (Math.pow(Mth.sin( craftPercent2 * 3.14f * 5 - 1.2f), 4))/4f;
-                if(pestleYOffset < 0.1){
-                    if(!this.grindSoundPlayed){
-                        level.playSound((Player) null, worldPosition, SoundEvents.GRINDSTONE_USE, SoundSource.BLOCKS, 0.1F, level.random.nextFloat() * 0.4F + 2.1F);
+                double pestleYOffset = (Math.pow(Mth.sin(craftPercent2 * 3.14f * 5 - 1.2f), 4)) / 4f;
+                if (pestleYOffset < 0.1 && level != null) {
+                    if (!this.grindSoundPlayed) {
+                        level.playSound(null, worldPosition, SoundEvents.GRINDSTONE_USE, SoundSource.BLOCKS, 0.1F, level.random.nextFloat() * 0.4F + 2.1F);
                         this.grindSoundPlayed = true;
                     }
                     if (!this.items.get(0).isEmpty() && rand.nextInt(4) == 0)
@@ -577,9 +519,7 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
                         level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, this.items.get(3)), worldPosition.getX() + 0.45f + rand.nextFloat() * 0.1f, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.45f + rand.nextFloat() * 0.1f, (rand.nextDouble() - 0.5d) / 15d, (rand.nextDouble() + 0.5d) * 0.15d, (rand.nextDouble() - 0.5d) / 15d);
                     if (!this.items.get(4).isEmpty() && rand.nextInt(4) == 0)
                         level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, this.items.get(4)), worldPosition.getX() + 0.45f + rand.nextFloat() * 0.1f, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.45f + rand.nextFloat() * 0.1f, (rand.nextDouble() - 0.5d) / 15d, (rand.nextDouble() + 0.5d) * 0.15d, (rand.nextDouble() - 0.5d) / 15d);
-                }
-                else
-                {
+                } else {
                     this.grindSoundPlayed = false;
                 }
             }
@@ -589,7 +529,7 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
 
     @Override
     public int[] getSlotsForFace(Direction direction) {
-        if(direction == Direction.DOWN)
+        if (direction == Direction.DOWN)
             return new int[]{5};
         return new int[]{0, 1, 2, 3, 4};
     }

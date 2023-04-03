@@ -59,7 +59,7 @@ public class SageBurningPlate extends Block implements ITileEntity<SageBurningPl
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
-        return this.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection()).setValue(WATERLOGGED, Boolean.valueOf(fluidstate.getType() == Fluids.WATER)).setValue(LIT, false).setValue(MODE, 0);
+        return this.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection()).setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER).setValue(LIT, false).setValue(MODE, 0);
     }
 
     // hitbox REMEMBER TO DO THIS
@@ -92,25 +92,23 @@ public class SageBurningPlate extends Block implements ITileEntity<SageBurningPl
 
         ItemStack itemstack = player.getItemInHand(handIn);
         Random random = new Random();
-        if (tileEntity instanceof SageBurningPlateTile) {
-            if(itemstack.getItem() == Items.FLINT_AND_STEEL)
-            {
-                if (((SageBurningPlateTile) tileEntity).getItems().get(0).is(ModItems.DRIED_SAGE_BUNDLE.get()) && !state.getValue(LIT)) {
+        if (tileEntity instanceof SageBurningPlateTile sageBurningPlateTile) {
+            if (itemstack.getItem() == Items.FLINT_AND_STEEL) {
+                if (sageBurningPlateTile.getItems().get(0).is(ModItems.DRIED_SAGE_BUNDLE.get()) && !state.getValue(LIT)) {
 
                     worldIn.setBlock(pos, state.setValue(BlockStateProperties.LIT, true), 11);
-                    worldIn.playSound((Player) null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
+                    worldIn.playSound(null, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
                     itemstack.hurtAndBreak(1, player, player1 -> player1.broadcastBreakEvent(handIn));
 
                     return InteractionResult.sidedSuccess(worldIn.isClientSide());
-                }
-                else
+                } else
                     return InteractionResult.PASS;
 
             } else if(itemstack.isEmpty() && !player.isShiftKeyDown())
             {
                 worldIn.setBlock(pos, state.setValue(MODE, state.getValue(MODE) + 1 > 3 ? 0 : state.getValue(MODE) + 1), 11);
                 state = worldIn.getBlockState(pos);
-                String s = "display.hexerei.sage_plate_toggle_" + String.valueOf(state.getValue(MODE));
+                String s = "display.hexerei.sage_plate_toggle_" + state.getValue(MODE);
                 player.displayClientMessage(Component.translatable(s), true);
 
             }
@@ -124,7 +122,7 @@ public class SageBurningPlate extends Block implements ITileEntity<SageBurningPl
 
     public SageBurningPlate(Properties properties) {
         super(properties.noOcclusion());
-        this.withPropertiesOf(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(LIT, false));
+        this.withPropertiesOf(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.FALSE).setValue(LIT, false));
     }
 
     @Override
@@ -156,8 +154,8 @@ public class SageBurningPlate extends Block implements ITileEntity<SageBurningPl
         if(Screen.hasShiftDown()) {
             tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
 
-            MutableComponent string = (MutableComponent) Component.translatable(HexConfig.SAGE_BURNING_PLATE_RANGE.get() + "").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)));
-            MutableComponent itemText = (MutableComponent) Component.translatable(ModItems.DRIED_SAGE_BUNDLE.get().getDescriptionId()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x998800)));
+            MutableComponent string = Component.translatable(HexConfig.SAGE_BURNING_PLATE_RANGE.get() + "").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)));
+            MutableComponent itemText = Component.translatable(ModItems.DRIED_SAGE_BUNDLE.get().getDescriptionId()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x998800)));
 
             tooltip.add(Component.translatable("tooltip.hexerei.sage_burning_plate_shift_1", itemText).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             tooltip.add(Component.translatable("tooltip.hexerei.sage_burning_plate_shift_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));

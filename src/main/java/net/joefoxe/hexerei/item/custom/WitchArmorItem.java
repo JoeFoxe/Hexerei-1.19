@@ -26,6 +26,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = "hexerei", bus = Mod.EventBusSubscriber.Bus.MOD)
 public class WitchArmorItem extends DyeableArmorItem {
@@ -46,7 +47,7 @@ public class WitchArmorItem extends DyeableArmorItem {
             return 1908001;
         if(col != null){
 
-            float f3 = ((float)(((Hexerei.getClientTicks()) / 10f * 4 ) % 16)) / (float)16;
+            float f3 = (((Hexerei.getClientTicks()) / 10f * 4) % 16) / (float) 16;
 
             DyeColor col2 = HexereiUtil.getDyeColorNamed(name, 1);
 
@@ -134,17 +135,17 @@ public class WitchArmorItem extends DyeableArmorItem {
     }
 
 
-
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void initializeClient(java.util.function.Consumer<net.minecraftforge.client.extensions.common.IClientItemExtensions> consumer) {
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 
         consumer.accept(new IClientItemExtensions() {
-            static WitchArmorModel model;
+            static WitchArmorModel<LivingEntity> model;
 
             @Override
-            public WitchArmorModel getGenericArmorModel(LivingEntity entity, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel _default) {
-                if (model == null) model = new WitchArmorModel(Minecraft.getInstance().getEntityModels().bakeLayer(ClientProxy.WITCH_ARMOR_LAYER));
+            public WitchArmorModel<LivingEntity> getGenericArmorModel(LivingEntity entity, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel _default) {
+                if (model == null)
+                    model = new WitchArmorModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ClientProxy.WITCH_ARMOR_LAYER));
                 float pticks = Minecraft.getInstance().getFrameTime();
                 float f = Mth.rotLerp(pticks, entity.yBodyRotO, entity.yBodyRot);
                 float f1 = Mth.rotLerp(pticks, entity.yHeadRotO, entity.yHeadRot);

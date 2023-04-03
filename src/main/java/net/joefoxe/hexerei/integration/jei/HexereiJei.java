@@ -379,7 +379,7 @@ public class HexereiJei implements IModPlugin {
         HexereiJei.runtime.show(new IFocus<FluidStack>() {
             @Override
             public ITypedIngredient<FluidStack> getTypedValue() {
-                return new ITypedIngredient<FluidStack>() {
+                return new ITypedIngredient<>() {
                     @Override
                     public IIngredientTypeWithSubtypes<Fluid, FluidStack> getType() {
                         return ForgeTypes.FLUID_STACK;
@@ -416,7 +416,7 @@ public class HexereiJei implements IModPlugin {
             HexereiJei.runtime.show(new IFocus<FluidStack>() {
                 @Override
                 public ITypedIngredient<FluidStack> getTypedValue() {
-                    return new ITypedIngredient<FluidStack>() {
+                    return new ITypedIngredient<>() {
                         @Override
                         public IIngredientTypeWithSubtypes<Fluid, FluidStack> getType() {
                             return ForgeTypes.FLUID_STACK;
@@ -461,7 +461,7 @@ public class HexereiJei implements IModPlugin {
         HexereiJei.runtime.show(new IFocus<ItemStack>() {
             @Override
             public ITypedIngredient<ItemStack> getTypedValue() {
-                return new ITypedIngredient<ItemStack>() {
+                return new ITypedIngredient<>() {
                     @Override
                     public IIngredientType<ItemStack> getType() {
                         return VanillaTypes.ITEM_STACK;
@@ -498,7 +498,7 @@ public class HexereiJei implements IModPlugin {
             HexereiJei.runtime.show(new IFocus<ItemStack>() {
                 @Override
                 public ITypedIngredient<ItemStack> getTypedValue() {
-                    return new ITypedIngredient<ItemStack>() {
+                    return new ITypedIngredient<>() {
                         @Override
                         public IIngredientType<ItemStack> getType() {
                             return VanillaTypes.ITEM_STACK;
@@ -539,7 +539,7 @@ public class HexereiJei implements IModPlugin {
         HexereiJei.runtime.show(new IFocus<ItemStack>() {
             @Override
             public ITypedIngredient<ItemStack> getTypedValue() {
-                return new ITypedIngredient<ItemStack>() {
+                return new ITypedIngredient<>() {
                     @Override
                     public IIngredientType<ItemStack> getType() {
                         return VanillaTypes.ITEM_STACK;
@@ -577,7 +577,7 @@ public class HexereiJei implements IModPlugin {
         HexereiJei.runtime.show(new IFocus<FluidStack>() {
             @Override
             public ITypedIngredient<FluidStack> getTypedValue() {
-                return new ITypedIngredient<FluidStack>() {
+                return new ITypedIngredient<>() {
                     @Override
                     public IIngredientType<FluidStack> getType() {
                         return ForgeTypes.FLUID_STACK;

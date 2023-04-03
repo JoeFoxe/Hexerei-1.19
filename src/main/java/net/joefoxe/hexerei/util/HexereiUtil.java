@@ -9,7 +9,6 @@ import io.netty.buffer.Unpooled;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.tileentity.CofferTile;
 import net.joefoxe.hexerei.tileentity.HerbJarTile;
-import net.joefoxe.hexerei.tileentity.ModTileEntities;
 import net.minecraft.client.model.AnimationUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -65,7 +64,10 @@ import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -73,6 +75,7 @@ import java.util.function.Supplier;
 public class HexereiUtil {
 
     public static final Vec3 CENTER_OF_ORIGIN = new Vec3(.5, .5, .5);
+
     public static ResourceLocation getRegistryName(Item i) {
         return ForgeRegistries.ITEMS.getKey(i);
     }
@@ -156,7 +159,7 @@ public class HexereiUtil {
 
         if (world instanceof ServerLevel && world.getGameRules()
                 .getBoolean(GameRules.RULE_DOBLOCKDROPS) && !world.restoringBlockSnapshots
-                && (player == null || !player.isCreative())) {
+            && (player == null || !player.isCreative())) {
             for (ItemStack itemStack : Block.getDrops(state, (ServerLevel) world, pos, tileentity, player, usedTool))
                 droppedItemCallback.accept(itemStack);
 
@@ -179,8 +182,6 @@ public class HexereiUtil {
 
         world.setBlockAndUpdate(pos, fluidState.createLegacyBlock());
     }
-
-
 
 
     public static <V> ResourceLocation getKeyOrThrow(Potion value) {
@@ -228,17 +229,14 @@ public class HexereiUtil {
                 .orElseGet(() -> StringUtils.capitalize(modId));
     }
 
-    public static float moveTo(float input, float movedTo, float speed)
-    {
+    public static float moveTo(float input, float movedTo, float speed) {
         float distance = movedTo - input;
 
-        if(Math.abs(distance) <= speed)
-        {
+        if (Math.abs(distance) <= speed) {
             return movedTo;
         }
 
-        if(distance > 0)
-        {
+        if (distance > 0) {
             input += speed;
         } else {
             input -= speed;
@@ -275,15 +273,13 @@ public class HexereiUtil {
         return input;
     }
 
-    public static String intToRoman(int number)
-    {
+    public static String intToRoman(int number) {
         String[] thousands = {"", "M", "MM", "MMM"};
         String[] hundreds = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
         String[] tens = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
         String[] units = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
-        return thousands[number / 1000] + hundreds[(number % 1000) / 100] + tens[(number % 100) / 10] + units[number % 10];
+        return thousands[number / 1000] + hundreds[number % 1000 / 100] + tens[number % 100 / 10] + units[number % 10];
     }
-
 
 
     public static <T extends Enum<?>> T readEnum(CompoundTag nbt, String key, Class<T> enumClass) {
@@ -318,7 +314,6 @@ public class HexereiUtil {
     public static <T extends Enum<?>> void writeEnum(CompoundTag nbt, String key, T enumConstant) {
         nbt.putString(key, enumConstant.name());
     }
-
 
 
     public static FluidStack deserializeFluidStack(JsonObject json) {
@@ -357,7 +352,7 @@ public class HexereiUtil {
     public static float getAngle(Vec3 pos2, Vec3 pos) {
         float angle = (float) Math.toDegrees(Math.atan2(pos.z() - pos2.z(), pos.x() - pos2.z()));
 
-        if(angle < 0){
+        if (angle < 0) {
             angle += 360;
         }
 
@@ -367,11 +362,11 @@ public class HexereiUtil {
     public static CompoundTag saveAllItemsWithName(CompoundTag p_18977_, NonNullList<ItemStack> p_18978_, boolean p_18979_, String name) {
         ListTag listtag = new ListTag();
 
-        for(int i = 0; i < p_18978_.size(); ++i) {
+        for (int i = 0; i < p_18978_.size(); ++i) {
             ItemStack itemstack = p_18978_.get(i);
             if (!itemstack.isEmpty()) {
                 CompoundTag compoundtag = new CompoundTag();
-                compoundtag.putByte("Slot", (byte)i);
+                compoundtag.putByte("Slot", (byte) i);
                 itemstack.save(compoundtag);
                 listtag.add(compoundtag);
             }
@@ -387,7 +382,7 @@ public class HexereiUtil {
     public static void loadAllItemsWithName(CompoundTag p_18981_, NonNullList<ItemStack> p_18982_, String name) {
         ListTag listtag = p_18981_.getList(name, 10);
 
-        for(int i = 0; i < listtag.size(); ++i) {
+        for (int i = 0; i < listtag.size(); ++i) {
             CompoundTag compoundtag = listtag.getCompound(i);
             int j = compoundtag.getByte("Slot") & 255;
             if (j >= 0 && j < p_18982_.size()) {
@@ -404,14 +399,14 @@ public class HexereiUtil {
         int r = (int) (colors[0] * 255.0F);
         int g = (int) (colors[1] * 255.0F);
         int b = (int) (colors[2] * 255.0F);
-        return (r << 16) | (g << 8) | b;
+        return r << 16 | g << 8 | b;
     }
 
     public static int getColorValue(float r, float g, float b) {
         int r2 = (int) (r * 255.0F);
         int g2 = (int) (g * 255.0F);
         int b2 = (int) (b * 255.0F);
-        return (r2 << 16) | (g2 << 8) | b2;
+        return r2 << 16 | g2 << 8 | b2;
     }
 
 
@@ -420,7 +415,7 @@ public class HexereiUtil {
         int g2 = (int) (g * 255.0F);
         int b2 = (int) (b * 255.0F);
         int a2 = (int) (a * 255.0F);
-        return (a2 << 24) |  (r2 << 16) | (g2 << 8) | b2;
+        return a2 << 24 | r2 << 16 | g2 << 8 | b2;
     }
 
 
@@ -440,11 +435,11 @@ public class HexereiUtil {
 
     public static DyeColor getDyeColorNamed(String name, int offset, int offset2) {
 
-        if(name.equals("jeb_"))
-            return DyeColor.byId((int)((((Hexerei.getClientTicks() + offset2)/40) + offset) % 16));
+        if (name.equals("jeb_"))
+            return DyeColor.byId((int) (((Hexerei.getClientTicks() + offset2) / 40 + offset) % 16));
 
-        if(name.equals("les_"))
-            return DyeColor.byId(switch((int)((((Hexerei.getClientTicks() + offset2)/40) + offset) % 5)) {
+        if (name.equals("les_"))
+            return DyeColor.byId(switch ((int) (((Hexerei.getClientTicks() + offset2) / 40 + offset) % 5)) {
                 case 1 -> 1;
                 case 2 -> 2;
                 case 3 -> 6;
@@ -452,22 +447,22 @@ public class HexereiUtil {
                 default -> 0;
             });
 
-        if(name.equals("bi_"))
-            return DyeColor.byId(switch((int)((((Hexerei.getClientTicks() + offset2)/40) + offset) % 3)) {
+        if (name.equals("bi_"))
+            return DyeColor.byId(switch ((int) (((Hexerei.getClientTicks() + offset2) / 40 + offset) % 3)) {
                 case 1 -> 10;
                 case 2 -> 11;
                 default -> 2;
             });
 
-        if(name.equals("trans_"))
-            return DyeColor.byId(switch((int)((((Hexerei.getClientTicks() + offset2)/40) + offset) % 3)) {
+        if (name.equals("trans_"))
+            return DyeColor.byId(switch ((int) (((Hexerei.getClientTicks() + offset2) / 40 + offset) % 3)) {
                 case 1 -> 3;
                 case 2 -> 0;
                 default -> 6;
             });
 
-        if(name.equals("joe_"))
-            return DyeColor.byId(switch((int)((((Hexerei.getClientTicks() + offset2)/40) + offset) % 4)) {
+        if (name.equals("joe_"))
+            return DyeColor.byId(switch ((int) (((Hexerei.getClientTicks() + offset2) / 40 + offset) % 4)) {
                 case 1, 3 -> 3;
                 case 2 -> 9;
                 default -> 11;
@@ -501,7 +496,7 @@ public class HexereiUtil {
 
     @OnlyIn(Dist.CLIENT)
     public static float getMaxHeadXRot(ModelPart head) {
-        return Mth.clamp(head.xRot, (-(float) Math.PI / 2.5F), ((float) Math.PI / 3F));
+        return Mth.clamp(head.xRot, -(float) Math.PI / 2.5F, (float) Math.PI / 3F);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -519,7 +514,7 @@ public class HexereiUtil {
         float downFacingRot = Mth.clamp(model.head.xRot, 0f, 0.8f);
 
         float xRot = getMaxHeadXRot(model.head) - (entity.isCrouching() ? 1F : 0.0F)
-                - 0.3f + downFacingRot * 0.5f;
+                     - 0.3f + downFacingRot * 0.5f;
 
         bx = bx.xRot(xRot);
         by = by.xRot(xRot);
@@ -539,7 +534,7 @@ public class HexereiUtil {
 
         float pitch = (float) Math.asin(newV.y / len);
 
-        mainHand.yRot = (yaw + model.head.yRot * 1.4f - 0.1f * mirror) - 0.5f * downFacingRot * mirror;
+        mainHand.yRot = yaw + model.head.yRot * 1.4f - 0.1f * mirror - 0.5f * downFacingRot * mirror;
         mainHand.xRot = (float) (pitch - Math.PI / 2f);
 
 
@@ -552,7 +547,7 @@ public class HexereiUtil {
                 Mth.clamp(model.head.yRot, 0, 1);
 
         // model.rightArm.x = -5.0F + offset * 2f;
-        mainHand.z = -offset * 1f;
+        mainHand.z = -offset;
 
         // model.leftArm.x = -model.rightArm.x;
         // model.leftArm.z = -model.rightArm.z;
@@ -564,33 +559,29 @@ public class HexereiUtil {
 
 
     public static float[] rgbIntToFloatArray(int rgbInt) {
-        int r = (rgbInt >> 16) & 255;
-        int g = (rgbInt >> 8) & 255;
-        int b = (rgbInt >> 0) & 255;
+        int r = rgbInt >> 16 & 255;
+        int g = rgbInt >> 8 & 255;
+        int b = rgbInt >> 0 & 255;
 
-        return new float[] {r / 255F, g / 255F, b / 255F};
+        return new float[]{r / 255F, g / 255F, b / 255F};
     }
 
     public static int[] rgbIntToIntArray(int rgbInt) {
-        int r = (rgbInt >> 16) & 255;
-        int g = (rgbInt >> 8) & 255;
-        int b = (rgbInt >> 0) & 255;
+        int r = rgbInt >> 16 & 255;
+        int g = rgbInt >> 8 & 255;
+        int b = rgbInt >> 0 & 255;
 
-        return new int[] {r, g, b};
+        return new int[]{r, g, b};
     }
 
     public static boolean entityIsHostile(Entity entity) {
-        if (entity.getType().getCategory().equals(MobCategory.MONSTER)) {
-            return true;
-        }
-
-        return false;
+        return entity.getType().getCategory().equals(MobCategory.MONSTER);
     }
 
     public static List<BlockPos> getAllTileEntityPositionsNearby(BlockEntityType<?> te, Integer radius, Level world, Entity entity) {
         BlockPos entitypos = entity.blockPosition();
 
-        List<BlockPos> nearby = new ArrayList<BlockPos>();
+        List<BlockPos> nearby = new ArrayList<>();
         List<BlockEntity> tiles = getTileEntitiesAroundPosition(world, entitypos, radius);
 
         for (BlockEntity tile : tiles) {
@@ -613,35 +604,27 @@ public class HexereiUtil {
     public static List<BlockPos> getAllToggledCofferAndHerbJarPositionsNearby(Integer radius, Level world, Entity entity) {
         BlockPos entitypos = entity.blockPosition();
 
-        List<BlockPos> nearby = new ArrayList<BlockPos>();
+        List<BlockPos> nearby = new ArrayList<>();
         List<BlockEntity> tiles = getTileEntitiesAroundPosition(world, entitypos, radius);
 
         for (BlockEntity tile : tiles) {
-            BlockEntityType<?> tileType = tile.getType();
-            if (tileType == null) {
-                continue;
-            }
 
-            if (tileType.equals(ModTileEntities.COFFER_TILE.get())) {
+            if (tile instanceof CofferTile cofferTile) {
                 BlockPos tilePos = tile.getBlockPos();
                 if (tilePos.closerThan(new Vec3i(entity.position().x, entity.position().y, entity.position().z), radius)) {
-                    if (((CofferTile) tile).buttonToggled != 0){
+                    if (cofferTile.buttonToggled != 0) {
 
-                        for(int i = 0; i < ((CofferTile) tile).itemStackHandler.getSlots(); i++)
-                        {
-                                nearby.add(tile.getBlockPos());
-                                break;
+                        for (int i = 0; i < cofferTile.itemStackHandler.getSlots(); i++) {
+                            nearby.add(tile.getBlockPos());
+                            break;
                         }
                     }
                 }
-            }else if (tileType.equals(ModTileEntities.HERB_JAR_TILE.get())) {
+            } else if (tile instanceof HerbJarTile herbJarTile) {
                 BlockPos tilePos = tile.getBlockPos();
                 if (tilePos.closerThan(new Vec3i(entity.position().x, entity.position().y, entity.position().z), radius)) {
-                    if (((HerbJarTile) tile).buttonToggled != 0){
-
-
+                    if (herbJarTile.buttonToggled != 0) {
                         nearby.add(tile.getBlockPos());
-
                     }
                 }
             }
@@ -651,16 +634,16 @@ public class HexereiUtil {
     }
 
     private static List<BlockEntity> getTileEntitiesAroundPosition(Level world, BlockPos pos, Integer radius) {
-        List<BlockEntity> blockentities = new ArrayList<BlockEntity>();
+        List<BlockEntity> blockentities = new ArrayList<>();
 
-        int chunkradius = (int)Math.ceil(radius/16.0) + 1;
+        int chunkradius = (int) Math.ceil(radius / 16.0) + 1;
         int chunkPosX = pos.getX() >> 4;
         int chunkPosZ = pos.getZ() >> 4;
 
         for (int x = chunkPosX - chunkradius; x < chunkPosX + chunkradius; x++) {
             for (int z = chunkPosZ - chunkradius; z < chunkPosZ + chunkradius; z++) {
 
-                if(world.hasChunk(x, z)){
+                if (world.hasChunk(x, z)) {
                     for (BlockEntity be : world.getChunk(x, z).getBlockEntities().values()) {
                         if (!blockentities.contains(be)) {
                             blockentities.add(be);

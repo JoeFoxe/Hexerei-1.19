@@ -13,8 +13,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.Random;
-
 public class BroomAttachmentItem extends Item {
 
     public Model model = null;

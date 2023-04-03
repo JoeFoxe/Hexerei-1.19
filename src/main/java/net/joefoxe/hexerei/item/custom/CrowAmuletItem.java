@@ -91,7 +91,7 @@ public class CrowAmuletItem extends Item {
         CompoundTag compoundtag = tagList.getCompound(0);
         CompoundTag itemTags = tagList.getCompound(0);
 
-        MutableComponent itemText = (MutableComponent) Component.translatable(ItemStack.of(compoundtag).getDescriptionId()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x998800)));
+        MutableComponent itemText = Component.translatable(ItemStack.of(compoundtag).getDescriptionId()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x998800)));
 
         if(Screen.hasShiftDown()) {
             tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));

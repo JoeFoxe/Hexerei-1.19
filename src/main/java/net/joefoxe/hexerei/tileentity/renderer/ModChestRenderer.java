@@ -3,8 +3,6 @@ package net.joefoxe.hexerei.tileentity.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
-import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
-import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.custom.ModChest;
 import net.joefoxe.hexerei.tileentity.ModChestBlockEntity;
@@ -52,7 +50,7 @@ public class ModChestRenderer<T extends BlockEntity & LidBlockEntity> implements
 
     public ModChestRenderer(BlockEntityRendererProvider.Context pContext) {
         Calendar calendar = Calendar.getInstance();
-        if (calendar.get(2) + 1 == 12 && calendar.get(5) >= 24 && calendar.get(5) <= 26) {
+        if (calendar.get(Calendar.MONTH) + 1 == 12 && calendar.get(Calendar.DATE) >= 24 && calendar.get(Calendar.DATE) <= 26) {
             this.xmasTextures = true;
         }
 
@@ -117,10 +115,10 @@ public class ModChestRenderer<T extends BlockEntity & LidBlockEntity> implements
                 neighborcombineresult = DoubleBlockCombiner.Combiner::acceptNone;
             }
 
-            float f1 = neighborcombineresult.<Float2FloatFunction>apply(ChestBlock.opennessCombiner(pBlockEntity)).get(pPartialTick);
+            float f1 = neighborcombineresult.apply(ChestBlock.opennessCombiner(pBlockEntity)).get(pPartialTick);
             f1 = 1.0F - f1;
             f1 = 1.0F - f1 * f1 * f1;
-            int i = neighborcombineresult.<Int2IntFunction>apply(new BrightnessCombiner<>()).applyAsInt(pPackedLight);
+            int i = neighborcombineresult.apply(new BrightnessCombiner<>()).applyAsInt(pPackedLight);
             VertexConsumer vertexConsumer = pBufferSource.getBuffer(RenderType.entityCutout(getLoc(chesttype, pBlockEntity)));
             if (flag1) {
                 if (chesttype == ChestType.LEFT) {
@@ -178,62 +176,31 @@ public class ModChestRenderer<T extends BlockEntity & LidBlockEntity> implements
     }
     public ResourceLocation getLeft(ModChest.WoodType style) {
         return switch (style) {
-            case MAHOGANY ->
-                MAHOGANY_CHEST_LOCATION_LEFT;
-            case POLISHED_MAHOGANY ->
-                MAHOGANY_CHEST_LOCATION_LEFT;
-            case POLISHED_WILLOW ->
-                WILLOW_CHEST_LOCATION_LEFT;
-            case WILLOW ->
-                WILLOW_CHEST_LOCATION_LEFT;
-            case POLISHED_WITCH_HAZEL ->
-                WITCH_HAZEL_CHEST_LOCATION_LEFT;
-            case WITCH_HAZEL ->
-                WITCH_HAZEL_CHEST_LOCATION_LEFT;
+            case MAHOGANY, POLISHED_MAHOGANY -> MAHOGANY_CHEST_LOCATION_LEFT;
+            case POLISHED_WILLOW, WILLOW -> WILLOW_CHEST_LOCATION_LEFT;
+            case POLISHED_WITCH_HAZEL, WITCH_HAZEL -> WITCH_HAZEL_CHEST_LOCATION_LEFT;
         };
     }
     public ResourceLocation getRight(ModChest.WoodType style) {
         return switch (style) {
-            case MAHOGANY ->
-                MAHOGANY_CHEST_LOCATION_RIGHT;
-            case POLISHED_MAHOGANY ->
-                MAHOGANY_CHEST_LOCATION_RIGHT;
-            case POLISHED_WILLOW ->
-                WILLOW_CHEST_LOCATION_RIGHT;
-            case WILLOW ->
-                WILLOW_CHEST_LOCATION_RIGHT;
-            case POLISHED_WITCH_HAZEL ->
-                WITCH_HAZEL_CHEST_LOCATION_RIGHT;
-            case WITCH_HAZEL ->
-                WITCH_HAZEL_CHEST_LOCATION_RIGHT;
+            case MAHOGANY, POLISHED_MAHOGANY -> MAHOGANY_CHEST_LOCATION_RIGHT;
+            case POLISHED_WILLOW, WILLOW -> WILLOW_CHEST_LOCATION_RIGHT;
+            case POLISHED_WITCH_HAZEL, WITCH_HAZEL -> WITCH_HAZEL_CHEST_LOCATION_RIGHT;
         };
     }
     public ResourceLocation getSingle(ModChest.WoodType style) {
         return switch (style) {
-            case MAHOGANY ->
-                MAHOGANY_CHEST_LOCATION;
-            case POLISHED_MAHOGANY ->
-                MAHOGANY_CHEST_LOCATION;
-            case POLISHED_WILLOW ->
-                WILLOW_CHEST_LOCATION;
-            case WILLOW ->
-                WILLOW_CHEST_LOCATION;
-            case POLISHED_WITCH_HAZEL ->
-                WITCH_HAZEL_CHEST_LOCATION;
-            case WITCH_HAZEL ->
-                WITCH_HAZEL_CHEST_LOCATION;
+            case MAHOGANY, POLISHED_MAHOGANY -> MAHOGANY_CHEST_LOCATION;
+            case POLISHED_WILLOW, WILLOW -> WILLOW_CHEST_LOCATION;
+            case POLISHED_WITCH_HAZEL, WITCH_HAZEL -> WITCH_HAZEL_CHEST_LOCATION;
         };
     }
 
     public static ResourceLocation chooseLoc(ChestType pChestType, ResourceLocation pDoubleMaterial, ResourceLocation pLeftMaterial, ResourceLocation pRightMaterial) {
-        switch (pChestType) {
-            case LEFT:
-                return pLeftMaterial;
-            case RIGHT:
-                return pRightMaterial;
-            case SINGLE:
-            default:
-                return pDoubleMaterial;
-        }
+        return switch (pChestType) {
+            case LEFT -> pLeftMaterial;
+            case RIGHT -> pRightMaterial;
+            default -> pDoubleMaterial;
+        };
     }
 }

@@ -279,9 +279,9 @@ public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauld
             float yRot = 30;
 
             matrixStack.translate(rotationOffset.x, rotationOffset.y, rotationOffset.z);
-            matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) zRot));
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees((float) xRot));
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) yRot));
+            matrixStack.mulPose(Vector3f.ZP.rotationDegrees(zRot));
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(xRot));
+            matrixStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
             matrixStack.translate(-rotationOffset.x, -rotationOffset.y, -rotationOffset.z);
 
             MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
@@ -460,9 +460,9 @@ public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauld
             float yRot = 30;
 
             matrixStack.translate(rotationOffset.x, rotationOffset.y, rotationOffset.z);
-            matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) zRot));
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees((float) xRot));
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) yRot));
+            matrixStack.mulPose(Vector3f.ZP.rotationDegrees(zRot));
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(xRot));
+            matrixStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
             matrixStack.translate(-rotationOffset.x, -rotationOffset.y, -rotationOffset.z);
 
             MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
@@ -624,21 +624,21 @@ public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauld
     public void renderSingleBlock(BlockState p_110913_, PoseStack poseStack, MultiBufferSource p_110915_, int p_110916_, int p_110917_, net.minecraftforge.client.model.data.ModelData modelData, int color) {
         RenderShape rendershape = p_110913_.getRenderShape();
         if (rendershape != RenderShape.INVISIBLE) {
-            switch(rendershape) {
-                case MODEL:
+            switch (rendershape) {
+                case MODEL -> {
                     BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
                     BakedModel bakedmodel = dispatcher.getBlockModel(p_110913_);
                     int i = color;
-                    float f = (float)(i >> 16 & 255) / 255.0F;
-                    float f1 = (float)(i >> 8 & 255) / 255.0F;
-                    float f2 = (float)(i & 255) / 255.0F;
+                    float f = (float) (i >> 16 & 255) / 255.0F;
+                    float f1 = (float) (i >> 8 & 255) / 255.0F;
+                    float f2 = (float) (i & 255) / 255.0F;
                     dispatcher.getModelRenderer().renderModel(poseStack.last(), p_110915_.getBuffer(ItemBlockRenderTypes.getRenderType(p_110913_, false)), p_110913_, bakedmodel, f, f1, f2, p_110916_, p_110917_, modelData, null);
-                    break;
-                case ENTITYBLOCK_ANIMATED:
+                }
+                case ENTITYBLOCK_ANIMATED -> {
                     ItemStack stack = new ItemStack(p_110913_.getBlock());
-
                     poseStack.translate(0.2, -0.1, -0.1);
                     IClientItemExtensions.of(stack.getItem()).getCustomRenderer().renderByItem(stack, ItemTransforms.TransformType.NONE, poseStack, p_110915_, p_110916_, p_110917_);
+                }
             }
 
         }

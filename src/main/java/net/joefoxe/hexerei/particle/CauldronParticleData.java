@@ -15,12 +15,12 @@ import java.util.Locale;
 
 /**
  * Created by TGG on 25/03/2020.
- *
+ * <p>
  * The particle has two pieces of information which are used to customise it:
- *
+ * <p>
  * 1) The colour (tint) which is used to change the hue of the particle
  * 2) The diameter of the particle
- *
+ * <p>
  * This class is used to
  * 1) store this information, and
  * 2) transmit it between server and client (write and read methods), and
@@ -61,7 +61,7 @@ public class CauldronParticleData implements ParticleOptions {
     @Override
     public String writeToString() {
         return String.format(Locale.ROOT, "%s %.2f %i %i %i",
-                this.getType().toString(), diameter, tint.getRed(), tint.getGreen(), tint.getBlue());
+                this.getType(), diameter, tint.getRed(), tint.getGreen(), tint.getBlue());
     }
 
     private static double constrainDiameterToValidRange(double diameter) {
@@ -74,11 +74,11 @@ public class CauldronParticleData implements ParticleOptions {
     private double diameter;
 
     // --------- these remaining methods are used to serialize the Particle Data.
-    //  I'm not yet sure what the Codec is used for, given that the DESERIALIZER already deserialises using read.
+    //  I'm not yet sure what the Codec is used for, given that the DESERIALIZER already deserializes using read.
     //  Perhaps it will be used to replace the manual read methods in the future.
 
-    //  The CODEC is a convenience to make it much easier to serialise and deserialise your objects.
-    //  Using the builder below, you construct a serialiser and deserialiser in one go, using lambda functions.
+    //  The CODEC is a convenience to make it much easier to serialise and deserialize your objects.
+    //  Using the builder below, you construct a serializer and deserializer in one go, using lambda functions.
     //  eg for the FlameParticleData CODEC:
     //  a) In order to serialise it, it reads the 'tint' member variable (type: INT) and the 'diameter' member variable (type: DOUBLE)
     //  b) In order to deserialise it, call the matching constructor FlameParticleData(INT, DOUBLE)
@@ -97,7 +97,7 @@ public class CauldronParticleData implements ParticleOptions {
 
     // The DESERIALIZER is used to construct CauldronParticleData from either command line parameters or from a network packet
 
-    public static final Deserializer<CauldronParticleData> DESERIALIZER = new Deserializer<CauldronParticleData>() {
+    public static final Deserializer<CauldronParticleData> DESERIALIZER = new Deserializer<>() {
 
         // parse the parameters for this particle from a /particle command
         @Nonnull

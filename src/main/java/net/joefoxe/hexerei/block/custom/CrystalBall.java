@@ -45,7 +45,6 @@ public class CrystalBall extends BaseEntityBlock implements ITileEntity<CrystalB
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BooleanProperty PLAYER_NEAR = BooleanProperty.create("player_near");
 
-    @SuppressWarnings("deprecation")
     @Override
     public RenderShape getRenderShape(BlockState iBlockState) {
         return RenderShape.MODEL;
@@ -55,7 +54,7 @@ public class CrystalBall extends BaseEntityBlock implements ITileEntity<CrystalB
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
-        return this.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection()).setValue(ANGLE, 0).setValue(WATERLOGGED, Boolean.valueOf(fluidstate.getType() == Fluids.WATER));
+        return this.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection()).setValue(ANGLE, 0).setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
     }
 
     @Override
@@ -96,7 +95,7 @@ public class CrystalBall extends BaseEntityBlock implements ITileEntity<CrystalB
 
     public CrystalBall(Properties properties) {
         super(properties.noOcclusion());
-        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PLAYER_NEAR, Boolean.valueOf(false)));
+        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.FALSE).setValue(PLAYER_NEAR, Boolean.FALSE));
     }
 
 
@@ -113,14 +112,13 @@ public class CrystalBall extends BaseEntityBlock implements ITileEntity<CrystalB
         super.appendHoverText(stack, world, tooltip, flagIn);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(HorizontalDirectionalBlock.FACING, ANGLE, WATERLOGGED, PLAYER_NEAR);
     }
 
     public void setAngle(Level worldIn, BlockPos pos, BlockState state, int angle) {
-        worldIn.setBlock(pos, state.setValue(ANGLE, Integer.valueOf(Mth.clamp(angle, 0, 180))), 2);
+        worldIn.setBlock(pos, state.setValue(ANGLE, Mth.clamp(angle, 0, 180)), 2);
     }
 
     public int getAngle(Level worldIn, BlockPos pos) {
