@@ -11,6 +11,7 @@ import net.joefoxe.hexerei.client.renderer.entity.model.*;
 import net.joefoxe.hexerei.data.books.HexereiBookItem;
 import net.joefoxe.hexerei.fluid.ModFluids;
 import net.joefoxe.hexerei.item.custom.*;
+import net.joefoxe.hexerei.item.custom.bottles.*;
 import net.joefoxe.hexerei.particle.ModParticleTypes;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
 import net.joefoxe.hexerei.util.message.BroomEnderSatchelBrushParticlePacket;

@@ -1,4 +1,4 @@
-package net.joefoxe.hexerei.item.custom;
+package net.joefoxe.hexerei.item.custom.bottles;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -6,25 +6,17 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BottleQuicksilverItem extends Item {
+public class HexBottleItem extends Item {
 
-    public static FoodProperties FOOD = new FoodProperties.Builder().saturationMod(1).nutrition(1).alwaysEat().effect(new MobEffectInstance(MobEffects.HUNGER, 600, 0), 0.8F).effect(new MobEffectInstance(MobEffects.POISON, 300, 0), 0.8F).build();
-
-    public BottleQuicksilverItem(Properties properties) {
-        super(properties.food(FOOD));
+    public HexBottleItem(Properties pProperties) {
+        super(pProperties);
     }
 
     @Override
@@ -45,17 +37,22 @@ public class BottleQuicksilverItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
-        if(Screen.hasShiftDown()) {
-            tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+    public UseAnim getUseAnimation(ItemStack pStack) {
+        return UseAnim.DRINK;
+    }
 
-            tooltip.add(Component.translatable("tooltip.hexerei.bottle_quicksilver_shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+    public Component getTooltip() {
+        return Component.translatable("");
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+        if (Screen.hasShiftDown()) {
+            tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltip.add(getTooltip());
         } else {
             tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-//            tooltip.add(Component.translatable("tooltip.hexerei.bottle_quicksilver"));
         }
-
-
         super.appendHoverText(stack, world, tooltip, flagIn);
     }
 
