@@ -40,6 +40,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     public static String getAddCandleRecipeName(ItemLike pResult) {
         return "add_to_candle/" + getItemName(pResult) + "_add_to_candle";
     }
+
     public static String getWoodcuttingRecipeName(String type, Item result, Item input) {
         return "woodcutting" + "/" + type + "/" + ForgeRegistries.ITEMS.getKey(result).getPath() + "_from_" + ForgeRegistries.ITEMS.getKey(input).getPath() + "_woodcutting";
     }
@@ -71,7 +72,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         JsonArray finalRecipesToAdd = recipesAddToCandle;
         ForgeRegistries.BLOCKS.forEach((block) -> {
             finalRecipesToAdd.forEach((recipeBlock) -> {
-                if(ForgeRegistries.BLOCKS.getKey(block).toString().equals(recipeBlock.getAsString())) {
+                if (ForgeRegistries.BLOCKS.getKey(block).toString().equals(recipeBlock.getAsString())) {
                     ItemStack stack = new ItemStack(ModItems.CANDLE.get());
                     CandleItem.setBaseLayerFromBlock(stack, Registry.BLOCK.getKey(block).toString());
                     new AddToCandleRecipeBuilder(block.asItem(), stack.getItem(), 1, stack.getOrCreateTag())
@@ -89,227 +90,212 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 //planks as list for all types of planks so I can data gen my stuff too
                 boolean isArray = GsonHelper.isArrayNode(recipeBlock.getAsJsonObject(), "planks");
                 List<String> planks_loc_list = new ArrayList<>();
-                if(isArray){
+                if (isArray) {
                     JsonArray plankArray = GsonHelper.getAsJsonArray(recipeBlock.getAsJsonObject(), "planks", new JsonArray());
-                    plankArray.forEach((plankElement) ->{
+                    plankArray.forEach((plankElement) -> {
                         JsonObject object = plankElement.getAsJsonObject();
                         String planks_loc = GsonHelper.getAsString(object, "planks", "");
-                        if(!planks_loc.equals("")){
+                        if (!planks_loc.equals("")) {
                             planks_loc_list.add(planks_loc);
                         }
                     });
-                }
-                else
+                } else
                     planks_loc_list.add(GsonHelper.getAsString(recipeBlock.getAsJsonObject(), "planks", ""));
 
                 isArray = GsonHelper.isArrayNode(recipeBlock.getAsJsonObject(), "slab");
                 List<String> slab_loc_list = new ArrayList<>();
-                if(isArray){
+                if (isArray) {
                     JsonArray slabArray = GsonHelper.getAsJsonArray(recipeBlock.getAsJsonObject(), "slab", new JsonArray());
-                    slabArray.forEach((plankElement) ->{
+                    slabArray.forEach((plankElement) -> {
                         JsonObject object = plankElement.getAsJsonObject();
                         String slab_loc = GsonHelper.getAsString(object, "slab", "");
-                        if(!slab_loc.equals("")){
+                        if (!slab_loc.equals("")) {
                             slab_loc_list.add(slab_loc);
                         }
                     });
-                }
-                else
+                } else
                     slab_loc_list.add(GsonHelper.getAsString(recipeBlock.getAsJsonObject(), "slab", ""));
 
                 isArray = GsonHelper.isArrayNode(recipeBlock.getAsJsonObject(), "stairs");
                 List<String> stairs_loc_list = new ArrayList<>();
-                if(isArray){
+                if (isArray) {
                     JsonArray stairsArray = GsonHelper.getAsJsonArray(recipeBlock.getAsJsonObject(), "stairs", new JsonArray());
-                    stairsArray.forEach((plankElement) ->{
+                    stairsArray.forEach((plankElement) -> {
                         JsonObject object = plankElement.getAsJsonObject();
                         String stairs_loc = GsonHelper.getAsString(object, "stairs", "");
-                        if(!stairs_loc.equals("")){
+                        if (!stairs_loc.equals("")) {
                             stairs_loc_list.add(stairs_loc);
                         }
                     });
-                }
-                else
+                } else
                     stairs_loc_list.add(GsonHelper.getAsString(recipeBlock.getAsJsonObject(), "stairs", ""));
 
                 isArray = GsonHelper.isArrayNode(recipeBlock.getAsJsonObject(), "button");
                 List<String> button_loc_list = new ArrayList<>();
-                if(isArray){
+                if (isArray) {
                     JsonArray buttonArray = GsonHelper.getAsJsonArray(recipeBlock.getAsJsonObject(), "button", new JsonArray());
-                    buttonArray.forEach((plankElement) ->{
+                    buttonArray.forEach((plankElement) -> {
                         JsonObject object = plankElement.getAsJsonObject();
                         String button_loc = GsonHelper.getAsString(object, "button", "");
-                        if(!button_loc.equals("")){
+                        if (!button_loc.equals("")) {
                             button_loc_list.add(button_loc);
                         }
                     });
-                }
-                else
+                } else
                     button_loc_list.add(GsonHelper.getAsString(recipeBlock.getAsJsonObject(), "button", ""));
 
                 isArray = GsonHelper.isArrayNode(recipeBlock.getAsJsonObject(), "pressure_plate");
                 List<String> pressure_plate_loc_list = new ArrayList<>();
-                if(isArray){
+                if (isArray) {
                     JsonArray pressure_plateArray = GsonHelper.getAsJsonArray(recipeBlock.getAsJsonObject(), "pressure_plate", new JsonArray());
-                    pressure_plateArray.forEach((plankElement) ->{
+                    pressure_plateArray.forEach((plankElement) -> {
                         JsonObject object = plankElement.getAsJsonObject();
                         String pressure_plate_loc = GsonHelper.getAsString(object, "pressure_plate", "");
-                        if(!pressure_plate_loc.equals("")){
+                        if (!pressure_plate_loc.equals("")) {
                             pressure_plate_loc_list.add(pressure_plate_loc);
                         }
                     });
-                }
-                else
+                } else
                     pressure_plate_loc_list.add(GsonHelper.getAsString(recipeBlock.getAsJsonObject(), "pressure_plate", ""));
 
                 isArray = GsonHelper.isArrayNode(recipeBlock.getAsJsonObject(), "fence");
                 List<String> fence_loc_list = new ArrayList<>();
-                if(isArray){
+                if (isArray) {
                     JsonArray fenceArray = GsonHelper.getAsJsonArray(recipeBlock.getAsJsonObject(), "fence", new JsonArray());
-                    fenceArray.forEach((plankElement) ->{
+                    fenceArray.forEach((plankElement) -> {
                         JsonObject object = plankElement.getAsJsonObject();
                         String fence_loc = GsonHelper.getAsString(object, "fence", "");
-                        if(!fence_loc.equals("")){
+                        if (!fence_loc.equals("")) {
                             fence_loc_list.add(fence_loc);
                         }
                     });
-                }
-                else
+                } else
                     fence_loc_list.add(GsonHelper.getAsString(recipeBlock.getAsJsonObject(), "fence", ""));
 
                 isArray = GsonHelper.isArrayNode(recipeBlock.getAsJsonObject(), "fence_gate");
                 List<String> fence_gate_loc_list = new ArrayList<>();
-                if(isArray){
+                if (isArray) {
                     JsonArray fence_gateArray = GsonHelper.getAsJsonArray(recipeBlock.getAsJsonObject(), "fence_gate", new JsonArray());
-                    fence_gateArray.forEach((plankElement) ->{
+                    fence_gateArray.forEach((plankElement) -> {
                         JsonObject object = plankElement.getAsJsonObject();
                         String fence_gate_loc = GsonHelper.getAsString(object, "fence_gate", "");
-                        if(!fence_gate_loc.equals("")){
+                        if (!fence_gate_loc.equals("")) {
                             fence_gate_loc_list.add(fence_gate_loc);
                         }
                     });
-                }
-                else
+                } else
                     fence_gate_loc_list.add(GsonHelper.getAsString(recipeBlock.getAsJsonObject(), "fence_gate", ""));
 
                 isArray = GsonHelper.isArrayNode(recipeBlock.getAsJsonObject(), "door");
                 List<String> door_loc_list = new ArrayList<>();
-                if(isArray){
+                if (isArray) {
                     JsonArray doorArray = GsonHelper.getAsJsonArray(recipeBlock.getAsJsonObject(), "door", new JsonArray());
-                    doorArray.forEach((plankElement) ->{
+                    doorArray.forEach((plankElement) -> {
                         JsonObject object = plankElement.getAsJsonObject();
                         String door_loc = GsonHelper.getAsString(object, "door", "");
-                        if(!door_loc.equals("")){
+                        if (!door_loc.equals("")) {
                             door_loc_list.add(door_loc);
                         }
                     });
-                }
-                else
+                } else
                     door_loc_list.add(GsonHelper.getAsString(recipeBlock.getAsJsonObject(), "door", ""));
 
                 isArray = GsonHelper.isArrayNode(recipeBlock.getAsJsonObject(), "trapdoor");
                 List<String> trapdoor_loc_list = new ArrayList<>();
-                if(isArray){
+                if (isArray) {
                     JsonArray trapdoorArray = GsonHelper.getAsJsonArray(recipeBlock.getAsJsonObject(), "trapdoor", new JsonArray());
-                    trapdoorArray.forEach((plankElement) ->{
+                    trapdoorArray.forEach((plankElement) -> {
                         JsonObject object = plankElement.getAsJsonObject();
                         String trapdoor_loc = GsonHelper.getAsString(object, "trapdoor", "");
-                        if(!trapdoor_loc.equals("")){
+                        if (!trapdoor_loc.equals("")) {
                             trapdoor_loc_list.add(trapdoor_loc);
                         }
                     });
-                }
-                else
+                } else
                     trapdoor_loc_list.add(GsonHelper.getAsString(recipeBlock.getAsJsonObject(), "trapdoor", ""));
 
                 isArray = GsonHelper.isArrayNode(recipeBlock.getAsJsonObject(), "boat");
                 List<String> boat_loc_list = new ArrayList<>();
-                if(isArray){
+                if (isArray) {
                     JsonArray boatArray = GsonHelper.getAsJsonArray(recipeBlock.getAsJsonObject(), "boat", new JsonArray());
-                    boatArray.forEach((plankElement) ->{
+                    boatArray.forEach((plankElement) -> {
                         JsonObject object = plankElement.getAsJsonObject();
                         String boat_loc = GsonHelper.getAsString(object, "boat", "");
-                        if(!boat_loc.equals("")){
+                        if (!boat_loc.equals("")) {
                             boat_loc_list.add(boat_loc);
                         }
                     });
-                }
-                else
+                } else
                     boat_loc_list.add(GsonHelper.getAsString(recipeBlock.getAsJsonObject(), "boat", ""));
 
                 isArray = GsonHelper.isArrayNode(recipeBlock.getAsJsonObject(), "chest_boat");
                 List<String> chest_boat_loc_list = new ArrayList<>();
-                if(isArray){
+                if (isArray) {
                     JsonArray chest_boatArray = GsonHelper.getAsJsonArray(recipeBlock.getAsJsonObject(), "chest_boat", new JsonArray());
-                    chest_boatArray.forEach((plankElement) ->{
+                    chest_boatArray.forEach((plankElement) -> {
                         JsonObject object = plankElement.getAsJsonObject();
                         String chest_boat_loc = GsonHelper.getAsString(object, "chest_boat", "");
-                        if(!chest_boat_loc.equals("")){
+                        if (!chest_boat_loc.equals("")) {
                             chest_boat_loc_list.add(chest_boat_loc);
                         }
                     });
-                }
-                else
+                } else
                     chest_boat_loc_list.add(GsonHelper.getAsString(recipeBlock.getAsJsonObject(), "chest_boat", ""));
 
                 isArray = GsonHelper.isArrayNode(recipeBlock.getAsJsonObject(), "chest");
                 List<String> chest_loc_list = new ArrayList<>();
-                if(isArray){
+                if (isArray) {
                     JsonArray chestArray = GsonHelper.getAsJsonArray(recipeBlock.getAsJsonObject(), "chest", new JsonArray());
-                    chestArray.forEach((plankElement) ->{
+                    chestArray.forEach((plankElement) -> {
                         JsonObject object = plankElement.getAsJsonObject();
                         String chest_loc = GsonHelper.getAsString(object, "chest", "");
-                        if(!chest_loc.equals("")){
+                        if (!chest_loc.equals("")) {
                             chest_loc_list.add(chest_loc);
                         }
                     });
-                }
-                else
+                } else
                     chest_loc_list.add(GsonHelper.getAsString(recipeBlock.getAsJsonObject(), "chest", ""));
 
                 isArray = GsonHelper.isArrayNode(recipeBlock.getAsJsonObject(), "crafting_table");
                 List<String> crafting_table_loc_list = new ArrayList<>();
-                if(isArray){
+                if (isArray) {
                     JsonArray crafting_tableArray = GsonHelper.getAsJsonArray(recipeBlock.getAsJsonObject(), "crafting_table", new JsonArray());
-                    crafting_tableArray.forEach((plankElement) ->{
+                    crafting_tableArray.forEach((plankElement) -> {
                         JsonObject object = plankElement.getAsJsonObject();
                         String crafting_table_loc = GsonHelper.getAsString(object, "crafting_table", "");
-                        if(!crafting_table_loc.equals("")){
+                        if (!crafting_table_loc.equals("")) {
                             crafting_table_loc_list.add(crafting_table_loc);
                         }
                     });
-                }
-                else
+                } else
                     crafting_table_loc_list.add(GsonHelper.getAsString(recipeBlock.getAsJsonObject(), "crafting_table", ""));
 
                 isArray = GsonHelper.isArrayNode(recipeBlock.getAsJsonObject(), "barrel");
                 List<String> barrel_loc_list = new ArrayList<>();
-                if(isArray){
+                if (isArray) {
                     JsonArray barrelArray = GsonHelper.getAsJsonArray(recipeBlock.getAsJsonObject(), "barrel", new JsonArray());
-                    barrelArray.forEach((plankElement) ->{
+                    barrelArray.forEach((plankElement) -> {
                         JsonObject object = plankElement.getAsJsonObject();
                         String barrel_loc = GsonHelper.getAsString(object, "barrel", "");
-                        if(!barrel_loc.equals("")){
+                        if (!barrel_loc.equals("")) {
                             barrel_loc_list.add(barrel_loc);
                         }
                     });
-                }
-                else
+                } else
                     barrel_loc_list.add(GsonHelper.getAsString(recipeBlock.getAsJsonObject(), "barrel", ""));
 
                 isArray = GsonHelper.isArrayNode(recipeBlock.getAsJsonObject(), "sign");
                 List<String> sign_loc_list = new ArrayList<>();
-                if(isArray){
+                if (isArray) {
                     JsonArray signArray = GsonHelper.getAsJsonArray(recipeBlock.getAsJsonObject(), "sign", new JsonArray());
-                    signArray.forEach((plankElement) ->{
+                    signArray.forEach((plankElement) -> {
                         JsonObject object = plankElement.getAsJsonObject();
                         String sign_loc = GsonHelper.getAsString(object, "sign", "");
-                        if(!sign_loc.equals("")){
+                        if (!sign_loc.equals("")) {
                             sign_loc_list.add(sign_loc);
                         }
                     });
-                }
-                else
+                } else
                     sign_loc_list.add(GsonHelper.getAsString(recipeBlock.getAsJsonObject(), "sign", ""));
 
 
@@ -402,15 +388,15 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 Item log = ForgeRegistries.ITEMS.getValue(new ResourceLocation(log_loc));
 
 
-                if(reg.equals(stripped_wood) || reg.equals(wood) || reg.equals(log) || reg.equals(stripped_log)){
-                    for(Item planks : planks_list){
+                if (reg.equals(stripped_wood) || reg.equals(wood) || reg.equals(log) || reg.equals(stripped_log)) {
+                    for (Item planks : planks_list) {
                         if (planks != null && planks != Items.AIR)
                             new WoodcutterRecipeBuilder(block.asItem(), planks, 5, 1, type)
                                     .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, planks, reg));
                     }
                 }
 
-                for(Item planks : planks_list){
+                for (Item planks : planks_list) {
                     if (reg.equals(planks)) {
 
                         for (Item planks2 : planks_list)
@@ -422,159 +408,158 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 //                            new WoodcutterRecipeBuilder(block.asItem(), slab, 2, 1, type)
 //                                    .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, slab, reg));
 
-                        for(Item slab : slab_list){
+                        for (Item slab : slab_list) {
                             if (slab != null && slab != Items.AIR)
                                 new WoodcutterRecipeBuilder(block.asItem(), slab, 2, 1, type)
                                         .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, slab, reg));
                         }
 
-                        for(Item stairs : stairs_list)
+                        for (Item stairs : stairs_list)
                             if (stairs != null && stairs != Items.AIR)
                                 new WoodcutterRecipeBuilder(block.asItem(), stairs, 1, 1, type)
-                                    .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, stairs, reg));
+                                        .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, stairs, reg));
 
-                        for(Item pressure_plate : pressure_plate_list)
+                        for (Item pressure_plate : pressure_plate_list)
                             if (pressure_plate != null && pressure_plate != Items.AIR)
                                 new WoodcutterRecipeBuilder(block.asItem(), pressure_plate, 1, 1, type)
-                                    .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, pressure_plate, reg));
+                                        .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, pressure_plate, reg));
 
-                        for(Item button : button_list)
+                        for (Item button : button_list)
                             if (button != null && button != Items.AIR)
                                 new WoodcutterRecipeBuilder(block.asItem(), button, 2, 1, type)
-                                    .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, button, reg));
+                                        .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, button, reg));
 
-                        for(Item fence : fence_list)
+                        for (Item fence : fence_list)
                             if (fence != null && fence != Items.AIR)
                                 new WoodcutterRecipeBuilder(block.asItem(), fence, 1, 1, type)
-                                    .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, fence, reg));
+                                        .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, fence, reg));
 
-                        for(Item fence_gate : fence_gate_list)
+                        for (Item fence_gate : fence_gate_list)
                             if (fence_gate != null && fence_gate != Items.AIR)
                                 new WoodcutterRecipeBuilder(block.asItem(), fence_gate, 1, 1, type)
-                                    .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, fence_gate, reg));
+                                        .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, fence_gate, reg));
 
-                        for(Item door : door_list)
+                        for (Item door : door_list)
                             if (door != null && door != Items.AIR)
                                 new WoodcutterRecipeBuilder(block.asItem(), door, 1, 2, type)
-                                    .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, door, reg));
+                                        .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, door, reg));
 
-                        for(Item trapdoor : trapdoor_list)
+                        for (Item trapdoor : trapdoor_list)
                             if (trapdoor != null && trapdoor != Items.AIR)
                                 new WoodcutterRecipeBuilder(block.asItem(), trapdoor, 1, 2, type)
-                                    .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, trapdoor, reg));
+                                        .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, trapdoor, reg));
 
-                        for(Item boat : boat_list)
+                        for (Item boat : boat_list)
                             if (boat != null && boat != Items.AIR)
                                 new WoodcutterRecipeBuilder(block.asItem(), boat, 1, 4, type)
-                                    .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, boat, reg));
+                                        .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, boat, reg));
 
-                        for(Item chest_boat : chest_boat_list)
+                        for (Item chest_boat : chest_boat_list)
                             if (chest_boat != null && chest_boat != Items.AIR)
                                 new WoodcutterRecipeBuilder(block.asItem(), chest_boat, 1, 9, type)
-                                    .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, chest_boat, reg));
+                                        .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, chest_boat, reg));
 
-                        for(Item chest : chest_list)
+                        for (Item chest : chest_list)
                             if (chest != null && chest != Items.AIR)
                                 new WoodcutterRecipeBuilder(block.asItem(), chest, 1, 6, type)
-                                    .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, chest, reg));
+                                        .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, chest, reg));
 
-                        for(Item crafting_table : crafting_table_list)
+                        for (Item crafting_table : crafting_table_list)
                             if (crafting_table != null && crafting_table != Items.AIR)
                                 new WoodcutterRecipeBuilder(block.asItem(), crafting_table, 1, 2, type)
-                                    .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, crafting_table, reg));
+                                        .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, crafting_table, reg));
 
-                        for(Item barrel : barrel_list)
+                        for (Item barrel : barrel_list)
                             if (barrel != null && barrel != Items.AIR)
                                 new WoodcutterRecipeBuilder(block.asItem(), barrel, 1, 3, type)
-                                    .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, barrel, reg));
+                                        .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, barrel, reg));
 
-                        for(Item sign : sign_list)
+                        for (Item sign : sign_list)
                             if (sign != null && sign != Items.AIR)
                                 new WoodcutterRecipeBuilder(block.asItem(), sign, 1, 1, type)
-                                    .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, sign, reg));
+                                        .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, sign, reg));
                     }
                 }
 
-                for(Item slab : slab_list)
-                    if(reg.equals(slab)) {
+                for (Item slab : slab_list)
+                    if (reg.equals(slab)) {
 
-                        for (Item planks : planks_list)
-                            {
-                                if (planks != null && planks != Items.AIR)
-                                    new WoodcutterRecipeBuilder(block.asItem(), planks, 1, 2, type)
-                                            .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, planks, reg));
-                            }
+                        for (Item planks : planks_list) {
+                            if (planks != null && planks != Items.AIR)
+                                new WoodcutterRecipeBuilder(block.asItem(), planks, 1, 2, type)
+                                        .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, planks, reg));
+                        }
 
                         for (Item slab2 : slab_list)
                             if (slab2 != null && slab2 != Items.AIR && slab != slab2)
                                 new WoodcutterRecipeBuilder(block.asItem(), slab2, 1, 1, type)
                                         .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, slab2, reg));
-                            for(Item stairs : stairs_list)
-                                if (stairs != null && stairs != Items.AIR)
-                                    new WoodcutterRecipeBuilder(block.asItem(), stairs, 1, 2, type)
+                        for (Item stairs : stairs_list)
+                            if (stairs != null && stairs != Items.AIR)
+                                new WoodcutterRecipeBuilder(block.asItem(), stairs, 1, 2, type)
                                         .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, stairs, reg));
-                            for(Item pressure_plate : pressure_plate_list)
-                                if (pressure_plate != null && pressure_plate != Items.AIR)
-                                    new WoodcutterRecipeBuilder(block.asItem(), pressure_plate, 1, 2, type)
+                        for (Item pressure_plate : pressure_plate_list)
+                            if (pressure_plate != null && pressure_plate != Items.AIR)
+                                new WoodcutterRecipeBuilder(block.asItem(), pressure_plate, 1, 2, type)
                                         .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, pressure_plate, reg));
-                            for(Item button : button_list)
-                                if (button != null && button != Items.AIR)
-                                    new WoodcutterRecipeBuilder(block.asItem(), button, 1, 1, type)
+                        for (Item button : button_list)
+                            if (button != null && button != Items.AIR)
+                                new WoodcutterRecipeBuilder(block.asItem(), button, 1, 1, type)
                                         .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, button, reg));
-                            for(Item fence : fence_list)
-                                if (fence != null && fence != Items.AIR)
-                                    new WoodcutterRecipeBuilder(block.asItem(), fence, 1, 2, type)
+                        for (Item fence : fence_list)
+                            if (fence != null && fence != Items.AIR)
+                                new WoodcutterRecipeBuilder(block.asItem(), fence, 1, 2, type)
                                         .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, fence, reg));
-                            for(Item fence_gate : fence_gate_list)
-                                if (fence_gate != null && fence_gate != Items.AIR)
-                                    new WoodcutterRecipeBuilder(block.asItem(), fence_gate, 1, 2, type)
+                        for (Item fence_gate : fence_gate_list)
+                            if (fence_gate != null && fence_gate != Items.AIR)
+                                new WoodcutterRecipeBuilder(block.asItem(), fence_gate, 1, 2, type)
                                         .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, fence_gate, reg));
-                            for(Item door : door_list)
-                                if (door != null && door != Items.AIR)
-                                    new WoodcutterRecipeBuilder(block.asItem(), door, 1, 4, type)
+                        for (Item door : door_list)
+                            if (door != null && door != Items.AIR)
+                                new WoodcutterRecipeBuilder(block.asItem(), door, 1, 4, type)
                                         .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, door, reg));
-                            for(Item trapdoor : trapdoor_list)
-                                if (trapdoor != null && trapdoor != Items.AIR)
-                                    new WoodcutterRecipeBuilder(block.asItem(), trapdoor, 1, 4, type)
+                        for (Item trapdoor : trapdoor_list)
+                            if (trapdoor != null && trapdoor != Items.AIR)
+                                new WoodcutterRecipeBuilder(block.asItem(), trapdoor, 1, 4, type)
                                         .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, trapdoor, reg));
-                            for(Item boat : boat_list)
-                                if (boat != null && boat != Items.AIR)
-                                    new WoodcutterRecipeBuilder(block.asItem(), boat, 1, 8, type)
+                        for (Item boat : boat_list)
+                            if (boat != null && boat != Items.AIR)
+                                new WoodcutterRecipeBuilder(block.asItem(), boat, 1, 8, type)
                                         .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, boat, reg));
-                            for(Item chest_boat : chest_boat_list)
-                                if (chest_boat != null && chest_boat != Items.AIR)
-                                    new WoodcutterRecipeBuilder(block.asItem(), chest_boat, 1, 18, type)
+                        for (Item chest_boat : chest_boat_list)
+                            if (chest_boat != null && chest_boat != Items.AIR)
+                                new WoodcutterRecipeBuilder(block.asItem(), chest_boat, 1, 18, type)
                                         .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, chest_boat, reg));
-                            for(Item chest : chest_list)
-                                if (chest != null && chest != Items.AIR)
-                                    new WoodcutterRecipeBuilder(block.asItem(), chest, 1, 10, type)
+                        for (Item chest : chest_list)
+                            if (chest != null && chest != Items.AIR)
+                                new WoodcutterRecipeBuilder(block.asItem(), chest, 1, 10, type)
                                         .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, chest, reg));
-                            for(Item crafting_table : crafting_table_list)
-                                if (crafting_table != null && crafting_table != Items.AIR)
-                                    new WoodcutterRecipeBuilder(block.asItem(), crafting_table, 1, 4, type)
+                        for (Item crafting_table : crafting_table_list)
+                            if (crafting_table != null && crafting_table != Items.AIR)
+                                new WoodcutterRecipeBuilder(block.asItem(), crafting_table, 1, 4, type)
                                         .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, crafting_table, reg));
-                            for(Item barrel : barrel_list)
-                                if (barrel != null && barrel != Items.AIR)
-                                    new WoodcutterRecipeBuilder(block.asItem(), barrel, 1, 6, type)
+                        for (Item barrel : barrel_list)
+                            if (barrel != null && barrel != Items.AIR)
+                                new WoodcutterRecipeBuilder(block.asItem(), barrel, 1, 6, type)
                                         .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, barrel, reg));
-                            for(Item sign : sign_list)
-                                if (sign != null && sign != Items.AIR)
-                                    new WoodcutterRecipeBuilder(block.asItem(), sign, 1, 2, type)
+                        for (Item sign : sign_list)
+                            if (sign != null && sign != Items.AIR)
+                                new WoodcutterRecipeBuilder(block.asItem(), sign, 1, 2, type)
                                         .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, sign, reg));
 
                     }
-                for(Item stairs : stairs_list)
-                    if(reg.equals(stairs)){
+                for (Item stairs : stairs_list)
+                    if (reg.equals(stairs)) {
 
-                        for(Item planks : planks_list) {
+                        for (Item planks : planks_list) {
                             if (planks != null && planks != Items.AIR)
                                 new WoodcutterRecipeBuilder(block.asItem(), planks, 3, 4, type)
                                         .save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, planks, reg));
                         }
 
 
-                        for(Item slab : slab_list)
-                            if(slab != null && slab != Items.AIR)
+                        for (Item slab : slab_list)
+                            if (slab != null && slab != Items.AIR)
                                 new WoodcutterRecipeBuilder(block.asItem(), slab, 3, 2, type)
                                         .unlockedBy("has_block", inventoryTrigger(ItemPredicate.Builder.item()
                                                 .of(reg).build())).save(pFinishedRecipeConsumer, getWoodcuttingRecipeName(type, slab, reg) + "_combine");

@@ -1,2 +1,8 @@
-// 1.19.2	2022-08-28T02:01:26.6554637	Tags for minecraft:worldgen/biome
+// 1.19.2	2023-04-03T21:47:18.978033	Tags for minecraft:worldgen/biome
 26ecdd014eb57977ec0a5e7c436af88c51eca077 data/forge/tags/worldgen/biome/is_swamp.json
+26ecdd014eb57977ec0a5e7c436af88c51eca077 data/forge/tags/worldgen/biome/is_wet/overworld.json
+26ecdd014eb57977ec0a5e7c436af88c51eca077 data/minecraft/tags/worldgen/biome/allows_surface_slime_spawns.json
+26ecdd014eb57977ec0a5e7c436af88c51eca077 data/minecraft/tags/worldgen/biome/has_closer_water_fog.json
+26ecdd014eb57977ec0a5e7c436af88c51eca077 data/minecraft/tags/worldgen/biome/has_structure/swamp_hut.json
+26ecdd014eb57977ec0a5e7c436af88c51eca077 data/minecraft/tags/worldgen/biome/is_overworld.json
+26ecdd014eb57977ec0a5e7c436af88c51eca077 data/minecraft/tags/worldgen/biome/water_on_map_outlines.json

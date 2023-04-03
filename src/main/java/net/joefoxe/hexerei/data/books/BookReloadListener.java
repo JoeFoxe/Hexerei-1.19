@@ -115,7 +115,7 @@ public class BookReloadListener extends SimpleJsonResourceReloadListener {
         BookManager.addBookPage(key, new BookPage(title, paragraphsList, itemsInSlotsList, entityList, imagesList, nonItemTooltipsList, itemHyperlink));
     }
 
-    private static void addBookEntries(ResourceLocation key, JsonElement input) throws CommandSyntaxException {
+    private static void addBookEntries(ResourceLocation key, JsonElement input) {
         JsonObject jsonObject = input.getAsJsonObject();
         int numberOfPages = 0;
 

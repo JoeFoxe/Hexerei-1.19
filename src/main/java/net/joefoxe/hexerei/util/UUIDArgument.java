@@ -10,13 +10,9 @@ import java.util.UUID;
 
 public class UUIDArgument implements ArgumentType<UUID> {
 
-    public static final DynamicCommandExceptionType UUID_SECTION_INVALID = new DynamicCommandExceptionType((arg) -> {
-        return Component.translatable("argument.hexerei.uuid.section.invalid", arg);
-    });
+    public static final DynamicCommandExceptionType UUID_SECTION_INVALID = new DynamicCommandExceptionType(arg -> Component.translatable("argument.hexerei.uuid.section.invalid", arg));
 
-    public static final DynamicCommandExceptionType UUID_FORMAT_INVALID = new DynamicCommandExceptionType((arg) -> {
-        return Component.translatable("argument.hexerei.uuid.format.invalid", arg);
-    });
+    public static final DynamicCommandExceptionType UUID_FORMAT_INVALID = new DynamicCommandExceptionType(arg -> Component.translatable("argument.hexerei.uuid.format.invalid", arg));
 
     public static UUIDArgument uuid() {
         return new UUIDArgument();

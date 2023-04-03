@@ -126,7 +126,7 @@ public abstract class FluidIngredient implements Predicate<FluidStack> {
 
     public static FluidIngredient deserialize(@Nullable JsonElement je) {
         if (!isFluidIngredient(je))
-            throw new JsonSyntaxException("Invalid fluid ingredient: " + Objects.toString(je));
+            throw new JsonSyntaxException("Invalid fluid ingredient: " + je);
 
         JsonObject json = je.getAsJsonObject();
         FluidIngredient ingredient = json.has("fluidTag") ? new FluidTagIngredient() : new FluidStackIngredient();
@@ -227,8 +227,7 @@ public abstract class FluidIngredient implements Predicate<FluidStack> {
             // Tag has to be resolved on the server before sending
             List<FluidStack> matchingFluidStacks = getMatchingFluidStacks();
             buffer.writeVarInt(matchingFluidStacks.size());
-            matchingFluidStacks.stream()
-                    .forEach(buffer::writeFluidStack);
+            matchingFluidStacks.forEach(buffer::writeFluidStack);
         }
 
         @Override

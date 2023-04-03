@@ -61,24 +61,6 @@ public class HexereiBookItemRenderer extends CustomItemRendererWithPageDrawing {
         return null;
     }
 
-    private float moveTo(float input, float moveTo, float speed)
-    {
-        float distance = moveTo - input;
-
-        if(Math.abs(distance) <= speed)
-        {
-            return moveTo;
-        }
-
-        if(distance > 0)
-        {
-            input += speed;
-        } else {
-            input -= speed;
-        }
-
-        return input;
-    }
     @OnlyIn(Dist.CLIENT)
     private void renderBlock(PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, BlockState state) {
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, matrixStackIn, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, null);
@@ -375,21 +357,20 @@ public class HexereiBookItemRenderer extends CustomItemRendererWithPageDrawing {
     public void renderSingleBlock(BlockState p_110913_, PoseStack poseStack, MultiBufferSource p_110915_, int p_110916_, int p_110917_, net.minecraftforge.client.model.data.ModelData modelData, int color) {
         RenderShape rendershape = p_110913_.getRenderShape();
         if (rendershape != RenderShape.INVISIBLE) {
-            switch(rendershape) {
-                case MODEL:
+            switch (rendershape) {
+                case MODEL -> {
                     BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
                     BakedModel bakedmodel = dispatcher.getBlockModel(p_110913_);
-                    int i = color;
-                    float f = (float)(i >> 16 & 255) / 255.0F;
-                    float f1 = (float)(i >> 8 & 255) / 255.0F;
-                    float f2 = (float)(i & 255) / 255.0F;
+                    float f = (float) (color >> 16 & 255) / 255.0F;
+                    float f1 = (float) (color >> 8 & 255) / 255.0F;
+                    float f2 = (float) (color & 255) / 255.0F;
                     dispatcher.getModelRenderer().renderModel(poseStack.last(), p_110915_.getBuffer(ItemBlockRenderTypes.getRenderType(p_110913_, false)), p_110913_, bakedmodel, f, f1, f2, p_110916_, p_110917_, modelData, null);
-                    break;
-                case ENTITYBLOCK_ANIMATED:
+                }
+                case ENTITYBLOCK_ANIMATED -> {
                     ItemStack stack = new ItemStack(p_110913_.getBlock());
-
                     poseStack.translate(0.2, -0.1, -0.1);
                     IClientItemExtensions.of(stack.getItem()).getCustomRenderer().renderByItem(stack, ItemTransforms.TransformType.NONE, poseStack, p_110915_, p_110916_, p_110917_);
+                }
             }
 
         }

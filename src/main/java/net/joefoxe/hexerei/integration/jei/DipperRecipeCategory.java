@@ -99,7 +99,7 @@ public class DipperRecipeCategory implements IRecipeCategory<DipperRecipe> {
         minecraft.font.draw(matrixStack, times_dipped_1, 6*1.666f, 56*1.666f, 0xFF808080);
         minecraft.font.draw(matrixStack, times_dipped_3, 65*1.666f, 56*1.666f, 0xFF808080);
 //
-        String dippingTimeString = dippingTime < Integer.MAX_VALUE ? dippingTime / 20 + (dippingTime % 20 == 0 ? "" : ("." + Integer.toString(dippingTime % 20))) : "?";
+        String dippingTimeString = dippingTime < Integer.MAX_VALUE ? dippingTime / 20 + (dippingTime % 20 == 0 ? "" : ("." + dippingTime % 20)) : "?";
         if(dippingTimeString.charAt(dippingTimeString.length()-1) == '0' && dippingTime != 0 && dippingTime % 20 != 0)
             dippingTimeString = dippingTimeString.substring(0, dippingTimeString.length()-1);
 //        MutableComponent dip_time = Component.translatable("gui.jei.category.dipper.dip_time_1", dippingTimeString);
@@ -109,7 +109,7 @@ public class DipperRecipeCategory implements IRecipeCategory<DipperRecipe> {
         minecraft.font.draw(matrixStack, dip_time_1, 6*1.666f, 68*1.666f, 0xFF808080);
         minecraft.font.draw(matrixStack, dip_time_3, 65*1.666f, 68*1.666f, 0xFF808080);
 
-        String dryingTimeString = dryingTime < Integer.MAX_VALUE ? dryingTime / 20 + (dryingTime % 20 == 0 ? "" : ("." + Integer.toString(dryingTime % 20))) : "?";
+        String dryingTimeString = dryingTime < Integer.MAX_VALUE ? dryingTime / 20 + (dryingTime % 20 == 0 ? "" : ("." + dryingTime % 20)) : "?";
         if(dryingTimeString.charAt(dryingTimeString.length()-1) == '0' && dryingTime != 0 && dryingTime % 20 != 0)
             dryingTimeString = dryingTimeString.substring(0, dryingTimeString.length()-1);
 //        MutableComponent dry_time = Component.translatable("gui.jei.category.dipper.dry_time", dryingTimeString);

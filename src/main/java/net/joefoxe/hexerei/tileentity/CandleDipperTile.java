@@ -38,9 +38,9 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.network.PacketDistributor;
@@ -52,9 +52,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static net.joefoxe.hexerei.util.HexereiUtil.moveTo;
+
 public class CandleDipperTile extends RandomizableContainerBlockEntity implements WorldlyContainer, Clearable, MenuProvider {
 
-//    public final ItemStackHandler itemHandler = createHandler();
+    //    public final ItemStackHandler itemHandler = createHandler();
 //    private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
     protected NonNullList<ItemStack> items = NonNullList.withSize(3, ItemStack.EMPTY);
 
@@ -106,9 +108,9 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
     public CandleDipperTile(BlockEntityType<?> tileEntityTypeIn, BlockPos blockPos, BlockState blockState) {
         super(tileEntityTypeIn, blockPos, blockState);
 
-        candlePos1 = new Vec3(0.4f,0.4f,0.4f);
-        candlePos2 = new Vec3(0.4f,0.4f,0.4f);
-        candlePos3 = new Vec3(0.4f,0.4f,0.4f);
+        candlePos1 = new Vec3(0.4f, 0.4f, 0.4f);
+        candlePos2 = new Vec3(0.4f, 0.4f, 0.4f);
+        candlePos3 = new Vec3(0.4f, 0.4f, 0.4f);
         candle1Dunking = false;
         candle2Dunking = false;
         candle3Dunking = false;
@@ -143,7 +145,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
 
     public void sync() {
 
-        if(level != null){
+        if (level != null) {
             if (!level.isClientSide)
                 HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new TESyncPacket(worldPosition, save(new CompoundTag())));
 
@@ -158,7 +160,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (facing != null && capability == ForgeCapabilities.ITEM_HANDLER) {
             if (facing == Direction.UP)
                 return handlers[0].cast();
             else if (facing == Direction.DOWN)
@@ -184,9 +186,8 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
     public int getNumberOfItems() {
 
         int num = 0;
-        for(int i = 0; i < 8; i++)
-        {
-            if(this.items.get(i) != ItemStack.EMPTY)
+        for (int i = 0; i < 8; i++) {
+            if (this.items.get(i) != ItemStack.EMPTY)
                 num++;
         }
         return num;
@@ -216,7 +217,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
 
 
     public CandleDipperTile(BlockPos blockPos, BlockState blockState) {
-        this(ModTileEntities.CANDLE_DIPPER_TILE.get(),blockPos, blockState);
+        this(ModTileEntities.CANDLE_DIPPER_TILE.get(), blockPos, blockState);
     }
 
     @Override
@@ -225,13 +226,13 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
             ItemStack itemStack = stack.copy();
             itemStack.setCount(1);
             this.items.set(index, itemStack);
-            if(index == 0)
+            if (index == 0)
                 candle1DryingTime = candleDryingTimeStart;
-            if(index == 1)
+            if (index == 1)
                 candle2DryingTime = candleDryingTimeStart;
-            if(index == 2)
+            if (index == 2)
                 candle3DryingTime = candleDryingTimeStart;
-            level.playSound((Player) null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, this.level.random.nextFloat() * 0.4F + 1.0F);
+            level.playSound(null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, this.level.random.nextFloat() * 0.4F + 1.0F);
         }
 
         setChanged();
@@ -239,20 +240,19 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
 
     @Override
     public ItemStack removeItem(int index, int p_59614_) {
-        this.unpackLootTable((Player)null);
+        this.unpackLootTable(null);
         ItemStack itemstack = ContainerHelper.removeItem(this.getItems(), index, p_59614_);
         if (!itemstack.isEmpty()) {
             this.setChanged();
-            if(index == 0)
-            {
+            if (index == 0) {
                 candle1Crafted = false;
                 setChanged();
-            }if(index == 0)
-            {
+            }
+            if (index == 0) {
                 candle2Crafted = false;
                 setChanged();
-            }if(index == 0)
-            {
+            }
+            if (index == 0) {
                 candle3Crafted = false;
                 setChanged();
             }
@@ -262,7 +262,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
         return itemstack;
     }
 
-    public void craft(){
+    public void craft() {
         SimpleContainer inv = new SimpleContainer(3);
         for (int i = 0; i < 3; i++) {
             inv.setItem(i, this.items.get(i));
@@ -272,7 +272,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
         AtomicBoolean matchesRecipe1 = new AtomicBoolean(false);
         AtomicBoolean matchesRecipe2 = new AtomicBoolean(false);
         AtomicBoolean matchesRecipe3 = new AtomicBoolean(false);
-        if(blockEntity instanceof MixingCauldronTile mixingCauldronTile) {
+        if (blockEntity instanceof MixingCauldronTile mixingCauldronTile) {
 
             List<DipperRecipe> recipes = level.getRecipeManager().getRecipesFor(DipperRecipe.Type.INSTANCE, inv, level).stream().filter((dipperRecipe) -> {
                 FluidStack tileFluid = mixingCauldronTile.getFluidStack();
@@ -290,16 +290,16 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
                 ItemStack input = iRecipe.getIngredients().get(0).getItems()[0];
                 boolean matchesFluid = iRecipe.getLiquid().getFluid().isSame(mixingCauldronTile.getFluidStack().getFluid()) && iRecipe.getFluidLevelsConsumed() <= mixingCauldronTile.getFluidStack().getAmount();
                 boolean hasFluidTag = iRecipe.getLiquid().hasTag();
-                if(hasFluidTag && !mixingCauldronTile.getFluidStack().isEmpty() && !mixingCauldronTile.getFluidStack().getOrCreateTag().equals(iRecipe.getLiquid().getOrCreateTag()))
+                if (hasFluidTag && !mixingCauldronTile.getFluidStack().isEmpty() && !mixingCauldronTile.getFluidStack().getOrCreateTag().equals(iRecipe.getLiquid().getOrCreateTag()))
                     matchesFluid = false;
 
                 ResourceLocation fl2 = ForgeRegistries.FLUIDS.getKey(mixingCauldronTile.getFluidStack().getFluid());
                 CompoundTag fluidTag = mixingCauldronTile.getFluidStack().isEmpty() ? new CompoundTag() : mixingCauldronTile.getFluidStack().copy().getOrCreateTag();
 
                 ResourceLocation fl1 = ForgeRegistries.FLUIDS.getKey(iRecipe.getLiquid().getFluid());
-                if(!matchesFluid && fl1 != null && fl2 != null && fl1.getPath().equals(fl2.getPath())) {
+                if (!matchesFluid && fl1 != null && fl2 != null && fl1.getPath().equals(fl2.getPath())) {
                     boolean flag = NbtUtils.compareNbt(iRecipe.getLiquid().copy().getOrCreateTag(), fluidTag, true);
-                    if(flag){
+                    if (flag) {
                         matchesFluid = true;
                     }
                 }
@@ -314,14 +314,14 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
                     // FIRST SLOT MATCHES
 
 
-                    if(matchesFluid){
+                    if (matchesFluid) {
 
                         matchesRecipe1.set(true);
 
                         if (!candle1Crafting && !candle1Crafted) {
                             candle1Crafting = true;
                             candle1Output = output.copy();
-                            if(useInputItemAsOutput) {
+                            if (useInputItemAsOutput) {
                                 ItemStack stack = this.items.get(0).copy();
                                 stack.getOrCreateTag().merge(output.getOrCreateTag());
                                 candle1Output = stack;
@@ -335,15 +335,11 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
                             setChanged();
                         }
 
-                    } else
-                    {
-
-
                     }
 
 
                 } else {
-                    if(matchesFluid){
+                    if (matchesFluid) {
                         if (candle1Crafting) {
                             candle1Crafting = false;
                             setChanged();
@@ -357,10 +353,9 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
                 if (input.getItem() == this.items.get(1).getItem() && compare && !matchesRecipe2.get()) {
                     // SECOND SLOT MATCHES
 
-                    if(matchesFluid){
+                    if (matchesFluid) {
 
                         matchesRecipe2.set(true);
-
 
 
                         if (!candle2Crafting && !candle2Crafted) {
@@ -375,9 +370,8 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
                             setChanged();
                         }
 
-                    } else
-                    {
-                        if(candle2Dunking) {
+                    } else {
+                        if (candle2Dunking) {
                             candle2Crafting = false;
                             candle2Dunking = false;
                             candle2DryingTime = candleDryingTimeStart;
@@ -387,7 +381,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
                     }
 
                 } else {
-                    if(matchesFluid){
+                    if (matchesFluid) {
                         if (candle2Crafting) {
                             candle2Crafting = false;
                             setChanged();
@@ -401,7 +395,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
                 if (input.getItem() == this.items.get(2).getItem() && compare && !matchesRecipe3.get()) {
                     // THIRD SLOT MATCHES
 
-                    if(matchesFluid){
+                    if (matchesFluid) {
 
                         matchesRecipe3.set(true);
 
@@ -419,9 +413,8 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
                         }
 
 
-                    } else
-                    {
-                        if(candle3Dunking) {
+                    } else {
+                        if (candle3Dunking) {
                             candle3Crafting = false;
                             candle3Dunking = false;
                             candle3DryingTime = candleDryingTimeStart;
@@ -432,7 +425,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
 
 
                 } else {
-                    if(matchesFluid){
+                    if (matchesFluid) {
                         if (candle3Crafting) {
                             candle3Crafting = false;
                             setChanged();
@@ -478,11 +471,10 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
 //                }
 
 
-
             }));
 
-            if(!matchesRecipe1.get()){
-                if(candle1Dunking) {
+            if (!matchesRecipe1.get()) {
+                if (candle1Dunking) {
                     candle1Crafting = false;
                     candle1Dunking = false;
                     candle1DryingTime = candleDryingTimeStart;
@@ -676,7 +668,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
             candle1DippingTime = candle1DippingTimeMax;
             candle1Dunking = false;
             candle1DryingTime = candle1DryingTimeMax;
-            level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
+            level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
             candle1Crafted = true;
             candle1Crafting = false;
             this.items.set(0, candle1Output);
@@ -690,7 +682,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
             candle2DippingTime = candle2DippingTimeMax;
             candle2Dunking = false;
             candle2DryingTime = candle2DryingTimeMax;
-            level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
+            level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
             candle2Crafted = true;
             candle2Crafting = false;
             this.items.set(1, candle2Output);
@@ -703,7 +695,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
             candle3DippingTime = candle3DippingTimeMax;
             candle3Dunking = false;
             candle3DryingTime = candle3DryingTimeMax;
-            level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
+            level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
             candle3Crafted = true;
             candle3Crafting = false;
             this.items.set(2, candle3Output);
@@ -733,47 +725,47 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
 //        if (nbt.contains("CustomName", 8))
 //            this.customName = Component.Serializer.fromJson(nbt.getString("CustomName"));
 
-        if (nbt.contains("candle1DippedTimes",  Tag.TAG_INT))
+        if (nbt.contains("candle1DippedTimes", Tag.TAG_INT))
             candle1DippedTimes = nbt.getInt("candle1DippedTimes");
-        if (nbt.contains("candle2DippedTimes",  Tag.TAG_INT))
+        if (nbt.contains("candle2DippedTimes", Tag.TAG_INT))
             candle2DippedTimes = nbt.getInt("candle2DippedTimes");
-        if (nbt.contains("candle3DippedTimes",  Tag.TAG_INT))
+        if (nbt.contains("candle3DippedTimes", Tag.TAG_INT))
             candle3DippedTimes = nbt.getInt("candle3DippedTimes");
-        if (nbt.contains("candle1DippedTimesMax",  Tag.TAG_INT))
+        if (nbt.contains("candle1DippedTimesMax", Tag.TAG_INT))
             candle1DippedTimesMax = nbt.getInt("candle1DippedTimesMax");
-        if (nbt.contains("candle2DippedTimesMax",  Tag.TAG_INT))
+        if (nbt.contains("candle2DippedTimesMax", Tag.TAG_INT))
             candle2DippedTimesMax = nbt.getInt("candle2DippedTimesMax");
-        if (nbt.contains("candle3DippedTimesMax",  Tag.TAG_INT))
+        if (nbt.contains("candle3DippedTimesMax", Tag.TAG_INT))
             candle3DippedTimesMax = nbt.getInt("candle3DippedTimesMax");
-        if (nbt.contains("candle1DryingTime",  Tag.TAG_INT))
+        if (nbt.contains("candle1DryingTime", Tag.TAG_INT))
             candle1DryingTime = nbt.getInt("candle1DryingTime");
-        if (nbt.contains("candle2DryingTime",  Tag.TAG_INT))
+        if (nbt.contains("candle2DryingTime", Tag.TAG_INT))
             candle2DryingTime = nbt.getInt("candle2DryingTime");
-        if (nbt.contains("candle3DryingTime",  Tag.TAG_INT))
+        if (nbt.contains("candle3DryingTime", Tag.TAG_INT))
             candle3DryingTime = nbt.getInt("candle3DryingTime");
-        if (nbt.contains("candle1DippingTime",  Tag.TAG_INT))
+        if (nbt.contains("candle1DippingTime", Tag.TAG_INT))
             candle1DippingTime = nbt.getInt("candle1DippingTime");
-        if (nbt.contains("candle2DippingTime",  Tag.TAG_INT))
+        if (nbt.contains("candle2DippingTime", Tag.TAG_INT))
             candle2DippingTime = nbt.getInt("candle2DippingTime");
-        if (nbt.contains("candle3DippingTime",  Tag.TAG_INT))
+        if (nbt.contains("candle3DippingTime", Tag.TAG_INT))
             candle3DippingTime = nbt.getInt("candle3DippingTime");
-        if (nbt.contains("candle1Dunking",  Tag.TAG_INT))
+        if (nbt.contains("candle1Dunking", Tag.TAG_INT))
             candle1Dunking = nbt.getInt("candle1Dunking") == 1;
-        if (nbt.contains("candle2Dunking",  Tag.TAG_INT))
+        if (nbt.contains("candle2Dunking", Tag.TAG_INT))
             candle2Dunking = nbt.getInt("candle2Dunking") == 1;
-        if (nbt.contains("candle3Dunking",  Tag.TAG_INT))
+        if (nbt.contains("candle3Dunking", Tag.TAG_INT))
             candle3Dunking = nbt.getInt("candle3Dunking") == 1;
-        if (nbt.contains("candle1Crafting",  Tag.TAG_INT))
+        if (nbt.contains("candle1Crafting", Tag.TAG_INT))
             candle1Crafting = nbt.getInt("candle1Crafting") == 1;
-        if (nbt.contains("candle2Crafting",  Tag.TAG_INT))
+        if (nbt.contains("candle2Crafting", Tag.TAG_INT))
             candle2Crafting = nbt.getInt("candle2Crafting") == 1;
-        if (nbt.contains("candle3Crafting",  Tag.TAG_INT))
+        if (nbt.contains("candle3Crafting", Tag.TAG_INT))
             candle3Crafting = nbt.getInt("candle3Crafting") == 1;
-        if (nbt.contains("candle1Crafted",  Tag.TAG_INT))
+        if (nbt.contains("candle1Crafted", Tag.TAG_INT))
             candle1Crafted = nbt.getInt("candle1Crafted") == 1;
-        if (nbt.contains("candle2Crafted",  Tag.TAG_INT))
+        if (nbt.contains("candle2Crafted", Tag.TAG_INT))
             candle2Crafted = nbt.getInt("candle2Crafted") == 1;
-        if (nbt.contains("candle3Crafted",  Tag.TAG_INT))
+        if (nbt.contains("candle3Crafted", Tag.TAG_INT))
             candle3Crafted = nbt.getInt("candle3Crafted") == 1;
 
         if (nbt.contains("candle1Output"))
@@ -834,7 +826,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
     }
 
 
-//    @Override
+    //    @Override
     public CompoundTag save(CompoundTag compound) {
         super.saveAdditional(compound);
 //        compound.put("inv", itemHandler.serializeNBT());
@@ -882,8 +874,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
     }
 
     @Override
-    public CompoundTag getUpdateTag()
-    {
+    public CompoundTag getUpdateTag() {
         return this.save(new CompoundTag());
     }
 
@@ -894,8 +885,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
     }
 
     @Override
-    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt)
-    {
+    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt) {
         this.deserializeNBT(pkt.getTag());
     }
 
@@ -922,64 +912,13 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
 
     @Override
     public AABB getRenderBoundingBox() {
-        AABB aabb = super.getRenderBoundingBox().inflate(5, 5, 5);
-        return aabb;
-    }
-
-    private float moveTo(float input, float moveTo, float speed)
-    {
-        float distance = moveTo - input;
-
-        if(Math.abs(distance) <= speed)
-        {
-            return moveTo;
-        }
-
-        if(distance > 0)
-        {
-            input += speed;
-        } else {
-            input -= speed;
-        }
-
-        return input;
-    }
-
-    private float moveToAngle(float input, float movedTo, float speed)
-    {
-        float distance = movedTo - input;
-
-        if(Math.abs(distance) <= speed)
-        {
-            return movedTo;
-        }
-
-        if(distance > 0)
-        {
-            if(Math.abs(distance) < 180)
-                input += speed;
-            else
-                input -= speed;
-        } else {
-            if(Math.abs(distance) < 180)
-                input -= speed;
-            else
-                input += speed;
-        }
-
-        if(input < -90){
-            input += 360;
-        }
-        if(input > 270)
-            input -= 360;
-
-        return input;
+        return super.getRenderBoundingBox().inflate(5, 5, 5);
     }
 
     public float getAngle(Vec3 pos) {
         float angle = (float) Math.toDegrees(Math.atan2(pos.z() - this.getBlockPos().getZ() - 0.5f, pos.x() - this.getBlockPos().getX() - 0.5f));
 
-        if(angle < 0){
+        if (angle < 0) {
             angle += 360;
         }
 
@@ -987,19 +926,18 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
     }
 
     public float getSpeed(double pos, double posTo) {
-        return (float)(0.01f + 0.10f * (Math.abs(pos - posTo) / 3f));
+        return (float) (0.01f + 0.10f * (Math.abs(pos - posTo) / 3f));
     }
 
-    public Vec3 rotateAroundVec(Vec3 vector3dCenter,float rotation,Vec3 vector3d)
-    {
+    public Vec3 rotateAroundVec(Vec3 vector3dCenter, float rotation, Vec3 vector3d) {
         Vec3 newVec = vector3d.subtract(vector3dCenter);
-        newVec = newVec.yRot(rotation/180f*(float)Math.PI);
+        newVec = newVec.yRot(rotation / 180f * (float) Math.PI);
         newVec = newVec.add(vector3dCenter);
 
         return newVec;
     }
 
-    public int putItems (int slot, @Nonnull ItemStack stack) {
+    public int putItems(int slot, @Nonnull ItemStack stack) {
         if (this.items.get(slot).isEmpty()) {
             ItemStack stack1 = stack.copy();
             stack1.setCount(1);
@@ -1011,33 +949,34 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
 
         if (!this.items.get(slot).sameItem(stack))
             return 0;
-        if(!ItemStack.isSameItemSameTags(stack, this.items.get(slot)))
+        if (!ItemStack.isSameItemSameTags(stack, this.items.get(slot)))
             return 0;
 
         return 1;
     }
 
-    public int interactDipper (Player player, BlockHitResult hit) {
-        if(!player.isShiftKeyDown()) {
+    public int interactDipper(Player player, BlockHitResult hit) {
+        if (level == null) return 0;
+        if (!player.isShiftKeyDown()) {
             if (!player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
                 Random rand = new Random();
                 if (this.items.get(0).isEmpty()) {
                     putItems(0, player.getItemInHand(InteractionHand.MAIN_HAND));
                     candle1DryingTime = candleDryingTimeStart;
                     candle1Crafted = false;
-                    level.playSound((Player) null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, rand.nextFloat() * 0.4F + 1.0F);
+                    level.playSound(null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, rand.nextFloat() * 0.4F + 1.0F);
                     return 1;
                 } else if (this.items.get(1).isEmpty()) {
                     putItems(1, player.getItemInHand(InteractionHand.MAIN_HAND));
                     candle2DryingTime = candleDryingTimeStart;
                     candle2Crafted = false;
-                    level.playSound((Player) null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, rand.nextFloat() * 0.4F + 1.0F);
+                    level.playSound(null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, rand.nextFloat() * 0.4F + 1.0F);
                     return 1;
                 } else if (this.items.get(2).isEmpty()) {
                     putItems(2, player.getItemInHand(InteractionHand.MAIN_HAND));
                     candle3DryingTime = candleDryingTimeStart;
                     candle3Crafted = false;
-                    level.playSound((Player) null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, rand.nextFloat() * 0.4F + 1.0F);
+                    level.playSound(null, worldPosition, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, rand.nextFloat() * 0.4F + 1.0F);
                     return 1;
                 }
             } else {
@@ -1096,43 +1035,41 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
 //
 //                }
             }
-            if(candle1Crafted){
+            if (candle1Crafted) {
                 candle1DippedTimes = 0;
                 candle1DippingTime = candle1DippingTimeMax;
                 candle1Dunking = false;
                 candle1Crafted = false;
                 candle1DryingTime = candle1DryingTimeMax;
                 player.inventory.placeItemBackInInventory(this.items.get(0).copy());
-                level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
+                level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
                 this.items.set(0, ItemStack.EMPTY);
                 candle1Output = ItemStack.EMPTY;
             }
-            if(candle2Crafted){
+            if (candle2Crafted) {
                 candle2DippedTimes = 0;
                 candle2DippingTime = candle2DippingTimeMax;
                 candle2Dunking = false;
                 candle2Crafted = false;
                 candle2DryingTime = candle2DryingTimeMax;
                 player.inventory.placeItemBackInInventory(this.items.get(1).copy());
-                level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
+                level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
                 this.items.set(1, ItemStack.EMPTY);
                 candle2Output = ItemStack.EMPTY;
             }
-            if(candle3Crafted){
+            if (candle3Crafted) {
                 candle3DippedTimes = 0;
                 candle3DippingTime = candle3DippingTimeMax;
                 candle3Dunking = false;
                 candle3Crafted = false;
                 candle3DryingTime = candle3DryingTimeMax;
                 player.inventory.placeItemBackInInventory(this.items.get(2).copy());
-                level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
+                level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
                 this.items.set(2, ItemStack.EMPTY);
                 candle3Output = ItemStack.EMPTY;
             }
-        }
-        else
-        {
-            if(!this.items.get(0).isEmpty() && !candle1Crafting) {
+        } else {
+            if (!this.items.get(0).isEmpty() && !candle1Crafting) {
 
                 candle1DippedTimes = 0;
                 candle1DippingTime = candle1DippingTimeMax;
@@ -1140,11 +1077,11 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
                 candle1Crafted = false;
                 candle1DryingTime = candle1DryingTimeMax;
                 player.inventory.placeItemBackInInventory(this.items.get(0).copy());
-                level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
+                level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
                 this.items.set(0, ItemStack.EMPTY);
                 candle1Output = ItemStack.EMPTY;
             }
-            if(!this.items.get(1).isEmpty() && !candle2Crafting) {
+            if (!this.items.get(1).isEmpty() && !candle2Crafting) {
 
                 candle2DippedTimes = 0;
                 candle2DippingTime = candle2DippingTimeMax;
@@ -1152,11 +1089,11 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
                 candle2Crafted = false;
                 candle2DryingTime = candle2DryingTimeMax;
                 player.inventory.placeItemBackInInventory(this.items.get(1).copy());
-                level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
+                level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
                 this.items.set(1, ItemStack.EMPTY);
                 candle2Output = ItemStack.EMPTY;
             }
-            if(!this.items.get(2).isEmpty() && !candle3Crafting) {
+            if (!this.items.get(2).isEmpty() && !candle3Crafting) {
 
                 candle3DippedTimes = 0;
                 candle3DippingTime = candle3DippingTimeMax;
@@ -1164,7 +1101,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
                 candle3Crafted = false;
                 candle3DryingTime = candle3DryingTimeMax;
                 player.inventory.placeItemBackInInventory(this.items.get(2).copy());
-                level.playSound((Player) null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
+                level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
                 this.items.set(2, ItemStack.EMPTY);
                 candle3Output = ItemStack.EMPTY;
             }
@@ -1173,10 +1110,10 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
         return 0;
     }
 
-//    @Override
+    //    @Override
     public void tick() {
 
-        if(level instanceof ServerLevel) {
+        if (level instanceof ServerLevel) {
             craft();
         }
 
@@ -1189,13 +1126,12 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
         Vec3 targetPos3 = new Vec3(12f / 16f, 0f / 16f, 1f / 16f);
 
 
-        BlockEntity blockEntity = level.getBlockEntity(this.worldPosition.below());
-        if(blockEntity instanceof MixingCauldronTile) {
+        if (level != null && level.getBlockEntity(this.worldPosition.below()) instanceof MixingCauldronTile cauldronTile) {
             float fillPercentage = 0;
-            FluidStack fluidStack = ((MixingCauldronTile) blockEntity).getFluidInTank(0);
-            if(!fluidStack.isEmpty())
-                fillPercentage = Math.min(1, (float) fluidStack.getAmount() / ((MixingCauldronTile) blockEntity).getTankCapacity(0));
-            float height = MixingCauldronRenderer.MIN_Y + (MixingCauldronRenderer.MAX_Y - MixingCauldronRenderer.MIN_Y) * fillPercentage - 1 + 1/16f;
+            FluidStack fluidStack = cauldronTile.getFluidInTank(0);
+            if (!fluidStack.isEmpty())
+                fillPercentage = Math.min(1, (float) fluidStack.getAmount() / cauldronTile.getTankCapacity(0));
+            float height = MixingCauldronRenderer.MIN_Y + (MixingCauldronRenderer.MAX_Y - MixingCauldronRenderer.MIN_Y) * fillPercentage - 1 + 1 / 16f;
             if (candle1Crafting && candle1DippedTimes < 3) {
                 candle1DryingTime--;
                 if (candle1DryingTime <= 0) {
@@ -1203,22 +1139,18 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
                     candle1Dunking = true;
                 }
                 targetPos1 = new Vec3(targetPos1.x(), 5f / 16f + Math.sin((this.level.getGameTime()) / 16f) / 32f, 8f / 16f);
-            }
-            else if(!this.items.get(0).isEmpty())
-            {
+            } else if (!this.items.get(0).isEmpty()) {
                 targetPos1 = new Vec3(targetPos1.x(), 5f / 16f + Math.sin((this.level.getGameTime()) / 16f) / 32f, 8f / 16f);
             }
 
             if (candle2Crafting && candle2DippedTimes < 3) {
-                    candle2DryingTime--;
+                candle2DryingTime--;
                 if (candle2DryingTime <= 0) {
                     candle2DryingTime = candle2DryingTimeMax;
                     candle2Dunking = true;
                 }
                 targetPos2 = new Vec3(targetPos2.x(), 5f / 16f + Math.sin((this.level.getGameTime() + 20f) / 14f) / 32f, 8f / 16f);
-            }
-            else if(!this.items.get(1).isEmpty())
-            {
+            } else if (!this.items.get(1).isEmpty()) {
                 targetPos2 = new Vec3(targetPos2.x(), 5f / 16f + Math.sin((this.level.getGameTime() + 20f) / 14f) / 32f, 8f / 16f);
             }
             if (candle3Crafting && candle3DippedTimes < 3) {
@@ -1228,15 +1160,13 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
                     candle3Dunking = true;
                 }
                 targetPos3 = new Vec3(targetPos3.x(), 5f / 16f + Math.sin((this.level.getGameTime() + 40f) / 15f) / 32f, 8f / 16f);
-            }
-            else if(!this.items.get(2).isEmpty())
-            {
+            } else if (!this.items.get(2).isEmpty()) {
                 targetPos3 = new Vec3(targetPos3.x(), 5f / 16f + Math.sin((this.level.getGameTime() + 40f) / 15f) / 32f, 8f / 16f);
             }
 
             if (candle1Dunking) {
                 targetPos1 = new Vec3(targetPos1.x(), height + Math.sin((this.level.getGameTime()) / 16f) / 32f, 8f / 16f);
-                if (((MixingCauldronTile) blockEntity).getFluidStack().getAmount() > 0 ) {
+                if (cauldronTile.getFluidStack().getAmount() > 0) {
                     candle1DippingTime--;
                 }
                 candle1DryingTime = candle1DryingTimeMax;
@@ -1250,7 +1180,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
 
             }
             if (candle2Dunking) {
-                if (((MixingCauldronTile) blockEntity).getFluidStack().getAmount() > 0)
+                if (cauldronTile.getFluidStack().getAmount() > 0)
                     candle2DippingTime--;
                 candle2DryingTime = candle2DryingTimeMax;
                 if (candle2DippingTime <= 0) {
@@ -1264,7 +1194,7 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
                 targetPos2 = new Vec3(targetPos2.x(), height + Math.sin((this.level.getGameTime() + 20f) / 14f) / 32f, 8f / 16f);
             }
             if (candle3Dunking) {
-                if (((MixingCauldronTile) blockEntity).getFluidStack().getAmount() > 0)
+                if (cauldronTile.getFluidStack().getAmount() > 0)
                     candle3DippingTime--;
                 candle3DryingTime = candle3DryingTimeMax;
                 if (candle3DippingTime <= 0) {
@@ -1335,22 +1265,20 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
 //                degreesOpened = moveTo(degreesOpened, 90, 2);
 
 
-
     }
 
     private void chanceDecreaseLevel(int amount) {
         BlockState blockState = level.getBlockState(this.worldPosition.below());
         Random random = new Random();
 
-        BlockEntity blockEntity = level.getBlockEntity(this.worldPosition.below());
-        if(blockEntity instanceof MixingCauldronTile && !level.isClientSide()) {
+        if (level.getBlockEntity(this.worldPosition.below()) instanceof MixingCauldronTile cauldronTile && !level.isClientSide()) {
 
-            ((MixingCauldronTile) blockEntity).getFluidStack().shrink(amount);
-            if (((MixingCauldronTile) blockEntity).getFluidStack().getAmount() % 10 == 1)
-                ((MixingCauldronTile) blockEntity).getFluidStack().shrink(1);
-            if (((MixingCauldronTile) blockEntity).getFluidStack().getAmount() % 10 == 9)
-                ((MixingCauldronTile) blockEntity).getFluidStack().grow(1);
-            ((MixingCauldronTile) blockEntity).setChanged();
+            cauldronTile.getFluidStack().shrink(amount);
+            if (cauldronTile.getFluidStack().getAmount() % 10 == 1)
+                cauldronTile.getFluidStack().shrink(1);
+            if (cauldronTile.getFluidStack().getAmount() % 10 == 9)
+                cauldronTile.getFluidStack().grow(1);
+            cauldronTile.setChanged();
             HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new EmitParticlesPacket(worldPosition.below(), 10, false));
 
         }

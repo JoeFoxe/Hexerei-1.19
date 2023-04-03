@@ -1,6 +1,5 @@
 package net.joefoxe.hexerei.item.custom;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.datafixers.util.Pair;
 import net.joefoxe.hexerei.Hexerei;
@@ -28,7 +27,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.PacketDistributor;
 

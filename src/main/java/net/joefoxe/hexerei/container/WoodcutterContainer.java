@@ -90,7 +90,7 @@ public class WoodcutterContainer extends AbstractContainerMenu {
                 pAccess.execute((p_40364_, p_40365_) -> {
                     long l = p_40364_.getGameTime();
                     if (WoodcutterContainer.this.lastSoundTime != l) {
-                        p_40364_.playSound((Player)null, p_40365_, SoundEvents.UI_STONECUTTER_TAKE_RESULT, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        p_40364_.playSound(null, p_40365_, SoundEvents.UI_STONECUTTER_TAKE_RESULT, SoundSource.BLOCKS, 1.0F, 1.0F);
                         WoodcutterContainer.this.lastSoundTime = l;
                     }
 

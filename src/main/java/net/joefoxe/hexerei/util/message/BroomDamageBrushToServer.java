@@ -3,6 +3,7 @@ package net.joefoxe.hexerei.util.message;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.entity.custom.BroomEntity;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkDirection;
@@ -17,6 +18,7 @@ public class BroomDamageBrushToServer {
     public BroomDamageBrushToServer(Entity entity) {
         this.sourceId = entity.getId();
     }
+
     public BroomDamageBrushToServer(FriendlyByteBuf buf) {
         this.sourceId = buf.readInt();
 
@@ -35,13 +37,13 @@ public class BroomDamageBrushToServer {
             Level world;
             if (ctx.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
                 world = Hexerei.proxy.getLevel();
+            } else {
+                ServerPlayer sender = ctx.get().getSender();
+                if (sender == null) return;
+                world = sender.getCommandSenderWorld();
             }
-            else {
-                if (ctx.get().getSender() == null) return;
-                world = ctx.get().getSender().level;
-            }
-
-            ((BroomEntity)world.getEntity(packet.sourceId)).damageBrush();
+            if (world.getEntity(packet.sourceId) instanceof BroomEntity broom)
+                broom.damageBrush();
         });
         ctx.get().setPacketHandled(true);
     }

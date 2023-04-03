@@ -787,7 +787,7 @@ public class CrowFluteItem extends Item implements Container, IThirdPersonItemAn
                 float oldRot = head.xRot;
                 head.xRot = getMaxHeadXRot(wrapRad(oldRot));
 //                head.translateAndRotate(poseStack);
-                poseStack.translate((double)(head.x / 16.0F), (double)(head.y / 16.0F), (double)(head.z / 16.0F));
+                poseStack.translate(head.x / 16.0F, head.y / 16.0F, head.z / 16.0F);
                 if (head.zRot != 0.0F) {
                     poseStack.mulPose(Vector3f.ZP.rotation(head.zRot/ 1.75f));
                 }

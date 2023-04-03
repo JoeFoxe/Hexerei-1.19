@@ -97,7 +97,7 @@ public class PestleAndMortarRecipeCategory implements IRecipeCategory<PestleAndM
         Minecraft minecraft = Minecraft.getInstance();
 
         matrixStack.scale(0.6f, 0.6f, 0.6f);
-        String grindingTimeString = grindingTime < Integer.MAX_VALUE ? grindingTime / 20 + (grindingTime % 20 == 0 ? "" : ("." + Integer.toString(grindingTime % 20))) : "?";
+        String grindingTimeString = grindingTime < Integer.MAX_VALUE ? grindingTime / 20 + (grindingTime % 20 == 0 ? "" : ("." + grindingTime % 20)) : "?";
         if(grindingTimeString.charAt(grindingTimeString.length()-1) == '0' && grindingTime != 0 && grindingTime % 20 != 0)
             grindingTimeString = grindingTimeString.substring(0, grindingTimeString.length()-1);
         MutableComponent dip_time_1 = Component.translatable("gui.jei.category.pestle_and_mortar.grind_time_1");

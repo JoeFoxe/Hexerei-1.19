@@ -99,41 +99,24 @@ public class DyeableCarpetItem extends BlockItem {
         if (pColor == null) {
             return Blocks.SHULKER_BOX;
         } else {
-            switch (pColor) {
-                case WHITE:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_WHITE_STAIRS.get();
-                case ORANGE:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_ORANGE_STAIRS.get();
-                case MAGENTA:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_MAGENTA_STAIRS.get();
-                case LIGHT_BLUE:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIGHT_BLUE_STAIRS.get();
-                case YELLOW:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_YELLOW_STAIRS.get();
-                case LIME:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIME_STAIRS.get();
-                case PINK:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_PINK_STAIRS.get();
-                case GRAY:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_GRAY_STAIRS.get();
-                case LIGHT_GRAY:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIGHT_GRAY_STAIRS.get();
-                case CYAN:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_CYAN_STAIRS.get();
-                case PURPLE:
-                default:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_PURPLE_STAIRS.get();
-                case BLUE:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_BLUE_STAIRS.get();
-                case BROWN:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_BROWN_STAIRS.get();
-                case GREEN:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_GREEN_STAIRS.get();
-                case RED:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_RED_STAIRS.get();
-                case BLACK:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_BLACK_STAIRS.get();
-            }
+            return switch (pColor) {
+                case WHITE -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_WHITE_STAIRS.get();
+                case ORANGE -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_ORANGE_STAIRS.get();
+                case MAGENTA -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_MAGENTA_STAIRS.get();
+                case LIGHT_BLUE -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIGHT_BLUE_STAIRS.get();
+                case YELLOW -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_YELLOW_STAIRS.get();
+                case LIME -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIME_STAIRS.get();
+                case PINK -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_PINK_STAIRS.get();
+                case GRAY -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_GRAY_STAIRS.get();
+                case LIGHT_GRAY -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIGHT_GRAY_STAIRS.get();
+                case CYAN -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_CYAN_STAIRS.get();
+                case PURPLE -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_PURPLE_STAIRS.get();
+                case BLUE -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_BLUE_STAIRS.get();
+                case BROWN -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_BROWN_STAIRS.get();
+                case GREEN -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_GREEN_STAIRS.get();
+                case RED -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_RED_STAIRS.get();
+                case BLACK -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_BLACK_STAIRS.get();
+            };
         }
     }
 
@@ -146,9 +129,7 @@ public class DyeableCarpetItem extends BlockItem {
         {
             ItemHandlerConsumer items = event.getItemColors()::register;
             // s = stack, t = tint-layer
-            items.register((s, t) -> {
-                return t == 0 ? ConnectingCarpetDyed.getColorValue(s) : -1;
-            },
+            items.register((s, t) -> t == 0 ? ConnectingCarpetDyed.getColorValue(s) : -1,
 
                     ModItems.INFUSED_FABRIC_CARPET_DYED_WHITE.get(),
                     ModItems.INFUSED_FABRIC_CARPET_DYED_ORANGE.get(),

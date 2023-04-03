@@ -45,24 +45,27 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
     public void render(CandleTile tileEntityIn, float partialTicks, PoseStack matrixStackIn,
                        MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
 
-        if(!tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).hasBlockEntity() || !(tileEntityIn.getLevel().getBlockEntity(tileEntityIn.getBlockPos()) instanceof CandleTile))
+        if (!tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).hasBlockEntity() || !(tileEntityIn.getLevel().getBlockEntity(tileEntityIn.getBlockPos()) instanceof CandleTile))
             return;
 
-        if(herbLayer == null) herbLayer = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_HERB_LAYER));
-        if(glowLayer == null) glowLayer = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_GLOW_LAYER));
-        if(swirlLayer == null) swirlLayer = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_SWIRL_LAYER));
-        if(candleModel == null) candleModel = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_LAYER));
-        if(baseModel == null) baseModel = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_BASE_LAYER));
-
-
+        if (herbLayer == null)
+            herbLayer = new CandleModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_HERB_LAYER));
+        if (glowLayer == null)
+            glowLayer = new CandleModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_GLOW_LAYER));
+        if (swirlLayer == null)
+            swirlLayer = new CandleModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_SWIRL_LAYER));
+        if (candleModel == null)
+            candleModel = new CandleModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_LAYER));
+        if (baseModel == null)
+            baseModel = new CandleModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_BASE_LAYER));
 
 
         // base layer
-        if(tileEntityIn.candles.get(0).hasCandle) {
+        if (tileEntityIn.candles.get(0).hasCandle) {
 
             matrixStackIn.pushPose();
-            matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);
-            matrixStackIn.translate(tileEntityIn.candles.get(0).x , tileEntityIn.candles.get(0).y, tileEntityIn.candles.get(0).z);
+            matrixStackIn.translate(8f / 16f, 0f / 16f, 8f / 16f);
+            matrixStackIn.translate(tileEntityIn.candles.get(0).x, tileEntityIn.candles.get(0).y, tileEntityIn.candles.get(0).z);
             if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
                 matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270f));
             else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
@@ -162,8 +165,8 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
         if(tileEntityIn.candles.get(3).hasCandle) {
 
             matrixStackIn.pushPose();
-            matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);;
-            matrixStackIn.translate(tileEntityIn.candles.get(3).x , tileEntityIn.candles.get(3).y, tileEntityIn.candles.get(3).z);
+            matrixStackIn.translate(8f / 16f, 0f / 16f, 8f / 16f);
+            matrixStackIn.translate(tileEntityIn.candles.get(3).x, tileEntityIn.candles.get(3).y, tileEntityIn.candles.get(3).z);
             if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
                 matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270f));
             else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
@@ -327,8 +330,8 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
         if(tileEntityIn.candles.get(3).hasCandle) {
 
             matrixStackIn.pushPose();
-            matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);;
-            matrixStackIn.translate(tileEntityIn.candles.get(3).x , tileEntityIn.candles.get(3).y, tileEntityIn.candles.get(3).z);
+            matrixStackIn.translate(8f / 16f, 0f / 16f, 8f / 16f);
+            matrixStackIn.translate(tileEntityIn.candles.get(3).x, tileEntityIn.candles.get(3).y, tileEntityIn.candles.get(3).z);
             if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
                 matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270f));
             else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
@@ -484,8 +487,8 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
         if(tileEntityIn.candles.get(3).hasCandle && tileEntityIn.candles.get(3).herb.layer != null) {
 
             matrixStackIn.pushPose();
-            matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);;
-            matrixStackIn.translate(tileEntityIn.candles.get(3).x , tileEntityIn.candles.get(3).y, tileEntityIn.candles.get(3).z);
+            matrixStackIn.translate(8f / 16f, 0f / 16f, 8f / 16f);
+            matrixStackIn.translate(tileEntityIn.candles.get(3).x, tileEntityIn.candles.get(3).y, tileEntityIn.candles.get(3).z);
             if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
                 matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270f));
             else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
@@ -824,8 +827,8 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
         if(tileEntityIn.candles.get(3).hasCandle && tileEntityIn.candles.get(3).swirl.layer != null) {
 
             matrixStackIn.pushPose();
-            matrixStackIn.translate(8f/16f , 0f/16f, 8f/16f);;
-            matrixStackIn.translate(tileEntityIn.candles.get(3).x , tileEntityIn.candles.get(3).y, tileEntityIn.candles.get(3).z);
+            matrixStackIn.translate(8f / 16f, 0f / 16f, 8f / 16f);
+            matrixStackIn.translate(tileEntityIn.candles.get(3).x, tileEntityIn.candles.get(3).y, tileEntityIn.candles.get(3).z);
             if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.EAST)
                 matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270f));
             else if(tileEntityIn.getBlockState().getValue(HorizontalDirectionalBlock.FACING) == Direction.SOUTH)
@@ -881,19 +884,20 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
     public void renderSingleBlock(BlockState p_110913_, PoseStack p_110914_, MultiBufferSource p_110915_, int p_110916_, int p_110917_, net.minecraftforge.client.model.data.ModelData modelData, int color) {
         RenderShape rendershape = p_110913_.getRenderShape();
         if (rendershape != RenderShape.INVISIBLE) {
-            switch(rendershape) {
-                case MODEL:
+            switch (rendershape) {
+                case MODEL -> {
                     BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
                     BakedModel bakedmodel = dispatcher.getBlockModel(p_110913_);
                     int i = color;
-                    float f = (float)(i >> 16 & 255) / 255.0F;
-                    float f1 = (float)(i >> 8 & 255) / 255.0F;
-                    float f2 = (float)(i & 255) / 255.0F;
+                    float f = (float) (i >> 16 & 255) / 255.0F;
+                    float f1 = (float) (i >> 8 & 255) / 255.0F;
+                    float f2 = (float) (i & 255) / 255.0F;
                     dispatcher.getModelRenderer().renderModel(p_110914_.last(), p_110915_.getBuffer(ItemBlockRenderTypes.getRenderType(p_110913_, false)), p_110913_, bakedmodel, f, f1, f2, p_110916_, p_110917_, modelData, null);
-                    break;
-                case ENTITYBLOCK_ANIMATED:
+                }
+                case ENTITYBLOCK_ANIMATED -> {
                     ItemStack stack = new ItemStack(p_110913_.getBlock());
                     IClientItemExtensions.of(stack.getItem()).getCustomRenderer().renderByItem(stack, ItemTransforms.TransformType.NONE, p_110914_, p_110915_, p_110916_, p_110917_);
+                }
             }
 
         }

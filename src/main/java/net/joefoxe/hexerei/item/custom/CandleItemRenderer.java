@@ -42,6 +42,7 @@ public class CandleItemRenderer extends CustomItemRenderer {
     CandleModel swirlLayer;
     CandleModel candleModel;
     CandleModel baseModel;
+
     public CandleItemRenderer() {
         super();
 
@@ -51,8 +52,7 @@ public class CandleItemRenderer extends CustomItemRenderer {
     public static CandleTile loadBlockEntityFromItem(CompoundTag tag, ItemStack stack) {
         if (stack.getItem() instanceof BlockItem blockItem) {
             Block block = blockItem.getBlock();
-            if (block instanceof Candle candle) {
-                CandleTile te = (CandleTile)candle.newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
+            if (block instanceof Candle candle && candle.newBlockEntity(BlockPos.ZERO, block.defaultBlockState()) instanceof CandleTile te) {
                 te.setHeight(CandleItem.getHeight(stack));
                 te.setDyeColor(getCustomColor(tag));
                 String herbLayer = CandleItem.getHerbLayer(stack);
@@ -80,14 +80,10 @@ public class CandleItemRenderer extends CustomItemRenderer {
                 if (effectLocation != null) {
                     te.candles.get(0).setEffect(CandleEffects.getEffect(effectLocation).getCopy());
                     te.candles.get(0).cooldown = 0;
-                }
-                else
+                } else
                     te.candles.get(0).effect = new AbstractCandleEffect();
 
-                if (effectParticle != null)
-                    te.candles.get(0).effectParticle = effectParticle;
-                else
-                    te.candles.get(0).effectParticle = null;
+                te.candles.get(0).effectParticle = effectParticle;
 
 //                if(item.hasCustomHoverName())
 //                    te.customName = item.getHoverName();
@@ -112,13 +108,12 @@ public class CandleItemRenderer extends CustomItemRenderer {
     }
 
     public static int getCustomColor(CompoundTag tag) {
-        if(tag != null && !tag.isEmpty()) {
+        if (tag != null && !tag.isEmpty()) {
             CompoundTag compoundtag = tag.contains("display") ? tag.getCompound("display") : null;
             return compoundtag != null && compoundtag.contains("color", 99) ? compoundtag.getInt("color") : Candle.BASE_COLOR;
         }
         return Candle.BASE_COLOR;
     }
-
 
 
     private void renderItem(ItemStack stack, PoseStack matrixStackIn, MultiBufferSource bufferIn,
@@ -139,62 +134,67 @@ public class CandleItemRenderer extends CustomItemRenderer {
 
         matrixStackIn.pushPose();
         matrixStackIn.translate(0.2, -0.1, -0.10);
-        matrixStackIn.translate( 8/16f, 28f/16f, 8/16f);
+        matrixStackIn.translate(8 / 16f, 28f / 16f, 8 / 16f);
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180));
 
         CandleData candleData = tileEntityIn.candles.get(0);
         boolean hasBase = candleData.base.layer != null;
 
-        if(herbLayer == null) herbLayer = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_HERB_LAYER));
-        if(glowLayer == null) glowLayer = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_GLOW_LAYER));
-        if(swirlLayer == null) swirlLayer = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_SWIRL_LAYER));
-        if(candleModel == null) candleModel = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_LAYER));
-        if(baseModel == null) baseModel = new CandleModel(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_BASE_LAYER));
+        if (herbLayer == null)
+            herbLayer = new CandleModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_HERB_LAYER));
+        if (glowLayer == null)
+            glowLayer = new CandleModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_GLOW_LAYER));
+        if (swirlLayer == null)
+            swirlLayer = new CandleModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_SWIRL_LAYER));
+        if (candleModel == null)
+            candleModel = new CandleModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_LAYER));
+        if (baseModel == null)
+            baseModel = new CandleModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(CandleModel.CANDLE_BASE_LAYER));
 
         float[] col = HexereiUtil.rgbIntToFloatArray(candleData.dyeColor);
 
-        if(candleData.base.layer != null){
+        if (candleData.base.layer != null) {
             VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.base.layer));
             baseModel.base.render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-        }else{
-            matrixStackIn.translate( 0, 1/16f, 0);
+        } else {
+            matrixStackIn.translate(0, 1 / 16f, 0);
         }
 
         VertexConsumer vertexConsumer = bufferIn.getBuffer(RenderType.entityCutout(new ResourceLocation(Hexerei.MOD_ID, "textures/block/candle.png")));
-        if(candleData.height != 0 && candleData.height <= 7) {
+        if (candleData.height != 0 && candleData.height <= 7) {
             candleModel.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer, combinedLightIn, OverlayTexture.NO_OVERLAY, col[0], col[1], col[2], 1.0F);
         }
 
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate( 0, (7 - candleData.height)/16f, 0);
+        matrixStackIn.translate(0, (7 - candleData.height) / 16f, 0);
         candleModel.wick.render(matrixStackIn, vertexConsumer, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         matrixStackIn.popPose();
 
 
-        if(candleData.herb.layer != null){
+        if (candleData.herb.layer != null) {
             VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.herb.layer));
             if (candleData.height != 0 && candleData.height <= 7) {
                 herbLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 0.75F);
             }
         }
 
-        if(candleData.glow.layer != null){
+        if (candleData.glow.layer != null) {
             VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.entityTranslucent(candleData.glow.layer));
-            if(candleData.effect instanceof PotionCandleEffect potionCandleEffect && potionCandleEffect.effect != null) {
+            if (candleData.effect instanceof PotionCandleEffect potionCandleEffect && potionCandleEffect.effect != null) {
                 int color = potionCandleEffect.effect.getColor();
                 float[] col2 = HexereiUtil.rgbIntToFloatArray(color);
                 if (candleData.height != 0 && candleData.height <= 7) {
                     glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, col2[0], col2[1], col2[2], 0.75F);
                 }
-            }else{
-                if(candleData.height != 0 && candleData.height <= 7) {
-                    glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY,1.0F, 1.0F, 1.0F, 0.75F);
+            } else {
+                if (candleData.height != 0 && candleData.height <= 7) {
+                    glowLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 0.75F);
                 }
             }
         }
 
-        if(candleData.swirl.layer != null){
+        if (candleData.swirl.layer != null) {
             float offset = Hexerei.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTime();
             VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(candleData.swirl.layer, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
             if (candleData.height != 0 && candleData.height <= 7) {
@@ -213,21 +213,22 @@ public class CandleItemRenderer extends CustomItemRenderer {
     public void renderSingleBlock(BlockState p_110913_, PoseStack p_110914_, MultiBufferSource p_110915_, int p_110916_, int p_110917_, ModelData modelData, int color) {
         RenderShape rendershape = p_110913_.getRenderShape();
         if (rendershape != RenderShape.INVISIBLE) {
-            switch(rendershape) {
-                case MODEL:
+            switch (rendershape) {
+                case MODEL -> {
                     BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
                     BakedModel bakedmodel = dispatcher.getBlockModel(p_110913_);
                     int i = color;
-                    float f = (float)(i >> 16 & 255) / 255.0F;
-                    float f1 = (float)(i >> 8 & 255) / 255.0F;
-                    float f2 = (float)(i & 255) / 255.0F;
+                    float f = (float) (i >> 16 & 255) / 255.0F;
+                    float f1 = (float) (i >> 8 & 255) / 255.0F;
+                    float f2 = (float) (i & 255) / 255.0F;
 
 //                    public void renderModel(PoseStack.Pose p_111068_, VertexConsumer p_111069_, @Nullable BlockState p_111070_, BakedModel p_111071_, float p_111072_, float p_111073_, float p_111074_, int p_111075_, int p_111076_) {
                     dispatcher.getModelRenderer().renderModel(p_110914_.last(), p_110915_.getBuffer(ItemBlockRenderTypes.getRenderType(p_110913_, false)), p_110913_, bakedmodel, f, f1, f2, p_110916_, p_110917_, modelData, null);
-                    break;
-                case ENTITYBLOCK_ANIMATED:
+                }
+                case ENTITYBLOCK_ANIMATED -> {
                     ItemStack stack = new ItemStack(p_110913_.getBlock());
                     IClientItemExtensions.of(stack.getItem()).getCustomRenderer().renderByItem(stack, ItemTransforms.TransformType.NONE, p_110914_, p_110915_, p_110916_, p_110917_);
+                }
             }
 
         }

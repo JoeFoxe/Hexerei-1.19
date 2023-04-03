@@ -7,7 +7,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkDirection;
@@ -54,15 +53,13 @@ public class CrowFluteClearCrowPerchToServer {
             }
 
             if(packet.hand == 0) {
-                if (((Player) world.getPlayerByUUID(packet.entityId)).getMainHandItem().getItem() == packet.flute.getItem()) {
+                if (world.getPlayerByUUID(packet.entityId).getMainHandItem().getItem() == packet.flute.getItem()) {
 
-                    ListTag list = ((Player) world.getPlayerByUUID(packet.entityId)).getMainHandItem().getOrCreateTag().getList("crowList", CompoundTag.TAG_COMPOUND);
-                    for(int i = 0; i < list.size(); i++)
-                    {
+                    ListTag list = world.getPlayerByUUID(packet.entityId).getMainHandItem().getOrCreateTag().getList("crowList", CompoundTag.TAG_COMPOUND);
+                    for (int i = 0; i < list.size(); i++) {
                         CompoundTag compoundTag = list.getCompound(i);
-                        Entity entity = ((ServerLevel)world).getEntity(compoundTag.getUUID("UUID"));
-                        if(entity instanceof CrowEntity)
-                        {
+                        Entity entity = ((ServerLevel) world).getEntity(compoundTag.getUUID("UUID"));
+                        if (entity instanceof CrowEntity) {
                             ((CrowEntity) entity).setPerchPos(null);
                         }
                     }
@@ -71,15 +68,13 @@ public class CrowFluteClearCrowPerchToServer {
             }
             else
             {
-                if (((Player) world.getPlayerByUUID(packet.entityId)).getOffhandItem().getItem() == packet.flute.getItem()){
+                if (world.getPlayerByUUID(packet.entityId).getOffhandItem().getItem() == packet.flute.getItem()) {
 
-                    ListTag list = ((Player) world.getPlayerByUUID(packet.entityId)).getOffhandItem().getOrCreateTag().getList("crowList", CompoundTag.TAG_COMPOUND);
-                    for(int i = 0; i < list.size(); i++)
-                    {
+                    ListTag list = world.getPlayerByUUID(packet.entityId).getOffhandItem().getOrCreateTag().getList("crowList", CompoundTag.TAG_COMPOUND);
+                    for (int i = 0; i < list.size(); i++) {
                         CompoundTag compoundTag = list.getCompound(i);
-                        Entity entity = ((ServerLevel)world).getEntity(compoundTag.getUUID("UUID"));
-                        if(entity instanceof CrowEntity)
-                        {
+                        Entity entity = ((ServerLevel) world).getEntity(compoundTag.getUUID("UUID"));
+                        if (entity instanceof CrowEntity) {
                             ((CrowEntity) entity).setPerchPos(null);
                         }
                     }

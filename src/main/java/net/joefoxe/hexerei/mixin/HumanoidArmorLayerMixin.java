@@ -112,24 +112,25 @@ public abstract class HumanoidArmorLayerMixin<T extends LivingEntity, M extends 
 
     protected void setPartVisibility(A p_117126_, EquipmentSlot p_117127_) {
         p_117126_.setAllVisible(false);
-        switch(p_117127_) {
-            case HEAD:
+        switch (p_117127_) {
+            case HEAD -> {
                 p_117126_.head.visible = true;
                 p_117126_.hat.visible = true;
-                break;
-            case CHEST:
+            }
+            case CHEST -> {
                 p_117126_.body.visible = true;
                 p_117126_.rightArm.visible = true;
                 p_117126_.leftArm.visible = true;
-                break;
-            case LEGS:
+            }
+            case LEGS -> {
                 p_117126_.body.visible = true;
                 p_117126_.rightLeg.visible = true;
                 p_117126_.leftLeg.visible = true;
-                break;
-            case FEET:
+            }
+            case FEET -> {
                 p_117126_.rightLeg.visible = true;
                 p_117126_.leftLeg.visible = true;
+            }
         }
 
     }

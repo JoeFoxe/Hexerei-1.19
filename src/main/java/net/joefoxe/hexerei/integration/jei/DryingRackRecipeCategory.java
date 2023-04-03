@@ -65,7 +65,7 @@ public class DryingRackRecipeCategory implements IRecipeCategory<DryingRackRecip
         Minecraft minecraft = Minecraft.getInstance();
 
         matrixStack.scale(0.6f, 0.6f, 0.6f);
-        String dryingTimeString = dryingTime < Integer.MAX_VALUE ? dryingTime / 20 + (dryingTime % 20 == 0 ? "" : ("." + Integer.toString(dryingTime % 20))) : "?";
+        String dryingTimeString = dryingTime < Integer.MAX_VALUE ? dryingTime / 20 + (dryingTime % 20 == 0 ? "" : ("." + dryingTime % 20)) : "?";
         if(dryingTimeString.charAt(dryingTimeString.length()-1) == '0' && dryingTime != 0 && dryingTime % 20 != 0)
             dryingTimeString = dryingTimeString.substring(0, dryingTimeString.length()-1);
         MutableComponent dip_time_1 = Component.translatable("gui.jei.category.dipper.dry_time_1");

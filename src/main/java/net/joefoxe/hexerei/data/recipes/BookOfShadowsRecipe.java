@@ -2,7 +2,6 @@ package net.joefoxe.hexerei.data.recipes;
 
 import com.google.gson.JsonObject;
 import net.joefoxe.hexerei.data.books.HexereiBookItem;
-import net.joefoxe.hexerei.item.ModItems;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

@@ -78,18 +78,18 @@ public class CrowWhitelistRenderer implements IGuiOverlay {
                     float yRot = 30 + (Hexerei.getClientTicks()) + itor * 30;
 
                     poseStack.translate(rotationOffset.x, rotationOffset.y, rotationOffset.z);
-                    poseStack.mulPose(Vector3f.ZP.rotationDegrees((float) zRot));
-                    poseStack.mulPose(Vector3f.XP.rotationDegrees((float) xRot));
-                    poseStack.mulPose(Vector3f.YP.rotationDegrees((float) yRot));
+                    poseStack.mulPose(Vector3f.ZP.rotationDegrees(zRot));
+                    poseStack.mulPose(Vector3f.XP.rotationDegrees(xRot));
+                    poseStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
                     poseStack.translate(-rotationOffset.x, -rotationOffset.y, -rotationOffset.z);
 
                     BlockState state = CrowWhitelistEvent.whiteListingCrow.harvestWhitelist.get(itor).defaultBlockState();
                     if (state.hasProperty(BlockStateProperties.AGE_1))
                         state = state.setValue(BlockStateProperties.AGE_1, Mth.clamp((int) (((Math.sin((Hexerei.getClientTicks() + itor * 30) / 30) + 1) / 2) * 2), 0, 1));
                     else if (state.hasProperty(BlockStateProperties.AGE_2))
-                        state = state.setValue(BlockStateProperties.AGE_2, Mth.clamp((int)(((Math.sin((Hexerei.getClientTicks() + itor * 30) / 30) + 1) / 2) * 3), 0, 2));
+                        state = state.setValue(BlockStateProperties.AGE_2, Mth.clamp((int) (((Math.sin((Hexerei.getClientTicks() + itor * 30) / 30) + 1) / 2) * 3), 0, 2));
                     else if (state.hasProperty(BlockStateProperties.AGE_3))
-                        state = state.setValue(BlockStateProperties.AGE_3, Mth.clamp((int)(((Math.sin((Hexerei.getClientTicks() + itor * 30) / 30) + 1) / 2) * 4), 0, 3));
+                        state = state.setValue(BlockStateProperties.AGE_3, Mth.clamp((int) (((Math.sin((Hexerei.getClientTicks() + itor * 30) / 30) + 1) / 2) * 4), 0, 3));
                     else if (state.hasProperty(BlockStateProperties.AGE_4))
                         state = state.setValue(BlockStateProperties.AGE_4, Mth.clamp((int)(((Math.sin((Hexerei.getClientTicks() + itor * 30) / 30) + 1) / 2) * 5), 0, 4));
                     else if (state.hasProperty(BlockStateProperties.AGE_5))
@@ -124,21 +124,21 @@ public class CrowWhitelistRenderer implements IGuiOverlay {
     public void renderSingleBlock(BlockState p_110913_, PoseStack poseStack, MultiBufferSource p_110915_, int p_110916_, int p_110917_, ModelData modelData, int color) {
         RenderShape rendershape = p_110913_.getRenderShape();
         if (rendershape != RenderShape.INVISIBLE) {
-            switch(rendershape) {
-                case MODEL:
+            switch (rendershape) {
+                case MODEL -> {
                     BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
                     BakedModel bakedmodel = dispatcher.getBlockModel(p_110913_);
                     int i = color;
-                    float f = (float)(i >> 16 & 255) / 255.0F;
-                    float f1 = (float)(i >> 8 & 255) / 255.0F;
-                    float f2 = (float)(i & 255) / 255.0F;
+                    float f = (float) (i >> 16 & 255) / 255.0F;
+                    float f1 = (float) (i >> 8 & 255) / 255.0F;
+                    float f2 = (float) (i & 255) / 255.0F;
                     dispatcher.getModelRenderer().renderModel(poseStack.last(), p_110915_.getBuffer(ItemBlockRenderTypes.getRenderType(p_110913_, false)), p_110913_, bakedmodel, f, f1, f2, p_110916_, p_110917_, modelData, null);
-                    break;
-                case ENTITYBLOCK_ANIMATED:
+                }
+                case ENTITYBLOCK_ANIMATED -> {
                     ItemStack stack = new ItemStack(p_110913_.getBlock());
-
                     poseStack.translate(0.2, -0.1, -0.1);
                     IClientItemExtensions.of(stack.getItem()).getCustomRenderer().renderByItem(stack, ItemTransforms.TransformType.NONE, poseStack, p_110915_, p_110916_, p_110917_);
+                }
             }
 
         }

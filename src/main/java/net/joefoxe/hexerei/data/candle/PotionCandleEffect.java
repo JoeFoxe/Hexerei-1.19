@@ -66,7 +66,7 @@ public class PotionCandleEffect extends AbstractCandleEffect{
             AABB aabb = (new AABB(pPos)).inflate(size).expandTowards(0.0D, (size * 4) < 4 ? 4 : size * 4 , 0.0D);
             List<LivingEntity> list = pLevel.getEntitiesOfClass(LivingEntity.class, aabb);
 
-            PacketDistributor.TargetPoint point = new PacketDistributor.TargetPoint(pPos.getX(), pPos.getY(), pPos.getZ(), 500, ((Level) pLevel).dimension());
+            PacketDistributor.TargetPoint point = new PacketDistributor.TargetPoint(pPos.getX(), pPos.getY(), pPos.getZ(), 500, pLevel.dimension());
             for(LivingEntity living : list) {
                 if(!pLevel.isClientSide) {
                     living.addEffect(new MobEffectInstance(pPrimary, duration, amplifier, true, false, true));

@@ -75,7 +75,7 @@ public class SageBurningPlateEvent {
         }
         for(BlockPos nonSageBurninPlate : nonSagePlatesInList){
 //            System.out.println(Hexerei.sageBurningPlateTileList.indexOf(nonSageBurninPlate));
-            Hexerei.sageBurningPlateTileList.remove(Hexerei.sageBurningPlateTileList.indexOf(nonSageBurninPlate));
+            Hexerei.sageBurningPlateTileList.remove(nonSageBurninPlate);
         }
 
         if (burning_plate == null) {

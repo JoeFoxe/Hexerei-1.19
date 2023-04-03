@@ -87,11 +87,12 @@ public class MixingCauldronTransferInfo implements IRecipeTransferHandler<Mixing
                 }
             }
         }
-        // checks if a slot is not taken up, if its not taken up then itll not craft
+        // checks if a slot is not taken up, if it's not taken up then itll not craft
         boolean allItemsMissing = true;
         for(int i = 0; i < 8; i++) {
             if (itemMatchesSlot.get(i)) {
                 allItemsMissing = false;
+                break;
             }
         }
         //if it reaches here that means it has completed the shapeless craft and should craft it
@@ -165,12 +166,7 @@ public class MixingCauldronTransferInfo implements IRecipeTransferHandler<Mixing
         if(pDoTransfer) {
 
             if(!transferRecipe(stacks, inventory, pPlayer)) {
-                return new IRecipeTransferError() {
-                    @Override
-                    public Type getType() {
-                        return Type.USER_FACING;
-                    }
-                };
+                return () -> IRecipeTransferError.Type.USER_FACING;
             }
         }
         return null;

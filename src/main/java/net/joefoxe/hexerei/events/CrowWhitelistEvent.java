@@ -1,7 +1,6 @@
 package net.joefoxe.hexerei.events;
 
 import net.joefoxe.hexerei.client.renderer.entity.custom.CrowEntity;
-import net.joefoxe.hexerei.particle.ModParticleTypes;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
 import net.joefoxe.hexerei.util.HexereiTags;
 import net.joefoxe.hexerei.util.message.CrowWhitelistSyncToServer;
@@ -16,7 +15,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.util.ParticleUtils;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -31,15 +29,12 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -219,7 +214,7 @@ public class CrowWhitelistEvent {
 
             Vec3 offset = new Vec3(0, 0, 0);
 
-            Particle p = pe.createParticle(basicparticletype, (double) crow.getX() + offset.x, (double) crow.getY() + random.nextDouble() * 0.15f, (double) crow.getZ() + offset.z, 0, random.nextDouble() * 0.1D + 0.15D, 0);
+            Particle p = pe.createParticle(basicparticletype, crow.getX() + offset.x, crow.getY() + random.nextDouble() * 0.15f, crow.getZ() + offset.z, 0, random.nextDouble() * 0.1D + 0.15D, 0);
             if (p != null) {
                 p.setLifetime(20);
                 p.setColor(0.55f, 0.1f, 0.1f);

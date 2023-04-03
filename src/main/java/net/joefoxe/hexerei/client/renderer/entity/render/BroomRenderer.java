@@ -2,13 +2,11 @@ package net.joefoxe.hexerei.client.renderer.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.entity.BroomType;
 import net.joefoxe.hexerei.client.renderer.entity.custom.BroomEntity;
-import net.joefoxe.hexerei.client.renderer.entity.model.*;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.custom.*;
 import net.joefoxe.hexerei.util.HexereiTags;
@@ -29,7 +27,6 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -81,7 +78,7 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
         matrixStackIn.translate(0, -2.75, 0);
 
 
-        if(broomType.getItem() instanceof BroomStickItem broomItem) {
+        if(broomType.item() instanceof BroomStickItem broomItem) {
             if (broomItem.model == null)
                 broomItem.bakeModels();
 
@@ -112,11 +109,11 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
             matrixStackIn.pushPose();
             if(brushStack.getItem() instanceof BroomBrushItem brushItem && brushItem.model != null){
 
-                if(broomType.getItem() instanceof BroomItem broomItem) {
+                if(broomType.item() instanceof BroomItem broomItem) {
                     matrixStackIn.translate(broomItem.getBrushOffset().x(), broomItem.getBrushOffset().y(), broomItem.getBrushOffset().z());
                 }
                 int light = packedLightIn;
-                if(brushItem.glow_on_full_moon && Minecraft.getInstance().level != null && Minecraft.getInstance().level.getMoonPhase() == 0){
+                if(brushItem.shouldGlow(Minecraft.getInstance().level, brushStack)){
                     light = LightTexture.FULL_BRIGHT;
                 }
                 Model broomBrushModel = brushItem.model;
@@ -243,7 +240,7 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
             else if(miscStack.is(ModItems.BROOM_NETHERITE_TIP.get()))
             {
                 if(miscStack.getItem() instanceof BroomAttachmentItem miscItem && miscItem.model != null) {
-                    int light = (int) (packedLightIn / 15 * (15 - (int) (8 * (((miscStack.getDamageValue()) / (float) miscStack.getMaxDamage())))));
+                    int light = packedLightIn / 15 * (15 - (int) (8 * (((miscStack.getDamageValue()) / (float) miscStack.getMaxDamage()))));
 
                     Model miscModel = miscItem.model;
                     VertexConsumer vertexConsumer = bufferIn.getBuffer(miscModel.renderType(miscItem.texture));
@@ -264,7 +261,7 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
             else if(miscStack.is(ModItems.BROOM_WATERPROOF_TIP.get()))
             {
                 if(miscStack.getItem() instanceof BroomAttachmentItem miscItem && miscItem.model != null) {
-                    int light = (int)(packedLightIn / 15 * (15 - (int)(8 * (((miscStack.getDamageValue()) / (float)miscStack.getMaxDamage())))));
+                    int light = packedLightIn / 15 * (15 - (int) (8 * (((miscStack.getDamageValue()) / (float) miscStack.getMaxDamage()))));
 
                     Model miscModel = miscItem.model;
                     VertexConsumer vertexConsumer = bufferIn.getBuffer(miscModel.renderType(miscItem.texture));
@@ -300,7 +297,7 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
                             int i = (col & 16711680) >> 16;
                             int j = (col & '\uff00') >> 8;
                             int k = (col & 255);
-                            float afloat[] = new float[]{(float) i / 255.0F, (float) j / 255.0F, (float) k / 255.0F};
+                            float[] afloat = new float[]{(float) i / 255.0F, (float) j / 255.0F, (float) k / 255.0F};
                             VertexConsumer vertexConsumerDye = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutoutNoCull(miscItem.dye_texture), false, false);
                             miscModel.renderToBuffer(matrixStackIn, vertexConsumerDye, packedLightIn, OverlayTexture.NO_OVERLAY, afloat[0], afloat[1], afloat[2], 1.0F);
                         }

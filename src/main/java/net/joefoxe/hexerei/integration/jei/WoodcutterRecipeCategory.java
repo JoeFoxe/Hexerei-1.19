@@ -57,11 +57,11 @@ public class WoodcutterRecipeCategory implements IRecipeCategory<WoodcutterRecip
         int count = recipe.ingredientCount;
         Ingredient ingredient = recipe.getIngredients().get(0);
         ItemStack[] stacks = ingredient.getItems();
-        for(int i = 0; i < stacks.length; i++){
-            stacks[i].setCount(count);
+        for (ItemStack stack : stacks) {
+            stack.setCount(count);
         }
-        builder.addSlot(RecipeIngredientRole.INPUT,14, 16).addIngredients(ingredient);
-        builder.addSlot(RecipeIngredientRole.OUTPUT,70, 16).addItemStack(recipe.getResultItem());
+        builder.addSlot(RecipeIngredientRole.INPUT, 14, 16).addIngredients(ingredient);
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 70, 16).addItemStack(recipe.getResultItem());
     }
 
     @Override

@@ -81,7 +81,7 @@ public class ModRenderTypes extends RenderType {
 
     public static final Function<ResourceLocation, RenderType> SOLID_TEXTURE = (texture) -> createGenericRenderType("solid_texture", POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER, StateShards.ADDITIVE_TRANSPARENCY, texture);
 
-    public class StateShards extends RenderStateShard {
+    public static class StateShards extends RenderStateShard {
 
         public StateShards(String p_110161_, Runnable p_110162_, Runnable p_110163_) {
             super(p_110161_, p_110162_, p_110163_);

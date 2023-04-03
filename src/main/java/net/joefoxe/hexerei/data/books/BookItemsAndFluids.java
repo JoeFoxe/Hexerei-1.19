@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -200,7 +201,7 @@ public class BookItemsAndFluids {
         boolean show_slot = GsonHelper.getAsBoolean(object, "show_slot", true);
         String type = GsonHelper.getAsString(object, "type", "item");
         switch (type) {
-            case "item": {
+            case "item" -> {
                 Item item = GsonHelper.getAsItem(object, "name", Items.AIR);
                 int count = GsonHelper.getAsInt(object, "count", 1);
 
@@ -213,11 +214,10 @@ public class BookItemsAndFluids {
                 }
 
 
+                JsonArray yourJson = GsonHelper.getAsJsonArray(object, "extra_tooltips", new JsonArray());
+                List<Component> textComponentsList = new ArrayList<>();
 
-                JsonArray yourJson = GsonHelper.getAsJsonArray(object,"extra_tooltips", new JsonArray());
-                java.util.List<net.minecraft.network.chat.Component> textComponentsList = new ArrayList<>();
-
-                net.minecraft.network.chat.Component component = Component.translatable("");
+                Component component = Component.translatable("");
                 List<BookTooltipExtra> bookTooltipExtraList = new ArrayList<>();
 
                 for (int i = 0; i < yourJson.size(); i++) {
@@ -227,21 +227,20 @@ public class BookItemsAndFluids {
                     String string_type = GsonHelper.getAsString(extraItemObject, "type", "append");
                     String hex_color = GsonHelper.getAsString(extraItemObject, "color_hex", "");
 
-                    if(!hex_color.equals(""))
-                        color = (int)Long.parseLong(hex_color, 16);
+                    if (!hex_color.equals(""))
+                        color = (int) Long.parseLong(hex_color, 16);
 
-                    if(string_type.equals("trail")) {
+                    if (string_type.equals("trail")) {
                         textComponentsList.add(component);
 
                         component = Component.translatable(string).withStyle(Style.EMPTY.withColor(color));
-                    }
-                    else if(string_type.equals("append")){
+                    } else if (string_type.equals("append")) {
                         component.getSiblings().add(Component.translatable(string).withStyle(Style.EMPTY.withColor(color)));
 
                     }
 
-                    if(!(i+1 < yourJson.size())){
-                        if(!component.getString().equals(""))
+                    if (!(i + 1 < yourJson.size())) {
+                        if (!component.getString().equals(""))
                             textComponentsList.add(component);
                     }
                     bookTooltipExtraList.add(new BookTooltipExtra(color, hex_color, string, string_type));
@@ -249,13 +248,13 @@ public class BookItemsAndFluids {
 
                 return new BookItemsAndFluids(x, y, stack, show_slot, textComponentsList, bookTooltipExtraList);
             }
-            case "tag": {
+            case "tag" -> {
 
                 JsonArray yourJson = GsonHelper.getAsJsonArray(object, "extra_tooltips", new JsonArray());
-                java.util.List<net.minecraft.network.chat.Component> textComponentsList = new ArrayList<>();
+                List<Component> textComponentsList = new ArrayList<>();
                 List<BookTooltipExtra> bookTooltipExtraList = new ArrayList<>();
 
-                net.minecraft.network.chat.Component component = Component.translatable("");
+                Component component = Component.translatable("");
 
                 for (int i = 0; i < yourJson.size(); i++) {
                     JsonObject extraItemObject = yourJson.get(i).getAsJsonObject();
@@ -284,7 +283,7 @@ public class BookItemsAndFluids {
 
                 return new BookItemsAndFluids(x, y, GsonHelper.getAsString(object, "name", "null"), show_slot, textComponentsList, bookTooltipExtraList);
             }
-            case "fluid": {
+            case "fluid" -> {
                 String loc = GsonHelper.getAsString(object, "name", "minecraft:water");
 
                 float fluid_height = GsonHelper.getAsFloat(object, "fluid_height", 16);
@@ -292,9 +291,9 @@ public class BookItemsAndFluids {
                 float fluid_offset_x = GsonHelper.getAsFloat(object, "fluid_offset_x", 0);
                 float fluid_offset_y = GsonHelper.getAsFloat(object, "fluid_offset_y", 0);
 
-                Fluid fluid = (Fluid) Registry.FLUID.getOptional(new ResourceLocation(loc)).orElseThrow(() -> {
-                    return new JsonSyntaxException("Expected " + loc + " to be an item, was unknown string '" + loc + "'");
-                });
+                Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(loc));
+                if (fluid == null)
+                    throw (new JsonSyntaxException("Expected " + loc + " to be an fluid rl, was unknown string '" + loc + "'"));
 
                 int amount = GsonHelper.getAsInt(object, "amount", 0);
                 int capacity = GsonHelper.getAsInt(object, "capacity", 0);
@@ -309,9 +308,9 @@ public class BookItemsAndFluids {
                 }
 
                 JsonArray yourJson = GsonHelper.getAsJsonArray(object, "extra_tooltips", new JsonArray());
-                java.util.List<net.minecraft.network.chat.Component> textComponentsList = new ArrayList<>();
+                List<Component> textComponentsList = new ArrayList<>();
 
-                net.minecraft.network.chat.Component component = Component.translatable("");
+                Component component = Component.translatable("");
                 List<BookTooltipExtra> bookTooltipExtraList = new ArrayList<>();
 
                 for (int i = 0; i < yourJson.size(); i++) {
@@ -342,9 +341,9 @@ public class BookItemsAndFluids {
 
                 return new BookItemsAndFluids(x, y, fluidStack, amount, capacity, show_slot, fluid_height, fluid_width, fluid_offset_x, fluid_offset_y, textComponentsList, bookTooltipExtraList);
             }
-            default:
-
+            default -> {
                 return new BookItemsAndFluids(x, y, ItemStack.EMPTY, show_slot);
+            }
         }
     }
 }

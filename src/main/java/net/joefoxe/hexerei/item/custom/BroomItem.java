@@ -1,6 +1,5 @@
 package net.joefoxe.hexerei.item.custom;
 
-import net.joefoxe.hexerei.client.renderer.entity.BroomType;
 import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
 import net.joefoxe.hexerei.client.renderer.entity.custom.BroomEntity;
 import net.joefoxe.hexerei.config.ModKeyBindings;
@@ -178,7 +177,7 @@ public class BroomItem extends BroomStickItem {
                 Vec3 vector3d1 = playerIn.getEyePosition(1.0F);
 
                 for(Entity entity : list) {
-                    AABB axisalignedbb = entity.getBoundingBox().inflate((double)entity.getPickRadius());
+                    AABB axisalignedbb = entity.getBoundingBox().inflate(entity.getPickRadius());
                     if (axisalignedbb.contains(vector3d1)) {
                         return InteractionResultHolder.pass(itemstack);
                     }

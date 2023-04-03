@@ -59,8 +59,8 @@ public class CofferContainer extends AbstractContainerMenu {
         //add slots for coffer
         if(tileEntity != null && tileEntity instanceof Container container) {
 
-            this.addSlot(cofferSlot(container, 0, 15 + (21 * 0), 18 - OFFSET));
-            this.addSlot(cofferSlot(container, 1, 15 + (21 * 1), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 0, 15, 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 1, 15 + (21), 18 - OFFSET));
             this.addSlot(cofferSlot(container, 2, 15 + (21 * 2), 18 - OFFSET));
             this.addSlot(cofferSlot(container, 3, 15 + (21 * 3), 18 - OFFSET));
             this.addSlot(cofferSlot(container, 4, 15 + (21 * 4), 18 - OFFSET));
@@ -68,26 +68,26 @@ public class CofferContainer extends AbstractContainerMenu {
             this.addSlot(cofferSlot(container, 6, 15 + (21 * 6), 18 - OFFSET));
             this.addSlot(cofferSlot(container, 7, 15 + (21 * 7), 18 - OFFSET));
             this.addSlot(cofferSlot(container, 8, 15 + (21 * 8), 18 - OFFSET));
-            this.addSlot(cofferSlot(container, 9, 15 + (21 * 0), 39 - OFFSET));
-            this.addSlot(cofferSlot(container, 10, 15 + (21 * 1), 39 - OFFSET));
+            this.addSlot(cofferSlot(container, 9, 15, 39 - OFFSET));
+            this.addSlot(cofferSlot(container, 10, 15 + (21), 39 - OFFSET));
             this.addSlot(cofferSlot(container, 11, 15 + (21 * 2), 39 - OFFSET));
             this.addSlot(cofferSlot(container, 12, 15 + (21 * 6), 39 - OFFSET));
             this.addSlot(cofferSlot(container, 13, 15 + (21 * 7), 39 - OFFSET));
             this.addSlot(cofferSlot(container, 14, 15 + (21 * 8), 39 - OFFSET));
-            this.addSlot(cofferSlot(container, 15, 15 + (21 * 0), 60 - OFFSET));
-            this.addSlot(cofferSlot(container, 16, 15 + (21 * 1), 60 - OFFSET));
+            this.addSlot(cofferSlot(container, 15, 15, 60 - OFFSET));
+            this.addSlot(cofferSlot(container, 16, 15 + (21), 60 - OFFSET));
             this.addSlot(cofferSlot(container, 17, 15 + (21 * 2), 60 - OFFSET));
             this.addSlot(cofferSlot(container, 18, 15 + (21 * 6), 60 - OFFSET));
             this.addSlot(cofferSlot(container, 19, 15 + (21 * 7), 60 - OFFSET));
             this.addSlot(cofferSlot(container, 20, 15 + (21 * 8), 60 - OFFSET));
-            this.addSlot(cofferSlot(container, 21, 15 + (21 * 0), 81 - OFFSET));
-            this.addSlot(cofferSlot(container, 22, 15 + (21 * 1), 81 - OFFSET));
+            this.addSlot(cofferSlot(container, 21, 15, 81 - OFFSET));
+            this.addSlot(cofferSlot(container, 22, 15 + (21), 81 - OFFSET));
             this.addSlot(cofferSlot(container, 23, 15 + (21 * 2), 81 - OFFSET));
             this.addSlot(cofferSlot(container, 24, 15 + (21 * 6), 81 - OFFSET));
             this.addSlot(cofferSlot(container, 25, 15 + (21 * 7), 81 - OFFSET));
             this.addSlot(cofferSlot(container, 26, 15 + (21 * 8), 81 - OFFSET));
-            this.addSlot(cofferSlot(container, 27, 15 + (21 * 0), 102 - OFFSET));
-            this.addSlot(cofferSlot(container, 28, 15 + (21 * 1), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 27, 15, 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 28, 15 + (21), 102 - OFFSET));
             this.addSlot(cofferSlot(container, 29, 15 + (21 * 2), 102 - OFFSET));
             this.addSlot(cofferSlot(container, 30, 15 + (21 * 3), 102 - OFFSET));
             this.addSlot(cofferSlot(container, 31, 15 + (21 * 4), 102 - OFFSET));
@@ -140,8 +140,8 @@ public class CofferContainer extends AbstractContainerMenu {
 
         if(tileEntity != null && tileEntity instanceof Container container) {
 
-            this.addSlot(cofferSlot(container, 0, 15 + (21 * 0), 18 - OFFSET));
-            this.addSlot(cofferSlot(container, 1, 15 + (21 * 1), 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 0, 15, 18 - OFFSET));
+            this.addSlot(cofferSlot(container, 1, 15 + (21), 18 - OFFSET));
             this.addSlot(cofferSlot(container, 2, 15 + (21 * 2), 18 - OFFSET));
             this.addSlot(cofferSlot(container, 3, 15 + (21 * 3), 18 - OFFSET));
             this.addSlot(cofferSlot(container, 4, 15 + (21 * 4), 18 - OFFSET));
@@ -149,26 +149,26 @@ public class CofferContainer extends AbstractContainerMenu {
             this.addSlot(cofferSlot(container, 6, 15 + (21 * 6), 18 - OFFSET));
             this.addSlot(cofferSlot(container, 7, 15 + (21 * 7), 18 - OFFSET));
             this.addSlot(cofferSlot(container, 8, 15 + (21 * 8), 18 - OFFSET));
-            this.addSlot(cofferSlot(container, 9, 15 + (21 * 0), 39 - OFFSET));
-            this.addSlot(cofferSlot(container, 10, 15 + (21 * 1), 39 - OFFSET));
+            this.addSlot(cofferSlot(container, 9, 15, 39 - OFFSET));
+            this.addSlot(cofferSlot(container, 10, 15 + (21), 39 - OFFSET));
             this.addSlot(cofferSlot(container, 11, 15 + (21 * 2), 39 - OFFSET));
             this.addSlot(cofferSlot(container, 12, 15 + (21 * 6), 39 - OFFSET));
             this.addSlot(cofferSlot(container, 13, 15 + (21 * 7), 39 - OFFSET));
             this.addSlot(cofferSlot(container, 14, 15 + (21 * 8), 39 - OFFSET));
-            this.addSlot(cofferSlot(container, 15, 15 + (21 * 0), 60 - OFFSET));
-            this.addSlot(cofferSlot(container, 16, 15 + (21 * 1), 60 - OFFSET));
+            this.addSlot(cofferSlot(container, 15, 15, 60 - OFFSET));
+            this.addSlot(cofferSlot(container, 16, 15 + (21), 60 - OFFSET));
             this.addSlot(cofferSlot(container, 17, 15 + (21 * 2), 60 - OFFSET));
             this.addSlot(cofferSlot(container, 18, 15 + (21 * 6), 60 - OFFSET));
             this.addSlot(cofferSlot(container, 19, 15 + (21 * 7), 60 - OFFSET));
             this.addSlot(cofferSlot(container, 20, 15 + (21 * 8), 60 - OFFSET));
-            this.addSlot(cofferSlot(container, 21, 15 + (21 * 0), 81 - OFFSET));
-            this.addSlot(cofferSlot(container, 22, 15 + (21 * 1), 81 - OFFSET));
+            this.addSlot(cofferSlot(container, 21, 15, 81 - OFFSET));
+            this.addSlot(cofferSlot(container, 22, 15 + (21), 81 - OFFSET));
             this.addSlot(cofferSlot(container, 23, 15 + (21 * 2), 81 - OFFSET));
             this.addSlot(cofferSlot(container, 24, 15 + (21 * 6), 81 - OFFSET));
             this.addSlot(cofferSlot(container, 25, 15 + (21 * 7), 81 - OFFSET));
             this.addSlot(cofferSlot(container, 26, 15 + (21 * 8), 81 - OFFSET));
-            this.addSlot(cofferSlot(container, 27, 15 + (21 * 0), 102 - OFFSET));
-            this.addSlot(cofferSlot(container, 28, 15 + (21 * 1), 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 27, 15, 102 - OFFSET));
+            this.addSlot(cofferSlot(container, 28, 15 + (21), 102 - OFFSET));
             this.addSlot(cofferSlot(container, 29, 15 + (21 * 2), 102 - OFFSET));
             this.addSlot(cofferSlot(container, 30, 15 + (21 * 3), 102 - OFFSET));
             this.addSlot(cofferSlot(container, 31, 15 + (21 * 4), 102 - OFFSET));
@@ -190,7 +190,7 @@ public class CofferContainer extends AbstractContainerMenu {
     }
 
     public void playSound() {
-        this.tileEntity.getLevel().playSound((Player)null, this.tileEntity.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 1.0F, 1.0F);;
+        this.tileEntity.getLevel().playSound(null, this.tileEntity.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
     public int getToggled() {

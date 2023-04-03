@@ -44,7 +44,7 @@ public class ModChestBoatItem extends Item {
                 Vec3 vec31 = pPlayer.getEyePosition();
 
                 for(Entity entity : list) {
-                    AABB aabb = entity.getBoundingBox().inflate((double)entity.getPickRadius());
+                    AABB aabb = entity.getBoundingBox().inflate(entity.getPickRadius());
                     if (aabb.contains(vec31)) {
                         return InteractionResultHolder.pass(itemstack);
                     }

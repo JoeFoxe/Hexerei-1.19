@@ -58,7 +58,7 @@ public class PickableDoubleFlower extends DoublePlantBlock implements Bonemealab
         this.secondOutput = secondOutput;
         this.maxSecondOutput = maxSecondOutput;
 
-        this.registerDefaultState(this.stateDefinition.any().setValue(AGE, Integer.valueOf(0)).setValue(HALF, DoubleBlockHalf.LOWER));
+        this.registerDefaultState(this.stateDefinition.any().setValue(AGE, 0).setValue(HALF, DoubleBlockHalf.LOWER));
 
     }
     public PickableDoubleFlower(MobEffect p_53512_, int p_53513_, Properties p_53514_, RegistryObject<FlowerOutputItem> firstOutput , int maxFirstOutput) {
@@ -74,7 +74,7 @@ public class PickableDoubleFlower extends DoublePlantBlock implements Bonemealab
         this.maxFirstOutput = maxFirstOutput;
         this.secondOutput = null;
 
-        this.registerDefaultState(this.stateDefinition.any().setValue(AGE, Integer.valueOf(0)));
+        this.registerDefaultState(this.stateDefinition.any().setValue(AGE, 0));
 
     }
 
@@ -130,32 +130,32 @@ public class PickableDoubleFlower extends DoublePlantBlock implements Bonemealab
             popResource(level, blockpos, new ItemStack(firstOutput.getItem(), Math.max(1,(int)Math.floor(j/2f)) + (flag ? (int)Math.ceil(j/2f) : 0)));
             if (level.random.nextInt(2) == 0 && this.secondOutput != null)
                 popResource(level, blockpos, new ItemStack(secondOutput.getItem(), Math.max(1,(int)Math.floor(k/2f)) + (flag ? (int)Math.ceil(k/2f) : 0)));
-            level.playSound((Player) null, blockpos, SoundEvents.CAVE_VINES_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.random.nextFloat() * 0.4F);
+            level.playSound(null, blockpos, SoundEvents.CAVE_VINES_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.random.nextFloat() * 0.4F);
             if(blockstate.getValue(HALF) == DoubleBlockHalf.LOWER) {
-                level.setBlock(blockpos, blockstate.setValue(AGE, Integer.valueOf(0)), 2);
+                level.setBlock(blockpos, blockstate.setValue(AGE, 0), 2);
 
                 BlockState blockState = level.getBlockState(blockpos.above());
 
                 if(blockState.getBlock() == level.getBlockState(blockpos).getBlock())
                 {
-                    level.setBlock(blockpos.above(), blockState.setValue(AGE, Integer.valueOf(0)), 2);
+                    level.setBlock(blockpos.above(), blockState.setValue(AGE, 0), 2);
                 }
                 else if(blockState.isAir()){
-                    level.setBlock(blockpos.above(), level.getBlockState(blockpos).setValue(AGE, Integer.valueOf(0)).setValue(HALF, DoubleBlockHalf.UPPER), 2);
+                    level.setBlock(blockpos.above(), level.getBlockState(blockpos).setValue(AGE, 0).setValue(HALF, DoubleBlockHalf.UPPER), 2);
                 }
 
             }else {
-                level.setBlock(blockpos, blockstate.setValue(AGE, Integer.valueOf(0)), 2);
+                level.setBlock(blockpos, blockstate.setValue(AGE, 0), 2);
 //                level.setBlock(blockpos.below(), level.getBlockState(blockpos.below()).setValue(AGE, Integer.valueOf(0)), 2);
 
                 BlockState blockState = level.getBlockState(blockpos.below());
 
                 if(blockState.getBlock() == level.getBlockState(blockpos).getBlock())
                 {
-                    level.setBlock(blockpos.below(), blockState.setValue(AGE, Integer.valueOf(0)), 2);
+                    level.setBlock(blockpos.below(), blockState.setValue(AGE, 0), 2);
                 }
                 else if(blockState.isAir()){
-                    level.setBlock(blockpos.below(), level.getBlockState(blockpos).setValue(AGE, Integer.valueOf(0)).setValue(HALF, DoubleBlockHalf.LOWER), 2);
+                    level.setBlock(blockpos.below(), level.getBlockState(blockpos).setValue(AGE, 0).setValue(HALF, DoubleBlockHalf.LOWER), 2);
                 }
             }
 
@@ -183,12 +183,12 @@ public class PickableDoubleFlower extends DoublePlantBlock implements Bonemealab
 
         if(blockState.getValue(HALF) == DoubleBlockHalf.LOWER) {
             int i = Math.min(3, blockState.getValue(AGE) + 1);
-            level.setBlock(blockPos, blockState.setValue(AGE, Integer.valueOf(i)), 2);
-            level.setBlock(blockPos.above(), level.getBlockState(blockPos.above()).setValue(AGE, Integer.valueOf(i)), 2);
+            level.setBlock(blockPos, blockState.setValue(AGE, i), 2);
+            level.setBlock(blockPos.above(), level.getBlockState(blockPos.above()).setValue(AGE, i), 2);
         }else {
             int i = Math.min(3, level.getBlockState(blockPos.below()).getValue(AGE) + 1);
-            level.setBlock(blockPos, blockState.setValue(AGE, Integer.valueOf(i)), 2);
-            level.setBlock(blockPos.below(), level.getBlockState(blockPos.below()).setValue(AGE, Integer.valueOf(i)), 2);
+            level.setBlock(blockPos, blockState.setValue(AGE, i), 2);
+            level.setBlock(blockPos.below(), level.getBlockState(blockPos.below()).setValue(AGE, i), 2);
         }
     }
 }

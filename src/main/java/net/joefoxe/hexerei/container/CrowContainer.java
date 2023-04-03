@@ -11,7 +11,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -41,12 +41,12 @@ public class CrowContainer extends AbstractContainerMenu {
 
         //add slots for crow
         if(crowEntity != null) {
-            crowEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
+            crowEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
 
 //                addSlot(EquipmentSlot.HEAD)
 
 
-                addSlot(new SlotItemHandler(h, 0, 86, 50 - OFFSET){
+                addSlot(new SlotItemHandler(h, 0, 86, 50 - OFFSET) {
 
                     @Override
                     public int getMaxStackSize() {
@@ -134,7 +134,7 @@ public class CrowContainer extends AbstractContainerMenu {
     }
 
     public void playSound() {
-        this.crowEntity.getLevel().playSound((Player)null, this.crowEntity.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 1.0F, 1.0F);;
+        this.crowEntity.getLevel().playSound(null, this.crowEntity.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
     public int getCommand() {

@@ -44,7 +44,7 @@ public class BuddingSelenite extends AmethystBlock {
             }
 
             if (block != null) {
-                BlockState blockstate1 = block.defaultBlockState().setValue(AmethystClusterBlock.FACING, direction).setValue(AmethystClusterBlock.WATERLOGGED, Boolean.valueOf(blockstate.getFluidState().getType() == Fluids.WATER));
+                BlockState blockstate1 = block.defaultBlockState().setValue(AmethystClusterBlock.FACING, direction).setValue(AmethystClusterBlock.WATERLOGGED, blockstate.getFluidState().getType() == Fluids.WATER);
                 p_152729_.setBlockAndUpdate(blockpos, blockstate1);
             }
 

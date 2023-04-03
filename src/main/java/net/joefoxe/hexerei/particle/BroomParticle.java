@@ -64,10 +64,10 @@ public class BroomParticle extends TextureSheetParticle {
             float colorOffset = (rand.nextFloat() * 0.4f);
             BroomParticle broomParticle = new BroomParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
             broomParticle.pickSprite(this.spriteSet);
-            broomParticle.setColor(0.6f + colorOffset,0.6f + colorOffset,0.6f + colorOffset);
-            if(this.spriteSet.get(0,1).getName().getPath().toString().matches("particle/broom_particle_4") ||
-                  this.spriteSet.get(0,1).getName().getPath().toString().matches("particle/broom_particle_5") ||
-                      this.spriteSet.get(0,1).getName().getPath().toString().matches("particle/broom_particle_6")) {
+            broomParticle.setColor(0.6f + colorOffset, 0.6f + colorOffset, 0.6f + colorOffset);
+            if (this.spriteSet.get(0, 1).getName().getPath().matches("particle/broom_particle_4") ||
+                this.spriteSet.get(0, 1).getName().getPath().matches("particle/broom_particle_5") ||
+                this.spriteSet.get(0, 1).getName().getPath().matches("particle/broom_particle_6")) {
                 broomParticle.lifetime += broomParticle.lifetime * 3 + 30;
             }
 

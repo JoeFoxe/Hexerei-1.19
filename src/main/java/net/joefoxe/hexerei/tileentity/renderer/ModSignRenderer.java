@@ -87,7 +87,7 @@ public class ModSignRenderer implements BlockEntityRenderer<ModSignBlockEntity> 
         signrenderer$signmodel.root.render(pPoseStack, vertexconsumer, pPackedLight, pPackedOverlay);
         pPoseStack.popPose();
         float f2 = 0.010416667F;
-        pPoseStack.translate(0.0D, (double)0.33333334F, (double)0.046666667F);
+        pPoseStack.translate(0.0D, 0.33333334F, 0.046666667F);
         pPoseStack.scale(0.010416667F, -0.010416667F, 0.010416667F);
         int i = getDarkColor(pBlockEntity);
         int j = 20;

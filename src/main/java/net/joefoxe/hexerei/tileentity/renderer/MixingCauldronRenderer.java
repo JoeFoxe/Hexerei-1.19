@@ -1,12 +1,10 @@
 package net.joefoxe.hexerei.tileentity.renderer;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
-import net.joefoxe.hexerei.block.custom.HerbJar;
 import net.joefoxe.hexerei.block.custom.MixingCauldron;
 import net.joefoxe.hexerei.client.renderer.ModRenderTypes;
 import net.joefoxe.hexerei.item.ModItems;
@@ -24,7 +22,6 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -33,7 +30,6 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.common.Tags;
@@ -83,7 +79,7 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
             int waterColor = HexereiUtil.getColorValue(color2.getRed()/255f, color2.getGreen()/255f, color2.getBlue()/255f);
 
 
-            fillPercentage = Math.min(1, (float) (flag ? tileEntityIn.fluidRenderLevel : fluidStack.getAmount()) / tileEntityIn.getTankCapacity(0));
+            fillPercentage = Math.min(1, (flag ? tileEntityIn.fluidRenderLevel : fluidStack.getAmount()) / tileEntityIn.getTankCapacity(0));
 //            matrixStackIn.scale(1.05f, 1, 1.05f);
             if (fluidStack.getFluid().is(Tags.Fluids.GASEOUS))
                 renderFluid(matrixStackIn, bufferIn, fluidStack, fillPercentage, 1, combinedLightIn, tileEntityIn, waterColor);
@@ -152,7 +148,7 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
         }
 
         //gives the wobble
-        ((MixingCauldronTile)tileEntityIn).degrees++;
+        tileEntityIn.degrees++;
 
         if (tileEntityIn.getItemInSlot(9) == ModItems.BLOOD_SIGIL.get()) {
             if(tileEntityIn.getItemInSlot(9).asItem() == ModItems.BLOOD_SIGIL.get())
@@ -437,19 +433,20 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
         RenderShape rendershape = p_110913_.getRenderShape();
         if (rendershape != RenderShape.INVISIBLE) {
             switch (rendershape) {
-                case MODEL:
+                case MODEL -> {
                     BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
                     BakedModel bakedmodel = dispatcher.getBlockModel(p_110913_);
                     int i = color;
-                    float f = (float)(i >> 16 & 255) / 255.0F;
-                    float f1 = (float)(i >> 8 & 255) / 255.0F;
-                    float f2 = (float)(i & 255) / 255.0F;
-                    for (net.minecraft.client.renderer.RenderType rt : bakedmodel.getRenderTypes(p_110913_, RandomSource.create(42), modelData))
+                    float f = (float) (i >> 16 & 255) / 255.0F;
+                    float f1 = (float) (i >> 8 & 255) / 255.0F;
+                    float f2 = (float) (i & 255) / 255.0F;
+                    for (RenderType rt : bakedmodel.getRenderTypes(p_110913_, RandomSource.create(42), modelData))
                         dispatcher.getModelRenderer().renderModel(p_110914_.last(), p_110915_.getBuffer(renderType != null ? renderType : net.minecraftforge.client.RenderTypeHelper.getEntityRenderType(rt, false)), p_110913_, bakedmodel, f, f1, f2, p_110916_, p_110917_, modelData, rt);
-                    break;
-                case ENTITYBLOCK_ANIMATED:
+                }
+                case ENTITYBLOCK_ANIMATED -> {
                     ItemStack stack = new ItemStack(p_110913_.getBlock());
                     net.minecraftforge.client.extensions.common.IClientItemExtensions.of(stack).getCustomRenderer().renderByItem(stack, ItemTransforms.TransformType.NONE, p_110914_, p_110915_, p_110916_, p_110917_);
+                }
             }
 
         }

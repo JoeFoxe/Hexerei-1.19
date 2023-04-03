@@ -85,7 +85,7 @@ public abstract class BloodFluid extends ForgeFlowingFluid {
 
 	@Override
 	protected BlockState createLegacyBlock(FluidState state) {
-		return ModFluids.BLOOD_BLOCK.get().defaultBlockState().setValue(LiquidBlock.LEVEL, Integer.valueOf(getLegacyLevel(state)));
+		return ModFluids.BLOOD_BLOCK.get().defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(state));
 	}
 
 	@Override

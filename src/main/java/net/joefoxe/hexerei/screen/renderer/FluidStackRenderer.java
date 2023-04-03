@@ -56,7 +56,6 @@ public class FluidStackRenderer implements IIngredientRenderer<FluidStack> {
         this(capacityMb, showCapacity ? TooltipMode.SHOW_AMOUNT_AND_CAPACITY : TooltipMode.SHOW_AMOUNT, width, height, null);
     }
 
-    @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
     public FluidStackRenderer(int capacityMb, boolean showCapacity, int width, int height, @Nullable IDrawable overlay) {
         this(capacityMb, showCapacity ? TooltipMode.SHOW_AMOUNT_AND_CAPACITY : TooltipMode.SHOW_AMOUNT, width, height, overlay);

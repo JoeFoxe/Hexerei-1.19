@@ -59,7 +59,7 @@ public class PestleAndMortar extends Block implements ITileEntity<PestleAndMorta
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
-        return this.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection()).setValue(WATERLOGGED, Boolean.valueOf(fluidstate.getType() == Fluids.WATER));
+        return this.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection()).setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
     }
 
 //    @Override
@@ -123,7 +123,7 @@ public class PestleAndMortar extends Block implements ITileEntity<PestleAndMorta
 
     public PestleAndMortar(Properties properties) {
         super(properties.noOcclusion());
-        this.withPropertiesOf(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.valueOf(false)));
+        this.withPropertiesOf(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.FALSE));
     }
 
     @Override

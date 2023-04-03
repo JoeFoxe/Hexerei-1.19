@@ -2,22 +2,13 @@ package net.joefoxe.hexerei.block.custom;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import net.joefoxe.hexerei.block.ITileEntity;
 import net.joefoxe.hexerei.tileentity.DryingRackTile;
 import net.joefoxe.hexerei.tileentity.ModTileEntities;
-import net.minecraft.client.gui.font.glyphs.SpecialGlyphs;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -29,7 +20,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -40,14 +30,12 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
 public class WallDryingRack extends HerbDryingRack {
 
 
-    @SuppressWarnings("deprecation")
     @Override
     public RenderShape getRenderShape(BlockState iBlockState) {
         return RenderShape.MODEL;
@@ -109,7 +97,6 @@ public class WallDryingRack extends HerbDryingRack {
                                   RIGHT = BooleanProperty.create("right"),
                                   LEFT = BooleanProperty.create("left");
 
-    @SuppressWarnings("deprecation")
     @Override
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         BlockEntity tileEntity = worldIn.getBlockEntity(pos);
@@ -165,13 +152,11 @@ public class WallDryingRack extends HerbDryingRack {
         super(properties.noCollission());
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(HorizontalDirectionalBlock.FACING, WATERLOGGED, NORTH, SOUTH, EAST, WEST, LEFT, RIGHT);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
@@ -219,7 +204,6 @@ public class WallDryingRack extends HerbDryingRack {
     }
 
 
-    @SuppressWarnings("deprecation")
     @Override
     public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
         return pLevel.getBlockState(pPos.relative(pState.getValue(HorizontalDirectionalBlock.FACING))).getMaterial().isSolid();

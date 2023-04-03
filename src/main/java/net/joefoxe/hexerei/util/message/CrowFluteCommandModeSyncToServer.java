@@ -2,7 +2,6 @@ package net.joefoxe.hexerei.util.message;
 
 import net.joefoxe.hexerei.Hexerei;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkDirection;
@@ -54,13 +53,12 @@ public class CrowFluteCommandModeSyncToServer {
             }
 
             if(packet.hand == 0) {
-                if (((Player) world.getPlayerByUUID(packet.entityId)).getMainHandItem().getItem() == packet.flute.getItem())
-                    ((Player) world.getPlayerByUUID(packet.entityId)).getMainHandItem().getOrCreateTag().putInt("commandMode", packet.mode);
+                if (world.getPlayerByUUID(packet.entityId).getMainHandItem().getItem() == packet.flute.getItem())
+                    world.getPlayerByUUID(packet.entityId).getMainHandItem().getOrCreateTag().putInt("commandMode", packet.mode);
             }
-            else
-            {
-                if (((Player) world.getPlayerByUUID(packet.entityId)).getOffhandItem().getItem() == packet.flute.getItem())
-                    ((Player) world.getPlayerByUUID(packet.entityId)).getOffhandItem().getOrCreateTag().putInt("commandMode", packet.mode);
+            else {
+                if (world.getPlayerByUUID(packet.entityId).getOffhandItem().getItem() == packet.flute.getItem())
+                    world.getPlayerByUUID(packet.entityId).getOffhandItem().getOrCreateTag().putInt("commandMode", packet.mode);
             }
         });
         ctx.get().setPacketHandled(true);

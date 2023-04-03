@@ -56,10 +56,10 @@ import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.network.PacketDistributor;
@@ -310,8 +310,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
 
     @Override
     public AABB getRenderBoundingBox() {
-        AABB aabb = super.getRenderBoundingBox().inflate(5, 5, 5);
-        return aabb;
+        return super.getRenderBoundingBox().inflate(5, 5, 5);
     }
 
     @Override
@@ -419,7 +418,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (!this.extracted && facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (!this.extracted && facing != null && capability == ForgeCapabilities.ITEM_HANDLER) {
             if (facing == Direction.UP)
                 return handlers[0].cast();
             else if (facing == Direction.DOWN)
@@ -427,8 +426,8 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
             else
                 return handlers[2].cast();
         }
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+        if (capability == ForgeCapabilities.FLUID_HANDLER)
+            return ForgeCapabilities.FLUID_HANDLER.orEmpty(capability, LazyOptional.of(() -> this));
         return super.getCapability(capability, facing);
     }
 
@@ -484,22 +483,22 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
     public void entityInside(Entity entity) {
         BlockPos blockpos = this.getPos();
         if (entity instanceof ItemEntity) {
-            if (Shapes.joinIsNotEmpty(Shapes.create(entity.getBoundingBox().move((double)(-blockpos.getX()), (double)(-blockpos.getY()), (double)(-blockpos.getZ()))), HOPPER_SHAPE, BooleanOp.AND)) {
-                if(captureItem((ItemEntity)entity) && !level.isClientSide) {
+            if (Shapes.joinIsNotEmpty(Shapes.create(entity.getBoundingBox().move(-blockpos.getX(), -blockpos.getY(), -blockpos.getZ())), HOPPER_SHAPE, BooleanOp.AND)) {
+                if (captureItem((ItemEntity) entity) && !level.isClientSide) {
                     HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new EmitParticlesPacket(worldPosition, 2, true));
                 }
             }
         }else
         {
-            if (Shapes.joinIsNotEmpty(Shapes.create(entity.getBoundingBox().move((double)(-blockpos.getX()), (double)(-blockpos.getY()), (double)(-blockpos.getZ()))), BLOOD_SIGIL_SHAPE, BooleanOp.AND)) {
-                if(this.isColliding <= 1 && this.getItemInSlot(9).asItem() == ModItems.BLOOD_SIGIL.get()) {
+            if (Shapes.joinIsNotEmpty(Shapes.create(entity.getBoundingBox().move(-blockpos.getX(), -blockpos.getY(), -blockpos.getZ())), BLOOD_SIGIL_SHAPE, BooleanOp.AND)) {
+                if (this.isColliding <= 1 && this.getItemInSlot(9).asItem() == ModItems.BLOOD_SIGIL.get()) {
                     Random random = new Random();
                     entity.hurt(DamageSource.MAGIC, 3.0f);
 
-                    if(fluidStack.isEmpty() || (fluidStack.containsFluid(new FluidStack(ModFluids.BLOOD_FLUID.get(), 1)) && this.getFluidStack().getAmount() < this.getTankCapacity(0))) {
+                    if (fluidStack.isEmpty() || (fluidStack.containsFluid(new FluidStack(ModFluids.BLOOD_FLUID.get(), 1)) && this.getFluidStack().getAmount() < this.getTankCapacity(0))) {
 
-                        if(fluidStack.isEmpty())
-                            this.fill(new FluidStack(ModFluids.BLOOD_FLUID.get(),111), IFluidHandler.FluidAction.EXECUTE);
+                        if (fluidStack.isEmpty())
+                            this.fill(new FluidStack(ModFluids.BLOOD_FLUID.get(), 111), IFluidHandler.FluidAction.EXECUTE);
                         else {
                             this.getFluidStack().grow(111);
                             if (this.getFluidStack().getAmount() % 1000 == 1)
@@ -508,14 +507,14 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
                                 this.getFluidStack().grow(1);
                             setChanged();
                         }
-                        entity.getLevel().playSound((Player)null, entity.blockPosition(), SoundEvents.HONEY_DRINK, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        entity.getLevel().playSound(null, entity.blockPosition(), SoundEvents.HONEY_DRINK, SoundSource.BLOCKS, 1.0F, 1.0F);
                         if(!level.isClientSide)
                             HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new EmitParticlesPacket(worldPosition, 2, true));
 
                     }
                 }
 
-                this.isColliding = 6; // little cooldown so you dont constantly take damage, you must jump on the nails to take damage
+                this.isColliding = 6; // little cooldown so you don't constantly take damage, you must jump on the nails to take damage
 
             }
 
@@ -707,7 +706,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
             this.craftDelay--;
         this.crafting = false;
         if(this.craftDelay > 0 && !level.isClientSide)
-            this.level.setBlock(worldPosition, this.level.getBlockState(this.worldPosition).setValue(MixingCauldron.CRAFT_DELAY, Integer.valueOf(Mth.clamp(this.craftDelay - 1, 0, MixingCauldronTile.craftDelayMax))), 2);
+            this.level.setBlock(worldPosition, this.level.getBlockState(this.worldPosition).setValue(MixingCauldron.CRAFT_DELAY, Mth.clamp(this.craftDelay - 1, 0, MixingCauldronTile.craftDelayMax)), 2);
         if(this.craftDelay < 10)
             this.crafted = false;
 
@@ -788,11 +787,9 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
         float height = MixingCauldronRenderer.MIN_Y + (MixingCauldronRenderer.MAX_Y - MixingCauldronRenderer.MIN_Y) * fillPercentage;
         Random rand = new Random();
 
-        if(this.emitParticles > 0)
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                if(this.emitParticleSpout){
+        if (this.emitParticles > 0 && level != null) {
+            for (int i = 0; i < 3; i++) {
+                if (this.emitParticleSpout) {
                     if (rand.nextInt(3) == 0)
                         level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f, worldPosition.getY() + height, worldPosition.getZ() + 0.5f, (rand.nextDouble() - 0.5d) / 20d, (rand.nextDouble() + 0.5d) * 2d, (rand.nextDouble() - 0.5d) / 20d);
                     if (rand.nextInt(3) == 0)
@@ -918,7 +915,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
                 int amount = fluidHandler.fill(this.fluidStack.copy(), FluidAction.EXECUTE);
                 if (amount > 0) {
                     if(getLevel() != null)
-                        getLevel().playSound((Player) null, getPos().getX() + 0.5f, getPos().getY() + 0.5f, getPos().getZ() + 0.5f, fluidHandler.getFluidInTank(1).getFluid().getPickupSound().isPresent() ? fluidHandler.getFluidInTank(1).getFluid().getPickupSound().get() : SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 0.8F + 0.4F * random.nextFloat());
+                        getLevel().playSound(null, getPos().getX() + 0.5f, getPos().getY() + 0.5f, getPos().getZ() + 0.5f, fluidHandler.getFluidInTank(1).getFluid().getPickupSound().isPresent() ? fluidHandler.getFluidInTank(1).getFluid().getPickupSound().get() : SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 0.8F + 0.4F * random.nextFloat());
                     this.fluidStack.shrink(amount);
                     this.setChanged();
                     return true;
@@ -934,7 +931,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
                 amount.grow(this.fluidStack.getAmount());
                 this.fluidStack = amount;
                 if(getLevel() != null)
-                    getLevel().playSound((Player) null, getPos().getX() + 0.5f, getPos().getY() + 0.5f, getPos().getZ() + 0.5f, amount.getFluid().getPickupSound().isPresent() ? amount.getFluid().getPickupSound().get() : SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 0.8F + 0.4F * random.nextFloat());
+                    getLevel().playSound(null, getPos().getX() + 0.5f, getPos().getY() + 0.5f, getPos().getZ() + 0.5f, amount.getFluid().getPickupSound().isPresent() ? amount.getFluid().getPickupSound().get() : SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 0.8F + 0.4F * random.nextFloat());
                 this.setChanged();
                 return true;
             }

@@ -77,17 +77,13 @@ public class ModChestBoatEntity extends ChestBoat {
 
     @Override
     public Item getDropItem() {
-        switch (Type.byId(this.entityData.get(DATA_ID_TYPE))) {
-            case WILLOW:
-            default:
-                return ModItems.WILLOW_CHEST_BOAT.get();
-            case POLISHED_WILLOW:
-                return ModItems.POLISHED_WILLOW_CHEST_BOAT.get();
-            case MAHOGANY:
-                return ModItems.MAHOGANY_CHEST_BOAT.get();
-            case POLISHED_MAHOGANY:
-                return ModItems.POLISHED_MAHOGANY_CHEST_BOAT.get();
-        }
+        return switch (Type.byId(this.entityData.get(DATA_ID_TYPE))) {
+            default -> ModItems.WILLOW_CHEST_BOAT.get();
+            case POLISHED_WILLOW -> ModItems.POLISHED_WILLOW_CHEST_BOAT.get();
+            case MAHOGANY -> ModItems.MAHOGANY_CHEST_BOAT.get();
+            case POLISHED_MAHOGANY -> ModItems.POLISHED_MAHOGANY_CHEST_BOAT.get();
+            //TODO HAZEL
+        };
     }
 
 

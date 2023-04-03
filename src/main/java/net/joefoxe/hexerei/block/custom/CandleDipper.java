@@ -49,7 +49,6 @@ public class CandleDipper extends BaseEntityBlock implements ITileEntity<CandleD
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    @SuppressWarnings("deprecation")
     @Override
     public RenderShape getRenderShape(BlockState iBlockState) {
         return RenderShape.MODEL;
@@ -62,7 +61,7 @@ public class CandleDipper extends BaseEntityBlock implements ITileEntity<CandleD
             FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
 
             if (this.defaultBlockState().canSurvive(context.getLevel(), context.getClickedPos()) && context.getLevel().getBlockState(context.getClickedPos().below()).getBlock() instanceof MixingCauldron) {
-                return this.defaultBlockState().setValue(WATERLOGGED, Boolean.valueOf(fluidstate.getType() == Fluids.WATER)).setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection());
+                return this.defaultBlockState().setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER).setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection());
         }
         return null;
     }
@@ -129,10 +128,9 @@ public class CandleDipper extends BaseEntityBlock implements ITileEntity<CandleD
 
     public CandleDipper(Properties properties) {
         super(properties.noOcclusion());
-        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.valueOf(false)));
+        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.FALSE));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(HorizontalDirectionalBlock.FACING, WATERLOGGED);
@@ -141,7 +139,7 @@ public class CandleDipper extends BaseEntityBlock implements ITileEntity<CandleD
     public boolean placeLiquid(LevelAccessor worldIn, BlockPos pos, BlockState state, FluidState fluidStateIn) {
         if (!state.getValue(BlockStateProperties.WATERLOGGED) && fluidStateIn.getType() == Fluids.WATER) {
 
-            worldIn.setBlock(pos, state.setValue(WATERLOGGED, Boolean.valueOf(true)), 3);
+            worldIn.setBlock(pos, state.setValue(WATERLOGGED, Boolean.TRUE), 3);
             worldIn.scheduleTick(pos, fluidStateIn.getType(), fluidStateIn.getType().getTickDelay(worldIn));
             return true;
         } else {

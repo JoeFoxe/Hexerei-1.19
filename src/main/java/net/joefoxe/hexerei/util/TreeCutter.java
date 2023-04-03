@@ -165,7 +165,6 @@ public class TreeCutter {
                 if (isLeaf(state) && getLeafDistance(state) > prevLeafDistance) {
                     leaves.add(currentPosImmutable);
                     frontier.add(currentPosImmutable);
-                    return;
                 }
 
             });

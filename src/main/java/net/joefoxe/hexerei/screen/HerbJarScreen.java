@@ -117,17 +117,16 @@ public class HerbJarScreen extends AbstractContainerScreen<HerbJarContainer> {
 
     public void renderButtonTooltip(PoseStack matrixStack, int mouseX, int mouseY){
         List<Component> components = new ArrayList<>();
-        if (isHovering((double)mouseX, (double)mouseY, 82D, 105 - OFFSET, 18D, 18D)) {
+        if (isHovering(mouseX, mouseY, 82D, 105 - OFFSET, 18D, 18D)) {
             components.add(Component.translatable("tooltip.hexerei.gather_to_here_button"));
-            if(Screen.hasShiftDown()) {
+            if (Screen.hasShiftDown()) {
                 components.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                 components.add(Component.translatable("tooltip.hexerei.gather_to_here_button_0").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                 components.add(Component.translatable("tooltip.hexerei.gather_to_here_button_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                 components.add(Component.translatable("tooltip.hexerei.gather_to_here_button_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                 components.add(Component.translatable("tooltip.hexerei.gather_to_here_button_3").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                 components.add(Component.translatable("tooltip.hexerei.gather_to_here_button_4").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-            }
-            else {
+            } else {
                 components.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             }
             this.renderTooltip(matrixStack, components, Optional.empty(), mouseX, mouseY, Minecraft.getInstance().font, ItemStack.EMPTY);

@@ -11,19 +11,19 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 
-public class MushroomWitchArmorModel<T extends Entity> extends ArmorModel {
-	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Hexerei.MOD_ID, "mushroom_witch_armor"), "main");
+public class MushroomWitchArmorModel<T extends LivingEntity> extends ArmorModel<T> {
+    // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Hexerei.MOD_ID, "mushroom_witch_armor"), "main");
 
-	public MushroomWitchArmorModel(ModelPart part) {
-		super(part);
-	}
+    public MushroomWitchArmorModel(ModelPart part) {
+        super(part);
+    }
 
-	public static LayerDefinition createBodyLayer() {
-		MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0), 0);
-		PartDefinition root = createHumanoidAlias(mesh);
+    public static LayerDefinition createBodyLayer() {
+        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0), 0);
+        PartDefinition root = createHumanoidAlias(mesh);
 
 		PartDefinition Body = root.getChild("Body");
 		PartDefinition RightBoot = root.getChild("RightBoot");

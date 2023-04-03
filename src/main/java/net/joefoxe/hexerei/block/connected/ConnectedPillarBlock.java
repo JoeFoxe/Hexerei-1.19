@@ -151,48 +151,33 @@ public class ConnectedPillarBlock extends LayeredBlock {
             return null;
 
         if (axis == Axis.X) {
-            switch (side) {
-                case UP:
-                    return EAST;
-                case NORTH:
-                    return NORTH;
-                case SOUTH:
-                    return SOUTH;
-                case DOWN:
-                    return WEST;
-                default:
-                    return null;
-            }
+            return switch (side) {
+                case UP -> EAST;
+                case NORTH -> NORTH;
+                case SOUTH -> SOUTH;
+                case DOWN -> WEST;
+                default -> null;
+            };
         }
 
         if (axis == Axis.Y) {
-            switch (side) {
-                case EAST:
-                    return EAST;
-                case NORTH:
-                    return NORTH;
-                case SOUTH:
-                    return SOUTH;
-                case WEST:
-                    return WEST;
-                default:
-                    return null;
-            }
+            return switch (side) {
+                case EAST -> EAST;
+                case NORTH -> NORTH;
+                case SOUTH -> SOUTH;
+                case WEST -> WEST;
+                default -> null;
+            };
         }
 
         if (axis == Axis.Z) {
-            switch (side) {
-                case UP:
-                    return WEST;
-                case WEST:
-                    return SOUTH;
-                case EAST:
-                    return NORTH;
-                case DOWN:
-                    return EAST;
-                default:
-                    return null;
-            }
+            return switch (side) {
+                case UP -> WEST;
+                case WEST -> SOUTH;
+                case EAST -> NORTH;
+                case DOWN -> EAST;
+                default -> null;
+            };
         }
 
         return null;

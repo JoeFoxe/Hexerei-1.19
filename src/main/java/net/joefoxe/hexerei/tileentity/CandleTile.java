@@ -23,7 +23,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
@@ -39,9 +38,11 @@ import net.minecraftforge.network.PacketDistributor;
 import javax.annotation.Nullable;
 import java.util.Random;
 
+import static net.joefoxe.hexerei.util.HexereiUtil.moveTo;
+
 public class CandleTile extends BlockEntity {
 
-    public NonNullList<CandleData> candles = NonNullList.withSize(4, new CandleData(Candle.BASE_COLOR, false,0,0, 0, 0, CandleData.meltTimerMAX, new BonemealingCandleEffect()));
+    public NonNullList<CandleData> candles = NonNullList.withSize(4, new CandleData(Candle.BASE_COLOR, false, 0, 0, 0, 0, CandleData.meltTimerMAX, new BonemealingCandleEffect()));
 
     public boolean litStateOld;
 
@@ -55,8 +56,7 @@ public class CandleTile extends BlockEntity {
 
     public CandleTile(BlockEntityType<?> tileEntityTypeIn, BlockPos blockPos, BlockState blockState) {
         super(tileEntityTypeIn, blockPos, blockState);
-        for(int i = 0; i < candles.size(); i++)
-            candles.set(i, new CandleData(Candle.BASE_COLOR, false,0,0, 0, 0, CandleData.meltTimerMAX, new AbstractCandleEffect()));
+        candles.replaceAll(ignored -> new CandleData(Candle.BASE_COLOR, false, 0, 0, 0, 0, CandleData.meltTimerMAX, new AbstractCandleEffect()));
         startupFlag = false;
         numberOfCandles = 0;
         litStateOld = false;
@@ -286,26 +286,6 @@ public class CandleTile extends BlockEntity {
         return Math.sqrt((deltaX * deltaX) + (deltaY * deltaY) + (deltaZ * deltaZ));
     }
 
-
-    private float moveTo(float input, float movedTo, float speed)
-    {
-        float distance = movedTo - input;
-
-        if(Math.abs(distance) <= speed)
-        {
-            return movedTo;
-        }
-
-        if(distance > 0)
-        {
-            input += speed;
-        } else {
-            input -= speed;
-        }
-
-        return input;
-    }
-
 //    @Override
 //    public double getMaxRenderDistanceSquared() {
 //        return 4096D;
@@ -313,8 +293,7 @@ public class CandleTile extends BlockEntity {
 
     @Override
     public AABB getRenderBoundingBox() {
-        AABB aabb = super.getRenderBoundingBox().inflate(25, 25, 25);
-        return aabb;
+        return super.getRenderBoundingBox().inflate(25, 25, 25);
     }
 
     public void sync() {
@@ -385,8 +364,8 @@ public class CandleTile extends BlockEntity {
     public void entityInside(Entity entity) {
         BlockPos blockpos = this.getBlockPos();
         if (entity instanceof Projectile projectile) {
-            if (Shapes.joinIsNotEmpty(Shapes.create(entity.getBoundingBox().move((double)(-blockpos.getX()), (double)(-blockpos.getY()), (double)(-blockpos.getZ()))), Candle.getShape(getBlockState()), BooleanOp.AND)) {
-                if(projectile.isOnFire() && level != null){
+            if (Shapes.joinIsNotEmpty(Shapes.create(entity.getBoundingBox().move(-blockpos.getX(), -blockpos.getY(), -blockpos.getZ())), Candle.getShape(getBlockState()), BooleanOp.AND)) {
+                if (projectile.isOnFire() && level != null) {
                     if (candles.get(0).hasCandle)
                         candles.get(0).lit = true;
                     if (candles.get(1).hasCandle)
@@ -485,8 +464,8 @@ public class CandleTile extends BlockEntity {
             if(this.redstoneBases != hasRedstoneBase) {
                 this.redstoneBases = hasRedstoneBase;
                 float percent = hasRedstoneBase / 4f;
-                int redstonValue = (int) Math.ceil(percent * 15);
-                level.setBlock(worldPosition, state.setValue(Candle.POWER, redstonValue), 3);
+                int redstoneValue = (int) Math.ceil(percent * 15);
+                level.setBlock(worldPosition, state.setValue(Candle.POWER, redstoneValue), 3);
                 for (Direction direction : Direction.values()) {
                     level.updateNeighborsAt(getBlockPos().relative(direction), getBlockState().getBlock());
                 }
@@ -622,14 +601,13 @@ public class CandleTile extends BlockEntity {
                         updateCandleSlots();
                         BlockState blockstate = this.getLevel().getBlockState(this.getBlockPos());
                         if (!level.isClientSide())
-                            this.getLevel().setBlock(this.getBlockPos(), this.getBlockState().setValue(Candle.CANDLES, Integer.valueOf(Math.max(1, blockstate.getValue(Candle.CANDLES) - 1))),1);
-                        level.playSound((Player) null, worldPosition, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
+                            this.getLevel().setBlock(this.getBlockPos(), this.getBlockState().setValue(Candle.CANDLES, Math.max(1, blockstate.getValue(Candle.CANDLES) - 1)), 1);
+                        level.playSound(null, worldPosition, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
 
-                        if(!(candles.get(0).x != 0 || candles.get(0).y != 0 || candles.get(0).z != 0)) {
+                        if (!(candles.get(0).x != 0 || candles.get(0).y != 0 || candles.get(0).z != 0)) {
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
-                        } else
-                        {
+                        } else {
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candles.get(0).x, worldPosition.getY() + 3f / 16f + (float) candles.get(0).height / 16f + candles.get(0).y, worldPosition.getZ() + 0.5f + candles.get(0).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candles.get(0).x, worldPosition.getY() + 3f / 16f + (float) candles.get(0).height / 16f + candles.get(0).y, worldPosition.getZ() + 0.5f + candles.get(0).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                         }
@@ -737,13 +715,12 @@ public class CandleTile extends BlockEntity {
                         updateCandleSlots();
                         BlockState blockstate = this.getLevel().getBlockState(this.getBlockPos());
                         if (!level.isClientSide())
-                            this.getLevel().setBlock(this.getBlockPos(), this.getBlockState().setValue(Candle.CANDLES, Integer.valueOf(Math.max(1, blockstate.getValue(Candle.CANDLES) - 1))), 1);
-                        level.playSound((Player) null, worldPosition, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
-                        if(!(candles.get(1).x != 0 || candles.get(1).y != 0 || candles.get(1).z != 0)) {
+                            this.getLevel().setBlock(this.getBlockPos(), this.getBlockState().setValue(Candle.CANDLES, Math.max(1, blockstate.getValue(Candle.CANDLES) - 1)), 1);
+                        level.playSound(null, worldPosition, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
+                        if (!(candles.get(1).x != 0 || candles.get(1).y != 0 || candles.get(1).z != 0)) {
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
-                        } else
-                        {
+                        } else {
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candles.get(1).x, worldPosition.getY() + 3f / 16f + (float) candles.get(1).height / 16f + candles.get(1).y, worldPosition.getZ() + 0.5f + candles.get(1).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candles.get(1).x, worldPosition.getY() + 3f / 16f + (float) candles.get(1).height / 16f + candles.get(1).y, worldPosition.getZ() + 0.5f + candles.get(1).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                         }
@@ -824,13 +801,12 @@ public class CandleTile extends BlockEntity {
                         updateCandleSlots();
                         BlockState blockstate = this.getLevel().getBlockState(this.getBlockPos());
                         if (!level.isClientSide())
-                            this.getLevel().setBlock(this.getBlockPos(), this.getBlockState().setValue(Candle.CANDLES, Integer.valueOf(Math.max(1, blockstate.getValue(Candle.CANDLES) - 1))), 1);
-                        level.playSound((Player) null, worldPosition, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
-                        if(!(candles.get(2).x != 0 || candles.get(2).y != 0 || candles.get(2).z != 0)) {
+                            this.getLevel().setBlock(this.getBlockPos(), this.getBlockState().setValue(Candle.CANDLES, Math.max(1, blockstate.getValue(Candle.CANDLES) - 1)), 1);
+                        level.playSound(null, worldPosition, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
+                        if (!(candles.get(2).x != 0 || candles.get(2).y != 0 || candles.get(2).z != 0)) {
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
-                        } else
-                        {
+                        } else {
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candles.get(2).x, worldPosition.getY() + 3f / 16f + (float) candles.get(2).height / 16f + candles.get(2).y, worldPosition.getZ() + 0.5f + candles.get(2).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candles.get(2).x, worldPosition.getY() + 3f / 16f + (float) candles.get(2).height / 16f + candles.get(2).y, worldPosition.getZ() + 0.5f + candles.get(2).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                         }
@@ -896,13 +872,12 @@ public class CandleTile extends BlockEntity {
                         updateCandleSlots();
                         BlockState blockstate = this.getLevel().getBlockState(this.getBlockPos());
                         if (!level.isClientSide())
-                            this.getLevel().setBlock(this.getBlockPos(), this.getBlockState().setValue(Candle.CANDLES, Integer.valueOf(Math.max(1, blockstate.getValue(Candle.CANDLES) - 1))), 1);
-                        level.playSound((Player) null, worldPosition, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
-                        if(!(candles.get(3).x != 0 || candles.get(3).y != 0 || candles.get(3).z != 0)) {
+                            this.getLevel().setBlock(this.getBlockPos(), this.getBlockState().setValue(Candle.CANDLES, Math.max(1, blockstate.getValue(Candle.CANDLES) - 1)), 1);
+                        level.playSound(null, worldPosition, SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
+                        if (!(candles.get(3).x != 0 || candles.get(3).y != 0 || candles.get(3).z != 0)) {
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + xOffset, worldPosition.getY() + 0.2d, worldPosition.getZ() + 0.5f + zOffset, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
-                        } else
-                        {
+                        } else {
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candles.get(3).x, worldPosition.getY() + 3f / 16f + (float) candles.get(3).height / 16f + candles.get(3).y, worldPosition.getZ() + 0.5f + candles.get(3).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                             level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(worldPosition)), worldPosition.getX() + 0.5f + candles.get(3).x, worldPosition.getY() + 3f / 16f + (float) candles.get(3).height / 16f + candles.get(3).y, worldPosition.getZ() + 0.5f + candles.get(3).z, (random.nextDouble() - 0.5d) / 50d, (random.nextDouble() + 0.5d) * 0.045d, (random.nextDouble() - 0.5d) / 50d);
                         }

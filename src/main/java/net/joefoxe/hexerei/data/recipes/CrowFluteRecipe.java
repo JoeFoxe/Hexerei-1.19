@@ -1,7 +1,6 @@
 package net.joefoxe.hexerei.data.recipes;
 
 import com.google.gson.JsonObject;
-import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.custom.CrowFluteItem;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;

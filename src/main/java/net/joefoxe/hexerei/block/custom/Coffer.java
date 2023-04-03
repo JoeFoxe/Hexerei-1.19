@@ -42,9 +42,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -55,7 +53,6 @@ import net.minecraftforge.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, SimpleWaterloggedBlock, DyeableLeatherItem {
 
@@ -165,7 +162,6 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
         super.tick(p_60462_, p_60463_, p_60464_, p_60465_);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public RenderShape getRenderShape(BlockState iBlockState) {
         return RenderShape.MODEL;
@@ -175,17 +171,13 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
-        return this.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection()).setValue(WATERLOGGED, Boolean.valueOf(fluidstate.getType() == Fluids.WATER));
+        return this.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, context.getHorizontalDirection()).setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
     }
 
     // hitbox REMEMBER TO DO THIS
-    public static final VoxelShape SHAPE = Stream.of(
-            Block.box(2, 0, 4, 14, 4, 12)
-    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+    public static final VoxelShape SHAPE = Optional.of(Block.box(2, 0, 4, 14, 4, 12)).get();
 
-    public static final VoxelShape SHAPE_TURNED = Stream.of(
-            Block.box(4, 0, 2, 12, 4, 14)
-    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+    public static final VoxelShape SHAPE_TURNED = Optional.of(Block.box(4, 0, 2, 12, 4, 14)).get();
 
 
     @Override

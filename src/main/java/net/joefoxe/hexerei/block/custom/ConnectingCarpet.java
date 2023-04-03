@@ -254,41 +254,24 @@ public class ConnectingCarpet extends CarpetBlock implements Waxed {
         if (pColor == null) {
             return Blocks.SHULKER_BOX;
         } else {
-            switch (pColor) {
-                case WHITE:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_WHITE.get();
-                case ORANGE:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_ORANGE.get();
-                case MAGENTA:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_MAGENTA.get();
-                case LIGHT_BLUE:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIGHT_BLUE.get();
-                case YELLOW:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_YELLOW.get();
-                case LIME:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIME.get();
-                case PINK:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_PINK.get();
-                case GRAY:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_GRAY.get();
-                case LIGHT_GRAY:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIGHT_GRAY.get();
-                case CYAN:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_CYAN.get();
-                case PURPLE:
-                default:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_PURPLE.get();
-                case BLUE:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_BLUE.get();
-                case BROWN:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_BROWN.get();
-                case GREEN:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_GREEN.get();
-                case RED:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_RED.get();
-                case BLACK:
-                    return ModBlocks.INFUSED_FABRIC_CARPET_DYED_BLACK.get();
-            }
+            return switch (pColor) {
+                case WHITE -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_WHITE.get();
+                case ORANGE -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_ORANGE.get();
+                case MAGENTA -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_MAGENTA.get();
+                case LIGHT_BLUE -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIGHT_BLUE.get();
+                case YELLOW -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_YELLOW.get();
+                case LIME -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIME.get();
+                case PINK -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_PINK.get();
+                case GRAY -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_GRAY.get();
+                case LIGHT_GRAY -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_LIGHT_GRAY.get();
+                case CYAN -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_CYAN.get();
+                case PURPLE -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_PURPLE.get();
+                case BLUE -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_BLUE.get();
+                case BROWN -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_BROWN.get();
+                case GREEN -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_GREEN.get();
+                case RED -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_RED.get();
+                case BLACK -> ModBlocks.INFUSED_FABRIC_CARPET_DYED_BLACK.get();
+            };
         }
     }
 
@@ -422,7 +405,6 @@ public class ConnectingCarpet extends CarpetBlock implements Waxed {
         return updateCorners(iblockreader, blockpos, super.getStateForPlacement(context));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(WEST, EAST, NORTH, SOUTH, HorizontalDirectionalBlock.FACING);

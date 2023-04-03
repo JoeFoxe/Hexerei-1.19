@@ -12,7 +12,6 @@ import com.mojang.math.Vector3f;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.entity.custom.CrowEntity;
-import net.joefoxe.hexerei.config.HexConfig;
 import net.joefoxe.hexerei.config.ModKeyBindings;
 import net.joefoxe.hexerei.integration.HexereiModNameTooltipCompat;
 import net.joefoxe.hexerei.integration.jei.HexereiJei;
@@ -59,7 +58,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -135,7 +133,7 @@ public class PageDrawing {
         this.tick = 0;
         this.tooltipStack = ItemStack.EMPTY;
         this.tooltipText = new ArrayList<>();
-        this.slotOverlay = new BookImage(0,0,1, 0,0, 20, 20,20,20,1,"hexerei:textures/book/slot_hover.png", new ArrayList<BookImageEffect>());
+        this.slotOverlay = new BookImage(0, 0, 1, 0, 0, 20, 20, 20, 20, 1, "hexerei:textures/book/slot_hover.png", new ArrayList<>());
         this.drawTooltipStack = false;
         this.drawTooltipStackFlag = false;
         this.drawTooltipTextFlag = false;
@@ -152,7 +150,6 @@ public class PageDrawing {
     }
 
 
-
 //    private final ResourceLocation TEXT = new ResourceLocation(Hexerei.MOD_ID,
 //            "textures/gui/text.png");
 
@@ -163,18 +160,18 @@ public class PageDrawing {
     });
     private static final Quaternion ITEM_LIGHT_ROTATION_FLAT = new Quaternion(Vector3f.XP, 45f, true);
 
-    public static ItemStack getTagStack(TagKey<Item> key){
+    public static ItemStack getTagStack(TagKey<Item> key) {
         Optional<Item> optional = Registry.ITEM.getTag(key).flatMap(tag -> tag.getRandomElement(RandomSource.create())).map(Holder::value);
 
         if (optional.isPresent()) {
             Item item = optional.get();
-            ItemStack itemStack = new ItemStack(item);
-            return itemStack;
+            return item.getDefaultInstance();
         }
         return ItemStack.EMPTY;
 //        return Registry.ITEM.getTag(TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(loc))).flatMap(tag -> tag.getRandomElement(new Random())).map(Holder::value);
     }
-    public static Optional<Item> getTagStackStatic(TagKey<Item> key){
+
+    public static Optional<Item> getTagStackStatic(TagKey<Item> key) {
         return Registry.ITEM.getTag(key).flatMap(tag -> tag.getRandomElement(RandomSource.create())).map(Holder::value);
     }
 
@@ -184,43 +181,42 @@ public class PageDrawing {
 
         ItemStack itemStack = itemStackElement.item;
 
-        if(itemStackElement.type.equals("tag")){
-            int mod = ((int)Hexerei.getClientTicks()) % 60;
+        if (itemStackElement.type.equals("tag")) {
+            int mod = ((int) Hexerei.getClientTicks()) % 60;
 
-            if(itemStackElement.item.isEmpty())
-            {
+            if (itemStackElement.item.isEmpty()) {
                 itemStack = getTagStack(itemStackElement.key);
                 itemStackElement.item = itemStack;
                 itemStackElement.refreshTag = false;
             }
 
-            if((mod == 59 || mod == 58) && itemStackElement.refreshTag){
+            if ((mod == 59 || mod == 58) && itemStackElement.refreshTag) {
                 itemStack = getTagStack(itemStackElement.key);
-                if(itemStack.is(itemStackElement.item.getItem()))
+                if (itemStack.is(itemStackElement.item.getItem()))
                     itemStack = getTagStack(itemStackElement.key);
-                if(itemStack.is(itemStackElement.item.getItem()))
+                if (itemStack.is(itemStackElement.item.getItem()))
                     itemStack = getTagStack(itemStackElement.key);
                 itemStackElement.item = itemStack;
                 itemStackElement.refreshTag = false;
             }
-            if(mod == 1 || mod == 2){
+            if (mod == 1 || mod == 2) {
                 itemStackElement.refreshTag = true;
             }
         }
 
         matrixStackIn.pushPose();
 
-        if(pageOn == PageOn.LEFT_PAGE)
+        if (pageOn == PageOn.LEFT_PAGE)
             translateToLeftPage(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.LEFT_PAGE_UNDER)
+        else if (pageOn == PageOn.LEFT_PAGE_UNDER)
             translateToLeftPageUnder(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.LEFT_PAGE_PREV)
+        else if (pageOn == PageOn.LEFT_PAGE_PREV)
             translateToLeftPagePrevious(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
-        if(pageOn == PageOn.RIGHT_PAGE)
+        if (pageOn == PageOn.RIGHT_PAGE)
             translateToRightPage(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.RIGHT_PAGE_UNDER)
+        else if (pageOn == PageOn.RIGHT_PAGE_UNDER)
             translateToRightPageUnder(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.RIGHT_PAGE_PREV)
+        else if (pageOn == PageOn.RIGHT_PAGE_PREV)
             translateToRightPagePrevious(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
 
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
@@ -245,14 +241,13 @@ public class PageDrawing {
 
 
         try {
-            if(itemRenderer == null)
+            if (itemRenderer == null)
                 itemRenderer = Minecraft.getInstance().getItemRenderer();
             BakedModel itemModel = itemRenderer.getModel(itemStack, null, null, 0);
 
             if (itemModel.isGui3d()) {
                 matrixStackIn.last().normal().mul(ITEM_LIGHT_ROTATION_3D);
-            }
-            else {
+            } else {
                 matrixStackIn.last().normal().mul(ITEM_LIGHT_ROTATION_FLAT);
             }
 
@@ -267,15 +262,15 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    public static void renderGuiItemDecorations(MultiBufferSource bufferSource, Font font, ItemStack itemStack, PoseStack matrixStackIn, float xIn, float yIn, int overlay, int light){
+    public static void renderGuiItemDecorations(MultiBufferSource bufferSource, Font font, ItemStack itemStack, PoseStack matrixStackIn, float xIn, float yIn, int overlay, int light) {
 
         if (itemStack.isBarVisible()) {
 
             matrixStackIn.pushPose();
             int i = itemStack.getBarWidth();
             int j = itemStack.getBarColor();
-            fillRect(matrixStackIn ,bufferSource, xIn + 2.75f, yIn + 13.75f, 0, 13, 1.5f, 0, 0, 0, 255, overlay, light);
-            fillRect(matrixStackIn ,bufferSource, xIn + 2.75f, yIn + 13.75f, -0.5f, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255, overlay, light);
+            fillRect(matrixStackIn, bufferSource, xIn + 2.75f, yIn + 13.75f, 0, 13, 1.5f, 0, 0, 0, 255, overlay, light);
+            fillRect(matrixStackIn, bufferSource, xIn + 2.75f, yIn + 13.75f, -0.5f, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255, overlay, light);
             matrixStackIn.popPose();
         }
 
@@ -283,16 +278,16 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    public static void renderGuiItemCount(MultiBufferSource bufferSource, Font font, ItemStack itemStack, PoseStack matrixStackIn, float xIn, float yIn, int overlay, int light){
+    public static void renderGuiItemCount(MultiBufferSource bufferSource, Font font, ItemStack itemStack, PoseStack matrixStackIn, float xIn, float yIn, int overlay, int light) {
 
         if (itemStack.getCount() > 1) {
             matrixStackIn.pushPose();
-            matrixStackIn.translate(0,0,-7f);
+            matrixStackIn.translate(0, 0, -7f);
             String s = String.valueOf(itemStack.getCount());
             MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-            font.drawInBatch(s, (xIn + 19 - 2 - font.width(s)) + 1f, (yIn + 6 + 3) + 1f, HexereiUtil.getColorValueAlpha(0.245f,0.245f,0.245f,1), false, matrixStackIn.last().pose(), bufferSource, false, overlay, light);
+            font.drawInBatch(s, (xIn + 19 - 2 - font.width(s)) + 1f, (yIn + 6 + 3) + 1f, HexereiUtil.getColorValueAlpha(0.245f, 0.245f, 0.245f, 1), false, matrixStackIn.last().pose(), bufferSource, false, overlay, light);
 
-            matrixStackIn.translate(0,0,-6f);
+            matrixStackIn.translate(0, 0, -6f);
             font.drawInBatch(s, (xIn + 19 - 2 - font.width(s)), (yIn + 6 + 3), 16777215, false, matrixStackIn.last().pose(), bufferSource, false, overlay, light);
             multibuffersource$buffersource.endBatch();
             matrixStackIn.popPose();
@@ -301,14 +296,14 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void renderGuiItem(MultiBufferSource bufferSource, Font font, ItemStack itemStack, PoseStack matrixStackIn, float xIn, float yIn, int overlay, int light){
+    public static void renderGuiItem(MultiBufferSource bufferSource, Font font, ItemStack itemStack, PoseStack matrixStackIn, float xIn, float yIn, int overlay, int light) {
 
 
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 
         matrixStackIn.pushPose();
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(90));
-        matrixStackIn.scale(16,16,1f);
+        matrixStackIn.scale(16, 16, 1f);
         matrixStackIn.translate(yIn * 1.25f * 2 / 40 + 0.55f, -xIn * 1.25f * 2 / 40 - 0.55f, -2f);
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(90));
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
@@ -317,7 +312,7 @@ public class PageDrawing {
         try {
             BakedModel itemModel = itemRenderer.getModel(itemStack, null, null, 0);
 
-            if(Minecraft.getInstance().cameraEntity != null){
+            if (Minecraft.getInstance().cameraEntity != null) {
                 Vec3 vec = Minecraft.getInstance().cameraEntity.getPosition(0);
                 Vector3f vector3f = new Vector3f(2, 1, 3000);
                 Quaternion quat = new Quaternion(vector3f, 0, false);
@@ -329,8 +324,7 @@ public class PageDrawing {
                     quaternion.mul(new Quaternion(Vector3f.YP, 50f, true));
                     return quaternion;
                 }));
-            }
-            else {
+            } else {
                 matrixStackIn.last().normal().mul(new Quaternion(Vector3f.XP, 45f, true));
             }
 
@@ -341,89 +335,83 @@ public class PageDrawing {
         }
 
 
-
-
         matrixStackIn.popPose();
     }
-
 
 
     @OnlyIn(Dist.CLIENT)
     private static void fillRect(PoseStack poseStack, MultiBufferSource p_115153_, float xIn, float yIn, float zIn, float widthIn, float heightIn, int p_115158_, int p_115159_, int p_115160_, int p_115161_, int overlay, int light) {
 
         poseStack.pushPose();
-        poseStack.translate(0,0,-4.15f);
+        poseStack.translate(0, 0, -4.15f);
         Matrix3f normal = poseStack.last().normal();
         Matrix4f matrix4f = poseStack.last().pose();
 
 
         int u = 0;
         int v = 0;
-        int imageWidth =  1;
+        int imageWidth = 1;
         int imageHeight = 1;
         int width = 1;
         int height = 1;
-        float u1 = (u + 0.0F) / (float)imageWidth;
-        float u2 = (u + (float)width) / (float)imageWidth;
-        float v1 = (v + 0.0F) / (float)imageHeight;
-        float v2 = (v + (float)height) / (float)imageHeight;
+        float u1 = (u + 0.0F) / (float) imageWidth;
+        float u2 = (u + (float) width) / (float) imageWidth;
+        float v1 = (v + 0.0F) / (float) imageHeight;
+        float v2 = (v + (float) height) / (float) imageHeight;
 
 
         VertexConsumer buffer = p_115153_.getBuffer(RenderType.entityCutout(new ResourceLocation("hexerei:textures/book/blank.png")));
-        buffer.vertex(matrix4f, (xIn + 0), (yIn + 0), zIn).                color(p_115158_, p_115159_, p_115160_, p_115161_).uv(u1, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-        buffer.vertex(matrix4f, (xIn + 0), (yIn + heightIn), zIn).        color(p_115158_, p_115159_, p_115160_, p_115161_).uv(u1, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix4f, (xIn + 0), (yIn + 0), zIn).color(p_115158_, p_115159_, p_115160_, p_115161_).uv(u1, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix4f, (xIn + 0), (yIn + heightIn), zIn).color(p_115158_, p_115159_, p_115160_, p_115161_).uv(u1, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
         buffer.vertex(matrix4f, (xIn + widthIn), (yIn + heightIn), zIn).color(p_115158_, p_115159_, p_115160_, p_115161_).uv(u2, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-        buffer.vertex(matrix4f, (xIn + widthIn), (yIn + 0), zIn).        color(p_115158_, p_115159_, p_115160_, p_115161_).uv(u2, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix4f, (xIn + widthIn), (yIn + 0), zIn).color(p_115158_, p_115159_, p_115160_, p_115161_).uv(u2, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
         poseStack.popPose();
     }
 
 
-
     @OnlyIn(Dist.CLIENT)
-    public static void translateToLeftPageUnder(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, boolean isItem, ItemTransforms.TransformType transformType){
+    public static void translateToLeftPageUnder(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, boolean isItem, ItemTransforms.TransformType transformType) {
 
         float yPos = 0;
         float xPos = 0;
         float zPos = 0;
         float degreesOpened = 0;
 
-        if(transformType == ItemTransforms.TransformType.GUI)
-            yPos = 3/16f;
-        if(transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
-        {
+        if (transformType == ItemTransforms.TransformType.GUI)
+            yPos = 3 / 16f;
+        if (transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND) {
             degreesOpened = 90;
-            xPos = 4/16f;
-            zPos = -12/32f;
+            xPos = 4 / 16f;
+            zPos = -12 / 32f;
         }
-        if(transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND)
-        {
+        if (transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND) {
             degreesOpened = 90;
-            xPos = 4/16f;
-            zPos = -1/32f;
+            xPos = 4 / 16f;
+            zPos = -1 / 32f;
         }
 
         matrixStack.translate(8f / 16f + xPos, 18f / 16f + yPos, 8f / 16f + zPos);
-        matrixStack.translate((float)Math.sin((tileEntityIn.degreesSpunRender)/57.1f)/32f * (tileEntityIn.degreesOpenedRender/5f - 12f) , 0f/16f, (float)Math.cos((tileEntityIn.degreesSpunRender)/57.1f)/32f * (tileEntityIn.degreesOpenedRender/5f - 12f));
-        matrixStack.translate(0 , -((tileEntityIn.degreesFloppedRender / 90))/16f, 0);
+        matrixStack.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f));
+        matrixStack.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-        if(!isItem)
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 + 45)));
+        if (!isItem)
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 + 45)));
         else
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 - 10)));
-        if(isItem && transformType != ItemTransforms.TransformType.NONE)
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 - 10)));
+        if (isItem && transformType != ItemTransforms.TransformType.NONE)
             matrixStack.mulPose(Vector3f.XP.rotationDegrees(-55));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(-tileEntityIn.degreesFloppedRender));
-        matrixStack.translate(0,0,-(tileEntityIn.degreesFloppedRender/10f)/32);
-        matrixStack.translate(0,1f/32f,0);
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-(80f-tileEntityIn.degreesOpenedRender/1.12f)));
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((-(80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f)*(-tileEntityIn.pageTwoRotationRender)));
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((-(80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f)*(tileEntityIn.pageOneRotationRender / 16f)));
+        matrixStack.translate(0, 0, -(tileEntityIn.degreesFloppedRender / 10f) / 32);
+        matrixStack.translate(0, 1f / 32f, 0);
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-(80f - tileEntityIn.degreesOpenedRender / 1.12f)));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((-(80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f) * (-tileEntityIn.pageTwoRotationRender)));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((-(80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f) * (tileEntityIn.pageOneRotationRender / 16f)));
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-180));
-        matrixStack.translate(0,-1/2f + 1/8f - 1/128f,0);
+        matrixStack.translate(0, -1 / 2f + 1 / 8f - 1 / 128f, 0);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void translateToLeftPage(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, boolean isItem, ItemTransforms.TransformType transformType){
+    public static void translateToLeftPage(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, boolean isItem, ItemTransforms.TransformType transformType) {
 
 
         float yPos = 0;
@@ -431,164 +419,156 @@ public class PageDrawing {
         float zPos = 0;
         float degreesOpened = 0;
 
-        if(transformType == ItemTransforms.TransformType.GUI)
-            yPos = 3/16f;
-        if(transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
-        {
+        if (transformType == ItemTransforms.TransformType.GUI)
+            yPos = 3 / 16f;
+        if (transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND) {
             degreesOpened = 90;
-            xPos = 4/16f;
-            zPos = -12/32f;
+            xPos = 4 / 16f;
+            zPos = -12 / 32f;
         }
-        if(transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND)
-        {
+        if (transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND) {
             degreesOpened = 90;
-            xPos = 4/16f;
-            zPos = -1/32f;
+            xPos = 4 / 16f;
+            zPos = -1 / 32f;
         }
 
         matrixStack.translate(8f / 16f + xPos, 18f / 16f + yPos, 8f / 16f + zPos);
-        matrixStack.translate((float)Math.sin((tileEntityIn.degreesSpunRender)/57.1f)/32f * (tileEntityIn.degreesOpenedRender/5f - 12f) , 0f/16f, (float)Math.cos((tileEntityIn.degreesSpunRender)/57.1f)/32f * (tileEntityIn.degreesOpenedRender/5f - 12f));
-        matrixStack.translate(0 , -((tileEntityIn.degreesFloppedRender / 90))/16f, 0);
+        matrixStack.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f));
+        matrixStack.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-        if(!isItem)
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 + 45)));
+        if (!isItem)
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 + 45)));
         else
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 - 10)));
-        if(isItem && transformType != ItemTransforms.TransformType.NONE)
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 - 10)));
+        if (isItem && transformType != ItemTransforms.TransformType.NONE)
             matrixStack.mulPose(Vector3f.XP.rotationDegrees(-55));
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(degreesOpened));
 
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(-tileEntityIn.degreesFloppedRender));
-        matrixStack.translate(0,0,-(tileEntityIn.degreesFloppedRender/10f)/33);
-        matrixStack.translate(0,1f/32f,0);
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-(80f-tileEntityIn.degreesOpenedRender/1.12f)));
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((-(80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f)*(-tileEntityIn.pageTwoRotationRender)));
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((-(80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f)*(tileEntityIn.pageOneRotationRender / 16f)));
+        matrixStack.translate(0, 0, -(tileEntityIn.degreesFloppedRender / 10f) / 33);
+        matrixStack.translate(0, 1f / 32f, 0);
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-(80f - tileEntityIn.degreesOpenedRender / 1.12f)));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((-(80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f) * (-tileEntityIn.pageTwoRotationRender)));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((-(80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f) * (tileEntityIn.pageOneRotationRender / 16f)));
 //        matrixStack.translate(0,1/64f,0);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void translateToRightPageUnder(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, boolean isItem, ItemTransforms.TransformType transformType){
+    public static void translateToRightPageUnder(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, boolean isItem, ItemTransforms.TransformType transformType) {
 
         float yPos = 0;
         float xPos = 0;
         float zPos = 0;
         float degreesOpened = 0;
 
-        if(transformType == ItemTransforms.TransformType.GUI)
-            yPos = 3/16f;
-        if(transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
-        {
+        if (transformType == ItemTransforms.TransformType.GUI)
+            yPos = 3 / 16f;
+        if (transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND) {
             degreesOpened = 90;
-            xPos = 4/16f;
-            zPos = -12/32f;
+            xPos = 4 / 16f;
+            zPos = -12 / 32f;
         }
-        if(transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND)
-        {
+        if (transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND) {
             degreesOpened = 90;
-            xPos = 4/16f;
-            zPos = -1/32f;
+            xPos = 4 / 16f;
+            zPos = -1 / 32f;
         }
 
         matrixStack.translate(8f / 16f + xPos, 18f / 16f + yPos, 8f / 16f + zPos);
-        matrixStack.translate((float)Math.sin((tileEntityIn.degreesSpunRender)/57.1f)/32f * (tileEntityIn.degreesOpenedRender/5f - 12f) , 0f/16f, (float)Math.cos((tileEntityIn.degreesSpunRender)/57.1f)/32f * (tileEntityIn.degreesOpenedRender/5f - 12f));
-        matrixStack.translate(0 , -((tileEntityIn.degreesFloppedRender / 90))/16f, 0);
+        matrixStack.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f));
+        matrixStack.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-        if(!isItem)
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 + 45)));
+        if (!isItem)
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 + 45)));
         else
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 - 10)));
-        if(isItem && transformType != ItemTransforms.TransformType.NONE)
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 - 10)));
+        if (isItem && transformType != ItemTransforms.TransformType.NONE)
             matrixStack.mulPose(Vector3f.XP.rotationDegrees(-55));
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(degreesOpened));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(-tileEntityIn.degreesFloppedRender));
-        matrixStack.translate(0,0,-(tileEntityIn.degreesFloppedRender/10f)/32);
-        matrixStack.translate(0,1f/32f,0);
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((80f-tileEntityIn.degreesOpenedRender/1.12f)));
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(((80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f)*(-tileEntityIn.pageOneRotationRender)));
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(((80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f)*(tileEntityIn.pageTwoRotationRender / 16f)));
+        matrixStack.translate(0, 0, -(tileEntityIn.degreesFloppedRender / 10f) / 32);
+        matrixStack.translate(0, 1f / 32f, 0);
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((80f - tileEntityIn.degreesOpenedRender / 1.12f)));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(((80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f) * (-tileEntityIn.pageOneRotationRender)));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(((80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f) * (tileEntityIn.pageTwoRotationRender / 16f)));
 //        matrixStack.translate(0, 1 / 64f, 0);
 
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void translateToRightPage(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, boolean isItem, ItemTransforms.TransformType transformType){
+    public static void translateToRightPage(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, boolean isItem, ItemTransforms.TransformType transformType) {
 
         float yPos = 0;
         float xPos = 0;
         float zPos = 0;
         float degreesOpened = 0;
 
-        if(transformType == ItemTransforms.TransformType.GUI)
-            yPos = 3/16f;
-        if(transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
-        {
+        if (transformType == ItemTransforms.TransformType.GUI)
+            yPos = 3 / 16f;
+        if (transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND) {
             degreesOpened = 90;
-            xPos = 4/16f;
-            zPos = -12/32f;
+            xPos = 4 / 16f;
+            zPos = -12 / 32f;
         }
-        if(transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND)
-        {
+        if (transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND) {
             degreesOpened = 90;
-            xPos = 4/16f;
-            zPos = -1/32f;
+            xPos = 4 / 16f;
+            zPos = -1 / 32f;
         }
 
         matrixStack.translate(8f / 16f + xPos, 18f / 16f + yPos, 8f / 16f + zPos);
-        matrixStack.translate((float)Math.sin((tileEntityIn.degreesSpunRender)/57.1f)/32f * (tileEntityIn.degreesOpenedRender/5f - 12f) , 0f/16f, (float)Math.cos((tileEntityIn.degreesSpunRender)/57.1f)/32f * (tileEntityIn.degreesOpenedRender/5f - 12f));
-        matrixStack.translate(0 , -((tileEntityIn.degreesFloppedRender / 90))/16f, 0);
+        matrixStack.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f));
+        matrixStack.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-        if(!isItem)
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 + 45)));
+        if (!isItem)
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 + 45)));
         else
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 - 10)));
-        if(isItem && transformType != ItemTransforms.TransformType.NONE)
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 - 10)));
+        if (isItem && transformType != ItemTransforms.TransformType.NONE)
             matrixStack.mulPose(Vector3f.XP.rotationDegrees(-55));
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(degreesOpened));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(-tileEntityIn.degreesFloppedRender));
-        matrixStack.translate(0,0,-(tileEntityIn.degreesFloppedRender/10f)/32);
-        matrixStack.translate(0,1f/32f,0);
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((80f-tileEntityIn.degreesOpenedRender/1.12f)));
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(((80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f)*(-tileEntityIn.pageOneRotationRender)));
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(((80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f)*(tileEntityIn.pageTwoRotationRender / 16f)));
+        matrixStack.translate(0, 0, -(tileEntityIn.degreesFloppedRender / 10f) / 32);
+        matrixStack.translate(0, 1f / 32f, 0);
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((80f - tileEntityIn.degreesOpenedRender / 1.12f)));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(((80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f) * (-tileEntityIn.pageOneRotationRender)));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(((80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f) * (tileEntityIn.pageTwoRotationRender / 16f)));
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-180));
-        matrixStack.translate(0,-1/2f + 1/8f - 1/128f,0);
+        matrixStack.translate(0, -1 / 2f + 1 / 8f - 1 / 128f, 0);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void translateToLeftPagePrevious(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, boolean isItem, ItemTransforms.TransformType transformType){
+    public static void translateToLeftPagePrevious(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, boolean isItem, ItemTransforms.TransformType transformType) {
 
         float yPos = 0;
         float xPos = 0;
         float zPos = 0;
         float degreesOpened = 0;
 
-        if(transformType == ItemTransforms.TransformType.GUI)
-            yPos = 3/16f;
-        if(transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
-        {
+        if (transformType == ItemTransforms.TransformType.GUI)
+            yPos = 3 / 16f;
+        if (transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND) {
             degreesOpened = 90;
-            xPos = 4/16f;
-            zPos = -12/32f;
+            xPos = 4 / 16f;
+            zPos = -12 / 32f;
         }
-        if(transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND)
-        {
+        if (transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND) {
             degreesOpened = 90;
-            xPos = 4/16f;
-            zPos = -1/32f;
+            xPos = 4 / 16f;
+            zPos = -1 / 32f;
         }
 
-        if(tileEntityIn.turnPage != 2 && tileEntityIn.turnPage != -1){
+        if (tileEntityIn.turnPage != 2 && tileEntityIn.turnPage != -1) {
             matrixStackIn.translate(8f / 16f + xPos, 18f / 16f + yPos, 8f / 16f + zPos);
             matrixStackIn.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f));
             matrixStackIn.translate((float) Math.sin((tileEntityIn.degreesSpunRender + 90f) / 57.1f) / 32f, 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender + 90f) / 57.1f) / 32f);
             matrixStackIn.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-            if(!isItem)
-                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 + 45)));
+            if (!isItem)
+                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 + 45)));
             else
-                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 - 10)));
-            if(isItem && transformType != ItemTransforms.TransformType.NONE)
+                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 - 10)));
+            if (isItem && transformType != ItemTransforms.TransformType.NONE)
                 matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-55));
             matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(degreesOpened));
             matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(tileEntityIn.degreesOpenedRender));
@@ -603,56 +583,54 @@ public class PageDrawing {
             matrixStackIn.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f));
             matrixStackIn.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-            if(!isItem)
-                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 + 45)));
+            if (!isItem)
+                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 + 45)));
             else
-                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 - 10)));
-            if(isItem && transformType != ItemTransforms.TransformType.NONE)
+                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 - 10)));
+            if (isItem && transformType != ItemTransforms.TransformType.NONE)
                 matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-55));
             matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(degreesOpened));
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-tileEntityIn.degreesFloppedRender));
             matrixStackIn.translate(0, 0, -(tileEntityIn.degreesFloppedRender / 10f) / 32);
             matrixStackIn.translate(0, 1f / 32f, 0);
             matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-(80f - tileEntityIn.degreesOpenedRender / 1.12f)));
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees((-(80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f) * (-tileEntityIn.pageTwoRotationRender / 16f + 180/16f)));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees((-(80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f) * (-tileEntityIn.pageTwoRotationRender / 16f + 180 / 16f)));
 //            matrixStackIn.translate(0, 1 / 64f, 0);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void translateToRightPagePrevious(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, boolean isItem, ItemTransforms.TransformType transformType){
+    public static void translateToRightPagePrevious(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, boolean isItem, ItemTransforms.TransformType transformType) {
 
         float yPos = 0;
         float xPos = 0;
         float zPos = 0;
         float degreesOpened = 0;
 
-        if(transformType == ItemTransforms.TransformType.GUI)
-            yPos = 3/16f;
-        if(transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
-        {
+        if (transformType == ItemTransforms.TransformType.GUI)
+            yPos = 3 / 16f;
+        if (transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND) {
             degreesOpened = 90;
-            xPos = 4/16f;
-            zPos = -12/32f;
+            xPos = 4 / 16f;
+            zPos = -12 / 32f;
         }
-        if(transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND)
-        {
+        if (transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND) {
             degreesOpened = 90;
-            xPos = 4/16f;
-            zPos = -1/32f;
+            xPos = 4 / 16f;
+            zPos = -1 / 32f;
         }
 
-        if(tileEntityIn.turnPage != 1 && tileEntityIn.turnPage != -1){
+        if (tileEntityIn.turnPage != 1 && tileEntityIn.turnPage != -1) {
             matrixStackIn.translate(8f / 16f + xPos, 18f / 16f + yPos, 8f / 16f + zPos);
             matrixStackIn.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f));
             matrixStackIn.translate(-(float) Math.sin((tileEntityIn.degreesSpunRender + 90f) / 57.1f) / 32f, 0f / 16f, -(float) Math.cos((tileEntityIn.degreesSpunRender + 90f) / 57.1f) / 32f);
             matrixStackIn.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-            if(!isItem)
-                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 + 45)));
+            if (!isItem)
+                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 + 45)));
             else
-                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 - 10)));
-            if(isItem && transformType != ItemTransforms.TransformType.NONE)
+                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 - 10)));
+            if (isItem && transformType != ItemTransforms.TransformType.NONE)
                 matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-55));
             matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(degreesOpened));
             matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-tileEntityIn.degreesOpenedRender));
@@ -661,68 +639,66 @@ public class PageDrawing {
             matrixStackIn.translate(0, (-0.5f * (tileEntityIn.degreesFloppedRender / 90)) / 16f, -(float) Math.sin((tileEntityIn.degreesFloppedRender) / 57.1f) / 32f);
             matrixStackIn.translate(0, 1f / 32f, 0);
             matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-90));
-            matrixStackIn.translate(0, -0.375f - 1/128f, 0);
+            matrixStackIn.translate(0, -0.375f - 1 / 128f, 0);
         } else {
             matrixStackIn.translate(8f / 16f + xPos, 18f / 16f + yPos, 8f / 16f + zPos);
             matrixStackIn.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f));
             matrixStackIn.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-            if(!isItem)
-                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 + 45)));
+            if (!isItem)
+                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 + 45)));
             else
-                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 - 10)));
-            if(isItem && transformType != ItemTransforms.TransformType.NONE)
+                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 - 10)));
+            if (isItem && transformType != ItemTransforms.TransformType.NONE)
                 matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(90));
             matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(degreesOpened));
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-tileEntityIn.degreesFloppedRender));
             matrixStackIn.translate(0, 0, -(tileEntityIn.degreesFloppedRender / 10f) / 32);
             matrixStackIn.translate(0, 1f / 32f, 0);
             matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees((80f - tileEntityIn.degreesOpenedRender / 1.12f)));
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f) * (-tileEntityIn.pageOneRotationRender / 16f + 180/16f)));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((80f - tileEntityIn.degreesOpenedRender / 1.12f) / 90f) * (-tileEntityIn.pageOneRotationRender / 16f + 180 / 16f)));
             matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-180));
-            matrixStackIn.translate(0,-0.375f - 1/128f,0);
+            matrixStackIn.translate(0, -0.375f - 1 / 128f, 0);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void translateToMiddleButton(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, boolean isItem, ItemTransforms.TransformType transformType){
+    public void translateToMiddleButton(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, boolean isItem, ItemTransforms.TransformType transformType) {
 
         float yPos = 0;
         float xPos = 0;
         float zPos = 0;
         float degreesOpened = 0;
 
-        if(transformType == ItemTransforms.TransformType.GUI)
-            yPos = 3/16f;
-        if(transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
-        {
+        if (transformType == ItemTransforms.TransformType.GUI)
+            yPos = 3 / 16f;
+        if (transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND) {
             degreesOpened = 90;
-            xPos = 4/16f;
-            zPos = -12/32f;
+            xPos = 4 / 16f;
+            zPos = -12 / 32f;
         }
-        if(transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND)
-        {
+        if (transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND) {
             degreesOpened = 90;
-            xPos = 4/16f;
-            zPos = -1/32f;
+            xPos = 4 / 16f;
+            zPos = -1 / 32f;
         }
 
         matrixStack.translate(8f / 16f + xPos, 18f / 16f + yPos, 8f / 16f + zPos);
-        matrixStack.translate((float)Math.sin((tileEntityIn.degreesSpunRender)/57.1f)/32f * (tileEntityIn.degreesOpenedRender/5f - 12f) , 0f/16f, (float)Math.cos((tileEntityIn.degreesSpunRender)/57.1f)/32f * (tileEntityIn.degreesOpenedRender/5f - 12f));
-        matrixStack.translate(0 , -((tileEntityIn.degreesFloppedRender / 90))/16f, 0);
+        matrixStack.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f));
+        matrixStack.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-        if(!isItem)
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 + 45)));
+        if (!isItem)
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 + 45)));
         else
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 - 13)));
-        if(isItem && transformType != ItemTransforms.TransformType.NONE)
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 - 13)));
+        if (isItem && transformType != ItemTransforms.TransformType.NONE)
             matrixStack.mulPose(Vector3f.XP.rotationDegrees(-55));
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(degreesOpened));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(-tileEntityIn.degreesFloppedRender));
-        matrixStack.translate(0,0,-(tileEntityIn.degreesFloppedRender/10f)/32);
+        matrixStack.translate(0, 0, -(tileEntityIn.degreesFloppedRender / 10f) / 32);
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(270));
-        matrixStack.translate(2.95f / 64f,7.1f / 16f,11f / 32f);
+        matrixStack.translate(2.95f / 64f, 7.1f / 16f, 11f / 32f);
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(90));
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-180));
 //        matrixStack.translate(0,0,0);
@@ -735,26 +711,27 @@ public class PageDrawing {
     public void drawPage(BookPage page, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource.BufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem, ItemTransforms.TransformType transformType) throws CommandSyntaxException {
         drawPage(page, tileEntityIn, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, pageOn, isItem, transformType, -1);
     }
+
     @OnlyIn(Dist.CLIENT)
     public void drawPage(BookPage page, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource.BufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem, ItemTransforms.TransformType transformType, int pageNum) throws CommandSyntaxException {
 
-        if(page != null) {
+        if (page != null) {
 
 
             Player playerIn = Hexerei.proxy.getPlayer();
 
-            double reach = playerIn.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
+            double reach = playerIn.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
             Vec3 planeNormalRight = planeNormal(tileEntityIn, PageOn.RIGHT_PAGE);
             Vec3 planeNormalLeft = planeNormal(tileEntityIn, PageOn.LEFT_PAGE);
 
-            for(int i = 0; i < page.paragraph.size(); i++){
+            for (int i = 0; i < page.paragraph.size(); i++) {
                 drawString(((BookParagraph) (page.paragraph.toArray()[i])), tileEntityIn, matrixStackIn, bufferIn, 0, 0, 0, combinedLightIn, combinedOverlayIn, pageOn, isItem);
             }
 
             //draw page number
-            if(pageOn == PageOn.LEFT_PAGE || pageOn == PageOn.LEFT_PAGE_PREV || pageOn == PageOn.RIGHT_PAGE_UNDER){
+            if (pageOn == PageOn.LEFT_PAGE || pageOn == PageOn.LEFT_PAGE_PREV || pageOn == PageOn.RIGHT_PAGE_UNDER) {
                 BookEntries bookEntries = BookManager.getBookEntries();
-                if(bookEntries != null){
+                if (bookEntries != null) {
                     int pageOnNum = pageNum + 1 - bookEntries.chapterList.get(0).endPage;
                     BookParagraphElements bookParagraphElements = new BookParagraphElements(14.3f, 19.25f, 1, 30);
                     ArrayList<BookParagraphElements> list = new ArrayList<>();
@@ -769,9 +746,9 @@ public class PageDrawing {
                     drawString(bookParagraph, tileEntityIn, matrixStackIn, bufferIn, 0, 0, 0, combinedLightIn, combinedOverlayIn, pageOn, isItem);
                 }
             }
-            if(pageOn == PageOn.RIGHT_PAGE || pageOn == PageOn.RIGHT_PAGE_PREV || pageOn == PageOn.LEFT_PAGE_UNDER){
+            if (pageOn == PageOn.RIGHT_PAGE || pageOn == PageOn.RIGHT_PAGE_PREV || pageOn == PageOn.LEFT_PAGE_UNDER) {
                 BookEntries bookEntries = BookManager.getBookEntries();
-                if(bookEntries != null){
+                if (bookEntries != null) {
                     int pageOnNum = pageNum + 1 - bookEntries.chapterList.get(0).endPage;
                     BookParagraphElements bookParagraphElements = new BookParagraphElements(0, 19.25f, 1, 30);
                     ArrayList<BookParagraphElements> list = new ArrayList<>();
@@ -786,12 +763,12 @@ public class PageDrawing {
                 }
             }
 
-            for(int i = 0; i < page.itemList.size(); i++){
+            for (int i = 0; i < page.itemList.size(); i++) {
                 BookItemsAndFluids bookItemStackInSlot = ((BookItemsAndFluids) (page.itemList.toArray()[i]));
                 drawItemInSlot(tileEntityIn, bookItemStackInSlot, matrixStackIn, bufferIn, bookItemStackInSlot.x, bookItemStackInSlot.y, 0, combinedLightIn, combinedOverlayIn, pageOn, isItem);
             }
 
-            if(transformType == ItemTransforms.TransformType.NONE){
+            if (transformType == ItemTransforms.TransformType.NONE) {
                 for (int i = 0; i < page.itemList.size(); i++) {
                     BookItemsAndFluids bookItemStackInSlot = ((BookItemsAndFluids) (page.itemList.toArray()[i]));
 
@@ -821,7 +798,7 @@ public class PageDrawing {
 
 
                             if (bookItemStackInSlot.item != null) {
-                                if(!bookItemStackInSlot.item.isEmpty()){
+                                if (!bookItemStackInSlot.item.isEmpty()) {
                                     this.tooltipStack = bookItemStackInSlot.item;
                                     this.tooltipText = bookItemStackInSlot.extra_tooltips;
                                     this.drawTooltipStack = true;
@@ -869,7 +846,7 @@ public class PageDrawing {
                         if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
 
                             if (bookItemStackInSlot.item != null) {
-                                if(!bookItemStackInSlot.item.isEmpty()){
+                                if (!bookItemStackInSlot.item.isEmpty()) {
                                     this.tooltipStack = bookItemStackInSlot.item;
                                     this.tooltipText = bookItemStackInSlot.extra_tooltips;
                                     this.drawTooltipStack = true;
@@ -897,8 +874,8 @@ public class PageDrawing {
                 for (int i = 0; i < page.entityList.size(); i++) {
                     BookEntity bookEntity = ((BookEntity) (page.entityList.toArray()[i]));
 
-                    if(bookEntity.entity != null)
-                        bookEntity.entity.tickCount = (int)Hexerei.getClientTicksWithoutPartial();
+                    if (bookEntity.entity != null)
+                        bookEntity.entity.tickCount = (int) Hexerei.getClientTicksWithoutPartial();
 
                     if (pageOn == PageOn.LEFT_PAGE) {
                         Vector3f vector3f = new Vector3f(0, 0, 0);
@@ -926,39 +903,37 @@ public class PageDrawing {
 
                             MouseHandler handler = Minecraft.getInstance().mouseHandler;
 
-                            if(handler.isRightPressed() && !this.isRightPressedOld && tileEntityIn.slotClicked == -1)
+                            if (handler.isRightPressed() && !this.isRightPressedOld && tileEntityIn.slotClicked == -1)
                                 Hexerei.entityClicked = true;
-                            if(Hexerei.entityClicked)
+                            if (Hexerei.entityClicked)
                                 bookEntity.toRotate += (this.mouseXOld - handler.xpos());
-                        }
-                        else {
+                        } else {
                             bookEntity.hoverTick = moveTo(bookEntity.hoverTick, 0, 0.08f);
                         }
 
 
-                        if(bookEntity.hoverTick > 0){
+                        if (bookEntity.hoverTick > 0) {
                             MouseHandler handler = Minecraft.getInstance().mouseHandler;
 
-                            BookImage bookImage = new BookImage(bookEntity.x, bookEntity.y + 0.5f, 0, 0, 0, 64,32,64,32,0.75f * bookEntity.hoverTick,"hexerei:textures/book/rotate_entity.png",new ArrayList<>());
+                            BookImage bookImage = new BookImage(bookEntity.x, bookEntity.y + 0.5f, 0, 0, 0, 64, 32, 64, 32, 0.75f * bookEntity.hoverTick, "hexerei:textures/book/rotate_entity.png", new ArrayList<>());
                             drawImage(bookImage, tileEntityIn, matrixStackIn, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, isItem);
 
-                            if(handler.isRightPressed()) {
-                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - ((float)Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * (float)Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32,48,32,48,0.45f * bookEntity.hoverTick,"hexerei:textures/book/right_click_icon_hover.png",new ArrayList<>());
+                            if (handler.isRightPressed()) {
+                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - (Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32, 48, 32, 48, 0.45f * bookEntity.hoverTick, "hexerei:textures/book/right_click_icon_hover.png", new ArrayList<>());
                                 drawImage(bookImage2, tileEntityIn, matrixStackIn, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, isItem);
 
-                            }
-                            else{
-                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - ((float)Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * (float)Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32,48,32,48,0.45f * bookEntity.hoverTick,"hexerei:textures/book/right_click_icon.png",new ArrayList<>());
+                            } else {
+                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - (Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32, 48, 32, 48, 0.45f * bookEntity.hoverTick, "hexerei:textures/book/right_click_icon.png", new ArrayList<>());
                                 drawImage(bookImage2, tileEntityIn, matrixStackIn, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, isItem);
 
                             }
                         }
 
 
-                        if(bookEntity.toRotate != 0){
-                            if(bookEntity.toRotate > 0) {
+                        if (bookEntity.toRotate != 0) {
+                            if (bookEntity.toRotate > 0) {
                                 bookEntity.rot += Math.max(Math.abs(bookEntity.toRotate) / 100f, 0.01f) / 3f;
-                            } else{
+                            } else {
                                 bookEntity.rot -= Math.max(Math.abs(bookEntity.toRotate) / 100f, 0.01f) / 3f;
                             }
                             bookEntity.toRotate = moveTo(bookEntity.toRotate, 0, Math.max(Math.abs(bookEntity.toRotate) / 100f, 0.01f));
@@ -990,36 +965,34 @@ public class PageDrawing {
 
                             bookEntity.hoverTick = moveTo(bookEntity.hoverTick, 1, 0.04f);
 
-                            if(handler.isRightPressed() && !this.isRightPressedOld && tileEntityIn.slotClicked == -1)
+                            if (handler.isRightPressed() && !this.isRightPressedOld && tileEntityIn.slotClicked == -1)
                                 Hexerei.entityClicked = true;
-                            if(Hexerei.entityClicked)
+                            if (Hexerei.entityClicked)
                                 bookEntity.toRotate += (this.mouseXOld - handler.xpos());
-                        }
-                        else {
+                        } else {
                             bookEntity.hoverTick = moveTo(bookEntity.hoverTick, 0, 0.08f);
                         }
 
-                        if(bookEntity.hoverTick > 0){
+                        if (bookEntity.hoverTick > 0) {
 
-                            BookImage bookImage = new BookImage(bookEntity.x, bookEntity.y + 0.5f, 0, 0, 0, 64,32,64,32,0.75f * bookEntity.hoverTick,"hexerei:textures/book/rotate_entity.png",new ArrayList<>());
+                            BookImage bookImage = new BookImage(bookEntity.x, bookEntity.y + 0.5f, 0, 0, 0, 64, 32, 64, 32, 0.75f * bookEntity.hoverTick, "hexerei:textures/book/rotate_entity.png", new ArrayList<>());
                             drawImage(bookImage, tileEntityIn, matrixStackIn, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, isItem);
 
-                            if(handler.isRightPressed()) {
-                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - ((float)Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * (float)Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32,48,32,48,0.45f * bookEntity.hoverTick,"hexerei:textures/book/right_click_icon_hover.png",new ArrayList<>());
+                            if (handler.isRightPressed()) {
+                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - (Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32, 48, 32, 48, 0.45f * bookEntity.hoverTick, "hexerei:textures/book/right_click_icon_hover.png", new ArrayList<>());
                                 drawImage(bookImage2, tileEntityIn, matrixStackIn, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, isItem);
 
-                            }
-                            else{
-                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - ((float)Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * (float)Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32,48,32,48,0.45f * bookEntity.hoverTick,"hexerei:textures/book/right_click_icon.png",new ArrayList<>());
+                            } else {
+                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - (Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32, 48, 32, 48, 0.45f * bookEntity.hoverTick, "hexerei:textures/book/right_click_icon.png", new ArrayList<>());
                                 drawImage(bookImage2, tileEntityIn, matrixStackIn, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, isItem);
 
                             }
                         }
 
-                        if(bookEntity.toRotate != 0){
-                            if(bookEntity.toRotate > 0) {
+                        if (bookEntity.toRotate != 0) {
+                            if (bookEntity.toRotate > 0) {
                                 bookEntity.rot += Math.max(Math.abs(bookEntity.toRotate) / 100f, 0.01f) / 3f;
-                            } else{
+                            } else {
                                 bookEntity.rot -= Math.max(Math.abs(bookEntity.toRotate) / 100f, 0.01f) / 3f;
                             }
                             bookEntity.toRotate = moveTo(bookEntity.toRotate, 0, Math.max(Math.abs(bookEntity.toRotate) / 100f, 0.01f));
@@ -1095,7 +1068,7 @@ public class PageDrawing {
 
 
             }
-            for(int i = 0; i < page.imageList.size(); i++){
+            for (int i = 0; i < page.imageList.size(); i++) {
                 BookImage bookImage = ((BookImage) (page.imageList.toArray()[i]));
                 drawImage(bookImage, tileEntityIn, matrixStackIn, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, isItem);
 
@@ -1159,19 +1132,19 @@ public class PageDrawing {
 
 
             //drawing slot overlay
-            if(this.drawSlotOverlay)
+            if (this.drawSlotOverlay)
                 drawImage(this.slotOverlay, tileEntityIn, matrixStackIn, bufferIn, 0, combinedLightIn, combinedOverlayIn, this.slotOverlayPageOn, isItem);
 
-            if(page.showTitle.equals("Hexerei"))
+            if (page.showTitle.equals("Hexerei"))
                 drawTitle(tileEntityIn, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, pageOn, isItem);
 
-            for(int i = 0; i < page.entityList.size(); i++){
+            for (int i = 0; i < page.entityList.size(); i++) {
                 BookEntity bookEntity = ((BookEntity) (page.entityList.toArray()[i]));
-                if(bookEntity.entity instanceof LivingEntity livingEntity) {
+                if (bookEntity.entity instanceof LivingEntity livingEntity) {
                     if (bookEntity.entityTagsList.size() > 0 && tileEntityIn.tickCount > bookEntity.entityTagsLastChange + 40) {
-                        bookEntity.entityTagsLastChange = (int)tileEntityIn.tickCount;
+                        bookEntity.entityTagsLastChange = (int) tileEntityIn.tickCount;
                         bookEntity.entityTagsListOn++;
-                        if(bookEntity.entityTagsListOn >= bookEntity.entityTagsList.size())
+                        if (bookEntity.entityTagsListOn >= bookEntity.entityTagsList.size())
                             bookEntity.entityTagsListOn = 0;
                         int on = bookEntity.entityTagsListOn;
 
@@ -1207,12 +1180,11 @@ public class PageDrawing {
                         }
                     }
                     drawLivingEntity(tileEntityIn, matrixStackIn, bufferIn, bookEntity.scale, bookEntity.x, bookEntity.y, bookEntity.rot, 20, (float) (107), (float) (88 - 30), livingEntity, combinedLightIn, combinedOverlayIn, pageOn, isItem);
-                }
-                else if(bookEntity.entity != null) {
+                } else if (bookEntity.entity != null) {
                     if (bookEntity.entityTagsList.size() > 0 && tileEntityIn.tickCount > bookEntity.entityTagsLastChange + 40) {
-                        bookEntity.entityTagsLastChange = (int)tileEntityIn.tickCount;
+                        bookEntity.entityTagsLastChange = (int) tileEntityIn.tickCount;
                         bookEntity.entityTagsListOn++;
-                        if(bookEntity.entityTagsListOn >= bookEntity.entityTagsList.size())
+                        if (bookEntity.entityTagsListOn >= bookEntity.entityTagsList.size())
                             bookEntity.entityTagsListOn = 0;
                         int on = bookEntity.entityTagsListOn;
                         if (bookEntity.entityTagsListOnSet != on && !bookEntity.entityTagsList.get(on).equals("")) {
@@ -1232,13 +1204,12 @@ public class PageDrawing {
                         }
                     }
                     drawEntity(tileEntityIn, matrixStackIn, bufferIn, bookEntity.scale, bookEntity.x, bookEntity.y, bookEntity.rot, 20, (float) (107), (float) (88 - 30), bookEntity.entity, combinedLightIn, combinedOverlayIn, pageOn, isItem);
-                }
-                else {
+                } else {
                     Optional<EntityType<?>> optionalEntityType = EntityType.byString(bookEntity.entityType);
-                    if(optionalEntityType.isPresent()) {
-                        Entity entity = (Entity) optionalEntityType.get().create(Hexerei.proxy.getLevel());
+                    if (optionalEntityType.isPresent()) {
+                        Entity entity = optionalEntityType.get().create(Hexerei.proxy.getLevel());
 
-                        if(entity instanceof LivingEntity livingEntity){
+                        if (entity instanceof LivingEntity livingEntity) {
                             bookEntity.entity = entity;
 
 
@@ -1271,7 +1242,7 @@ public class PageDrawing {
                                 }
                                 bookEntity.entity = tamableAnimal;
                             }
-                        }else {
+                        } else {
                             bookEntity.entity = entity;
 
 
@@ -1295,43 +1266,41 @@ public class PageDrawing {
         }
 
 
-
-
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawLivingEntity(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource.BufferSource bufferIn, float scale, float xIn, float yIn, float rot, int p_98853_, float p_98854_, float p_98855_, LivingEntity livingEntity, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem){
+    public void drawLivingEntity(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource.BufferSource bufferIn, float scale, float xIn, float yIn, float rot, int p_98853_, float p_98854_, float p_98855_, LivingEntity livingEntity, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem) {
         matrixStackIn.pushPose();
 
-        if(livingEntity instanceof TamableAnimal tamableAnimal && !tamableAnimal.isInSittingPose()) {
+        if (livingEntity instanceof TamableAnimal tamableAnimal && !tamableAnimal.isInSittingPose()) {
             tamableAnimal.setInSittingPose(true);
             tamableAnimal.setOnGround(true);
         }
 
 //        livingEntity.tickCount += 1;
 
-        if(pageOn == PageOn.LEFT_PAGE)
+        if (pageOn == PageOn.LEFT_PAGE)
             translateToLeftPage(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.LEFT_PAGE_UNDER)
+        else if (pageOn == PageOn.LEFT_PAGE_UNDER)
             translateToLeftPageUnder(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.LEFT_PAGE_PREV)
+        else if (pageOn == PageOn.LEFT_PAGE_PREV)
             translateToLeftPagePrevious(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
-        if(pageOn == PageOn.RIGHT_PAGE)
+        if (pageOn == PageOn.RIGHT_PAGE)
             translateToRightPage(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.RIGHT_PAGE_UNDER)
+        else if (pageOn == PageOn.RIGHT_PAGE_UNDER)
             translateToRightPageUnder(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.RIGHT_PAGE_PREV)
+        else if (pageOn == PageOn.RIGHT_PAGE_PREV)
             translateToRightPagePrevious(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
 
-        matrixStackIn.translate(-1f/512f, 0, 0);
+        matrixStackIn.translate(-1f / 512f, 0, 0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.translate(-8f / 16f, 5.5f / 16f, -0.04f / 16f);
-        matrixStackIn.scale(0.049f * scale,0.049f * scale,0.003f);
+        matrixStackIn.scale(0.049f * scale, 0.049f * scale, 0.003f);
         matrixStackIn.translate(yIn * 1.25f / scale, -xIn * 1.25f / scale, 0);
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(90));
 
-        float $$6 = (float)Math.atan((double)(p_98854_ / 40.0F));
-        float $$7 = (float)Math.atan((double)(p_98855_ / 40.0F));
+        float $$6 = (float) Math.atan(p_98854_ / 40.0F);
+        float $$7 = (float) Math.atan(p_98855_ / 40.0F);
         Quaternion $$10 = Vector3f.ZP.rotationDegrees(180.0F);
         Quaternion $$11 = Vector3f.XP.rotationDegrees($$7 * 20.0F);
         $$10.mul($$11);
@@ -1361,30 +1330,30 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawEntity(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource.BufferSource bufferIn, float scale, float xIn, float yIn, float rot, int p_98853_, float p_98854_, float p_98855_, Entity entity, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem){
+    public void drawEntity(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource.BufferSource bufferIn, float scale, float xIn, float yIn, float rot, int p_98853_, float p_98854_, float p_98855_, Entity entity, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem) {
         matrixStackIn.pushPose();
 
-        if(pageOn == PageOn.LEFT_PAGE)
+        if (pageOn == PageOn.LEFT_PAGE)
             translateToLeftPage(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.LEFT_PAGE_UNDER)
+        else if (pageOn == PageOn.LEFT_PAGE_UNDER)
             translateToLeftPageUnder(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.LEFT_PAGE_PREV)
+        else if (pageOn == PageOn.LEFT_PAGE_PREV)
             translateToLeftPagePrevious(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
-        if(pageOn == PageOn.RIGHT_PAGE)
+        if (pageOn == PageOn.RIGHT_PAGE)
             translateToRightPage(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.RIGHT_PAGE_UNDER)
+        else if (pageOn == PageOn.RIGHT_PAGE_UNDER)
             translateToRightPageUnder(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.RIGHT_PAGE_PREV)
+        else if (pageOn == PageOn.RIGHT_PAGE_PREV)
             translateToRightPagePrevious(tileEntityIn, matrixStackIn, isItem, ItemTransforms.TransformType.NONE);
 
-        matrixStackIn.translate(-1f/512f, 0, 0);
+        matrixStackIn.translate(-1f / 512f, 0, 0);
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStackIn.translate(-8f / 16f, 5.5f / 16f, -0.04f / 16f);
-        matrixStackIn.scale(0.049f * scale,0.049f * scale,0.003f);
+        matrixStackIn.scale(0.049f * scale, 0.049f * scale, 0.003f);
         matrixStackIn.translate(yIn * 1.25f / scale, -xIn * 1.25f / scale, 0);
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(90));
 
-        float $$7 = (float)Math.atan((double)(p_98855_ / 40.0F));
+        float $$7 = (float) Math.atan(p_98855_ / 40.0F);
         Quaternion $$10 = Vector3f.ZP.rotationDegrees(180.0F);
         Quaternion $$11 = Vector3f.XP.rotationDegrees($$7 * 20.0F);
         $$10.mul($$11);
@@ -1411,7 +1380,7 @@ public class PageDrawing {
     public void drawPages(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, int light, int overlay, boolean isItem, ItemTransforms.TransformType transformType, float partialTicks) throws CommandSyntaxException {
         this.tick++;
 
-        if(ClientProxy.keys == null)
+        if (ClientProxy.keys == null)
             ClientProxy.keys = Minecraft.getInstance().options.keyMappings;
 
         this.drawSlotOverlay = false;
@@ -1419,9 +1388,9 @@ public class PageDrawing {
         this.drawTooltipText = false;
         BookEntries bookEntries = BookManager.getBookEntries();
 
-        if(bookEntries == null)
+        if (bookEntries == null)
             HexereiPacketHandler.sendToServer(new AskForEntriesAndPagesPacket());
-        if(bookEntries == null)
+        if (bookEntries == null)
             return;
 
         ItemStack stack = tileEntityIn.itemHandler.getStackInSlot(0);
@@ -1430,23 +1399,20 @@ public class PageDrawing {
 
         float pageOneSpeed = 1;
         float pageTwoSpeed = 1;
-        if(tileEntityIn.turnPage == 1)
-        {
+        if (tileEntityIn.turnPage == 1) {
             if (tileEntityIn.pageOneRotation != 180) {
                 pageOneSpeed = ((float) Math.sin(tileEntityIn.pageOneRotationRender / 180 * Math.PI) * (float) Math.sin(tileEntityIn.pageOneRotationRender / 180 * Math.PI) * 15) + 4.25f;
             }
         }
-        if(tileEntityIn.turnPage == 2)
-        {
+        if (tileEntityIn.turnPage == 2) {
             if (tileEntityIn.pageTwoRotation != 180) {
                 pageTwoSpeed = ((float) Math.sin(tileEntityIn.pageTwoRotationRender / 180 * Math.PI) * (float) Math.sin(tileEntityIn.pageTwoRotationRender / 180 * Math.PI) * 15) + 4.25f;
             }
         }
 
-        if(tileEntityIn.turnPage == -1)
-        {
+        if (tileEntityIn.turnPage == -1) {
             CompoundTag tag2 = tileEntityIn.itemHandler.getStackInSlot(0).getOrCreateTag();
-            if(tag2.contains("chapter")) {
+            if (tag2.contains("chapter")) {
                 int chapter = tag2.getInt("chapter");
                 int page = tag2.getInt("page");
                 int pageOnNum = bookEntries.chapterList.get(chapter).startPage + page;
@@ -1471,23 +1437,23 @@ public class PageDrawing {
         int location1_p = 0;
         int location2_p = 0;
         int location1_back_p = 0;
-        int location2_back_p  = 0;
-        int location1_next_p  = 0;
-        int location2_next_p  = 0;
+        int location2_back_p = 0;
+        int location1_next_p = 0;
+        int location2_next_p = 0;
         int chapter = 0;
         int page = 0;
-        if (tag.contains("chapter")){
+        if (tag.contains("chapter")) {
             chapter = tag.getInt("chapter");
             page = tag.getInt("page");
-            if(page % 2 == 1)
+            if (page % 2 == 1)
                 page--;
 
-            if(page < bookEntries.chapterList.get(chapter).pages.size() && page >= 0) {
+            if (page < bookEntries.chapterList.get(chapter).pages.size() && page >= 0) {
                 BookPageEntry pageEntry = bookEntries.chapterList.get(chapter).pages.get(page);
                 location1 = pageEntry.location;
                 location1_p = pageEntry.pageNum;
             }
-            if(bookEntries.chapterList.get(chapter).pages.size() > page + 1) {
+            if (bookEntries.chapterList.get(chapter).pages.size() > page + 1) {
                 BookPageEntry pageEntry = bookEntries.chapterList.get(chapter).pages.get(page + 1);
                 location2 = pageEntry.location;
                 location2_p = pageEntry.pageNum;
@@ -1498,16 +1464,15 @@ public class PageDrawing {
             int next_page_page = page;
             int back_page_chapter = chapter;
             int back_page_page = page;
-            if(next_page_page < BookManager.getBookEntries().chapterList.get(chapter).pages.size() - 2)
+            if (next_page_page < BookManager.getBookEntries().chapterList.get(chapter).pages.size() - 2)
                 next_page_page += 2;
-            else if(chapter < BookManager.getBookEntries().chapterList.size() - 1) {
+            else if (chapter < BookManager.getBookEntries().chapterList.size() - 1) {
                 next_page_chapter++;
                 next_page_page = 0;
-            }
-            else
+            } else
                 next_page_chapter = -1;
 
-            if(next_page_chapter != -1 && next_page_chapter < bookEntries.chapterList.size() && next_page_page < bookEntries.chapterList.get(next_page_chapter).pages.size()) {
+            if (next_page_chapter != -1 && next_page_chapter < bookEntries.chapterList.size() && next_page_page < bookEntries.chapterList.get(next_page_chapter).pages.size()) {
 
                 BookPageEntry pageEntry = bookEntries.chapterList.get(next_page_chapter).pages.get(next_page_page);
                 location1_next = pageEntry.location;
@@ -1520,19 +1485,17 @@ public class PageDrawing {
             }
 
 
-
-            if(back_page_page - 2 >= 0)
-                back_page_page-=2;
-            else if(back_page_chapter > 0) {
+            if (back_page_page - 2 >= 0)
+                back_page_page -= 2;
+            else if (back_page_chapter > 0) {
                 back_page_chapter--;
                 back_page_page = BookManager.getBookEntries().chapterList.get(back_page_chapter).pages.size() - 1;
-                if(back_page_page % 2 == 1)
+                if (back_page_page % 2 == 1)
                     back_page_page--;
-            }
-            else
+            } else
                 back_page_chapter = -1;
 
-            if(back_page_chapter != -1 && back_page_chapter < bookEntries.chapterList.size() && back_page_page < bookEntries.chapterList.get(back_page_chapter).pages.size()){
+            if (back_page_chapter != -1 && back_page_chapter < bookEntries.chapterList.size() && back_page_page < bookEntries.chapterList.get(back_page_chapter).pages.size()) {
 
                 BookPageEntry pageEntry = bookEntries.chapterList.get(back_page_chapter).pages.get(back_page_page);
                 location1_back = pageEntry.location;
@@ -1546,7 +1509,7 @@ public class PageDrawing {
 
         }
 //
-        if(transformType != ItemTransforms.TransformType.GUI){
+        if (transformType != ItemTransforms.TransformType.GUI) {
 
             BookPage page1 = BookManager.getBookPages(new ResourceLocation(Hexerei.MOD_ID, location1));
             BookPage page2 = BookManager.getBookPages(new ResourceLocation(Hexerei.MOD_ID, location2));
@@ -1560,8 +1523,7 @@ public class PageDrawing {
             drawPage(page2_under, tileEntityIn, matrixStack, bufferSource, light, overlay, PageOn.RIGHT_PAGE_UNDER, isItem, transformType, location1_next_p);
             drawPage(page1_prev, tileEntityIn, matrixStack, bufferSource, light, overlay, PageOn.LEFT_PAGE_PREV, isItem, transformType, location1_back_p);
             drawPage(page2_prev, tileEntityIn, matrixStack, bufferSource, light, overlay, PageOn.RIGHT_PAGE_PREV, isItem, transformType, location2_next_p);
-        }
-        else{
+        } else {
 
             BookPage page1 = BookManager.getBookPages(new ResourceLocation(Hexerei.MOD_ID, "book/book_pages/gui_page_1"));
             BookPage page2 = BookManager.getBookPages(new ResourceLocation(Hexerei.MOD_ID, "book/book_pages/gui_page_1"));
@@ -1574,26 +1536,24 @@ public class PageDrawing {
         MouseHandler handler = Minecraft.getInstance().mouseHandler;
 
 
-        if(this.drawTooltipStack && tileEntityIn.turnPage == 0) {
+        if (this.drawTooltipStack && tileEntityIn.turnPage == 0) {
             this.drawTooltipStackFlag = true;
             this.drawTooltipTextFlag = false;
             this.drawTooltipScale = moveTo(this.drawTooltipScale, 1f, 0.02f);
-        }
-        else if(this.drawTooltipText && tileEntityIn.turnPage == 0) {
+        } else if (this.drawTooltipText && tileEntityIn.turnPage == 0) {
             this.drawTooltipTextFlag = true;
             this.drawTooltipStackFlag = false;
             this.drawTooltipScale = moveTo(this.drawTooltipScale, 1f, 0.02f);
-        }
-        else {
+        } else {
             this.drawTooltipScale = moveTo(this.drawTooltipScale, 0, 0.025f);
-            if(this.drawTooltipScale == 0) {
+            if (this.drawTooltipScale == 0) {
                 this.drawTooltipStackFlag = false;
                 this.drawTooltipTextFlag = false;
             }
         }
 
-        if(this.drawTooltipScale > 0) {
-            if(this.drawTooltipStackFlag)
+        if (this.drawTooltipScale > 0) {
+            if (this.drawTooltipStackFlag)
                 drawTooltipImage(this.tooltipStack, tileEntityIn, matrixStack, bufferSource, 0, light, overlay, isItem);
             else
                 drawTooltipText(tileEntityIn, matrixStack, bufferSource, 0, light, overlay, isItem);
@@ -1613,23 +1573,24 @@ public class PageDrawing {
     public void drawBaseButtons(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, int light, int overlay, boolean drawNext, boolean drawBack, int chapter, int page, boolean isItem) {
         drawBaseButtons(tileEntityIn, matrixStack, bufferSource, light, overlay, drawNext, drawBack, chapter, page, isItem, ItemTransforms.TransformType.NONE, false);
     }
+
     @OnlyIn(Dist.CLIENT)
     public void drawBaseButtons(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, int light, int overlay, boolean drawNext, boolean drawBack, int chapter, int page, boolean isItem, ItemTransforms.TransformType transformType, boolean fullyExtended) {
 
         Player playerIn = null;
-        if(tileEntityIn.getLevel() != null && tileEntityIn.getLevel().isClientSide)
+        if (tileEntityIn.getLevel() != null && tileEntityIn.getLevel().isClientSide)
             playerIn = Hexerei.proxy.getPlayer();
-        if(playerIn != null){
+        if (playerIn != null) {
 
             boolean drawBookmarkButton = chapter != 0;
 
-            double reach = playerIn.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
+            double reach = playerIn.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
             Vec3 planeNormalRight = planeNormal(tileEntityIn, PageOn.RIGHT_PAGE);
             Vec3 planeNormalLeft = planeNormal(tileEntityIn, PageOn.LEFT_PAGE);
             CompoundTag tag = tileEntityIn.itemHandler.getStackInSlot(0).getOrCreateTag();
 
 
-            if(drawBookmarkButton && !isItem){
+            if (drawBookmarkButton && !isItem) {
                 Vector3f vector3f = new Vector3f(0, 0, 0);
                 Vector3f vector3f_1 = new Vector3f(0.35f - -0.5f * 0.064f, 0.5f - -1f * 0.061f, -0.03f);
 
@@ -1665,31 +1626,31 @@ public class PageDrawing {
                 }
 
 
-                if(tag.contains("bookmarks") && tag.getBoolean("opened")) {
+                if (tag.contains("bookmarks") && tag.getBoolean("opened")) {
 
                     int bookmark_color = 0;
                     int bookmark_chapter = 0;
                     int bookmark_page = 0;
                     boolean flag2 = false;
                     CompoundTag bookmarks = tag.getCompound("bookmarks");
-                    for(int i = 0; i < 20; i++){
-                        if(bookmarks.contains("slot_" + i)){
+                    for (int i = 0; i < 20; i++) {
+                        if (bookmarks.contains("slot_" + i)) {
                             CompoundTag slot = bookmarks.getCompound("slot_" + i);
                             bookmark_color = slot.getInt("color");
                             bookmark_chapter = slot.getInt("chapter");
                             bookmark_page = slot.getInt("page");
 
-                            if(chapter == bookmark_chapter && (page == bookmark_page || page + 1 == bookmark_page)){
+                            if (chapter == bookmark_chapter && (page == bookmark_page || page + 1 == bookmark_page)) {
                                 flag2 = true;
                                 break;
                             }
                         }
                     }
                     // draw bookmark button
-                    if(flag2){
+                    if (flag2) {
 
 
-                        if(flag){
+                        if (flag) {
                             List<Component> list = new ArrayList<>();
                             DyeColor col = DyeColor.byId(bookmark_color);
 
@@ -1709,9 +1670,9 @@ public class PageDrawing {
                         drawImage(bookImage, tileEntityIn, matrixStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, isItem);
                         drawImage(bookImage_overlay, tileEntityIn, matrixStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, HexereiUtil.getColorValue(DyeColor.byId(bookmark_color)), isItem, transformType);
 
-                    }else{
+                    } else {
 
-                        if(flag){
+                        if (flag) {
                             List<Component> list = new ArrayList<>();
 
                             list.add(Component.translatable("Bookmark Page").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
@@ -1728,18 +1689,17 @@ public class PageDrawing {
                     //draw bookmarks
 
 
-
                 }
             }
-            if(tag.contains("bookmarks")){
+            if (tag.contains("bookmarks")) {
 
                 int bookmark_color = 0;
                 int bookmark_chapter = 0;
                 int bookmark_page = 0;
                 CompoundTag bookmarks = tag.getCompound("bookmarks");
-                for(int i = 0; i < 20; i++){
+                for (int i = 0; i < 20; i++) {
                     boolean flag2 = false;
-                    if(bookmarks.contains("slot_" + i)){
+                    if (bookmarks.contains("slot_" + i)) {
 
                         CompoundTag slot = bookmarks.getCompound("slot_" + i);
                         bookmark_color = slot.getInt("color");
@@ -1749,11 +1709,11 @@ public class PageDrawing {
 
                         ArrayList<BookImageEffect> effectsBookmark = new ArrayList<>();
 
-                        if(i < 5){
+                        if (i < 5) {
 
                             float xIn = -0.4f - tileEntityIn.buttonScaleRender - 0.15f;
                             float yIn = i * 1.5f;
-                            if(fullyExtended) {
+                            if (fullyExtended) {
                                 xIn = -1.55f + 0.5f;
                                 yIn += 0.25f;
                             }
@@ -1779,22 +1739,22 @@ public class PageDrawing {
 
                             }
 
-                            float bookX = xIn + 0.4f - tileEntityIn.bookmarkHoverAmount[i]/3 * tileEntityIn.buttonScaleRender;
-                            if(fullyExtended)
+                            float bookX = xIn + 0.4f - tileEntityIn.bookmarkHoverAmount[i] / 3 * tileEntityIn.buttonScaleRender;
+                            if (fullyExtended)
                                 bookX = xIn + 0.4f - 0.33f;
 
-                            if(flag2){
+                            if (flag2) {
                                 List<Component> list = new ArrayList<>();
                                 DyeColor col = DyeColor.byId(bookmark_color);
 
                                 BookEntries bookEntries = BookManager.getBookEntries();
 
-                                if(bookEntries != null){
+                                if (bookEntries != null) {
                                     list.add(Component.translatable("%s%s - Page %s%s",
-                                            Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
-                                            Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).name).withStyle(Style.EMPTY.withColor(10329495)),
-                                            Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).pages.get(Math.max(0, bookmark_page)).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
-                                            Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
+                                                    Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
+                                                    Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).name).withStyle(Style.EMPTY.withColor(10329495)),
+                                                    Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).pages.get(Math.max(0, bookmark_page)).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
+                                                    Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
                                             .withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
                                     this.tooltipText = list;
                                     this.tooltipStack = ItemStack.EMPTY;
@@ -1808,12 +1768,12 @@ public class PageDrawing {
                             drawBookmark(bookImageUnderlay, tileEntityIn, matrixStack, bufferSource, -10, 90, light, overlay, PageOn.LEFT_PAGE, HexereiUtil.getColorValue(DyeColor.byId(bookmark_color)), isItem, transformType);
                             drawBookmark(bookImageOverlay, tileEntityIn, matrixStack, bufferSource, -10, 90, light, overlay, PageOn.LEFT_PAGE, HexereiUtil.getColorValue(DyeColor.byId(bookmark_color)), isItem, transformType);
                         }
-                        if(i >= 5 && i < 10){
+                        if (i >= 5 && i < 10) {
 
 
                             float yIn = -0.95f - tileEntityIn.buttonScaleRender - 0.25f;
                             float xIn = -5.5f + i * 1.15f;
-                            if(fullyExtended) {
+                            if (fullyExtended) {
                                 yIn = -2.15f + 0.65f;
                                 xIn += 0.25f;
                             }
@@ -1840,22 +1800,22 @@ public class PageDrawing {
                             }
 
 
-                            float bookY = yIn + 0.5f - tileEntityIn.bookmarkHoverAmount[i]/3 * tileEntityIn.buttonScaleRender;
-                            if(fullyExtended)
+                            float bookY = yIn + 0.5f - tileEntityIn.bookmarkHoverAmount[i] / 3 * tileEntityIn.buttonScaleRender;
+                            if (fullyExtended)
                                 bookY = yIn + 0.5f - 0.33f;
 
-                            if(flag2){
+                            if (flag2) {
                                 List<Component> list = new ArrayList<>();
                                 DyeColor col = DyeColor.byId(bookmark_color);
 
                                 BookEntries bookEntries = BookManager.getBookEntries();
 
-                                if(bookEntries != null){
+                                if (bookEntries != null) {
                                     list.add(Component.translatable("%s%s - Page %s%s",
-                                            Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
-                                            Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
-                                            Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
-                                            Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
+                                                    Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
+                                                    Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
+                                                    Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
+                                                    Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
                                             .withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
                                     this.tooltipText = list;
                                     this.tooltipStack = ItemStack.EMPTY;
@@ -1869,11 +1829,11 @@ public class PageDrawing {
                             drawBookmark(bookImageUnderlay, tileEntityIn, matrixStack, bufferSource, -10, 0, light, overlay, PageOn.LEFT_PAGE, HexereiUtil.getColorValue(DyeColor.byId(bookmark_color)), isItem, transformType);
                             drawBookmark(bookImageOverlay, tileEntityIn, matrixStack, bufferSource, -10, 0, light, overlay, PageOn.LEFT_PAGE, HexereiUtil.getColorValue(DyeColor.byId(bookmark_color)), isItem, transformType);
                         }
-                        if(i >= 10 && i < 15){
+                        if (i >= 10 && i < 15) {
 
                             float yIn = -0.95f - tileEntityIn.buttonScaleRender - 0.25f;
                             float xIn = -11.25f + i * 1.15f;
-                            if(fullyExtended) {
+                            if (fullyExtended) {
                                 yIn = -2.15f + 0.65f;
                                 xIn += 0.25f;
                             }
@@ -1900,18 +1860,18 @@ public class PageDrawing {
                             }
 
 
-                            if(flag2){
+                            if (flag2) {
                                 List<Component> list = new ArrayList<>();
                                 DyeColor col = DyeColor.byId(bookmark_color);
 
                                 BookEntries bookEntries = BookManager.getBookEntries();
 
-                                if(bookEntries != null){
+                                if (bookEntries != null) {
                                     list.add(Component.translatable("%s%s - Page %s%s",
-                                            Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
-                                            Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
-                                            Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
-                                            Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
+                                                    Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
+                                                    Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
+                                                    Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
+                                                    Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
                                             .withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
                                     this.tooltipText = list;
                                     this.tooltipStack = ItemStack.EMPTY;
@@ -1920,8 +1880,8 @@ public class PageDrawing {
                             }
 
 
-                            float bookY = yIn + 0.5f - tileEntityIn.bookmarkHoverAmount[i]/3 * tileEntityIn.buttonScaleRender;
-                            if(fullyExtended)
+                            float bookY = yIn + 0.5f - tileEntityIn.bookmarkHoverAmount[i] / 3 * tileEntityIn.buttonScaleRender;
+                            if (fullyExtended)
                                 bookY = yIn + 0.5f - 0.33f;
 
                             BookImage bookImageUnderlay = new BookImage(xIn, bookY, 0, 0, 0, 64, 48, 64, 48, 0.5f, "hexerei:textures/book/bookmark_underlay.png", effectsBookmark);
@@ -1930,11 +1890,11 @@ public class PageDrawing {
                             drawBookmark(bookImageUnderlay, tileEntityIn, matrixStack, bufferSource, -10, 0, light, overlay, PageOn.RIGHT_PAGE, HexereiUtil.getColorValue(DyeColor.byId(bookmark_color)), isItem, transformType);
                             drawBookmark(bookImageOverlay, tileEntityIn, matrixStack, bufferSource, -10, 0, light, overlay, PageOn.RIGHT_PAGE, HexereiUtil.getColorValue(DyeColor.byId(bookmark_color)), isItem, transformType);
                         }
-                        if(i >= 15){
+                        if (i >= 15) {
 
                             float xIn = 5.5f + tileEntityIn.buttonScaleRender;
                             float yIn = (i - 15) * 1.5f;
-                            if(fullyExtended) {
+                            if (fullyExtended) {
                                 xIn = 6.65f;
                                 yIn -= 0.25f;
                             }
@@ -1962,23 +1922,23 @@ public class PageDrawing {
 
                             }
 
-                            float bookX = xIn - 0.4f + tileEntityIn.bookmarkHoverAmount[i]/3 * tileEntityIn.buttonScaleRender;
-                            if(fullyExtended)
+                            float bookX = xIn - 0.4f + tileEntityIn.bookmarkHoverAmount[i] / 3 * tileEntityIn.buttonScaleRender;
+                            if (fullyExtended)
                                 bookX = xIn - 0.4f - 0.33f;
 
-                            if(flag2){
+                            if (flag2) {
                                 List<Component> list = new ArrayList<>();
                                 DyeColor col = DyeColor.byId(bookmark_color);
 
                                 BookEntries bookEntries = BookManager.getBookEntries();
 
 
-                                if(bookEntries != null){
+                                if (bookEntries != null) {
                                     list.add(Component.translatable("%s%s - Page %s%s",
-                                            Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
-                                            Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
-                                            Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
-                                            Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
+                                                    Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
+                                                    Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
+                                                    Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
+                                                    Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
                                             .withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
                                     this.tooltipText = list;
                                     this.tooltipStack = ItemStack.EMPTY;
@@ -1994,31 +1954,29 @@ public class PageDrawing {
                         }
 
 
-
-                        if(chapter == bookmark_chapter && (page == bookmark_page || page + 1 == bookmark_page)){
+                        if (chapter == bookmark_chapter && (page == bookmark_page || page + 1 == bookmark_page)) {
                             tileEntityIn.bookmarkHoverAmount[i] = moveTo(tileEntityIn.bookmarkHoverAmount[i], 1, 0.1f);
                         }
 
 
                     }
 
-                    if(chapter == bookmark_chapter && (page == bookmark_page || page + 1 == bookmark_page)){
+                    if (chapter == bookmark_chapter && (page == bookmark_page || page + 1 == bookmark_page)) {
 //                        tileEntityIn.bookmarkHoverAmount[i] = moveTo(tileEntityIn.bookmarkHoverAmount[i], 1, 0.1f);
-                    }
-                    else if(tileEntityIn.bookmarkHoverAmount[i] > 0 && !flag2)
+                    } else if (tileEntityIn.bookmarkHoverAmount[i] > 0 && !flag2)
                         tileEntityIn.bookmarkHoverAmount[i] = moveTo(tileEntityIn.bookmarkHoverAmount[i], 0, 0.05f);
                 }
 
 
                 //send to server to update the slotClicked
 
-                if(tileEntityIn.slotClicked != -1) {
+                if (tileEntityIn.slotClicked != -1) {
                     for (int i = 0; i < 20; i++) {
 
-                    if(i == tileEntityIn.slotClicked)
-                        continue;
+                        if (i == tileEntityIn.slotClicked)
+                            continue;
 
-                    boolean flag2 = false;
+                        boolean flag2 = false;
 
                         ArrayList<BookImageEffect> effectsBookmark = new ArrayList<>();
                         if (i < 5) {
@@ -2161,9 +2119,7 @@ public class PageDrawing {
             }
 
 
-
-
-            if(!isItem){
+            if (!isItem) {
                 Vector3f vector3f = new Vector3f(0, 0, 0);
                 Vector3f vector3f_1 = new Vector3f(0.35f - -0.5f * 0.064f, 0.5f - 7.25f * 0.061f, -0.03f);
 
@@ -2184,7 +2140,7 @@ public class PageDrawing {
                 BookImageEffect bookImageEffect_tilt = new BookImageEffect("tilt", 35, 10f);
 
                 String loc = "hexerei:textures/book/font_button.png";
-                if(drawBack)
+                if (drawBack)
                     loc = "hexerei:textures/book/back_page.png";
 
                 boolean flag = false;
@@ -2197,7 +2153,7 @@ public class PageDrawing {
                     effects.add(bookImageEffect_scale);
                     effects.add(bookImageEffect_tilt);
                     List<Component> list = new ArrayList<>();
-                    if(drawBack) {
+                    if (drawBack) {
                         list.add(Component.translatable("Back").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
 
                         loc = "hexerei:textures/book/back_page_hover.png";
@@ -2218,7 +2174,7 @@ public class PageDrawing {
             }
 
 
-            if(!isItem){
+            if (!isItem) {
                 Vector3f vector3f = new Vector3f(0, 0, 0);
                 //back position
                 Vector3f vector3f_1 = new Vector3f(0, 0.5f - 7f * 0.061f, -0.03f);
@@ -2258,8 +2214,7 @@ public class PageDrawing {
                         this.tooltipText = list;
                         this.drawTooltipText = true;
                         this.tooltipStack = ItemStack.EMPTY;
-                    }
-                    else {
+                    } else {
                         loc_close = "hexerei:textures/book/close_hover.png";
                         List<Component> list = new ArrayList<>();
                         list.add(Component.translatable("Close Book").withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
@@ -2367,17 +2322,14 @@ public class PageDrawing {
         }
     }
 
-    private float moveTo(float input, float moveTo, float speed)
-    {
+    private float moveTo(float input, float moveTo, float speed) {
         float distance = moveTo - input;
 
-        if(Math.abs(distance) <= speed)
-        {
+        if (Math.abs(distance) <= speed) {
             return moveTo;
         }
 
-        if(distance > 0)
-        {
+        if (distance > 0) {
             input += speed;
         } else {
             input -= speed;
@@ -2389,38 +2341,36 @@ public class PageDrawing {
     public float getAngle(Vec3 pos, BlockEntity blockEntity) {
         float angle = (float) Math.toDegrees(Math.atan2(pos.z() - blockEntity.getBlockPos().getZ() - 0.5f, pos.x() - blockEntity.getBlockPos().getX() - 0.5f));
 
-        if(angle < 0){
+        if (angle < 0) {
             angle += 360;
         }
 
         return angle;
     }
-    public float moveToAngle(float input, float movedTo, float speed)
-    {
+
+    public float moveToAngle(float input, float movedTo, float speed) {
         float distance = movedTo - input;
 
-        if(Math.abs(distance) <= speed)
-        {
+        if (Math.abs(distance) <= speed) {
             return movedTo;
         }
 
-        if(distance > 0)
-        {
-            if(Math.abs(distance) < 180)
+        if (distance > 0) {
+            if (Math.abs(distance) < 180)
                 input += speed;
             else
                 input -= speed;
         } else {
-            if(Math.abs(distance) < 180)
+            if (Math.abs(distance) < 180)
                 input -= speed;
             else
                 input += speed;
         }
 
-        if(input < -90){
+        if (input < -90) {
             input += 360;
         }
-        if(input > 270)
+        if (input > 270)
             input -= 360;
 
         return input;
@@ -2428,18 +2378,18 @@ public class PageDrawing {
 
     @OnlyIn(Dist.CLIENT)
     public void drawItemInSlot(BookOfShadowsAltarTile tileEntityIn, BookItemsAndFluids bookItemStackInSlot, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float xIn, float yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
-        if(bookItemStackInSlot.type.equals("item") || bookItemStackInSlot.type.equals("tag")) {
-            if(bookItemStackInSlot.show_slot)
+        if (bookItemStackInSlot.type.equals("item") || bookItemStackInSlot.type.equals("tag")) {
+            if (bookItemStackInSlot.show_slot)
                 drawSlot(tileEntityIn, bookItemStackInSlot.item, matrixStack, bufferSource, xIn, yIn, 0, light, overlay, pageOn, isItem);
             renderItem(tileEntityIn, bookItemStackInSlot, matrixStack, bufferSource, xIn, yIn, 0, light, overlay, pageOn, isItem);
-        }else if(bookItemStackInSlot.type.equals("fluid")){
+        } else if (bookItemStackInSlot.type.equals("fluid")) {
             drawFluidInSlot(tileEntityIn, bookItemStackInSlot, matrixStack, bufferSource, xIn, yIn, 0, light, overlay, pageOn, isItem);
         }
 
     }
 
     @OnlyIn(Dist.CLIENT)
-    public AABB getpositionAABBNext(BookOfShadowsAltarTile altarTile){
+    public AABB getpositionAABBNext(BookOfShadowsAltarTile altarTile) {
 
         BlockPos blockPos = altarTile.getBlockPos();
         Vector3f vector3f = new Vector3f(0, 0, 0);
@@ -2452,11 +2402,11 @@ public class PageDrawing {
                 vector3f.y() + blockPos.getY() + 18 / 16f,
                 vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
 
-        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
-        return aabb;
+        return new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
     }
+
     @OnlyIn(Dist.CLIENT)
-    public AABB getpositionAABBBack(BookOfShadowsAltarTile altarTile){
+    public AABB getpositionAABBBack(BookOfShadowsAltarTile altarTile) {
         Vector3f vector3f = new Vector3f(0, 0, 0);
         Vector3f vector3f_1 = new Vector3f(0.35f - -0.5f * 0.06f, 0.5f - 7.25f * 0.061f, -0.03f);
 
@@ -2474,11 +2424,11 @@ public class PageDrawing {
                 vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
 
 
-        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
-        return aabb;
+        return new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
     }
+
     @OnlyIn(Dist.CLIENT)
-    public AABB getpositionAABBLeft(BookOfShadowsAltarTile altarTile, float xIn, float yIn){
+    public AABB getpositionAABBLeft(BookOfShadowsAltarTile altarTile, float xIn, float yIn) {
         Vector3f vector3f = new Vector3f(0, 0, 0);
         Vector3f vector3f_1 = new Vector3f(0.35f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
 
@@ -2496,11 +2446,11 @@ public class PageDrawing {
                 vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
 
 
-        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
-        return aabb;
+        return new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
     }
+
     @OnlyIn(Dist.CLIENT)
-    public AABB getpositionAABBClose(BookOfShadowsAltarTile altarTile){
+    public AABB getpositionAABBClose(BookOfShadowsAltarTile altarTile) {
         Vector3f vector3f = new Vector3f(0, 0, 0);
         //back position
         Vector3f vector3f_1 = new Vector3f(0, 0.5f - 7f * 0.061f, -0.03f);
@@ -2515,13 +2465,12 @@ public class PageDrawing {
                 vector3f.y() + blockPos.getY() + 18 / 16f,
                 vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
 
-        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
 
-
-        return aabb;
+        return new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
     }
+
     @OnlyIn(Dist.CLIENT)
-    public AABB getpositionAABBHome(BookOfShadowsAltarTile altarTile){
+    public AABB getpositionAABBHome(BookOfShadowsAltarTile altarTile) {
         Vector3f vector3f = new Vector3f(0, 0, 0);
         //back position
         Vector3f vector3f_1 = new Vector3f(0, 0.5f - -1f * 0.061f, -0.03f);
@@ -2536,10 +2485,8 @@ public class PageDrawing {
                 vector3f.y() + blockPos.getY() + 18 / 16f,
                 vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
 
-        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
 
-
-        return aabb;
+        return new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
     }
 
 
@@ -2554,25 +2501,25 @@ public class PageDrawing {
         float f5 = Mth.sin(-f * 0.017453292F);
         float f6 = f3 * f4;
         float f7 = f2 * f4;
-        double d0 = player.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
+        double d0 = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
 
-        if(i == 1){
+        if (i == 1) {
             vec3 = vec3.subtract(0, 1, 0);
         }
-        if(i == 2){
+        if (i == 2) {
             vec3 = vec3.subtract(0.25, 1, 0);
         }
-        if(i == 3){
+        if (i == 3) {
             vec3 = vec3.subtract(-0.25, 1, 0);
         }
-        if(i == 4){
+        if (i == 4) {
             vec3 = vec3.subtract(0, 1, 0.25);
         }
-        if(i == 5){
+        if (i == 5) {
             vec3 = vec3.subtract(0, 1, -0.25);
         }
 
-        Vec3 vec31 = vec3.add((double)f6 * d0, (double)f5 * d0, (double)f7 * d0);
+        Vec3 vec31 = vec3.add((double) f6 * d0, (double) f5 * d0, (double) f7 * d0);
         return level.clip(new ClipContext(vec3, vec31, ClipContext.Block.OUTLINE, p_41438_, null));
     }
 
@@ -2582,71 +2529,43 @@ public class PageDrawing {
     public void onClickEvent(InputEvent.MouseButton event) {
 
         Player playerIn = Hexerei.proxy.getPlayer();
-        if(event.getButton() == 1 && playerIn != null)
-        {
+        if (event.getButton() == 1 && playerIn != null) {
             this.isRightPressedOld = false;
             Hexerei.entityClicked = false;
 
-            if(Minecraft.getInstance().screen != null)
+            if (Minecraft.getInstance().screen != null)
                 return;
 
 
-            double reach = playerIn.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
+            double reach = playerIn.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
 
 
-                for(int j = 0; j < 6; j++){
-                    BlockHitResult raytrace = getPlayerPOVHitResult(j, playerIn.level, playerIn, ClipContext.Fluid.NONE);
-                    if(raytrace.getType() != HitResult.Type.MISS) {
-                        BlockPos pos = raytrace.getBlockPos();
+            for (int j = 0; j < 6; j++) {
+                BlockHitResult raytrace = getPlayerPOVHitResult(j, playerIn.level, playerIn, ClipContext.Fluid.NONE);
+                if (raytrace.getType() != HitResult.Type.MISS) {
+                    BlockPos pos = raytrace.getBlockPos();
 
 
-                        BlockEntity blockEntity = playerIn.level.getBlockEntity(pos);
+                    BlockEntity blockEntity = playerIn.level.getBlockEntity(pos);
 
 
-                        if(blockEntity instanceof BookOfShadowsAltarTile altarTile && altarTile.turnPage == 0 && event.getAction() == 1){
+                    if (blockEntity instanceof BookOfShadowsAltarTile altarTile && altarTile.turnPage == 0 && event.getAction() == 1) {
 
-                            if(altarTile.slotClicked != -1){
-                                if(++altarTile.slotClickedTick > 0) {
-                                    playerIn.swinging = false;
-                                    event.setCanceled(true);
-                                    event.setResult(Event.Result.DENY);
-                                }
+                        if (altarTile.slotClicked != -1) {
+                            if (++altarTile.slotClickedTick > 0) {
+                                playerIn.swinging = false;
+                                event.setCanceled(true);
+                                event.setResult(Event.Result.DENY);
                             }
+                        }
 
-                            CompoundTag tag = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
+                        CompoundTag tag = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
 
-                            if(tag.contains("opened") && tag.getBoolean("opened")) {
-                                int clicked = checkClick(playerIn, altarTile);
+                        if (tag.contains("opened") && tag.getBoolean("opened")) {
+                            int clicked = checkClick(playerIn, altarTile);
 //                            System.out.println(clicked);
-                                if (clicked == 1) {
-                                    if (altarTile.slotClicked == -1 && clickedNext(altarTile)) {
-                                        altarTile.setTurnPage(clicked);
-
-                                        playerIn.swing(InteractionHand.MAIN_HAND);
-                                        event.setCanceled(true);
-                                        event.setResult(Event.Result.DENY);
-                                        break;
-                                    }
-                                }
-                                if (clicked == 2) {
-                                    if (altarTile.slotClicked == -1 && clickedBack(altarTile)) {
-                                        altarTile.setTurnPage(clicked);
-
-                                        playerIn.swing(InteractionHand.MAIN_HAND);
-                                        event.setCanceled(true);
-                                        event.setResult(Event.Result.DENY);
-                                        break;
-                                    } else if (altarTile.slotClicked == -1) {
-
-                                        ClientProxy.fontIndex++;
-                                        playerIn.swing(InteractionHand.MAIN_HAND);
-                                        event.setCanceled(true);
-                                        event.setResult(Event.Result.DENY);
-                                        break;
-                                    }
-                                }
-                                if (clicked == -2) {
-                                    //close
+                            if (clicked == 1) {
+                                if (altarTile.slotClicked == -1 && clickedNext(altarTile)) {
                                     altarTile.setTurnPage(clicked);
 
                                     playerIn.swing(InteractionHand.MAIN_HAND);
@@ -2654,225 +2573,246 @@ public class PageDrawing {
                                     event.setResult(Event.Result.DENY);
                                     break;
                                 }
-                                if (clicked == -1) {
+                            }
+                            if (clicked == 2) {
+                                if (altarTile.slotClicked == -1 && clickedBack(altarTile)) {
+                                    altarTile.setTurnPage(clicked);
 
                                     playerIn.swing(InteractionHand.MAIN_HAND);
                                     event.setCanceled(true);
                                     event.setResult(Event.Result.DENY);
                                     break;
-                                }
-                                if (clicked == -3) {
-                                    //close
+                                } else if (altarTile.slotClicked == -1) {
 
+                                    ClientProxy.fontIndex++;
                                     playerIn.swing(InteractionHand.MAIN_HAND);
-                                    event.setCanceled(true);
-                                    event.setResult(Event.Result.DENY);
-                                    break;
-                                }
-                                if (clicked == 3) {
-                                    // clicked bookmark
-                                    if(tag.getInt("chapter") != 0) {
-                                        altarTile.clickPageBookmark(tag.getInt("chapter"), tag.getInt("page"));
-
-                                        playerIn.swing(InteractionHand.MAIN_HAND);
-                                        event.setCanceled(true);
-                                        event.setResult(Event.Result.DENY);
-                                        break;
-                                    }
-                                }
-                                if (clicked == -5){
-                                    playerIn.swinging = false;
                                     event.setCanceled(true);
                                     event.setResult(Event.Result.DENY);
                                     break;
                                 }
                             }
-                        }
+                            if (clicked == -2) {
+                                //close
+                                altarTile.setTurnPage(clicked);
 
-                        if(blockEntity instanceof BookOfShadowsAltarTile altarTile && altarTile.turnPage == 0 && altarTile.slotClicked != -1 && event.getAction() == 0 ){
-
-
-                            Vec3 planeNormalRight = planeNormal(altarTile, PageOn.RIGHT_PAGE);
-                            Vec3 planeNormalLeft = planeNormal(altarTile, PageOn.LEFT_PAGE);
-
-                            CompoundTag tag = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
-
-
-
-                            if(tag.contains("bookmarks")){
-
-                                int bookmark_color = 0;
-                                int bookmark_chapter = 0;
-                                int bookmark_page = 0;
-                                boolean flag = false;
-                                int int_slot = 0;
-                                CompoundTag bookmarks = tag.getCompound("bookmarks");
-
-
-                                if(altarTile.slotClicked != -1){
-                                    Vec3 intersectionVec = intersectPoint(0, 7.05f, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalLeft, altarTile, PageOn.MIDDLE_BUTTON);
-                                    AABB aabb = getpositionAABBClose(altarTile);
-                                    if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
-                                        //send signal to server that you deleted your bookmark.
-                                        altarTile.deleteBookmark(altarTile.slotClicked);
-                                    }
-                                }
-
-
-
-
-                                for(int i = 0; i < 20; i++){
-                                    boolean flag2 = false;
-                                    if(bookmarks.contains("slot_" + i)){
-
-                                        CompoundTag slot = bookmarks.getCompound("slot_" + i);
-                                        bookmark_color = slot.getInt("color");
-                                        bookmark_chapter = slot.getInt("chapter");
-                                        bookmark_page = slot.getInt("page");
-
-
-                                    }
-
-                                    ArrayList<BookImageEffect> effectsBookmark = new ArrayList<>();
-                                    if(i < 5){
-
-                                        float xIn = -0.4f - altarTile.buttonScale - 0.15f;
-                                        float yIn = i * 1.5f;
-                                        Vector3f vector3f = new Vector3f(0, 0, 0);
-                                        Vector3f vector3f_1 = new Vector3f(0.35f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
-
-                                        BlockPos blockPos = altarTile.getBlockPos();
-                                        vector3f_1.transform(Vector3f.YP.rotationDegrees((10 + altarTile.degreesOpened / 1.12f)));
-                                        vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
-                                        vector3f.add(vector3f_1);
-                                        vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
-
-                                        Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
-                                                vector3f.y() + blockPos.getY() + 18 / 16f,
-                                                vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
-
-                                        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
-
-                                        Vec3 intersectionVec = intersectPoint(xIn, yIn, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalLeft, altarTile, PageOn.LEFT_PAGE);
-                                        if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
-                                            flag2 = true;
-                                        }
-                                    }
-                                    if(i >= 5 && i < 10){
-
-                                        float xIn = -5.5f + i * 1.15f;
-                                        float yIn = -0.95f - altarTile.buttonScale - 0.25f;
-                                        Vector3f vector3f = new Vector3f(0, 0, 0);
-                                        Vector3f vector3f_1 = new Vector3f(0.35f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
-
-                                        BlockPos blockPos = altarTile.getBlockPos();
-                                        vector3f_1.transform(Vector3f.YP.rotationDegrees((10 + altarTile.degreesOpened / 1.12f)));
-                                        vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
-                                        vector3f.add(vector3f_1);
-                                        vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
-
-                                        Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
-                                                vector3f.y() + blockPos.getY() + 18 / 16f,
-                                                vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
-
-                                        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
-
-                                        Vec3 intersectionVec = intersectPoint(xIn, yIn, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalLeft, altarTile, PageOn.LEFT_PAGE);
-                                        if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
-                                            flag2 = true;
-                                        }
-                                    }
-                                    if(i >= 10 && i < 15){
-
-                                        float xIn = -11.25f + i * 1.15f;
-                                        float yIn = -0.95f - altarTile.buttonScale - 0.25f;
-                                        Vector3f vector3f = new Vector3f(0, 0, 0);
-                                        Vector3f vector3f_1 = new Vector3f(-0.05f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
-
-                                        BlockPos blockPos = altarTile.getBlockPos();
-                                        vector3f_1.transform(Vector3f.YP.rotationDegrees(-(10 + altarTile.degreesOpened / 1.12f)));
-                                        vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
-                                        vector3f.add(vector3f_1);
-                                        vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
-
-                                        Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
-                                                vector3f.y() + blockPos.getY() + 18 / 16f,
-                                                vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
-
-                                        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
-
-                                        Vec3 intersectionVec = intersectPoint(xIn, yIn, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalRight, altarTile, PageOn.RIGHT_PAGE);
-                                        if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
-                                            flag2 = true;
-                                        }
-                                    }
-                                    if(i >= 15){
-
-                                        float xIn = 5.5f + altarTile.buttonScale + 0.15f;
-                                        float yIn = (i - 15) * 1.5f;
-                                        Vector3f vector3f = new Vector3f(0, 0, 0);
-                                        Vector3f vector3f_1 = new Vector3f(-0.05f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
-
-                                        BlockPos blockPos = altarTile.getBlockPos();
-                                        vector3f_1.transform(Vector3f.YP.rotationDegrees(-(10 + altarTile.degreesOpened / 1.12f)));
-                                        vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
-                                        vector3f.add(vector3f_1);
-                                        vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
-
-                                        Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
-                                                vector3f.y() + blockPos.getY() + 18 / 16f,
-                                                vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
-
-                                        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
-
-                                        Vec3 intersectionVec = intersectPoint(xIn, yIn, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalRight, altarTile, PageOn.RIGHT_PAGE);
-                                        if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
-                                            flag2 = true;
-                                        }
-                                    }
-                                    if(flag2){
-                                        if(altarTile.slotClicked == i){
-                                            if(altarTile.slotClickedTick < 20){
-                                                //click the same bookmark
-                                                altarTile.setTurnPage(-1, bookmark_chapter, bookmark_page);
-                                            }
-                                        }
-                                        else {
-                                            //drag the bookmark to another slot
-                                            altarTile.swapBookmarks(altarTile.slotClicked, i);
-                                            altarTile.bookmarkHoverAmount[i] = 0;
-                                            altarTile.bookmarkHoverAmount[altarTile.slotClicked] = 0;
-                                        }
-
-                                        int_slot = i;
-                                        break;
-                                    }
-
-                                }
-                                if(int_slot != altarTile.slotClicked || altarTile.slotClickedTick > 5)
-                                    playerIn.swing(InteractionHand.MAIN_HAND);
-                                altarTile.slotClicked = -1;
-                                altarTile.slotClickedTick = 0;
+                                playerIn.swing(InteractionHand.MAIN_HAND);
+                                event.setCanceled(true);
+                                event.setResult(Event.Result.DENY);
                                 break;
                             }
+                            if (clicked == -1) {
 
+                                playerIn.swing(InteractionHand.MAIN_HAND);
+                                event.setCanceled(true);
+                                event.setResult(Event.Result.DENY);
+                                break;
+                            }
+                            if (clicked == -3) {
+                                //close
+
+                                playerIn.swing(InteractionHand.MAIN_HAND);
+                                event.setCanceled(true);
+                                event.setResult(Event.Result.DENY);
+                                break;
+                            }
+                            if (clicked == 3) {
+                                // clicked bookmark
+                                if (tag.getInt("chapter") != 0) {
+                                    altarTile.clickPageBookmark(tag.getInt("chapter"), tag.getInt("page"));
+
+                                    playerIn.swing(InteractionHand.MAIN_HAND);
+                                    event.setCanceled(true);
+                                    event.setResult(Event.Result.DENY);
+                                    break;
+                                }
+                            }
+                            if (clicked == -5) {
+                                playerIn.swinging = false;
+                                event.setCanceled(true);
+                                event.setResult(Event.Result.DENY);
+                                break;
+                            }
                         }
+                    }
+
+                    if (blockEntity instanceof BookOfShadowsAltarTile altarTile && altarTile.turnPage == 0 && altarTile.slotClicked != -1 && event.getAction() == 0) {
+
+
+                        Vec3 planeNormalRight = planeNormal(altarTile, PageOn.RIGHT_PAGE);
+                        Vec3 planeNormalLeft = planeNormal(altarTile, PageOn.LEFT_PAGE);
+
+                        CompoundTag tag = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
+
+
+                        if (tag.contains("bookmarks")) {
+
+                            int bookmark_color = 0;
+                            int bookmark_chapter = 0;
+                            int bookmark_page = 0;
+                            boolean flag = false;
+                            int int_slot = 0;
+                            CompoundTag bookmarks = tag.getCompound("bookmarks");
+
+
+                            if (altarTile.slotClicked != -1) {
+                                Vec3 intersectionVec = intersectPoint(0, 7.05f, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalLeft, altarTile, PageOn.MIDDLE_BUTTON);
+                                AABB aabb = getpositionAABBClose(altarTile);
+                                if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
+                                    //send signal to server that you deleted your bookmark.
+                                    altarTile.deleteBookmark(altarTile.slotClicked);
+                                }
+                            }
+
+
+                            for (int i = 0; i < 20; i++) {
+                                boolean flag2 = false;
+                                if (bookmarks.contains("slot_" + i)) {
+
+                                    CompoundTag slot = bookmarks.getCompound("slot_" + i);
+                                    bookmark_color = slot.getInt("color");
+                                    bookmark_chapter = slot.getInt("chapter");
+                                    bookmark_page = slot.getInt("page");
+
+
+                                }
+
+                                ArrayList<BookImageEffect> effectsBookmark = new ArrayList<>();
+                                if (i < 5) {
+
+                                    float xIn = -0.4f - altarTile.buttonScale - 0.15f;
+                                    float yIn = i * 1.5f;
+                                    Vector3f vector3f = new Vector3f(0, 0, 0);
+                                    Vector3f vector3f_1 = new Vector3f(0.35f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
+
+                                    BlockPos blockPos = altarTile.getBlockPos();
+                                    vector3f_1.transform(Vector3f.YP.rotationDegrees((10 + altarTile.degreesOpened / 1.12f)));
+                                    vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
+                                    vector3f.add(vector3f_1);
+                                    vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
+
+                                    Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
+                                            vector3f.y() + blockPos.getY() + 18 / 16f,
+                                            vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
+
+                                    AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
+
+                                    Vec3 intersectionVec = intersectPoint(xIn, yIn, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalLeft, altarTile, PageOn.LEFT_PAGE);
+                                    if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
+                                        flag2 = true;
+                                    }
+                                }
+                                if (i >= 5 && i < 10) {
+
+                                    float xIn = -5.5f + i * 1.15f;
+                                    float yIn = -0.95f - altarTile.buttonScale - 0.25f;
+                                    Vector3f vector3f = new Vector3f(0, 0, 0);
+                                    Vector3f vector3f_1 = new Vector3f(0.35f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
+
+                                    BlockPos blockPos = altarTile.getBlockPos();
+                                    vector3f_1.transform(Vector3f.YP.rotationDegrees((10 + altarTile.degreesOpened / 1.12f)));
+                                    vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
+                                    vector3f.add(vector3f_1);
+                                    vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
+
+                                    Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
+                                            vector3f.y() + blockPos.getY() + 18 / 16f,
+                                            vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
+
+                                    AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
+
+                                    Vec3 intersectionVec = intersectPoint(xIn, yIn, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalLeft, altarTile, PageOn.LEFT_PAGE);
+                                    if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
+                                        flag2 = true;
+                                    }
+                                }
+                                if (i >= 10 && i < 15) {
+
+                                    float xIn = -11.25f + i * 1.15f;
+                                    float yIn = -0.95f - altarTile.buttonScale - 0.25f;
+                                    Vector3f vector3f = new Vector3f(0, 0, 0);
+                                    Vector3f vector3f_1 = new Vector3f(-0.05f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
+
+                                    BlockPos blockPos = altarTile.getBlockPos();
+                                    vector3f_1.transform(Vector3f.YP.rotationDegrees(-(10 + altarTile.degreesOpened / 1.12f)));
+                                    vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
+                                    vector3f.add(vector3f_1);
+                                    vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
+
+                                    Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
+                                            vector3f.y() + blockPos.getY() + 18 / 16f,
+                                            vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
+
+                                    AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
+
+                                    Vec3 intersectionVec = intersectPoint(xIn, yIn, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalRight, altarTile, PageOn.RIGHT_PAGE);
+                                    if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
+                                        flag2 = true;
+                                    }
+                                }
+                                if (i >= 15) {
+
+                                    float xIn = 5.5f + altarTile.buttonScale + 0.15f;
+                                    float yIn = (i - 15) * 1.5f;
+                                    Vector3f vector3f = new Vector3f(0, 0, 0);
+                                    Vector3f vector3f_1 = new Vector3f(-0.05f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
+
+                                    BlockPos blockPos = altarTile.getBlockPos();
+                                    vector3f_1.transform(Vector3f.YP.rotationDegrees(-(10 + altarTile.degreesOpened / 1.12f)));
+                                    vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
+                                    vector3f.add(vector3f_1);
+                                    vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
+
+                                    Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
+                                            vector3f.y() + blockPos.getY() + 18 / 16f,
+                                            vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
+
+                                    AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
+
+                                    Vec3 intersectionVec = intersectPoint(xIn, yIn, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalRight, altarTile, PageOn.RIGHT_PAGE);
+                                    if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
+                                        flag2 = true;
+                                    }
+                                }
+                                if (flag2) {
+                                    if (altarTile.slotClicked == i) {
+                                        if (altarTile.slotClickedTick < 20) {
+                                            //click the same bookmark
+                                            altarTile.setTurnPage(-1, bookmark_chapter, bookmark_page);
+                                        }
+                                    } else {
+                                        //drag the bookmark to another slot
+                                        altarTile.swapBookmarks(altarTile.slotClicked, i);
+                                        altarTile.bookmarkHoverAmount[i] = 0;
+                                        altarTile.bookmarkHoverAmount[altarTile.slotClicked] = 0;
+                                    }
+
+                                    int_slot = i;
+                                    break;
+                                }
+
+                            }
+                            if (int_slot != altarTile.slotClicked || altarTile.slotClickedTick > 5)
+                                playerIn.swing(InteractionHand.MAIN_HAND);
+                            altarTile.slotClicked = -1;
+                            altarTile.slotClickedTick = 0;
+                            break;
+                        }
+
+                    }
 
 //                            playerIn.swing(InteractionHand.MAIN_HAND);
 
-                    }
+                }
             }
-        }
-
-        else if(event.getButton() == 0){
+        } else if (event.getButton() == 0) {
             this.isLeftPressedOld = event.getAction() == 1;
         }
 
-        if(playerIn != null && event.getButton() == 1){
+        if (playerIn != null && event.getButton() == 1) {
 
-            for(int i = 0; i < 6; i++){
+            for (int i = 0; i < 6; i++) {
                 BlockHitResult raytrace = getPlayerPOVHitResult(i, playerIn.level, playerIn, ClipContext.Fluid.NONE);
-                if(raytrace.getType() != HitResult.Type.MISS) {
+                if (raytrace.getType() != HitResult.Type.MISS) {
                     BlockPos pos = raytrace.getBlockPos();
 
 
@@ -2899,38 +2839,38 @@ public class PageDrawing {
     public void onKeyEvent(InputEvent.Key event) {
 //        System.out.println(event.getKey() == ModKeyBindings.bookJEIShowUses.getKey().getValue());
 
-        if(!HexereiJeiCompat.LOADED)
+        if (!HexereiJeiCompat.LOADED)
             return;
 
-        if(Minecraft.getInstance().screen != null)
+        if (Minecraft.getInstance().screen != null)
             return;
 
         Player playerIn = Hexerei.proxy.getPlayer();
 
         //released
-        if(playerIn != null && event.getAction() == 0){
+        if (playerIn != null && event.getAction() == 0) {
 
         }
 
         //pressed
-        if(playerIn != null && event.getAction() == 1){
-            if(event.getKey() != ModKeyBindings.bookJEIShowUses.getKey().getValue() && event.getKey() != ModKeyBindings.bookJEIShowRecipe.getKey().getValue())
+        if (playerIn != null && event.getAction() == 1) {
+            if (event.getKey() != ModKeyBindings.bookJEIShowUses.getKey().getValue() && event.getKey() != ModKeyBindings.bookJEIShowRecipe.getKey().getValue())
                 return;
-            if((Minecraft.getInstance().screen instanceof IRecipesGui))
+            if ((Minecraft.getInstance().screen instanceof IRecipesGui))
                 return;
 
-            for(int l = 0; l < 6; l++) {
+            for (int l = 0; l < 6; l++) {
                 BlockHitResult raytrace = getPlayerPOVHitResult(l, playerIn.level, playerIn, ClipContext.Fluid.NONE);
                 if (raytrace.getType() != HitResult.Type.MISS) {
                     BlockPos pos = raytrace.getBlockPos();
 
                     BlockEntity blockEntity = playerIn.level.getBlockEntity(pos);
-                    if(blockEntity instanceof BookOfShadowsAltarTile altarTile && altarTile.turnPage == 0){
+                    if (blockEntity instanceof BookOfShadowsAltarTile altarTile && altarTile.turnPage == 0) {
 
                         CompoundTag tag = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
 
-                        if(tag.contains("opened") && tag.getBoolean("opened")) {
-                            double reach = playerIn.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
+                        if (tag.contains("opened") && tag.getBoolean("opened")) {
+                            double reach = playerIn.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
                             Vec3 planeNormalRight = planeNormal(altarTile, PageOn.RIGHT_PAGE);
                             Vec3 planeNormalLeft = planeNormal(altarTile, PageOn.LEFT_PAGE);
                             if (tag.contains("chapter")) {
@@ -2938,7 +2878,7 @@ public class PageDrawing {
                                 String location1 = "";
                                 String location2 = "";
                                 BookEntries bookEntries = BookManager.getBookEntries();
-                                if(bookEntries != null) {
+                                if (bookEntries != null) {
                                     int chapter = tag.getInt("chapter");
                                     int page = tag.getInt("page");
                                     if (page % 2 == 1)
@@ -3069,7 +3009,6 @@ public class PageDrawing {
     }
 
 
-
     @OnlyIn(Dist.CLIENT)
     private static Vec3 intersectPoint(Vec3 rayVector, Vec3 rayPoint, Vec3 planeNormal, Vec3 planePoint) {
         Vec3 diff = rayPoint.subtract(planePoint);
@@ -3078,9 +3017,10 @@ public class PageDrawing {
         double prod3 = prod1 / prod2;
         return rayPoint.subtract(rayVector.scale(prod3));
     }
+
     @OnlyIn(Dist.CLIENT)
     private static Vec3 intersectPoint(float xIn, float yIn, Vec3 rayVector, Vec3 rayPoint, Vec3 planeNormal, BookOfShadowsAltarTile altarTile, PageOn pageOn) {
-        if(pageOn == PageOn.RIGHT_PAGE){
+        if (pageOn == PageOn.RIGHT_PAGE) {
             BlockPos blockPos = altarTile.getBlockPos();
             Vector3f vector3f = new Vector3f(0, 0, 0);
             Vector3f vector3f_1 = new Vector3f(-0.05f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
@@ -3097,7 +3037,7 @@ public class PageDrawing {
             double prod2 = rayVector.dot(planeNormal);
             double prod3 = prod1 / prod2;
             return rayPoint.subtract(rayVector.scale(prod3));
-        }else if(pageOn == PageOn.MIDDLE_BUTTON) {
+        } else if (pageOn == PageOn.MIDDLE_BUTTON) {
             BlockPos blockPos = altarTile.getBlockPos();
             Vector3f vector3f = new Vector3f(0, 0, 0);
             Vector3f vector3f_1 = new Vector3f(0f, 0.5f - yIn * 0.061f, -0.03f);
@@ -3114,7 +3054,7 @@ public class PageDrawing {
             double prod2 = rayVector.dot(planeNormal);
             double prod3 = prod1 / prod2;
             return rayPoint.subtract(rayVector.scale(prod3));
-        }else {
+        } else {
             BlockPos blockPos = altarTile.getBlockPos();
             Vector3f vector3f = new Vector3f(0, 0, 0);
             Vector3f vector3f_1 = new Vector3f(0.35f - xIn * 0.06f, 0.5f - yIn * 0.061f, -0.03f);
@@ -3158,8 +3098,8 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public Vec3 planeNormal(BookOfShadowsAltarTile altarTile, PageOn pageOn){
-        if(pageOn == PageOn.RIGHT_PAGE){
+    public Vec3 planeNormal(BookOfShadowsAltarTile altarTile, PageOn pageOn) {
+        if (pageOn == PageOn.RIGHT_PAGE) {
             Vector3f vector3f = new Vector3f(0, 0, 0);
 
             Vector3f vector3f_1 = new Vector3f(-0.05f - -0.5f * 0.06f, 0.5f - 7.05f * 0.061f, -0.03f);
@@ -3210,10 +3150,8 @@ public class PageDrawing {
             Vec3 vec3_pr = vec_2.subtract(vec);
             Vec3 vec3_pq = vec_3.subtract(vec);
 
-            Vec3 pn = vec3_pr.cross(vec3_pq);
-
-            return pn;
-        }else{
+            return vec3_pr.cross(vec3_pq);
+        } else {
             Vector3f vector3f = new Vector3f(0, 0, 0);
 
             Vector3f vector3f_1 = new Vector3f(0.35f - -0.5f * 0.06f, 0.5f - 7.05f * 0.061f, -0.03f);
@@ -3264,20 +3202,18 @@ public class PageDrawing {
             Vec3 vec3_pr = vec_2.subtract(vec);
             Vec3 vec3_pq = vec_3.subtract(vec);
 
-            Vec3 pn = vec3_pr.cross(vec3_pq);
-
-            return pn;
+            return vec3_pr.cross(vec3_pq);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public int checkClick(Player playerIn, BookOfShadowsAltarTile altarTile){
+    public int checkClick(Player playerIn, BookOfShadowsAltarTile altarTile) {
         int clicked = 0;
 
-        double reach = playerIn.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
+        double reach = playerIn.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
         Vec3 planeNormalRight = planeNormal(altarTile, PageOn.RIGHT_PAGE);
         Vec3 planeNormalLeft = planeNormal(altarTile, PageOn.LEFT_PAGE);
-        if(!this.isRightPressedOld){
+        if (!this.isRightPressedOld) {
 
 
             Vec3 intersectionVec = intersectPoint(-0.5f, 7.05f, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalRight, altarTile, PageOn.RIGHT_PAGE);
@@ -3312,7 +3248,7 @@ public class PageDrawing {
             }
         }
 
-        if(!this.isRightPressedOld){
+        if (!this.isRightPressedOld) {
             Vec3 intersectionVec = intersectPoint(-0.5f, -1f, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalLeft, altarTile, PageOn.LEFT_PAGE);
             AABB aabb = getpositionAABBLeft(altarTile, -0.5f, -1f);
             if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
@@ -3325,7 +3261,7 @@ public class PageDrawing {
             }
         }
 
-        if(!this.isRightPressedOld) {
+        if (!this.isRightPressedOld) {
 
             CompoundTag tag = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
 
@@ -3464,7 +3400,7 @@ public class PageDrawing {
 
         ItemStack stack = altarTile.itemHandler.getStackInSlot(0);
         CompoundTag tag = stack.getOrCreateTag();
-        if (tag.contains("chapter")){
+        if (tag.contains("chapter")) {
 
             String location1 = "";
             String location2 = "";
@@ -3472,10 +3408,10 @@ public class PageDrawing {
 
             int chapter = tag.getInt("chapter");
             int page = tag.getInt("page");
-            if(page % 2 == 1)
+            if (page % 2 == 1)
                 page--;
 
-            if(bookEntries != null) {
+            if (bookEntries != null) {
 
                 int start = bookEntries.chapterList.get(chapter).startPage;
                 int end = bookEntries.chapterList.get(chapter).endPage;
@@ -3528,104 +3464,104 @@ public class PageDrawing {
                                 break;
                             }
                         }
-                        for (int i = 0; i < page1.itemList.size(); i++) {
+                    for (int i = 0; i < page1.itemList.size(); i++) {
 
-                            BookItemsAndFluids bookItemStackInSlot = ((BookItemsAndFluids) (page1.itemList.toArray()[i]));
+                        BookItemsAndFluids bookItemStackInSlot = ((BookItemsAndFluids) (page1.itemList.toArray()[i]));
 
 
-                            Vector3f vector3f = new Vector3f(0, 0, 0);
-                            Vector3f vector3f_1 = new Vector3f(0.35f - bookItemStackInSlot.x * 0.06f, 0.5f - bookItemStackInSlot.y * 0.061f, -0.03f);
+                        Vector3f vector3f = new Vector3f(0, 0, 0);
+                        Vector3f vector3f_1 = new Vector3f(0.35f - bookItemStackInSlot.x * 0.06f, 0.5f - bookItemStackInSlot.y * 0.061f, -0.03f);
 
-                            BlockPos blockPos = altarTile.getBlockPos();
+                        BlockPos blockPos = altarTile.getBlockPos();
 
-                            vector3f_1.transform(Vector3f.YP.rotationDegrees(10 + altarTile.degreesOpened / 1.12f));
-                            vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
+                        vector3f_1.transform(Vector3f.YP.rotationDegrees(10 + altarTile.degreesOpened / 1.12f));
+                        vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpened / 2f));
 
-                            vector3f.add(vector3f_1);
+                        vector3f.add(vector3f_1);
 
-                            vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
+                        vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpun));
 
-                            Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
-                                    vector3f.y() + blockPos.getY() + 18 / 16f,
-                                    vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
+                        Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f),
+                                vector3f.y() + blockPos.getY() + 18 / 16f,
+                                vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
 
-                            float size = 0.03f;
-                            AABB aabb = new AABB(vec.add(-size, -size, -size), vec.add(size, size, size));
+                        float size = 0.03f;
+                        AABB aabb = new AABB(vec.add(-size, -size, -size), vec.add(size, size, size));
 
-                            Vec3 intersectionVec = intersectPoint(bookItemStackInSlot.x, bookItemStackInSlot.y, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalLeft, altarTile, PageOn.LEFT_PAGE);
+                        Vec3 intersectionVec = intersectPoint(bookItemStackInSlot.x, bookItemStackInSlot.y, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalLeft, altarTile, PageOn.LEFT_PAGE);
 
-                            if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
-                                clicked = -1;
-                                String itemRegistryName;
+                        if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
+                            clicked = -1;
+                            String itemRegistryName;
 
-                                if (bookItemStackInSlot.item != null)
-                                    itemRegistryName = Registry.ITEM.getKey(bookItemStackInSlot.item.getItem()).toString();
-                                else
-                                    itemRegistryName = Registry.FLUID.getKey(bookItemStackInSlot.fluid.getFluid()).toString();
+                            if (bookItemStackInSlot.item != null)
+                                itemRegistryName = Registry.ITEM.getKey(bookItemStackInSlot.item.getItem()).toString();
+                            else
+                                itemRegistryName = Registry.FLUID.getKey(bookItemStackInSlot.fluid.getFluid()).toString();
 
-                                boolean flag = false;
-                                if (BookManager.getBookItemHyperlinks().containsKey(itemRegistryName)) {
-                                    BookHyperlink hyperlink = BookManager.getBookItemHyperlinks().get(itemRegistryName);
-                                    if (!(chapter == hyperlink.chapter && (page == hyperlink.page || page == hyperlink.page - 1)))
-                                        altarTile.setTurnPage(clicked, hyperlink.chapter, hyperlink.page);
-                                    flag = true;
-                                }
-                                if (!flag) {
-                                    for (int j = 1; j < bookEntries.chapterList.size(); j++) {
-                                        for (int k = 0; k < bookEntries.chapterList.get(j).pages.size(); k++) {
-                                            String location3 = bookEntries.chapterList.get(j).pages.get(k).location;
-                                            BookPage page_check = BookManager.getBookPages(new ResourceLocation(Hexerei.MOD_ID, location3));
-                                            if (page_check != null && page_check.itemHyperlink.equals(itemRegistryName)) {
-                                                if (!(chapter == j && (page == k || page == k - 1)))
-                                                    altarTile.setTurnPage(clicked, j, k);
-                                                BookManager.addBookItemHyperlink(itemRegistryName, new BookHyperlink(j, k));
-                                                flag = true;
-                                                break;
-                                            }
+                            boolean flag = false;
+                            if (BookManager.getBookItemHyperlinks().containsKey(itemRegistryName)) {
+                                BookHyperlink hyperlink = BookManager.getBookItemHyperlinks().get(itemRegistryName);
+                                if (!(chapter == hyperlink.chapter && (page == hyperlink.page || page == hyperlink.page - 1)))
+                                    altarTile.setTurnPage(clicked, hyperlink.chapter, hyperlink.page);
+                                flag = true;
+                            }
+                            if (!flag) {
+                                for (int j = 1; j < bookEntries.chapterList.size(); j++) {
+                                    for (int k = 0; k < bookEntries.chapterList.get(j).pages.size(); k++) {
+                                        String location3 = bookEntries.chapterList.get(j).pages.get(k).location;
+                                        BookPage page_check = BookManager.getBookPages(new ResourceLocation(Hexerei.MOD_ID, location3));
+                                        if (page_check != null && page_check.itemHyperlink.equals(itemRegistryName)) {
+                                            if (!(chapter == j && (page == k || page == k - 1)))
+                                                altarTile.setTurnPage(clicked, j, k);
+                                            BookManager.addBookItemHyperlink(itemRegistryName, new BookHyperlink(j, k));
+                                            flag = true;
+                                            break;
                                         }
                                     }
                                 }
-                                if (!flag) {
-                                }
-                                break;
                             }
+                            if (!flag) {
+                            }
+                            break;
                         }
+                    }
 
-                        for (int i = 0; i < page1.imageList.size(); i++) {
-                            BookImage bookImage = ((BookImage) (page1.imageList.toArray()[i]));
+                    for (int i = 0; i < page1.imageList.size(); i++) {
+                        BookImage bookImage = ((BookImage) (page1.imageList.toArray()[i]));
 
-                            Vector3f vector3f = new Vector3f(0, 0, 0);
-                            Vector3f vector3f_1 = new Vector3f(0.35f - bookImage.x * 0.06f, 0.5f - bookImage.y * 0.061f, -0.03f);
+                        Vector3f vector3f = new Vector3f(0, 0, 0);
+                        Vector3f vector3f_1 = new Vector3f(0.35f - bookImage.x * 0.06f, 0.5f - bookImage.y * 0.061f, -0.03f);
 
-                            BlockPos blockPos = altarTile.getBlockPos();
+                        BlockPos blockPos = altarTile.getBlockPos();
 
-                            vector3f_1.transform(Vector3f.YP.rotationDegrees(10 + altarTile.degreesOpenedRender / 1.12f));
-                            vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpenedRender / 2f));
+                        vector3f_1.transform(Vector3f.YP.rotationDegrees(10 + altarTile.degreesOpenedRender / 1.12f));
+                        vector3f_1.transform(Vector3f.XP.rotationDegrees(45 - altarTile.degreesOpenedRender / 2f));
 
-                            vector3f.add(vector3f_1);
+                        vector3f.add(vector3f_1);
 
-                            vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpunRender));
+                        vector3f.transform(Vector3f.YP.rotationDegrees(altarTile.degreesSpunRender));
 
-                            Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpunRender) / 57.1f) / 32f * (altarTile.degreesOpenedRender / 5f - 12f),
-                                    vector3f.y() + blockPos.getY() + 18 / 16f,
-                                    vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpunRender) / 57.1f) / 32f * (altarTile.degreesOpenedRender / 5f - 12f));
+                        Vec3 vec = new Vec3(vector3f.x() + blockPos.getX() + 0.5f + (float) Math.sin((altarTile.degreesSpunRender) / 57.1f) / 32f * (altarTile.degreesOpenedRender / 5f - 12f),
+                                vector3f.y() + blockPos.getY() + 18 / 16f,
+                                vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpunRender) / 57.1f) / 32f * (altarTile.degreesOpenedRender / 5f - 12f));
 
-                            AABB aabb = new AABB(vec.add(-bookImage.width / 850 * bookImage.scale, -bookImage.height / 850 * bookImage.scale, -bookImage.width / 850 * bookImage.scale), vec.add(bookImage.width / 850 * bookImage.scale, bookImage.height / 850 * bookImage.scale, bookImage.width / 850 * bookImage.scale));
+                        AABB aabb = new AABB(vec.add(-bookImage.width / 850 * bookImage.scale, -bookImage.height / 850 * bookImage.scale, -bookImage.width / 850 * bookImage.scale), vec.add(bookImage.width / 850 * bookImage.scale, bookImage.height / 850 * bookImage.scale, bookImage.width / 850 * bookImage.scale));
 
-                            Vec3 intersectionVec = intersectPoint(bookImage.x, bookImage.y, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalLeft, altarTile, PageOn.LEFT_PAGE);
-                            if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
+                        Vec3 intersectionVec = intersectPoint(bookImage.x, bookImage.y, playerIn.getLookAngle(), playerIn.getEyePosition(), planeNormalLeft, altarTile, PageOn.LEFT_PAGE);
+                        if (aabb.contains(intersectionVec) && intersectionVec.subtract(playerIn.getEyePosition()).length() <= reach) {
 
-                                //add hyperlink stuff here
+                            //add hyperlink stuff here
 //                            loc.set(bookImageEffect.hoverImage.imageLoc);
-                                clicked = -1;
+                            clicked = -1;
 
-                                if (!bookImage.hyperlink_url.equals(""))
-                                    showLinkScreenClient(bookImage.hyperlink_url);
-                                if (bookImage.hyperlink_chapter != -1)
-                                    altarTile.setTurnPage(clicked, Math.max(bookImage.hyperlink_chapter, 0), Math.max(bookImage.hyperlink_page, 0));
-                                break;
-                            }
+                            if (!bookImage.hyperlink_url.equals(""))
+                                showLinkScreenClient(bookImage.hyperlink_url);
+                            if (bookImage.hyperlink_chapter != -1)
+                                altarTile.setTurnPage(clicked, Math.max(bookImage.hyperlink_chapter, 0), Math.max(bookImage.hyperlink_page, 0));
+                            break;
                         }
+                    }
 
 
                     if (altarTile.slotClicked == -1) {
@@ -3853,7 +3789,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public boolean clickedBack(BookOfShadowsAltarTile altarTile){
+    public boolean clickedBack(BookOfShadowsAltarTile altarTile) {
 
         CompoundTag tag2 = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
         int currentPage = tag2.getInt("page");
@@ -3863,12 +3799,12 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public boolean clickedNext(BookOfShadowsAltarTile altarTile){
+    public boolean clickedNext(BookOfShadowsAltarTile altarTile) {
 
         CompoundTag tag2 = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
         int currentPage = tag2.getInt("page");
         int currentChapter = tag2.getInt("chapter");
-        return currentChapter < BookManager.getBookEntries().chapterList.size()-1 || currentPage < BookManager.getBookEntries().chapterList.get(currentChapter).pages.size()-2;
+        return currentChapter < BookManager.getBookEntries().chapterList.size() - 1 || currentPage < BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - 2;
 
     }
 
@@ -3889,25 +3825,25 @@ public class PageDrawing {
 
         matrixStack.pushPose();
 
-        if(pageOn == PageOn.LEFT_PAGE)
+        if (pageOn == PageOn.LEFT_PAGE)
             translateToLeftPage(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.LEFT_PAGE_UNDER)
+        else if (pageOn == PageOn.LEFT_PAGE_UNDER)
             translateToLeftPageUnder(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.LEFT_PAGE_PREV)
+        else if (pageOn == PageOn.LEFT_PAGE_PREV)
             translateToLeftPagePrevious(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        if(pageOn == PageOn.RIGHT_PAGE)
+        if (pageOn == PageOn.RIGHT_PAGE)
             translateToRightPage(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.RIGHT_PAGE_UNDER)
+        else if (pageOn == PageOn.RIGHT_PAGE_UNDER)
             translateToRightPageUnder(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.RIGHT_PAGE_PREV)
+        else if (pageOn == PageOn.RIGHT_PAGE_PREV)
             translateToRightPagePrevious(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
 
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStack.translate(-8f / 16f, 5.5f / 16f, -0.012f / 16f);
-        matrixStack.scale(0.5f,0.5f,0.5f);
+        matrixStack.scale(0.5f, 0.5f, 0.5f);
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
-        matrixStack.translate(-0.03f/16f, -0.053f/16f, 0);
-        matrixStack.translate(xIn/8.1f, yIn/8.1f, 0);
+        matrixStack.translate(-0.03f / 16f, -0.053f / 16f, 0);
+        matrixStack.translate(xIn / 8.1f, yIn / 8.1f, 0);
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
@@ -3925,20 +3861,21 @@ public class PageDrawing {
         int imageHeight = 32;
         int width = 18;
         int height = 18;
-        float u1 = (u + 0.0F) / (float)imageWidth;
-        float u2 = (u + (float)width) / (float)imageWidth;
-        float v1 = (v + 0.0F) / (float)imageHeight;
-        float v2 = (v + (float)height) / (float)imageHeight;
+        float u1 = (u + 0.0F) / (float) imageWidth;
+        float u2 = (u + (float) width) / (float) imageWidth;
+        float v1 = (v + 0.0F) / (float) imageHeight;
+        float v2 = (v + (float) height) / (float) imageHeight;
 
-        buffer.vertex(matrix,  0,  -0.055f / 18 * height,-0.055f / 18 * width).color(255, 255, 255, 255).uv(u1, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-        buffer.vertex(matrix,  0,  0.055f / 18 * height, -0.055f / 18 * width).color(255, 255, 255, 255).uv(u1, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-        buffer.vertex(matrix,  0, 0.055f / 18 * height,   0.055f / 18 * width).color(255, 255, 255, 255).uv(u2, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-        buffer.vertex(matrix,  0, -0.055f / 18 * height,  0.055f / 18 * width).color(255, 255, 255, 255).uv(u2, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix, 0, -0.055f / 18 * height, -0.055f / 18 * width).color(255, 255, 255, 255).uv(u1, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix, 0, 0.055f / 18 * height, -0.055f / 18 * width).color(255, 255, 255, 255).uv(u1, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix, 0, 0.055f / 18 * height, 0.055f / 18 * width).color(255, 255, 255, 255).uv(u2, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix, 0, -0.055f / 18 * height, 0.055f / 18 * width).color(255, 255, 255, 255).uv(u2, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
 
 
         matrixStack.popPose();
 
     }
+
     @OnlyIn(Dist.CLIENT)
     public void drawFluidInSlot(BookOfShadowsAltarTile tileEntityIn, @NotNull BookItemsAndFluids bookItemsAndFluids, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float xIn, float yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
 
@@ -3946,25 +3883,25 @@ public class PageDrawing {
         FluidStack stack = bookItemsAndFluids.fluid;
         int capacity = bookItemsAndFluids.capacity;
         boolean showSlot = bookItemsAndFluids.show_slot;
-        if(pageOn == PageOn.LEFT_PAGE)
+        if (pageOn == PageOn.LEFT_PAGE)
             translateToLeftPage(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.LEFT_PAGE_UNDER)
+        else if (pageOn == PageOn.LEFT_PAGE_UNDER)
             translateToLeftPageUnder(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.LEFT_PAGE_PREV)
+        else if (pageOn == PageOn.LEFT_PAGE_PREV)
             translateToLeftPagePrevious(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        if(pageOn == PageOn.RIGHT_PAGE)
+        if (pageOn == PageOn.RIGHT_PAGE)
             translateToRightPage(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.RIGHT_PAGE_UNDER)
+        else if (pageOn == PageOn.RIGHT_PAGE_UNDER)
             translateToRightPageUnder(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.RIGHT_PAGE_PREV)
+        else if (pageOn == PageOn.RIGHT_PAGE_PREV)
             translateToRightPagePrevious(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
 
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStack.translate(-8f / 16f, 5.5f / 16f, -0.012f / 16f);
-        matrixStack.scale(0.5f,0.5f,0.5f);
+        matrixStack.scale(0.5f, 0.5f, 0.5f);
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
-        matrixStack.translate(-0.03f/16f, -0.053f/16f, 0);
-        matrixStack.translate(xIn/8.1f, yIn/8.1f, 0);
+        matrixStack.translate(-0.03f / 16f, -0.053f / 16f, 0);
+        matrixStack.translate(xIn / 8.1f, yIn / 8.1f, 0);
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
@@ -3973,7 +3910,7 @@ public class PageDrawing {
 
 
         Matrix4f matrix = matrixStack.last().pose();
-        if(showSlot){
+        if (showSlot) {
             VertexConsumer buffer = bufferSource.getBuffer(RenderType.entityCutout(new ResourceLocation("hexerei:textures/book/slot.png")));
 
             matrixStack.last().normal().mul(ITEM_LIGHT_ROTATION_FLAT);
@@ -3984,22 +3921,21 @@ public class PageDrawing {
             int imageHeight = 18;
             int width = 18;
             int height = 18;
-            float u1 = (u + 0.0F) / (float)imageWidth;
-            float u2 = (u + (float)width) / (float)imageWidth;
-            float v1 = (v + 0.0F) / (float)imageHeight;
-            float v2 = (v + (float)height) / (float)imageHeight;
+            float u1 = (u + 0.0F) / (float) imageWidth;
+            float u2 = (u + (float) width) / (float) imageWidth;
+            float v1 = (v + 0.0F) / (float) imageHeight;
+            float v2 = (v + (float) height) / (float) imageHeight;
 
             buffer.vertex(matrix, 0, -0.055f / 18 * height, -0.055f / 18 * width).color(255, 255, 255, 255).uv(u1, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
             buffer.vertex(matrix, 0, 0.055f / 18 * height, -0.055f / 18 * width).color(255, 255, 255, 255).uv(u1, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
             buffer.vertex(matrix, 0, 0.055f / 18 * height, 0.055f / 18 * width).color(255, 255, 255, 255).uv(u2, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
             buffer.vertex(matrix, 0, -0.055f / 18 * height, 0.055f / 18 * width).color(255, 255, 255, 255).uv(u2, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
         }
-        drawFluid(matrixStack, bufferSource, (int)bookItemsAndFluids.fluid_width, (int)bookItemsAndFluids.fluid_height, stack, capacity, light, overlay, bookItemsAndFluids.fluid_offset_x, bookItemsAndFluids.fluid_offset_y, bookItemsAndFluids.fluid_width, bookItemsAndFluids.fluid_height);
+        drawFluid(matrixStack, bufferSource, (int) bookItemsAndFluids.fluid_width, (int) bookItemsAndFluids.fluid_height, stack, capacity, light, overlay, bookItemsAndFluids.fluid_offset_x, bookItemsAndFluids.fluid_offset_y, bookItemsAndFluids.fluid_width, bookItemsAndFluids.fluid_height);
 
         matrixStack.popPose();
 
     }
-
 
 
     @OnlyIn(Dist.CLIENT)
@@ -4017,7 +3953,7 @@ public class PageDrawing {
 
         int amount = fluidStack.getAmount();
 //        int amount = (int)Math.abs((Math.sin(Hexerei.getClientTicks() / 100) * 2000));
-        if(amount == 0)
+        if (amount == 0)
             amount = capacity > 0 ? capacity : 1000;
         int scaledAmount = (amount * tiledHeight) / (capacity != 0 ? capacity : 1000);
         if (amount > 0 && scaledAmount < MIN_FLUID_HEIGHT) {
@@ -4026,7 +3962,7 @@ public class PageDrawing {
         if (scaledAmount > tiledHeight) {
             scaledAmount = tiledHeight;
         }
-        if(capacity == 0)
+        if (capacity == 0)
             scaledAmount = tiledHeight;
 
         drawTiledSprite(poseStack, bufferSource, tiledWidth, tiledHeight, fluidColor, scaledAmount, fluidStillSprite, capacity, amount, light, overlay, x_offset, y_offset, width, height);
@@ -4042,19 +3978,17 @@ public class PageDrawing {
         final int yTileCount = scaledAmount / TEXTURE_SIZE;
         final int yRemainder = scaledAmount - (yTileCount * TEXTURE_SIZE);
 
-        final int yStart = tiledHeight;
-
         for (int xTile = 0; xTile <= xTileCount; xTile++) {
             for (int yTile = 0; yTile <= yTileCount; yTile++) {
-                int width2 = (xTile == xTileCount) ? xRemainder : (int)width;
-                int height2 = (yTile == yTileCount) ? yRemainder : (int)height;
+                int width2 = (xTile == xTileCount) ? xRemainder : (int) width;
+                int height2 = (yTile == yTileCount) ? yRemainder : (int) height;
 //                if(capacity > 0 && capacity >= amount)
 //                    height2 *= ((float)amount / (float)capacity);
                 int x_tile = (xTile * TEXTURE_SIZE);
-                int y_tile = yStart - ((yTile + 1) * (int)height);
+                int y_tile = tiledHeight - ((yTile + 1) * (int) height);
                 if (width2 > 0 && height2 > 0) {
-                    int maskTop = (int)height - height2;
-                    int maskRight = (int)width - width2;
+                    int maskTop = (int) height - height2;
+                    int maskRight = (int) width - width2;
 
                     drawTextureWithMasking(poseStack, bufferSource, capacity, amount, x_tile, y_tile, sprite, color, maskTop, maskRight, 1, light, overlay, x_offset, y_offset, width, height);
                 }
@@ -4097,7 +4031,7 @@ public class PageDrawing {
         float alpha = ((color >> 24) & 0xFF) / 255F;
 
         poseStack.pushPose();
-        poseStack.translate(0.001f,0.0485f + (y_offset * 0.005975f),(x_offset * 0.005975f));
+        poseStack.translate(0.001f, 0.0485f + (y_offset * 0.005975f), (x_offset * 0.005975f));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(90));
         Matrix4f matrix = poseStack.last().pose();
         Matrix3f normal = poseStack.last().normal();
@@ -4105,18 +4039,18 @@ public class PageDrawing {
 
 
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.cutout());
-        buffer.vertex(matrix, 0,  -0.055f / 18 * (width),0).color(red, green, blue, alpha).uv(uMin, vMax).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-        buffer.vertex(matrix, 0,  0.055f / 18 * (width), 0).color(red, green, blue, alpha).uv(uMax, vMax).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix, 0, -0.055f / 18 * (width), 0).color(red, green, blue, alpha).uv(uMin, vMax).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix, 0, 0.055f / 18 * (width), 0).color(red, green, blue, alpha).uv(uMax, vMax).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
         buffer.vertex(matrix, 0, 0.055f / 18 * (width), 0.055f / 9 * (height - maskTop)).color(red, green, blue, alpha).uv(uMax, vMin).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-        buffer.vertex(matrix, 0, -0.055f / 18 * (width),  0.055f / 9 * (height - maskTop)).color(red, green, blue, alpha).uv(uMin, vMin).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix, 0, -0.055f / 18 * (width), 0.055f / 9 * (height - maskTop)).color(red, green, blue, alpha).uv(uMin, vMin).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
 
     }
 
-    private float easeInOutElastic(double x){
+    private float easeInOutElastic(double x) {
 
         double c5 = (2 * Math.PI) / 4.5;
 
-        return (float)(x == 0
+        return (float) (x == 0
                 ? 0
                 : x == 1
                 ? 1
@@ -4142,33 +4076,33 @@ public class PageDrawing {
 
         matrixStack.pushPose();
 
-        matrixStack.translate(8f/16f , 18f/16f, 8f/16f);
-        matrixStack.translate((float)Math.sin((tileEntityIn.degreesSpunRender)/57.1f)/32f * (tileEntityIn.degreesOpenedRender/5f - 12f) , 0f/16f, (float)Math.cos((tileEntityIn.degreesSpunRender)/57.1f)/32f * (tileEntityIn.degreesOpenedRender/5f - 12f));
-        matrixStack.translate(0 , -((tileEntityIn.degreesFloppedRender / 90))/16f, 0);
+        matrixStack.translate(8f / 16f, 18f / 16f, 8f / 16f);
+        matrixStack.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f));
+        matrixStack.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 + 45)));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 + 45)));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(-tileEntityIn.degreesFloppedRender));
-        matrixStack.translate(0,0,-(tileEntityIn.degreesFloppedRender/10f)/32);
+        matrixStack.translate(0, 0, -(tileEntityIn.degreesFloppedRender / 10f) / 32);
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(270));
-        matrixStack.translate(0.25f,-(1 - (this.drawTooltipScale < 0.5f ? this.drawTooltipScale * 2f : 1)) / 12f,0);
+        matrixStack.translate(0.25f, -(1 - (this.drawTooltipScale < 0.5f ? this.drawTooltipScale * 2f : 1)) / 12f, 0);
         float scale = easeInOutElastic(this.drawTooltipScale);
-        matrixStack.scale(scale ,scale ,scale);
+        matrixStack.scale(scale, scale, scale);
 
         RenderSystem.setShader(GameRenderer::getNewEntityShader);
 
         this.tooltipStack = stack;
-        if(!this.tooltipStack.isEmpty()) {
+        if (!this.tooltipStack.isEmpty()) {
             List<Component> tooltip = stack.getTooltipLines(Hexerei.proxy.getPlayer(), Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
 
-            if(tooltip.size() > 0)
+            if (tooltip.size() > 0)
                 tooltip.addAll(this.tooltipText);
 
             String modId = Registry.ITEM.getKey(this.tooltipStack.getItem()).getNamespace();
             String modName = getModNameForModId(modId);
             MutableComponent modNameComponent = Component.translatable(modName);
             modNameComponent.withStyle(Style.EMPTY.withItalic(true).withColor(5592575));
-            if(!HexereiModNameTooltipCompat.LOADED)
+            if (!HexereiModNameTooltipCompat.LOADED)
                 tooltip.add(modNameComponent);
 
             this.renderTooltip(this.tooltipStack, bufferSource, matrixStack, tooltip, stack.getTooltipImage(), 0, 0, overlay, light);
@@ -4189,18 +4123,18 @@ public class PageDrawing {
             return tooltip;
         }
 
-        MutableComponent displayName = (MutableComponent)fluidStack.getDisplayName();
+        MutableComponent displayName = (MutableComponent) fluidStack.getDisplayName();
         displayName.withStyle(ChatFormatting.WHITE);
         tooltip.add(displayName);
         if (capacity != 0) {
             MutableComponent amountString = Component.translatable("book.hexerei.tooltip.liquid.amount.with.capacity", nf.format(amount), nf.format(capacity));
             tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
-        }else if(amount != 0){
+        } else if (amount != 0) {
             MutableComponent amountString = Component.translatable("book.hexerei.tooltip.liquid.amount", nf.format(amount));
             tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
         }
 
-        if(bookItemStackInSlot.extra_tooltips.size() > 0)
+        if (bookItemStackInSlot.extra_tooltips.size() > 0)
             tooltip.addAll(bookItemStackInSlot.extra_tooltips);
 
 
@@ -4214,32 +4148,31 @@ public class PageDrawing {
     }
 
 
-
     @OnlyIn(Dist.CLIENT)
     public void drawTooltipText(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float zLevel, int light, int overlay, boolean isItem) {
 
         matrixStack.pushPose();
 
-        matrixStack.translate(8f/16f , 18f/16f, 8f/16f);
-        matrixStack.translate((float)Math.sin((tileEntityIn.degreesSpunRender)/57.1f)/32f * (tileEntityIn.degreesOpenedRender/5f - 12f) , 0f/16f, (float)Math.cos((tileEntityIn.degreesSpunRender)/57.1f)/32f * (tileEntityIn.degreesOpenedRender/5f - 12f));
-        matrixStack.translate(0 , -((tileEntityIn.degreesFloppedRender / 90))/16f, 0);
+        matrixStack.translate(8f / 16f, 18f / 16f, 8f / 16f);
+        matrixStack.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpenedRender / 5f - 12f));
+        matrixStack.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender/2 + 45)));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-(tileEntityIn.degreesOpenedRender / 2 + 45)));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(-tileEntityIn.degreesFloppedRender));
-        matrixStack.translate(0,0,-(tileEntityIn.degreesFloppedRender/10f)/32);
+        matrixStack.translate(0, 0, -(tileEntityIn.degreesFloppedRender / 10f) / 32);
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(270));
         float scale = Math.min(this.drawTooltipScale, 1);
-        matrixStack.translate(0.25f,-(1 - (scale < 0.5f ? scale * 2f : 1)) / 12f,0);
+        matrixStack.translate(0.25f, -(1 - (scale < 0.5f ? scale * 2f : 1)) / 12f, 0);
         scale = easeInOutElastic(this.drawTooltipScale);
-        if(scale < 0) scale = 0;
-        matrixStack.scale(scale ,scale ,scale);
+        if (scale < 0) scale = 0;
+        matrixStack.scale(scale, scale, scale);
 
         RenderSystem.setShader(GameRenderer::getNewEntityShader);
 
         matrixStack.last().normal().mul(ITEM_LIGHT_ROTATION_FLAT);
 
-        this.renderTooltip(this.tooltipStack,bufferSource, matrixStack, this.tooltipText, Optional.empty(), 0, 0, overlay, light);
+        this.renderTooltip(this.tooltipStack, bufferSource, matrixStack, this.tooltipText, Optional.empty(), 0, 0, overlay, light);
 
         matrixStack.popPose();
 
@@ -4249,7 +4182,7 @@ public class PageDrawing {
     public void renderTooltip(ItemStack stack, MultiBufferSource buffer, PoseStack p_169389_, List<Component> components, Optional<TooltipComponent> p_169391_, int p_169392_, int p_169393_, int overlay, int light) {
         List<ClientTooltipComponent> list = ForgeHooksClient.gatherTooltipComponents(stack, components, p_169391_, p_169392_, 300, 750, Minecraft.getInstance().font, Minecraft.getInstance().font);
         List<Component> newComponentList = new ArrayList<>();
-        for (Component component : components){
+        for (Component component : components) {
             newComponentList.add(Component.translatable(component.getString()).withStyle(component.getStyle().withColor(0x292929)));
         }
         List<ClientTooltipComponent> list2 = ForgeHooksClient.gatherTooltipComponents(stack, newComponentList, p_169391_, p_169392_, 300, 750, Minecraft.getInstance().font, Minecraft.getInstance().font);
@@ -4271,8 +4204,8 @@ public class PageDrawing {
 
             ClientTooltipComponent clientTooltipComponent;
             int l;
-            for(Iterator var8 = clientTooltipComponentList.iterator(); var8.hasNext(); j += clientTooltipComponent.getHeight()) {
-                clientTooltipComponent = (ClientTooltipComponent)var8.next();
+            for (Iterator<ClientTooltipComponent> var8 = clientTooltipComponentList.iterator(); var8.hasNext(); j += clientTooltipComponent.getHeight()) {
+                clientTooltipComponent = (ClientTooltipComponent) var8.next();
                 l = clientTooltipComponent.getWidth(preEvent.getFont());
                 if (l > i) {
                     i = l;
@@ -4292,8 +4225,8 @@ public class PageDrawing {
             VertexConsumer buffer = bufferSource.getBuffer(RenderType.entityCutout(new ResourceLocation("hexerei:textures/book/blank.png")));
 
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90));
-            matrixStack.scale(0.003f,0.003f,0.003f);
-            matrixStack.translate(-(i + 15)/2f, -(j + 15)/2f, -10);
+            matrixStack.scale(0.003f, 0.003f, 0.003f);
+            matrixStack.translate(-(i + 15) / 2f, -(j + 15) / 2f, -10);
             RenderTooltipEvent.Color colorEvent = ForgeHooksClient.onRenderTooltipColor(this.tooltipStack, matrixStack, j2, k2, preEvent.getFont(), clientTooltipComponentList);
             fillGradient(matrixStack, buffer, j2 - 3, k2 - 4, j2 + i + 3, k2 - 3, 0, colorEvent.getBackgroundStart(), colorEvent.getBackgroundStart(), overlay, light);
             fillGradient(matrixStack, buffer, j2 - 3, k2 + j + 3, j2 + i + 3, k2 + j + 4, 0, colorEvent.getBackgroundEnd(), colorEvent.getBackgroundEnd(), overlay, light);
@@ -4309,17 +4242,17 @@ public class PageDrawing {
             MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
             matrixStack.translate(0.0D, 0.0D, 0.01D);
 
-            matrixStack.scale(1,1,0.00001f);
+            matrixStack.scale(1, 1, 0.00001f);
             int l1 = k2;
 //
             Matrix4f matrix4f = matrixStack.last().pose();
             int l2;
             ClientTooltipComponent clientTooltipComponent2;
-            for(l2 = 0; l2 < clientTooltipComponentList.size(); ++l2) {
+            for (l2 = 0; l2 < clientTooltipComponentList.size(); ++l2) {
                 clientTooltipComponent2 = clientTooltipComponentList.get(l2);
-                if(clientTooltipComponent2 instanceof HexereiBookTooltip hexereiBookTooltip)
+                if (clientTooltipComponent2 instanceof HexereiBookTooltip hexereiBookTooltip)
                     hexereiBookTooltip.renderText(preEvent.getFont(), j2, l1, matrix4f, multibuffersource$buffersource, overlay, light);
-                else if(clientTooltipComponent2 instanceof ClientTextTooltip clientTextTooltip){
+                else if (clientTooltipComponent2 instanceof ClientTextTooltip clientTextTooltip) {
                     int r = (int) (0.25f * 255.0f);
                     int g = (int) (0.25f * 255.0f);
                     int b = (int) (0.25f * 255.0f);
@@ -4327,14 +4260,14 @@ public class PageDrawing {
 
 
                     int col = (a << 24) | (r << 16) | (g << 8) | b;
-                        Font font = preEvent.getFont();
-                        matrix4f = matrixStack.last().pose();
-                        font.renderText(clientTextTooltip.text, (float) j2, (float) l1, col, false, matrix4f, multibuffersource$buffersource, false, 0, light);
-                        matrixStack.pushPose();
-                        matrixStack.translate(0.5f, 0.5f, 7500);
-                        matrix4f = matrixStack.last().pose();
-                        font.renderText(((ClientTextTooltip) clientTooltipComponentList2.get(l2)).text, (float) j2, (float) l1, col, false, matrix4f, multibuffersource$buffersource, false, 0, light);
-                        matrixStack.popPose();
+                    Font font = preEvent.getFont();
+                    matrix4f = matrixStack.last().pose();
+                    font.renderText(clientTextTooltip.text, (float) j2, (float) l1, col, false, matrix4f, multibuffersource$buffersource, false, 0, light);
+                    matrixStack.pushPose();
+                    matrixStack.translate(0.5f, 0.5f, 7500);
+                    matrix4f = matrixStack.last().pose();
+                    font.renderText(((ClientTextTooltip) clientTooltipComponentList2.get(l2)).text, (float) j2, (float) l1, col, false, matrix4f, multibuffersource$buffersource, false, 0, light);
+                    matrixStack.popPose();
 
 
                 }
@@ -4344,11 +4277,11 @@ public class PageDrawing {
             multibuffersource$buffersource.endBatch();
             l1 = k2;
 
-            matrixStack.scale(1,1,333.333f);
-            for(l2 = 0; l2 < clientTooltipComponentList.size(); ++l2) {
-                clientTooltipComponent2 = (ClientTooltipComponent)clientTooltipComponentList.get(l2);
+            matrixStack.scale(1, 1, 333.333f);
+            for (l2 = 0; l2 < clientTooltipComponentList.size(); ++l2) {
+                clientTooltipComponent2 = clientTooltipComponentList.get(l2);
                 RenderSystem.enableDepthTest();
-                if(clientTooltipComponent2 instanceof HexereiBookTooltip hexereiBookTooltip)
+                if (clientTooltipComponent2 instanceof HexereiBookTooltip hexereiBookTooltip)
                     hexereiBookTooltip.renderImage(preEvent.getFont(), bufferSource, j2, l1, matrixStack, this.itemRenderer, 0, overlay, light);
 //                else
 //                    clientTooltipComponent2.renderImage(preEvent.getFont(), j2, l1, matrixStack, this.itemRenderer, 0);
@@ -4366,37 +4299,34 @@ public class PageDrawing {
 
     @OnlyIn(Dist.CLIENT)
     protected static void fillGradient(PoseStack poseStack, VertexConsumer buffer, int p_93126_, int p_93127_, int p_93128_, int p_93129_, float p_93130_, int p_93131_, int p_93132_, int overlay, int light) {
-        float $$9 = (float)(p_93131_ >> 24 & 255) / 255.0F;
-        float $$10 = (float)(p_93131_ >> 16 & 255) / 255.0F;
-        float $$11 = (float)(p_93131_ >> 8 & 255) / 255.0F;
-        float $$12 = (float)(p_93131_ & 255) / 255.0F;
-        float $$13 = (float)(p_93132_ >> 24 & 255) / 255.0F;
-        float $$14 = (float)(p_93132_ >> 16 & 255) / 255.0F;
-        float $$15 = (float)(p_93132_ >> 8 & 255) / 255.0F;
-        float $$16 = (float)(p_93132_ & 255) / 255.0F;
+        float $$9 = (float) (p_93131_ >> 24 & 255) / 255.0F;
+        float $$10 = (float) (p_93131_ >> 16 & 255) / 255.0F;
+        float $$11 = (float) (p_93131_ >> 8 & 255) / 255.0F;
+        float $$12 = (float) (p_93131_ & 255) / 255.0F;
+        float $$13 = (float) (p_93132_ >> 24 & 255) / 255.0F;
+        float $$14 = (float) (p_93132_ >> 16 & 255) / 255.0F;
+        float $$15 = (float) (p_93132_ >> 8 & 255) / 255.0F;
+        float $$16 = (float) (p_93132_ & 255) / 255.0F;
 
         Matrix3f normal = poseStack.last().normal();
         Matrix4f matrix4f = poseStack.last().pose();
 
 
-
-
         int u = 0;
         int v = 0;
-        int imageWidth =  1;
+        int imageWidth = 1;
         int imageHeight = 1;
         int width = 1;
         int height = 1;
-        float u1 = (u + 0.0F) / (float)imageWidth;
-        float u2 = (u + (float)width) / (float)imageWidth;
-        float v1 = (v + 0.0F) / (float)imageHeight;
-        float v2 = (v + (float)height) / (float)imageHeight;
+        float u1 = (u + 0.0F) / (float) imageWidth;
+        float u2 = (u + (float) width) / (float) imageWidth;
+        float v1 = (v + 0.0F) / (float) imageHeight;
+        float v2 = (v + (float) height) / (float) imageHeight;
 
-        buffer.vertex(matrix4f,  p_93128_,  p_93127_, p_93130_).color($$10, $$11, $$12, $$9) .uv(u1, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-        buffer.vertex(matrix4f,  p_93126_,  p_93127_, p_93130_).color($$10, $$11, $$12, $$9) .uv(u1, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-        buffer.vertex(matrix4f,  p_93126_,  p_93129_, p_93130_).color($$14, $$15, $$16, $$13).uv(u2, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-        buffer.vertex(matrix4f,  p_93128_,  p_93129_, p_93130_).color($$14, $$15, $$16, $$13).uv(u2, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-
+        buffer.vertex(matrix4f, p_93128_, p_93127_, p_93130_).color($$10, $$11, $$12, $$9).uv(u1, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix4f, p_93126_, p_93127_, p_93130_).color($$10, $$11, $$12, $$9).uv(u1, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix4f, p_93126_, p_93129_, p_93130_).color($$14, $$15, $$16, $$13).uv(u2, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix4f, p_93128_, p_93129_, p_93130_).color($$14, $$15, $$16, $$13).uv(u2, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
 
 
     }
@@ -4407,35 +4337,35 @@ public class PageDrawing {
 
         matrixStack.pushPose();
 
-        if(pageOn == PageOn.LEFT_PAGE)
+        if (pageOn == PageOn.LEFT_PAGE)
             translateToLeftPage(tileEntityIn, matrixStack, isItem, transformType);
-        else if(pageOn == PageOn.LEFT_PAGE_UNDER)
+        else if (pageOn == PageOn.LEFT_PAGE_UNDER)
             translateToLeftPageUnder(tileEntityIn, matrixStack, isItem, transformType);
-        else if(pageOn == PageOn.LEFT_PAGE_PREV)
+        else if (pageOn == PageOn.LEFT_PAGE_PREV)
             translateToLeftPagePrevious(tileEntityIn, matrixStack, isItem, transformType);
-        if(pageOn == PageOn.RIGHT_PAGE)
+        if (pageOn == PageOn.RIGHT_PAGE)
             translateToRightPage(tileEntityIn, matrixStack, isItem, transformType);
-        else if(pageOn == PageOn.RIGHT_PAGE_UNDER)
+        else if (pageOn == PageOn.RIGHT_PAGE_UNDER)
             translateToRightPageUnder(tileEntityIn, matrixStack, isItem, transformType);
-        else if(pageOn == PageOn.RIGHT_PAGE_PREV)
+        else if (pageOn == PageOn.RIGHT_PAGE_PREV)
             translateToRightPagePrevious(tileEntityIn, matrixStack, isItem, transformType);
-        else if(pageOn == PageOn.MIDDLE_BUTTON)
+        else if (pageOn == PageOn.MIDDLE_BUTTON)
             translateToMiddleButton(tileEntityIn, matrixStack, isItem, transformType);
 
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStack.translate(-8f / 16f, 5.5f / 16f, -0.012f / 16f);
-        matrixStack.scale(0.5f * bookImage.scale,0.5f * bookImage.scale,0.5f * bookImage.scale);
+        matrixStack.scale(0.5f * bookImage.scale, 0.5f * bookImage.scale, 0.5f * bookImage.scale);
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
 
-        matrixStack.translate((bookImage.x/8.1f - 0.03f/16f) / bookImage.scale, (bookImage.y/8.1f - 0.053f/16f) / bookImage.scale, -zLevel/1600f / bookImage.scale);
+        matrixStack.translate((bookImage.x / 8.1f - 0.03f / 16f) / bookImage.scale, (bookImage.y / 8.1f - 0.053f / 16f) / bookImage.scale, -zLevel / 1600f / bookImage.scale);
 
         bookImage.effects.forEach((bookImageEffect -> {
-            if(bookImageEffect.type.equals("scale")){
+            if (bookImageEffect.type.equals("scale")) {
 
                 float f = bookImageEffect.amount - 1;
 
-                float x = (f/2f + 1 + ((f/2f) * Mth.sin((Hexerei.getClientTicks()) / bookImageEffect.speed)));
-                matrixStack.scale(x,x,x);
+                float x = (f / 2f + 1 + ((f / 2f) * Mth.sin((Hexerei.getClientTicks()) / bookImageEffect.speed)));
+                matrixStack.scale(x, x, x);
             }
         }));
 
@@ -4444,12 +4374,12 @@ public class PageDrawing {
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
 
         bookImage.effects.forEach((bookImageEffect -> {
-            if(bookImageEffect.type.equals("tilt")){
+            if (bookImageEffect.type.equals("tilt")) {
                 matrixStack.mulPose(Vector3f.XP.rotationDegrees(-bookImageEffect.amount * Mth.sin((Hexerei.getClientTicks()) / bookImageEffect.speed)));
             }
         }));
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(rotate));
-        if(transformType != ItemTransforms.TransformType.NONE)
+        if (transformType != ItemTransforms.TransformType.NONE)
             matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-35));
 
         RenderSystem.setShader(GameRenderer::getNewEntityShader);
@@ -4460,30 +4390,30 @@ public class PageDrawing {
 
         matrixStack.last().normal().mul(ITEM_LIGHT_ROTATION_FLAT);
         Matrix3f normal = matrixStack.last().normal();
-        int u = (int)bookImage.u;
-        int v = (int)bookImage.v;
-        int imageWidth = (int)bookImage.imageWidth;
-        int imageHeight = (int)bookImage.imageHeight;
-        int width = (int)bookImage.width;
-        int height = (int)bookImage.height;
-        float u1 = (u + 0.0F) / (float)imageWidth;
-        float u2 = (u + (float)width) / (float)imageWidth;
-        float v1 = (v + 0.0F) / (float)imageHeight;
-        float v2 = (v + (float)height) / (float)imageHeight;
+        int u = (int) bookImage.u;
+        int v = (int) bookImage.v;
+        int imageWidth = (int) bookImage.imageWidth;
+        int imageHeight = (int) bookImage.imageHeight;
+        int width = (int) bookImage.width;
+        int height = (int) bookImage.height;
+        float u1 = (u + 0.0F) / (float) imageWidth;
+        float u2 = (u + (float) width) / (float) imageWidth;
+        float v1 = (v + 0.0F) / (float) imageHeight;
+        float v2 = (v + (float) height) / (float) imageHeight;
 
         float a = 1;
         float r = 1;
         float g = 1;
         float b = 1;
 
-        if(color != -1){
+        if (color != -1) {
             r = (float) (color >> 16 & 255) / 255.0F;
             g = (float) (color >> 8 & 255) / 255.0F;
             b = (float) (color & 255) / 255.0F;
         }
 
 
-        if(transformType != ItemTransforms.TransformType.NONE){
+        if (transformType != ItemTransforms.TransformType.NONE) {
             buffer.vertex(matrix, 0, -0.055f / 9 * height, -0.055f / 18 * width).color(r, g, b, a).uv(u1, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
             buffer.vertex(matrix, 0, 0, -0.055f / 18 * width).color(r, g, b, a).uv(u1, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
             buffer.vertex(matrix, 0, 0, 0.055f / 18 * width).color(r, g, b, a).uv(u2, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
@@ -4493,7 +4423,7 @@ public class PageDrawing {
             buffer.vertex(matrix, 0, 0, 0.055f / 18 * width).color(r, g, b, a).uv(u1, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
             buffer.vertex(matrix, 0, 0, -0.055f / 18 * width).color(r, g, b, a).uv(u2, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
             buffer.vertex(matrix, 0, -0.055f / 9 * height, -0.055f / 18 * width).color(r, g, b, a).uv(u2, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-        } else{
+        } else {
             buffer.vertex(matrix, 0, -0.055f / 18 * height, -0.055f / 18 * width).color(r, g, b, a).uv(u1, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
             buffer.vertex(matrix, 0, 0.055f / 18 * height, -0.055f / 18 * width).color(r, g, b, a).uv(u1, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
             buffer.vertex(matrix, 0, 0.055f / 18 * height, 0.055f / 18 * width).color(r, g, b, a).uv(u2, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
@@ -4506,42 +4436,43 @@ public class PageDrawing {
 
     @OnlyIn(Dist.CLIENT)
     public void drawImage(BookImage bookImage, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
-        drawImage(bookImage, tileEntityIn, matrixStack,bufferSource,zLevel,light,overlay,pageOn,-1, isItem, ItemTransforms.TransformType.NONE);
+        drawImage(bookImage, tileEntityIn, matrixStack, bufferSource, zLevel, light, overlay, pageOn, -1, isItem, ItemTransforms.TransformType.NONE);
     }
+
     @OnlyIn(Dist.CLIENT)
     public void drawImage(BookImage bookImage, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, int color, boolean isItem, ItemTransforms.TransformType transformType) {
 
         matrixStack.pushPose();
 
-        if(pageOn == PageOn.LEFT_PAGE)
+        if (pageOn == PageOn.LEFT_PAGE)
             translateToLeftPage(tileEntityIn, matrixStack, isItem, transformType);//
-        else if(pageOn == PageOn.LEFT_PAGE_UNDER)
+        else if (pageOn == PageOn.LEFT_PAGE_UNDER)
             translateToLeftPageUnder(tileEntityIn, matrixStack, isItem, transformType);
-        else if(pageOn == PageOn.LEFT_PAGE_PREV)
+        else if (pageOn == PageOn.LEFT_PAGE_PREV)
             translateToLeftPagePrevious(tileEntityIn, matrixStack, isItem, transformType);
-        if(pageOn == PageOn.RIGHT_PAGE)
+        if (pageOn == PageOn.RIGHT_PAGE)
             translateToRightPage(tileEntityIn, matrixStack, isItem, transformType);
-        else if(pageOn == PageOn.RIGHT_PAGE_UNDER)
+        else if (pageOn == PageOn.RIGHT_PAGE_UNDER)
             translateToRightPageUnder(tileEntityIn, matrixStack, isItem, transformType);
-        else if(pageOn == PageOn.RIGHT_PAGE_PREV)
+        else if (pageOn == PageOn.RIGHT_PAGE_PREV)
             translateToRightPagePrevious(tileEntityIn, matrixStack, isItem, transformType);
-        else if(pageOn == PageOn.MIDDLE_BUTTON)
+        else if (pageOn == PageOn.MIDDLE_BUTTON)
             translateToMiddleButton(tileEntityIn, matrixStack, isItem, transformType);
 
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStack.translate(-8f / 16f, 5.5f / 16f, -0.012f / 16f);
-        matrixStack.scale(0.5f * bookImage.scale,0.5f * bookImage.scale,0.5f * bookImage.scale);
+        matrixStack.scale(0.5f * bookImage.scale, 0.5f * bookImage.scale, 0.5f * bookImage.scale);
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
 
-        matrixStack.translate((bookImage.x/8.1f - 0.03f/16f) / bookImage.scale, (bookImage.y/8.1f - 0.053f/16f) / bookImage.scale, -(zLevel + bookImage.z)/1600f);
+        matrixStack.translate((bookImage.x / 8.1f - 0.03f / 16f) / bookImage.scale, (bookImage.y / 8.1f - 0.053f / 16f) / bookImage.scale, -(zLevel + bookImage.z) / 1600f);
 
         bookImage.effects.forEach((bookImageEffect -> {
-            if(bookImageEffect.type.equals("scale")){
+            if (bookImageEffect.type.equals("scale")) {
 
                 float f = bookImageEffect.amount - 1;
 
-                float x = (f/2f + 1 + ((f/2f) * Mth.sin((Hexerei.getClientTicks()) / bookImageEffect.speed)));
-                matrixStack.scale(x,x,x);
+                float x = (f / 2f + 1 + ((f / 2f) * Mth.sin((Hexerei.getClientTicks()) / bookImageEffect.speed)));
+                matrixStack.scale(x, x, x);
             }
         }));
 
@@ -4550,7 +4481,7 @@ public class PageDrawing {
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
 
         bookImage.effects.forEach((bookImageEffect -> {
-            if(bookImageEffect.type.equals("tilt")){
+            if (bookImageEffect.type.equals("tilt")) {
                 matrixStack.mulPose(Vector3f.XP.rotationDegrees(-bookImageEffect.amount * Mth.sin((Hexerei.getClientTicks()) / bookImageEffect.speed)));
             }
         }));
@@ -4558,29 +4489,26 @@ public class PageDrawing {
         RenderSystem.setShader(GameRenderer::getNewEntityShader);
 
 
-
-
         AtomicReference<String> loc = new AtomicReference<>(bookImage.imageLoc);
         AtomicReference<BookImage> overlay_image = new AtomicReference<>(bookImage);
         AtomicReference<Boolean> overlay_draw = new AtomicReference<>(false);
 
-        AtomicReference<Integer> u = new AtomicReference<>((int)bookImage.u);
-        AtomicReference<Integer> v = new AtomicReference<>((int)bookImage.v);
-        AtomicReference<Integer> imageWidth = new AtomicReference<>((int)bookImage.imageWidth);
-        AtomicReference<Integer> imageHeight = new AtomicReference<>((int)bookImage.imageHeight);
-        AtomicReference<Integer> width = new AtomicReference<>((int)bookImage.width);
-        AtomicReference<Integer> height = new AtomicReference<>((int)bookImage.height);
-
+        AtomicReference<Integer> u = new AtomicReference<>((int) bookImage.u);
+        AtomicReference<Integer> v = new AtomicReference<>((int) bookImage.v);
+        AtomicReference<Integer> imageWidth = new AtomicReference<>((int) bookImage.imageWidth);
+        AtomicReference<Integer> imageHeight = new AtomicReference<>((int) bookImage.imageHeight);
+        AtomicReference<Integer> width = new AtomicReference<>((int) bookImage.width);
+        AtomicReference<Integer> height = new AtomicReference<>((int) bookImage.height);
 
 
         AtomicBoolean flag = new AtomicBoolean(false);
 
         bookImage.effects.forEach((bookImageEffect -> {
-            if(bookImageEffect.type.equals("hover_change_texture")){
+            if (bookImageEffect.type.equals("hover_change_texture")) {
 
-                LocalPlayer playerIn = (LocalPlayer)Hexerei.proxy.getPlayer();
+                LocalPlayer playerIn = (LocalPlayer) Hexerei.proxy.getPlayer();
 
-                double reach = playerIn.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
+                double reach = playerIn.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
                 Vec3 planeNormalRight = planeNormal(tileEntityIn, PageOn.RIGHT_PAGE);
                 Vec3 planeNormalLeft = planeNormal(tileEntityIn, PageOn.LEFT_PAGE);
 
@@ -4636,11 +4564,11 @@ public class PageDrawing {
 
 
             }
-            if(bookImageEffect.type.equals("hover_overlay")){
+            if (bookImageEffect.type.equals("hover_overlay")) {
 
-                LocalPlayer playerIn = (LocalPlayer)Hexerei.proxy.getPlayer();
+                LocalPlayer playerIn = (LocalPlayer) Hexerei.proxy.getPlayer();
 
-                double reach = playerIn.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
+                double reach = playerIn.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
                 Vec3 planeNormalRight = planeNormal(tileEntityIn, PageOn.RIGHT_PAGE);
                 Vec3 planeNormalLeft = planeNormal(tileEntityIn, PageOn.LEFT_PAGE);
 
@@ -4699,21 +4627,20 @@ public class PageDrawing {
             }
 
 
-
-            if(flag.get()){
+            if (flag.get()) {
 
                 bookImageEffect.hoverImage.effects.forEach((bookHoverImageEffect -> {
-                    if(bookHoverImageEffect.type.equals("scale")){
+                    if (bookHoverImageEffect.type.equals("scale")) {
 
                         float f = bookHoverImageEffect.amount - 1;
 
-                        float x = (f/2f + 1 + ((f/2f) * Mth.sin((Hexerei.getClientTicks()) / bookHoverImageEffect.speed)));
-                        matrixStack.scale(x,x,x);
+                        float x = (f / 2f + 1 + ((f / 2f) * Mth.sin((Hexerei.getClientTicks()) / bookHoverImageEffect.speed)));
+                        matrixStack.scale(x, x, x);
                     }
                 }));
 
                 bookImageEffect.hoverImage.effects.forEach((bookHoverImageEffect -> {
-                    if(bookHoverImageEffect.type.equals("tilt")){
+                    if (bookHoverImageEffect.type.equals("tilt")) {
                         matrixStack.mulPose(Vector3f.XP.rotationDegrees(-bookHoverImageEffect.amount * Mth.sin((Hexerei.getClientTicks()) / bookHoverImageEffect.speed)));
                     }
                 }));
@@ -4729,31 +4656,30 @@ public class PageDrawing {
         matrixStack.last().normal().mul(ITEM_LIGHT_ROTATION_FLAT);
         Matrix3f normal = matrixStack.last().normal();
 
-        float u1 = (u.get() + 0.0F) / (float)imageWidth.get();
-        float u2 = (u.get() + (float)width.get()) / (float)imageWidth.get();
-        float v1 = (v.get() + 0.0F) / (float)imageHeight.get();
-        float v2 = (v.get() + (float)height.get()) / (float)imageHeight.get();
+        float u1 = (u.get() + 0.0F) / (float) imageWidth.get();
+        float u2 = (u.get() + (float) width.get()) / (float) imageWidth.get();
+        float v1 = (v.get() + 0.0F) / (float) imageHeight.get();
+        float v2 = (v.get() + (float) height.get()) / (float) imageHeight.get();
 
         float a = 1;
         float r = 1;
         float g = 1;
         float b = 1;
 
-        if(color != -1){
+        if (color != -1) {
             r = (float) (color >> 16 & 255) / 255.0F;
             g = (float) (color >> 8 & 255) / 255.0F;
             b = (float) (color & 255) / 255.0F;
         }
 
 
-        buffer.vertex(matrix,  0,  -0.055f / 18 * height.get(),-0.055f / 18 * width.get()).color(r, g, b, a).uv(u1, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-        buffer.vertex(matrix,  0,  0.055f / 18 * height.get(), -0.055f / 18 * width.get()).color(r, g, b, a).uv(u1, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-        buffer.vertex(matrix,  0, 0.055f / 18 * height.get(),   0.055f / 18 * width.get()).color(r, g, b, a).uv(u2, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-        buffer.vertex(matrix,  0, -0.055f / 18 * height.get(),  0.055f / 18 * width.get()).color(r, g, b, a).uv(u2, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix, 0, -0.055f / 18 * height.get(), -0.055f / 18 * width.get()).color(r, g, b, a).uv(u1, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix, 0, 0.055f / 18 * height.get(), -0.055f / 18 * width.get()).color(r, g, b, a).uv(u1, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix, 0, 0.055f / 18 * height.get(), 0.055f / 18 * width.get()).color(r, g, b, a).uv(u2, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix, 0, -0.055f / 18 * height.get(), 0.055f / 18 * width.get()).color(r, g, b, a).uv(u2, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
 
 
-        if(overlay_draw.get())
-        {
+        if (overlay_draw.get()) {
             BookImage ov_img = overlay_image.get();
             VertexConsumer buffer2 = bufferSource.getBuffer(RenderType.entityCutout(new ResourceLocation(ov_img.imageLoc)));
 
@@ -4767,17 +4693,17 @@ public class PageDrawing {
             float overlay_g = 1;
             float overlay_b = 1;
 
-            if(color != -1){
+            if (color != -1) {
                 overlay_r = (float) (color >> 16 & 255) / 255.0F;
                 overlay_g = (float) (color >> 8 & 255) / 255.0F;
                 overlay_b = (float) (color & 255) / 255.0F;
             }
 
             matrixStack.pushPose();
-            buffer2.vertex(matrix,  ov_img.z/2000f,  -0.055f / 18 * ov_img.height,-0.055f / 18 * ov_img.width).color(overlay_r, overlay_g, overlay_b, overlay_a).uv(overlay_u1, overlay_v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-            buffer2.vertex(matrix,  ov_img.z/2000f,  0.055f / 18 * ov_img.height, -0.055f / 18 * ov_img.width).color(overlay_r, overlay_g, overlay_b, overlay_a).uv(overlay_u1, overlay_v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-            buffer2.vertex(matrix,  ov_img.z/2000f, 0.055f / 18 * ov_img.height,   0.055f / 18 * ov_img.width).color(overlay_r, overlay_g, overlay_b, overlay_a).uv(overlay_u2, overlay_v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-            buffer2.vertex(matrix,  ov_img.z/2000f, -0.055f / 18 * ov_img.height,  0.055f / 18 * ov_img.width).color(overlay_r, overlay_g, overlay_b, overlay_a).uv(overlay_u2, overlay_v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+            buffer2.vertex(matrix, ov_img.z / 2000f, -0.055f / 18 * ov_img.height, -0.055f / 18 * ov_img.width).color(overlay_r, overlay_g, overlay_b, overlay_a).uv(overlay_u1, overlay_v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+            buffer2.vertex(matrix, ov_img.z / 2000f, 0.055f / 18 * ov_img.height, -0.055f / 18 * ov_img.width).color(overlay_r, overlay_g, overlay_b, overlay_a).uv(overlay_u1, overlay_v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+            buffer2.vertex(matrix, ov_img.z / 2000f, 0.055f / 18 * ov_img.height, 0.055f / 18 * ov_img.width).color(overlay_r, overlay_g, overlay_b, overlay_a).uv(overlay_u2, overlay_v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+            buffer2.vertex(matrix, ov_img.z / 2000f, -0.055f / 18 * ov_img.height, 0.055f / 18 * ov_img.width).color(overlay_r, overlay_g, overlay_b, overlay_a).uv(overlay_u2, overlay_v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
             matrixStack.popPose();
         }
 
@@ -4790,27 +4716,26 @@ public class PageDrawing {
 
         matrixStack.pushPose();
 
-        if(pageOn == PageOn.LEFT_PAGE)
+        if (pageOn == PageOn.LEFT_PAGE)
             translateToLeftPage(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.LEFT_PAGE_UNDER)
+        else if (pageOn == PageOn.LEFT_PAGE_UNDER)
             translateToLeftPageUnder(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.LEFT_PAGE_PREV)
+        else if (pageOn == PageOn.LEFT_PAGE_PREV)
             translateToLeftPagePrevious(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        if(pageOn == PageOn.RIGHT_PAGE)
+        if (pageOn == PageOn.RIGHT_PAGE)
             translateToRightPage(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.RIGHT_PAGE_UNDER)
+        else if (pageOn == PageOn.RIGHT_PAGE_UNDER)
             translateToRightPageUnder(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.RIGHT_PAGE_PREV)
+        else if (pageOn == PageOn.RIGHT_PAGE_PREV)
             translateToRightPagePrevious(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-
 
 
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStack.translate(-8f / 16f, 5.5f / 16f, -0.012f / 16f);
-        matrixStack.scale(0.5f,0.5f,0.5f);
+        matrixStack.scale(0.5f, 0.5f, 0.5f);
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
-        matrixStack.translate(-0.03f/16f, -0.053f/16f, 0);
-        matrixStack.translate(4.75f/16f, 0f/16f, 0);
+        matrixStack.translate(-0.03f / 16f, -0.053f / 16f, 0);
+        matrixStack.translate(4.75f / 16f, 0f / 16f, 0);
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
@@ -4828,15 +4753,15 @@ public class PageDrawing {
         int imageHeight = 128;
         int width = 100;
         int height = 26;
-        float u1 = (u + 0.0F) / (float)imageWidth;
-        float u2 = (u + (float)width) / (float)imageWidth;
-        float v1 = (v + 0.0F) / (float)imageHeight;
-        float v2 = (v + (float)height) / (float)imageHeight;
+        float u1 = (u + 0.0F) / (float) imageWidth;
+        float u2 = (u + (float) width) / (float) imageWidth;
+        float v1 = (v + 0.0F) / (float) imageHeight;
+        float v2 = (v + (float) height) / (float) imageHeight;
 
-        buffer.vertex(matrix,  0,  -0.055f / 18 * height,-0.055f / 18 * width).color(255, 255, 255, 255).uv(u1, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-        buffer.vertex(matrix,  0,  0.055f / 18 * height, -0.055f / 18 * width).color(255, 255, 255, 255).uv(u1, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-        buffer.vertex(matrix,  0, 0.055f / 18 * height,   0.055f / 18 * width).color(255, 255, 255, 255).uv(u2, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
-        buffer.vertex(matrix,  0, -0.055f / 18 * height,  0.055f / 18 * width).color(255, 255, 255, 255).uv(u2, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix, 0, -0.055f / 18 * height, -0.055f / 18 * width).color(255, 255, 255, 255).uv(u1, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix, 0, 0.055f / 18 * height, -0.055f / 18 * width).color(255, 255, 255, 255).uv(u1, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix, 0, 0.055f / 18 * height, 0.055f / 18 * width).color(255, 255, 255, 255).uv(u2, v2).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
+        buffer.vertex(matrix, 0, -0.055f / 18 * height, 0.055f / 18 * width).color(255, 255, 255, 255).uv(u2, v1).overlayCoords(overlay).uv2(light).normal(normal, 1F, 0F, 0F).endVertex();
 
         matrixStack.popPose();
 
@@ -4845,29 +4770,29 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    public void drawCharacter(char character,BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float mouseX, float mouseY, int xIn, int yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
+    public void drawCharacter(char character, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float mouseX, float mouseY, int xIn, int yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
 
 
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(ClientProxy.TEXT.get(character));
 
         matrixStack.pushPose();
 
-        if(pageOn == PageOn.LEFT_PAGE)
+        if (pageOn == PageOn.LEFT_PAGE)
             translateToLeftPage(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.LEFT_PAGE_UNDER)
+        else if (pageOn == PageOn.LEFT_PAGE_UNDER)
             translateToLeftPageUnder(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.LEFT_PAGE_PREV)
+        else if (pageOn == PageOn.LEFT_PAGE_PREV)
             translateToLeftPagePrevious(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        if(pageOn == PageOn.RIGHT_PAGE)
+        if (pageOn == PageOn.RIGHT_PAGE)
             translateToRightPage(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.RIGHT_PAGE_UNDER)
+        else if (pageOn == PageOn.RIGHT_PAGE_UNDER)
             translateToRightPageUnder(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.RIGHT_PAGE_PREV)
+        else if (pageOn == PageOn.RIGHT_PAGE_PREV)
             translateToRightPagePrevious(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
 
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStack.translate(-8.35f / 16f, 5.5f / 16f, -0.07f / 16f);
-        matrixStack.scale(0.5f,0.5f,0.5f);
+        matrixStack.scale(0.5f, 0.5f, 0.5f);
         matrixStack.translate(this.lineHeight + yIn * 0.05f, -this.lineWidth - (ClientProxy.TEXT_WIDTH.get(character) / 2) - xIn * 0.042f, 0);
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(90));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
@@ -4882,10 +4807,10 @@ public class PageDrawing {
 
         matrixStack.last().normal().mul(ITEM_LIGHT_ROTATION_FLAT);
         Matrix3f normal = matrixStack.last().normal();
-        buffer.vertex(matrix, -0.032f, -0.032f, 0.0f).color(0.12f,0.12f,0.12f, 1.0f).uv(sprite.getU0(), sprite.getV0()).overlayCoords(overlay).uv2(light).normal(normal, 1,0,0).endVertex();
-        buffer.vertex(matrix, 0.032f, -0.032f, 0.0f) .color(0.12f,0.12f,0.12f, 1.0f).uv(sprite.getU0(), sprite.getV1()).overlayCoords(overlay).uv2(light).normal(normal, 1,0,0).endVertex();
-        buffer.vertex(matrix, 0.032f, 0.032f, 0.0f)  .color(0.12f,0.12f,0.12f, 1.0f).uv(sprite.getU1(), sprite.getV1()).overlayCoords(overlay).uv2(light).normal(normal, 1,0,0).endVertex();
-        buffer.vertex(matrix, -0.032f, 0.032f, 0.0f) .color(0.12f,0.12f,0.12f, 1.0f).uv(sprite.getU1(), sprite.getV0()).overlayCoords(overlay).uv2(light).normal(normal, 1,0,0).endVertex();
+        buffer.vertex(matrix, -0.032f, -0.032f, 0.0f).color(0.12f, 0.12f, 0.12f, 1.0f).uv(sprite.getU0(), sprite.getV0()).overlayCoords(overlay).uv2(light).normal(normal, 1, 0, 0).endVertex();
+        buffer.vertex(matrix, 0.032f, -0.032f, 0.0f).color(0.12f, 0.12f, 0.12f, 1.0f).uv(sprite.getU0(), sprite.getV1()).overlayCoords(overlay).uv2(light).normal(normal, 1, 0, 0).endVertex();
+        buffer.vertex(matrix, 0.032f, 0.032f, 0.0f).color(0.12f, 0.12f, 0.12f, 1.0f).uv(sprite.getU1(), sprite.getV1()).overlayCoords(overlay).uv2(light).normal(normal, 1, 0, 0).endVertex();
+        buffer.vertex(matrix, -0.032f, 0.032f, 0.0f).color(0.12f, 0.12f, 0.12f, 1.0f).uv(sprite.getU1(), sprite.getV0()).overlayCoords(overlay).uv2(light).normal(normal, 1, 0, 0).endVertex();
 
         //shadow for special font
 //        matrixStack.translate(0.001,0.001,-0.001);
@@ -4898,17 +4823,17 @@ public class PageDrawing {
 
     }
 
-    public void resetLines(){
+    public void resetLines() {
         this.lineWidth = 0;
         this.lineHeight = 0;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public BookParagraphElements resetLinesNewBox(BookParagraph bookParagraph, int boxOn){
+    public BookParagraphElements resetLinesNewBox(BookParagraph bookParagraph, int boxOn) {
         this.lineWidth = 0;
         this.lineHeight = 0;
-        if(boxOn + 1 < bookParagraph.paragraphElements.toArray().length)
-            return (BookParagraphElements)(bookParagraph.paragraphElements.toArray()[boxOn+1]);
+        if (boxOn + 1 < bookParagraph.paragraphElements.toArray().length)
+            return (BookParagraphElements) (bookParagraph.paragraphElements.toArray()[boxOn + 1]);
         return null;
     }
 
@@ -4919,7 +4844,6 @@ public class PageDrawing {
         int wordNumber = -1;
         int boxOn = 0;
         BookParagraphElements activeElement = (bookParagraph.paragraphElements.get(0));
-
 
 
         boolean drawSpecialFont = false;// HexConfig.FANCY_FONT_IN_BOOK.get();
@@ -5067,12 +4991,12 @@ public class PageDrawing {
 
 
         int itor = -1;
-        for(String word : words){
+        for (String word : words) {
             itor++;
-            if(word.length() > 2) {
+            if (word.length() > 2) {
                 StringBuilder stringBuilder = new StringBuilder();
                 if (word.charAt(0) == '%' && word.charAt(1) == 'k') {
-                    for(int i = 2; i < word.length(); i++){
+                    for (int i = 2; i < word.length(); i++) {
                         stringBuilder.append(word.charAt(i));
                     }
                     String temp = stringBuilder.toString();
@@ -5083,7 +5007,7 @@ public class PageDrawing {
                         String name = k.getName();
                         if (name.equals(temp) || name.equals(alt)) {
                             String keyName = k.getTranslatedKeyMessage().getString();
-                            if(keyName.length() <= 1)
+                            if (keyName.length() <= 1)
                                 keyName = keyName.toUpperCase(Locale.ROOT);
                             words[itor] = keyName;
                             pageTextString = pageTextString.replaceAll(word, words[itor]);
@@ -5183,27 +5107,27 @@ public class PageDrawing {
             }
         }
 
-        if(!stringBuilder.toString().isEmpty())
+        if (!stringBuilder.toString().isEmpty())
             strings.add(stringBuilder.toString());
 
         matrixStack.pushPose();
 
-        if(pageOn == PageOn.LEFT_PAGE)
+        if (pageOn == PageOn.LEFT_PAGE)
             translateToLeftPage(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.LEFT_PAGE_UNDER)
+        else if (pageOn == PageOn.LEFT_PAGE_UNDER)
             translateToLeftPageUnder(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.LEFT_PAGE_PREV)
+        else if (pageOn == PageOn.LEFT_PAGE_PREV)
             translateToLeftPagePrevious(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        if(pageOn == PageOn.RIGHT_PAGE)
+        if (pageOn == PageOn.RIGHT_PAGE)
             translateToRightPage(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.RIGHT_PAGE_UNDER)
+        else if (pageOn == PageOn.RIGHT_PAGE_UNDER)
             translateToRightPageUnder(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
-        else if(pageOn == PageOn.RIGHT_PAGE_PREV)
+        else if (pageOn == PageOn.RIGHT_PAGE_PREV)
             translateToRightPagePrevious(tileEntityIn, matrixStack, isItem, ItemTransforms.TransformType.NONE);
 
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
         matrixStack.translate(-8.35f / 16f, 4.5f / 16f, -0.01f / 16f);
-        matrixStack.scale(0.00272f,0.00272f,0.00272f);
+        matrixStack.scale(0.00272f, 0.00272f, 0.00272f);
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
 
         MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
@@ -5213,36 +5137,34 @@ public class PageDrawing {
         int boxId = 0;
         int linenumber = 0;
         boolean flag = true;
-        while(flag) {
+        while (flag) {
             ArrayList<String> remainder = new ArrayList<>();
-            if(bookParagraph.paragraphElements.size() > boxId && bookParagraph.paragraphElements.get(boxId)!=null) {
+            if (bookParagraph.paragraphElements.size() > boxId && bookParagraph.paragraphElements.get(boxId) != null) {
 
                 BookParagraphElements box = bookParagraph.paragraphElements.get(boxId);
 
                 for (String s1 : strings) {
-                    if((linenumber+1) * font.lineHeight <= Math.round(box.height * font.lineHeight) + 1) {
+                    if ((linenumber + 1) * font.lineHeight <= Math.round(box.height * font.lineHeight) + 1) {
                         float offsetX = 0;
-                        if(bookParagraph.align.equals("middle"))
+                        if (bookParagraph.align.equals("middle"))
                             offsetX = (font.width(s1)) / 2;
 
-                        font.drawInBatch(s1, (box.x * 8f) - 24 - offsetX, ((box.y) * (font.lineHeight) + Math.round(linenumber * font.lineHeight)) - 4, HexereiUtil.getColorValue(0.12f,0.12f,0.12f), false, matrixStack.last().pose(), bufferSource, false, 0, light);
+                        font.drawInBatch(s1, (box.x * 8f) - 24 - offsetX, ((box.y) * (font.lineHeight) + Math.round(linenumber * font.lineHeight)) - 4, HexereiUtil.getColorValue(0.12f, 0.12f, 0.12f), false, matrixStack.last().pose(), bufferSource, false, 0, light);
                         matrixStack.pushPose();
                         matrixStack.translate(0.25f, 0.25f, 1 / 16f);
                         font.drawInBatch(s1, (box.x * 8f) - 24 - offsetX, ((box.y) * (font.lineHeight) + Math.round(linenumber * font.lineHeight)) - 4, 16777216, false, matrixStack.last().pose(), bufferSource, false, 0, light);
                         matrixStack.popPose();
-                    }
-                    else {
+                    } else {
                         remainder.add(s1);
                     }
                     ++linenumber;
                 }
-            }
-            else
+            } else
                 flag = false;
-            if(remainder.isEmpty())
+            if (remainder.isEmpty())
                 flag = false;
             else {
-                boxId ++;
+                boxId++;
                 linenumber = 0;
                 strings = remainder;
             }
