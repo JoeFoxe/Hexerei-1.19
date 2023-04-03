@@ -358,6 +358,7 @@ public class ModItems {
                         broom.level.playSound(null, broom, SoundEvents.ENDER_EYE_LAUNCH, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
                         HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> broom.level.getChunkAt(broom.blockPosition())), new BroomEnderSatchelBrushParticlePacket(broom));
 
+                        broom.sync();
                     } else {
                         broom.level.playSound(null, broom, SoundEvents.ENDER_EYE_DEATH, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
                     }
