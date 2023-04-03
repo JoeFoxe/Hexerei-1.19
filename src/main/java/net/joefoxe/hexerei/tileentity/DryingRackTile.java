@@ -90,7 +90,7 @@ public class DryingRackTile extends RandomizableContainerBlockEntity implements 
             if (!level.isClientSide)
                 HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new TESyncPacket(worldPosition, save(new CompoundTag())));
 
-            if (this.level != null)
+            if (level != null)
                 this.level.sendBlockUpdated(this.worldPosition, this.level.getBlockState(this.worldPosition), this.level.getBlockState(this.worldPosition),
                         Block.UPDATE_CLIENTS);
         }
@@ -102,12 +102,11 @@ public class DryingRackTile extends RandomizableContainerBlockEntity implements 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
         if (facing != null && capability == ForgeCapabilities.ITEM_HANDLER) {
-            if (facing == Direction.UP)
-                return handlers[0].cast();
-            else if (facing == Direction.DOWN)
-                return handlers[1].cast();
-            else
-                return handlers[2].cast();
+            return switch (facing) {
+                case UP -> handlers[0].cast();
+                case DOWN -> handlers[1].cast();
+                default -> handlers[2].cast();
+            };
         }
 
         return super.getCapability(capability, facing);

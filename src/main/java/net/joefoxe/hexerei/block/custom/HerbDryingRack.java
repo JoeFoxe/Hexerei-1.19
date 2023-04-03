@@ -36,6 +36,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public class HerbDryingRack extends Block implements ITileEntity<DryingRackTile>, EntityBlock, SimpleWaterloggedBlock {
 
@@ -56,9 +57,9 @@ public class HerbDryingRack extends Block implements ITileEntity<DryingRackTile>
     }
 
     // hitbox REMEMBER TO DO THIS
-    public static final VoxelShape SHAPE = java.util.Optional.of(Block.box(0.5, 5.5, 7.5, 15.5, 16, 8.5)).get();
+    public static final VoxelShape SHAPE = Optional.of(Block.box(0.5, 5.5, 7.5, 15.5, 16, 8.5)).get();
 
-    public static final VoxelShape SHAPE_TURNED = java.util.Optional.of(Block.box(7.5, 5.5, 0.5, 8.5, 16, 15.5)).get();
+    public static final VoxelShape SHAPE_TURNED = Optional.of(Block.box(7.5, 5.5, 0.5, 8.5, 16, 15.5)).get();
 
 
     public BlockState rotate(BlockState pState, Rotation pRot) {
@@ -111,9 +112,7 @@ public class HerbDryingRack extends Block implements ITileEntity<DryingRackTile>
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
-            BlockEntity tileentity = level.getBlockEntity(pos);
-            if (tileentity != null) {
-                DryingRackTile te = (DryingRackTile) level.getBlockEntity(pos);
+            if (level.getBlockEntity(pos) instanceof DryingRackTile te && te.getLevel() != null) {
                 if (!te.getItems().get(0).isEmpty())
                     te.getLevel().addFreshEntity(new ItemEntity(te.getLevel(), pos.getX() + 0.5f, pos.getY() - 0.5f, pos.getZ() + 0.5f, te.getItems().get(0)));
                 if (!te.getItems().get(1).isEmpty())
