@@ -63,7 +63,6 @@ public class ModBlocks {
 			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
 			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_WILLOW_CONNECTED)))
 			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_WILLOW_CONNECTED)))
-			.defaultBlockstate()
 			.register();
 
 	public static final BlockEntry<Block> POLISHED_WILLOW_CONNECTED = REGISTRATE.block("polished_willow_connected", Block::new)
@@ -109,7 +108,6 @@ public class ModBlocks {
 			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).color(MaterialColor.TERRACOTTA_GREEN))
 			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_WITCH_HAZEL_CONNECTED)))
 			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_WITCH_HAZEL_CONNECTED)))
-			.defaultBlockstate()
 			.register();
 
 	public static final BlockEntry<Block> POLISHED_WITCH_HAZEL_CONNECTED = REGISTRATE.block("polished_witch_hazel_connected", Block::new)

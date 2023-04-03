@@ -4,6 +4,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tterrag.registrate.Registrate;
+import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateProvider;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import net.joefoxe.hexerei.block.CustomFlintAndSteelDispenserBehavior;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.ModWoodType;
@@ -89,7 +92,22 @@ import static net.joefoxe.hexerei.util.ClientProxy.MODEL_SWAPPER;
 public class Hexerei {
 
 	public static final String MOD_ID = "hexerei";
-	private static final Lazy<Registrate> REGISTRATE = Lazy.of(() -> Registrate.create(MOD_ID));
+	private static final Lazy<Registrate> REGISTRATE = Lazy.of(() -> new HexRegistrate(MOD_ID)
+	);
+
+	static class HexRegistrate extends Registrate {
+		protected HexRegistrate(String modid) {
+			super(modid);
+			this.registerEventListeners(FMLJavaModLoadingContext.get().getModEventBus());
+		}
+
+		//prevent blockstate and lang datagen
+		@Override
+		public <T extends RegistrateProvider> Registrate addDataGenerator(ProviderType<? extends T> type, NonNullConsumer<? extends T> cons) {
+			if (type == ProviderType.LANG || type == ProviderType.BLOCKSTATE) return self();
+			return super.addDataGenerator(type, cons);
+		}
+	}
 
 	public static SidedProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
@@ -98,7 +116,7 @@ public class Hexerei {
 
 	@OnlyIn(Dist.CLIENT)
 	public static Font font() {
-		if(ClientProxy.fontIndex == 0)
+		if (ClientProxy.fontIndex == 0)
 			return Minecraft.getInstance().font;
 		else {
 			int index = ClientProxy.fontIndex % HexConfig.FONT_LIST.get().size();
