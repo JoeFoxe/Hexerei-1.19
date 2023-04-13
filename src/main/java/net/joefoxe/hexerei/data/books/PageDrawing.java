@@ -1,11 +1,16 @@
 package net.joefoxe.hexerei.data.books;
 
-import com.google.common.collect.Maps;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.math.*;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 import mezz.jei.api.runtime.IRecipesGui;
+import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.entity.custom.CrowEntity;
 import net.joefoxe.hexerei.config.HexConfig;
 import net.joefoxe.hexerei.config.ModKeyBindings;
@@ -13,26 +18,24 @@ import net.joefoxe.hexerei.integration.HexereiModNameTooltipCompat;
 import net.joefoxe.hexerei.integration.jei.HexereiJei;
 import net.joefoxe.hexerei.integration.jei.HexereiJeiCompat;
 import net.joefoxe.hexerei.screen.tooltip.HexereiBookTooltip;
+import net.joefoxe.hexerei.tileentity.BookOfShadowsAltarTile;
 import net.joefoxe.hexerei.util.ClientProxy;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.joefoxe.hexerei.util.message.AskForEntriesAndPagesPacket;
-import net.joefoxe.hexerei.util.message.CrowAskForSyncPacket;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderType;
-import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.tileentity.BookOfShadowsAltarTile;
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -44,7 +47,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
@@ -57,7 +63,10 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -158,8 +167,7 @@ public class PageDrawing {
 
         if (optional.isPresent()) {
             Item item = optional.get();
-            ItemStack itemStack = new ItemStack(item);
-            return itemStack;
+            return new ItemStack(item);
         }
         return ItemStack.EMPTY;
 //        return Registry.ITEM.getTag(TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(loc))).flatMap(tag -> tag.getRandomElement(new Random())).map(Holder::value);
@@ -170,7 +178,7 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    public static void renderItem(BookOfShadowsAltarTile tileEntityIn, @NotNull BookItemsAndFluids itemStackElement, PoseStack matrixStackIn, MultiBufferSource.BufferSource buffer, float xIn, float yIn, float zLevel, int combinedLight, int combinedOverlay, PageOn pageOn, boolean isItem) {
+    public static void renderItem(BookOfShadowsAltarTile tileEntityIn, @NotNull BookItemsAndFluids itemStackElement, PoseStack matrixStackIn, MultiBufferSource buffer, float xIn, float yIn, float zLevel, int combinedLight, int combinedOverlay, PageOn pageOn, boolean isItem) {
 
         ItemStack itemStack = itemStackElement.item;
 
@@ -722,18 +730,18 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawPage(BookPage page, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource.BufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem, ItemTransforms.TransformType transformType) throws CommandSyntaxException {
+    public void drawPage(BookPage page, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem, ItemTransforms.TransformType transformType) throws CommandSyntaxException {
         drawPage(page, tileEntityIn, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, pageOn, isItem, transformType, -1);
     }
     @OnlyIn(Dist.CLIENT)
-    public void drawPage(BookPage page, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource.BufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem, ItemTransforms.TransformType transformType, int pageNum) throws CommandSyntaxException {
+    public void drawPage(BookPage page, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem, ItemTransforms.TransformType transformType, int pageNum) throws CommandSyntaxException {
 
         if(page != null) {
 
 
             Player playerIn = Hexerei.proxy.getPlayer();
 
-            double reach = playerIn.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
+            double reach = playerIn.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
             Vec3 planeNormalRight = planeNormal(tileEntityIn, PageOn.RIGHT_PAGE);
             Vec3 planeNormalLeft = planeNormal(tileEntityIn, PageOn.LEFT_PAGE);
 
@@ -933,12 +941,12 @@ public class PageDrawing {
                             drawImage(bookImage, tileEntityIn, matrixStackIn, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, isItem);
 
                             if(handler.isRightPressed()) {
-                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - ((float)Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * (float)Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32,48,32,48,0.45f * bookEntity.hoverTick,"hexerei:textures/book/right_click_icon_hover.png",new ArrayList<>());
+                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - (Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32, 48, 32, 48, 0.45f * bookEntity.hoverTick, "hexerei:textures/book/right_click_icon_hover.png", new ArrayList<>());
                                 drawImage(bookImage2, tileEntityIn, matrixStackIn, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, isItem);
 
                             }
                             else{
-                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - ((float)Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * (float)Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32,48,32,48,0.45f * bookEntity.hoverTick,"hexerei:textures/book/right_click_icon.png",new ArrayList<>());
+                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - (Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32, 48, 32, 48, 0.45f * bookEntity.hoverTick, "hexerei:textures/book/right_click_icon.png", new ArrayList<>());
                                 drawImage(bookImage2, tileEntityIn, matrixStackIn, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, isItem);
 
                             }
@@ -995,12 +1003,12 @@ public class PageDrawing {
                             drawImage(bookImage, tileEntityIn, matrixStackIn, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, isItem);
 
                             if(handler.isRightPressed()) {
-                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - ((float)Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * (float)Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32,48,32,48,0.45f * bookEntity.hoverTick,"hexerei:textures/book/right_click_icon_hover.png",new ArrayList<>());
+                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - (Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32, 48, 32, 48, 0.45f * bookEntity.hoverTick, "hexerei:textures/book/right_click_icon_hover.png", new ArrayList<>());
                                 drawImage(bookImage2, tileEntityIn, matrixStackIn, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, isItem);
 
                             }
                             else{
-                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - ((float)Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * (float)Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32,48,32,48,0.45f * bookEntity.hoverTick,"hexerei:textures/book/right_click_icon.png",new ArrayList<>());
+                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - (Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32, 48, 32, 48, 0.45f * bookEntity.hoverTick, "hexerei:textures/book/right_click_icon.png", new ArrayList<>());
                                 drawImage(bookImage2, tileEntityIn, matrixStackIn, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, isItem);
 
                             }
@@ -1226,13 +1234,13 @@ public class PageDrawing {
                 else {
                     Optional<EntityType<?>> optionalEntityType = EntityType.byString(bookEntity.entityType);
                     if(optionalEntityType.isPresent()) {
-                        Entity entity = (Entity) optionalEntityType.get().create(Hexerei.proxy.getLevel());
+                        Entity entity = optionalEntityType.get().create(Hexerei.proxy.getLevel());
 
                         if(entity instanceof LivingEntity livingEntity){
                             bookEntity.entity = entity;
 
 
-                            if (!bookEntity.entityTags.equals("") && entity != null) {
+                            if (!bookEntity.entityTags.equals("")) {
 
                                 CompoundTag tag = TagParser.parseTag(bookEntity.entityTags);
 
@@ -1290,7 +1298,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawLivingEntity(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource.BufferSource bufferIn, float scale, float xIn, float yIn, float rot, int p_98853_, float p_98854_, float p_98855_, LivingEntity livingEntity, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem){
+    public void drawLivingEntity(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource bufferIn, float scale, float xIn, float yIn, float rot, int p_98853_, float p_98854_, float p_98855_, LivingEntity livingEntity, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem){
         matrixStackIn.pushPose();
 
         if(livingEntity instanceof TamableAnimal tamableAnimal && !tamableAnimal.isInSittingPose()) {
@@ -1320,8 +1328,8 @@ public class PageDrawing {
         matrixStackIn.translate(yIn * 1.25f / scale, -xIn * 1.25f / scale, 0);
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(90));
 
-        float $$6 = (float)Math.atan((double)(p_98854_ / 40.0F));
-        float $$7 = (float)Math.atan((double)(p_98855_ / 40.0F));
+        float $$6 = (float)Math.atan(p_98854_ / 40.0F);
+        float $$7 = (float)Math.atan(p_98855_ / 40.0F);
         Quaternion $$10 = Vector3f.ZP.rotationDegrees(180.0F);
         Quaternion $$11 = Vector3f.XP.rotationDegrees($$7 * 20.0F);
         $$10.mul($$11);
@@ -1351,7 +1359,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawEntity(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource.BufferSource bufferIn, float scale, float xIn, float yIn, float rot, int p_98853_, float p_98854_, float p_98855_, Entity entity, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem){
+    public void drawEntity(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource bufferIn, float scale, float xIn, float yIn, float rot, int p_98853_, float p_98854_, float p_98855_, Entity entity, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem){
         matrixStackIn.pushPose();
 
         if(pageOn == PageOn.LEFT_PAGE)
@@ -1374,7 +1382,7 @@ public class PageDrawing {
         matrixStackIn.translate(yIn * 1.25f / scale, -xIn * 1.25f / scale, 0);
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(90));
 
-        float $$7 = (float)Math.atan((double)(p_98855_ / 40.0F));
+        float $$7 = (float)Math.atan(p_98855_ / 40.0F);
         Quaternion $$10 = Vector3f.ZP.rotationDegrees(180.0F);
         Quaternion $$11 = Vector3f.XP.rotationDegrees($$7 * 20.0F);
         $$10.mul($$11);
@@ -1384,21 +1392,19 @@ public class PageDrawing {
         $$17.overrideCameraOrientation($$11);
         $$17.setRenderShadow(false);
         MultiBufferSource.BufferSource $$18 = Minecraft.getInstance().renderBuffers().bufferSource();
-        RenderSystem.runAsFancy(() -> {
-            $$17.render(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, matrixStackIn, $$18, combinedLightIn);
-        });
+        RenderSystem.runAsFancy(() -> $$17.render(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, matrixStackIn, $$18, combinedLightIn));
         $$18.endBatch();
         $$17.setRenderShadow(true);
         matrixStackIn.popPose();
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawPages(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, int light, int overlay, float partialTicks) throws CommandSyntaxException {
+    public void drawPages(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, int light, int overlay, float partialTicks) throws CommandSyntaxException {
         drawPages(tileEntityIn, matrixStack, bufferSource, light, overlay, false, ItemTransforms.TransformType.NONE, partialTicks);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawPages(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, int light, int overlay, boolean isItem, ItemTransforms.TransformType transformType, float partialTicks) throws CommandSyntaxException {
+    public void drawPages(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, int light, int overlay, boolean isItem, ItemTransforms.TransformType transformType, float partialTicks) throws CommandSyntaxException {
         this.tick++;
 
         if(ClientProxy.keys == null)
@@ -1600,11 +1606,11 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawBaseButtons(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, int light, int overlay, boolean drawNext, boolean drawBack, int chapter, int page, boolean isItem) {
+    public void drawBaseButtons(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, int light, int overlay, boolean drawNext, boolean drawBack, int chapter, int page, boolean isItem) {
         drawBaseButtons(tileEntityIn, matrixStack, bufferSource, light, overlay, drawNext, drawBack, chapter, page, isItem, ItemTransforms.TransformType.NONE, false);
     }
     @OnlyIn(Dist.CLIENT)
-    public void drawBaseButtons(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, int light, int overlay, boolean drawNext, boolean drawBack, int chapter, int page, boolean isItem, ItemTransforms.TransformType transformType, boolean fullyExtended) {
+    public void drawBaseButtons(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, int light, int overlay, boolean drawNext, boolean drawBack, int chapter, int page, boolean isItem, ItemTransforms.TransformType transformType, boolean fullyExtended) {
 
         Player playerIn = null;
         if(tileEntityIn.getLevel() != null && tileEntityIn.getLevel().isClientSide)
@@ -1613,7 +1619,7 @@ public class PageDrawing {
 
             boolean drawBookmarkButton = chapter != 0;
 
-            double reach = playerIn.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
+            double reach = playerIn.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
             Vec3 planeNormalRight = planeNormal(tileEntityIn, PageOn.RIGHT_PAGE);
             Vec3 planeNormalLeft = planeNormal(tileEntityIn, PageOn.LEFT_PAGE);
             CompoundTag tag = tileEntityIn.itemHandler.getStackInSlot(0).getOrCreateTag();
@@ -2408,7 +2414,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawItemInSlot(BookOfShadowsAltarTile tileEntityIn, BookItemsAndFluids bookItemStackInSlot, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float xIn, float yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
+    public void drawItemInSlot(BookOfShadowsAltarTile tileEntityIn, BookItemsAndFluids bookItemStackInSlot, PoseStack matrixStack, MultiBufferSource bufferSource, float xIn, float yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
         if(bookItemStackInSlot.type.equals("item") || bookItemStackInSlot.type.equals("tag")) {
             if(bookItemStackInSlot.show_slot)
                 drawSlot(tileEntityIn, bookItemStackInSlot.item, matrixStack, bufferSource, xIn, yIn, 0, light, overlay, pageOn, isItem);
@@ -2433,8 +2439,7 @@ public class PageDrawing {
                 vector3f.y() + blockPos.getY() + 18 / 16f,
                 vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
 
-        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
-        return aabb;
+        return new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
     }
     @OnlyIn(Dist.CLIENT)
     public AABB getpositionAABBBack(BookOfShadowsAltarTile altarTile){
@@ -2455,8 +2460,7 @@ public class PageDrawing {
                 vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
 
 
-        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
-        return aabb;
+        return new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
     }
     @OnlyIn(Dist.CLIENT)
     public AABB getpositionAABBLeft(BookOfShadowsAltarTile altarTile, float xIn, float yIn){
@@ -2477,8 +2481,7 @@ public class PageDrawing {
                 vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
 
 
-        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
-        return aabb;
+        return new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
     }
     @OnlyIn(Dist.CLIENT)
     public AABB getpositionAABBClose(BookOfShadowsAltarTile altarTile){
@@ -2496,10 +2499,8 @@ public class PageDrawing {
                 vector3f.y() + blockPos.getY() + 18 / 16f,
                 vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
 
-        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
 
-
-        return aabb;
+        return new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
     }
     @OnlyIn(Dist.CLIENT)
     public AABB getpositionAABBHome(BookOfShadowsAltarTile altarTile){
@@ -2517,10 +2518,8 @@ public class PageDrawing {
                 vector3f.y() + blockPos.getY() + 18 / 16f,
                 vector3f.z() + blockPos.getZ() + 0.5f + (float) Math.cos((altarTile.degreesSpun) / 57.1f) / 32f * (altarTile.degreesOpened / 5f - 12f));
 
-        AABB aabb = new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
 
-
-        return aabb;
+        return new AABB(vec.add(-0.03, -0.03, -0.03), vec.add(0.03, 0.03, 0.03));
     }
 
 
@@ -2535,7 +2534,7 @@ public class PageDrawing {
         float f5 = Mth.sin(-f * 0.017453292F);
         float f6 = f3 * f4;
         float f7 = f2 * f4;
-        double d0 = player.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
+        double d0 = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
 
         if(i == 1){
             vec3 = vec3.subtract(0, 1, 0);
@@ -2572,7 +2571,7 @@ public class PageDrawing {
                     return;
 
 
-                double reach = playerIn.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
+                double reach = playerIn.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
 
 
                     for(int j = 0; j < 6; j++){
@@ -2809,7 +2808,7 @@ public class PageDrawing {
                         CompoundTag tag = altarTile.itemHandler.getStackInSlot(0).getOrCreateTag();
 
                         if(tag.contains("opened") && tag.getBoolean("opened")) {
-                            double reach = playerIn.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
+                            double reach = playerIn.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
                             Vec3 planeNormalRight = planeNormal(altarTile, PageOn.RIGHT_PAGE);
                             Vec3 planeNormalLeft = planeNormal(altarTile, PageOn.LEFT_PAGE);
                             if (tag.contains("chapter")) {
@@ -3187,9 +3186,7 @@ public class PageDrawing {
             Vec3 vec3_pr = vec_2.subtract(vec);
             Vec3 vec3_pq = vec_3.subtract(vec);
 
-            Vec3 pn = vec3_pr.cross(vec3_pq);
-
-            return pn;
+            return vec3_pr.cross(vec3_pq);
         }else{
             Vector3f vector3f = new Vector3f(0, 0, 0);
 
@@ -3241,9 +3238,7 @@ public class PageDrawing {
             Vec3 vec3_pr = vec_2.subtract(vec);
             Vec3 vec3_pq = vec_3.subtract(vec);
 
-            Vec3 pn = vec3_pr.cross(vec3_pq);
-
-            return pn;
+            return vec3_pr.cross(vec3_pq);
         }
     }
 
@@ -3251,7 +3246,7 @@ public class PageDrawing {
     public int checkClick(Player playerIn, BookOfShadowsAltarTile altarTile){
         int clicked = 0;
 
-        double reach = playerIn.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
+        double reach = playerIn.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
         Vec3 planeNormalRight = planeNormal(altarTile, PageOn.RIGHT_PAGE);
         Vec3 planeNormalLeft = planeNormal(altarTile, PageOn.LEFT_PAGE);
         if(!this.isRightPressedOld){
@@ -3860,7 +3855,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawSlot(BookOfShadowsAltarTile tileEntityIn, ItemStack stack, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float xIn, float yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
+    public void drawSlot(BookOfShadowsAltarTile tileEntityIn, ItemStack stack, PoseStack matrixStack, MultiBufferSource bufferSource, float xIn, float yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
 
         matrixStack.pushPose();
 
@@ -3915,7 +3910,7 @@ public class PageDrawing {
 
     }
     @OnlyIn(Dist.CLIENT)
-    public void drawFluidInSlot(BookOfShadowsAltarTile tileEntityIn, @NotNull BookItemsAndFluids bookItemsAndFluids, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float xIn, float yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
+    public void drawFluidInSlot(BookOfShadowsAltarTile tileEntityIn, @NotNull BookItemsAndFluids bookItemsAndFluids, PoseStack matrixStack, MultiBufferSource bufferSource, float xIn, float yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
 
         matrixStack.pushPose();
         FluidStack stack = bookItemsAndFluids.fluid;
@@ -3978,7 +3973,7 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    private void drawFluid(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, final int tiledWidth, final int tiledHeight, FluidStack fluidStack, int capacity, int light, int overlay, float x_offset, float y_offset, float width, float height) {
+    private void drawFluid(PoseStack poseStack, MultiBufferSource bufferSource, final int tiledWidth, final int tiledHeight, FluidStack fluidStack, int capacity, int light, int overlay, float x_offset, float y_offset, float width, float height) {
         Fluid fluid = fluidStack.getFluid();
         if (fluid == null) {
             return;
@@ -4007,7 +4002,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static void drawTiledSprite(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, final int tiledWidth, final int tiledHeight, int color, int scaledAmount, TextureAtlasSprite sprite, int capacity, int amount, int light, int overlay, float x_offset, float y_offset, float width, float height) {
+    private static void drawTiledSprite(PoseStack poseStack, MultiBufferSource bufferSource, final int tiledWidth, final int tiledHeight, int color, int scaledAmount, TextureAtlasSprite sprite, int capacity, int amount, int light, int overlay, float x_offset, float y_offset, float width, float height) {
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         setGLColorFromInt(color);
 
@@ -4016,8 +4011,6 @@ public class PageDrawing {
         final int yTileCount = scaledAmount / TEXTURE_SIZE;
         final int yRemainder = scaledAmount - (yTileCount * TEXTURE_SIZE);
 
-        final int yStart = tiledHeight;
-
         for (int xTile = 0; xTile <= xTileCount; xTile++) {
             for (int yTile = 0; yTile <= yTileCount; yTile++) {
                 int width2 = (xTile == xTileCount) ? xRemainder : (int)width;
@@ -4025,7 +4018,7 @@ public class PageDrawing {
 //                if(capacity > 0 && capacity >= amount)
 //                    height2 *= ((float)amount / (float)capacity);
                 int x_tile = (xTile * TEXTURE_SIZE);
-                int y_tile = yStart - ((yTile + 1) * (int)height);
+                int y_tile = tiledHeight - ((yTile + 1) * (int)height);
                 if (width2 > 0 && height2 > 0) {
                     int maskTop = (int)height - height2;
                     int maskRight = (int)width - width2;
@@ -4056,7 +4049,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static void drawTextureWithMasking(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, int capacity, int amount, float xCoord, float yCoord, TextureAtlasSprite textureSprite, int color, int maskTop, int maskRight, float zLevel, int light, int overlay, float x_offset, float y_offset, float width, float height) {
+    private static void drawTextureWithMasking(PoseStack poseStack, MultiBufferSource bufferSource, int capacity, int amount, float xCoord, float yCoord, TextureAtlasSprite textureSprite, int color, int maskTop, int maskRight, float zLevel, int light, int overlay, float x_offset, float y_offset, float width, float height) {
         float uMin = textureSprite.getU0();
         float uMax = textureSprite.getU1();
         float vMin = textureSprite.getV0();
@@ -4088,7 +4081,7 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    public void drawTooltipImage(ItemStack stack, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float zLevel, int light, int overlay, boolean isItem) {
+    public void drawTooltipImage(ItemStack stack, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, boolean isItem) {
 
         matrixStack.pushPose();
 
@@ -4165,7 +4158,7 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    public void drawTooltipText(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float zLevel, int light, int overlay, boolean isItem) {
+    public void drawTooltipText(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, boolean isItem) {
 
         matrixStack.pushPose();
 
@@ -4293,7 +4286,7 @@ public class PageDrawing {
 
             matrixStack.scale(1,1,333.333f);
             for(l2 = 0; l2 < clientTooltipComponentList.size(); ++l2) {
-                clientTooltipComponent2 = (ClientTooltipComponent)clientTooltipComponentList.get(l2);
+                clientTooltipComponent2 = clientTooltipComponentList.get(l2);
                 RenderSystem.enableDepthTest();
                 if(clientTooltipComponent2 instanceof HexereiBookTooltip hexereiBookTooltip)
                     hexereiBookTooltip.renderImage(preEvent.getFont(), bufferSource, j2, l1, matrixStack, this.itemRenderer, 0, overlay, light);
@@ -4350,7 +4343,7 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    public void drawBookmark(BookImage bookImage, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float zLevel, float rotate, int light, int overlay, PageOn pageOn, int color, boolean isItem, ItemTransforms.TransformType transformType) {
+    public void drawBookmark(BookImage bookImage, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, float zLevel, float rotate, int light, int overlay, PageOn pageOn, int color, boolean isItem, ItemTransforms.TransformType transformType) {
 
         matrixStack.pushPose();
 
@@ -4452,11 +4445,11 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    public void drawImage(BookImage bookImage, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
+    public void drawImage(BookImage bookImage, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
         drawImage(bookImage, tileEntityIn, matrixStack,bufferSource,zLevel,light,overlay,pageOn,-1, isItem, ItemTransforms.TransformType.NONE);
     }
     @OnlyIn(Dist.CLIENT)
-    public void drawImage(BookImage bookImage, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, int color, boolean isItem, ItemTransforms.TransformType transformType) {
+    public void drawImage(BookImage bookImage, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, int color, boolean isItem, ItemTransforms.TransformType transformType) {
 
         matrixStack.pushPose();
 
@@ -4527,7 +4520,7 @@ public class PageDrawing {
 
                 LocalPlayer playerIn = (LocalPlayer)Hexerei.proxy.getPlayer();
 
-                double reach = playerIn.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
+                double reach = playerIn.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
                 Vec3 planeNormalRight = planeNormal(tileEntityIn, PageOn.RIGHT_PAGE);
                 Vec3 planeNormalLeft = planeNormal(tileEntityIn, PageOn.LEFT_PAGE);
 
@@ -4587,7 +4580,7 @@ public class PageDrawing {
 
                 LocalPlayer playerIn = (LocalPlayer)Hexerei.proxy.getPlayer();
 
-                double reach = playerIn.getAttribute((Attribute) ForgeMod.REACH_DISTANCE.get()).getValue();
+                double reach = playerIn.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
                 Vec3 planeNormalRight = planeNormal(tileEntityIn, PageOn.RIGHT_PAGE);
                 Vec3 planeNormalLeft = planeNormal(tileEntityIn, PageOn.LEFT_PAGE);
 
@@ -4733,7 +4726,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawTitle(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, int light, int overlay, PageOn pageOn, boolean isItem) {
+    public void drawTitle(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, int light, int overlay, PageOn pageOn, boolean isItem) {
 
         matrixStack.pushPose();
 
@@ -4792,7 +4785,7 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    public void drawCharacter(char character,BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float mouseX, float mouseY, int xIn, int yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
+    public void drawCharacter(char character,BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, float mouseX, float mouseY, int xIn, int yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
 
 
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(ClientProxy.TEXT.get(character));
@@ -4860,7 +4853,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawString(BookParagraph bookParagraph, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float mouseX, float mouseY, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
+    public void drawString(BookParagraph bookParagraph, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, float mouseX, float mouseY, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
 
         TranslatableComponent pageText = bookParagraph.translatablePassage;
         int wordNumber = -1;
