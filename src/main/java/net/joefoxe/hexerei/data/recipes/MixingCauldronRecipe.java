@@ -246,6 +246,7 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
             buffer.writeFluidStack(recipe.getLiquidOutput());
             buffer.writeInt(recipe.getFluidLevelsConsumed());
             buffer.writeEnum(recipe.getHeatCondition());
+            buffer.writeEnum(recipe.getMoonCondition());
         }
 
         public static FluidStack deserializeFluidStack(JsonObject json) {
