@@ -28,6 +28,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -46,8 +47,10 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static net.joefoxe.hexerei.block.connected.StitchedSprite.ALL;
 
@@ -119,6 +122,7 @@ public class ClientProxy implements SidedProxy {
         e.registerBlockEntityRenderer(ModTileEntities.HERB_JAR_TILE.get(), context -> new HerbJarRenderer());
         e.registerBlockEntityRenderer(ModTileEntities.CRYSTAL_BALL_TILE.get(), context -> new CrystalBallRenderer());
         e.registerBlockEntityRenderer(ModTileEntities.BOOK_OF_SHADOWS_ALTAR_TILE.get(), context -> new BookOfShadowsAltarRenderer());
+        e.registerBlockEntityRenderer(ModTileEntities.BROOM_STAND_TILE.get(), context -> new BroomStandRenderer());
         e.registerBlockEntityRenderer(ModTileEntities.CANDLE_TILE.get(), context -> new CandleRenderer());
         e.registerBlockEntityRenderer(ModTileEntities.CANDLE_DIPPER_TILE.get(), context -> new CandleDipperRenderer());
         e.registerBlockEntityRenderer(ModTileEntities.DRYING_RACK_TILE.get(), context -> new DryingRackRenderer());
@@ -148,6 +152,7 @@ public class ClientProxy implements SidedProxy {
         event.registerLayerDefinition(BroomSmallSatchelModel.LAYER_LOCATION, BroomSmallSatchelModel::createBodyLayer);
         event.registerLayerDefinition(BroomMediumSatchelModel.LAYER_LOCATION, BroomMediumSatchelModel::createBodyLayer);
         event.registerLayerDefinition(BroomLargeSatchelModel.LAYER_LOCATION, BroomLargeSatchelModel::createBodyLayer);
+        event.registerLayerDefinition(BroomSeatModel.LAYER_LOCATION, BroomSeatModel::createBodyLayer);
         event.registerLayerDefinition(BroomKeychainModel.LAYER_LOCATION, BroomKeychainModel::createBodyLayer);
         event.registerLayerDefinition(BroomKeychainChainModel.LAYER_LOCATION, BroomKeychainChainModel::createBodyLayer);
         event.registerLayerDefinition(BroomNetheriteTipModel.LAYER_LOCATION, BroomNetheriteTipModel::createBodyLayer);
@@ -156,8 +161,8 @@ public class ClientProxy implements SidedProxy {
         event.registerLayerDefinition(BroomThrusterBrushModel.POWER_LAYER_LOCATION, BroomThrusterBrushModel::createBodyLayerEnlarge);
         event.registerLayerDefinition(MoonDustBrushModel.LAYER_LOCATION, MoonDustBrushModel::createBodyLayerNone);
         event.registerLayerDefinition(MoonDustBrushModel.POWER_LAYER_LOCATION, MoonDustBrushModel::createBodyLayerEnlarge);
-        event.registerLayerDefinition(ClientProxy.WITCH_ARMOR_LAYER, WitchArmorModel::createBodyLayer);
-        event.registerLayerDefinition(ClientProxy.MUSHROOM_WITCH_ARMOR_LAYER, MushroomWitchArmorModel::createBodyLayer);
+//        event.registerLayerDefinition(ClientProxy.WITCH_ARMOR_LAYER, WitchArmorModel::createBodyLayer);
+//        event.registerLayerDefinition(ClientProxy.MUSHROOM_WITCH_ARMOR_LAYER, MushroomWitchArmorModel::createBodyLayer);
         event.registerLayerDefinition(ClientProxy.CANDLE_HERB_LAYER, CandleHerbLayer::createBodyLayer);
         event.registerLayerDefinition(CandleModel.CANDLE_LAYER, CandleModel::createBodyLayer);
         event.registerLayerDefinition(CandleModel.CANDLE_BASE_LAYER, CandleModel::createBaseLayer);
@@ -181,6 +186,15 @@ public class ClientProxy implements SidedProxy {
         event.registerLayerDefinition(new ModelLayerLocation(new ResourceLocation("hexerei", "chest/mahogany_left"), "main"), ModChestRenderer::createDoubleBodyLeftLayer);
         event.registerLayerDefinition(new ModelLayerLocation(new ResourceLocation("hexerei", "sign/mahogany"), "main"), ModSignRenderer::createSignLayer);
 
+
+        initArmors(event::registerLayerDefinition);
+
+    }
+
+    public static void initArmors(BiConsumer<ModelLayerLocation, Supplier<LayerDefinition>> consumer) {
+
+        consumer.accept(ClientProxy.WITCH_ARMOR_LAYER, () -> LayerDefinition.create(WitchArmorModel.createBodyLayer(), 128, 128));
+        consumer.accept(ClientProxy.MUSHROOM_WITCH_ARMOR_LAYER, () -> LayerDefinition.create(MushroomWitchArmorModel.createBodyLayer(), 128, 128));
     }
 
     public static final Map<Character, ResourceLocation> TEXT = Maps.newHashMap();

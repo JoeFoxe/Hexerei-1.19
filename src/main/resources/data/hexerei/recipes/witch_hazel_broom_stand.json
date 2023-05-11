@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "M M",
+    " G ",
+    "MMM"
+
+  ],
+  "key": {
+    "M": {
+      "item": "hexerei:witch_hazel_planks"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "result": {
+    "item": "hexerei:witch_hazel_broom_stand",
+    "count": 1
+  }
+}

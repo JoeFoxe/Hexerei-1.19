@@ -62,6 +62,7 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
     public static final ResourceLocation TEXTURE = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/crow.png");
     private static final ResourceLocation CROW_COLLAR_LOCATION = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/crow_collar.png");
     private static final ResourceLocation POWER_LOCATION = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
+    private final HumanoidModel defaultBipedModel;
     public static Map<Item, ResourceLocation> TRINKET_LOCATION = Util.make(() ->{
         Map<Item, ResourceLocation> map = new HashMap<>();
         map.put(ModItems.CROW_ANKH_AMULET.get(), new ResourceLocation("hexerei:textures/item/crow_ankh_amulet_trinket.png"));
@@ -83,6 +84,7 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
         super(erm, new CrowModel<>(erm.bakeLayer(CrowModel.LAYER_LOCATION)), 0.25f);
 
         this.crowResources = Pair.of(TEXTURE, new CrowModel<>(erm.bakeLayer(CrowModel.LAYER_LOCATION)));
+        defaultBipedModel = new HumanoidModel(erm.bakeLayer(ModelLayers.ARMOR_STAND_OUTER_ARMOR));
 
         this.addLayer(new LayerCrowItem(this));
         this.addLayer(new LayerCrowCollar(this));
@@ -391,7 +393,7 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
     public class LayerCrowHelmet extends RenderLayer<CrowEntity, CrowModel<CrowEntity>>{
 
         private final RenderLayerParent<CrowEntity, CrowModel<CrowEntity>>renderer;
-        private final HumanoidModel defaultBipedModel;
+        private final HumanoidModel<?> defaultBipedModel;
 
         public LayerCrowHelmet(CrowRenderer renderer, EntityRendererProvider.Context renderManagerIn){
             super(renderer);
@@ -407,30 +409,26 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
             ItemStack itemstack = crow.itemHandler.getStackInSlot(0);
             if (itemstack.getItem() instanceof ArmorItem armoritem) {
 
-                HumanoidModel<?> a = getArmorModelHook(crow, itemstack, EquipmentSlot.HEAD, defaultBipedModel);
-//                    this.setModelSlotVisible(a, EquipmentSlot.HEAD);
-                this.setModelSlotVisible(a, EquipmentSlot.HEAD);
-                boolean flag1 = itemstack.hasFoil();
+                HumanoidModel<?> a = defaultBipedModel;
+                a = getArmorModelHook(crow, itemstack, EquipmentSlot.HEAD, a);
                 boolean notAVanillaModel = a != defaultBipedModel;
-                translateToHand(matrixStackIn);
-                if (notAVanillaModel && Registry.ITEM.getKey(itemstack.getItem()).getNamespace().equals(Hexerei.MOD_ID)) {
-                    matrixStackIn.scale(0.35F, 0.35F, 0.35F);
-                    matrixStackIn.translate(0f, -0.15F, -0.25F);
-                }
-                else {
-                    matrixStackIn.scale(0.48F, 0.48F, 0.48F);
-                    matrixStackIn.translate(0f, -0.825F, -0.2F);
-                }
+                this.setModelSlotVisible(a, EquipmentSlot.HEAD);
+                translateToHead(matrixStackIn);
 
-                if (armoritem instanceof DyeableLeatherItem) {
-                    int i = ((DyeableLeatherItem) armoritem).getColor(itemstack);
+                matrixStackIn.scale(0.35F, 0.35F, 0.35F);
+                matrixStackIn.translate(0f,  -0.1F, -0.25F);
+                boolean flag1 = itemstack.hasFoil();
+                int clampedLight = packedLightIn;
+                if (armoritem instanceof net.minecraft.world.item.DyeableLeatherItem) { // Allow this for anything, not only cloth
+                    int i = ((net.minecraft.world.item.DyeableLeatherItem) armoritem).getColor(itemstack);
                     float f = (float) (i >> 16 & 255) / 255.0F;
                     float f1 = (float) (i >> 8 & 255) / 255.0F;
                     float f2 = (float) (i & 255) / 255.0F;
-                    renderArmor(crow, matrixStackIn, bufferIn, packedLightIn, flag1, a, f, f1, f2, getArmorResource(crow, itemstack, EquipmentSlot.HEAD, null));
-                    renderArmor(crow, matrixStackIn, bufferIn, packedLightIn, flag1, a, 1.0F, 1.0F, 1.0F, getArmorResource(crow, itemstack, EquipmentSlot.HEAD, "overlay"));
-                } else
-                    renderArmor(crow, matrixStackIn, bufferIn, packedLightIn, flag1, a, 1.0F, 1.0F, 1.0F, getArmorResource(crow, itemstack, EquipmentSlot.HEAD, null));
+                    renderHelmet(crow, matrixStackIn, bufferIn, clampedLight, flag1, a, f, f1, f2, getArmorResource(crow, itemstack, EquipmentSlot.HEAD, null), notAVanillaModel);
+                    renderHelmet(crow, matrixStackIn, bufferIn, clampedLight, flag1, a, 1.0F, 1.0F, 1.0F, getArmorResource(crow, itemstack, EquipmentSlot.HEAD, "overlay"), notAVanillaModel);
+                } else {
+                    renderHelmet(crow, matrixStackIn, bufferIn, clampedLight, flag1, a, 1.0F, 1.0F, 1.0F, getArmorResource(crow, itemstack, EquipmentSlot.HEAD, null), notAVanillaModel);
+                }
             }
             else if((Block.byItem(itemstack.getItem())) instanceof AbstractSkullBlock)
             {
@@ -459,24 +457,52 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
 
         private static final Map<String, ResourceLocation> ARMOR_TEXTURE_RES_MAP = Maps.newHashMap();
 
-        private void renderArmor(CrowEntity entity, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, boolean glintIn, HumanoidModel modelIn, float red, float green, float blue, ResourceLocation armorResource) {
+        private void renderArmor(CrowEntity entity, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, boolean glintIn, HumanoidModel modelIn, float red, float green, float blue, ResourceLocation armorResource, boolean notAVanillaModel) {
 //            VertexConsumer vertexConsumer = ItemRenderer.getArmorFoilBuffer(bufferIn, RenderType.armorCutoutNoCull(armorResource), false, glintIn);
             VertexConsumer vertexConsumer = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutoutNoCull(armorResource), false, glintIn);
-//            if(notAVanillaModel){
-//                renderer.getModel().copyPropertiesTo(modelIn);
-//                modelIn.body.y = 0;
-//                modelIn.head.setPos(0.0F, 1.0F, 0.0F);
-//                modelIn.hat.y = 0;
-//                modelIn.head.xRot = renderer.getModel().body.xRot;
-//                modelIn.head.yRot = renderer.getModel().body.yRot;
-//                modelIn.head.zRot = renderer.getModel().body.zRot;
-//                modelIn.head.x = renderer.getModel().body.x;
-//                modelIn.head.y = renderer.getModel().body.y;
-//                modelIn.head.z = renderer.getModel().body.z;
-//                modelIn.hat.copyFrom(modelIn.head);
-//                modelIn.body.copyFrom(modelIn.head);
-//            }
+            if(notAVanillaModel){
+                renderer.getModel().copyPropertiesTo(modelIn);
+                modelIn.body.y = 0;
+                modelIn.head.setPos(0.0F, 1.0F, 0.0F);
+                modelIn.hat.y = 0;
+                modelIn.head.xRot = renderer.getModel().body.xRot;
+                modelIn.head.yRot = renderer.getModel().body.yRot;
+                modelIn.head.zRot = renderer.getModel().body.zRot;
+                modelIn.head.x = renderer.getModel().body.x;
+                modelIn.head.y = renderer.getModel().body.y;
+                modelIn.head.z = renderer.getModel().body.z;
+                modelIn.hat.copyFrom(modelIn.head);
+                modelIn.body.copyFrom(modelIn.head);
+            }
             modelIn.renderToBuffer(matrixStackIn, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, red, green, blue, 1.0F);
+        }
+
+        private void translateToHead(PoseStack matrixStackIn) {
+            translateToChest(matrixStackIn);
+            this.renderer.getModel().head.translateAndRotate(matrixStackIn);
+        }
+
+        private void translateToChest(PoseStack matrixStackIn) {
+            this.renderer.getModel().body.translateAndRotate(matrixStackIn);
+        }
+
+        private void renderHelmet(CrowEntity entity, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, boolean glintIn, HumanoidModel modelIn, float red, float green, float blue, ResourceLocation armorResource, boolean notAVanillaModel) {
+            VertexConsumer ivertexbuilder = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutoutNoCull(armorResource), false, glintIn);
+            renderer.getModel().copyPropertiesTo(modelIn);
+            modelIn.head.xRot = 0F;
+            modelIn.head.yRot = 0F;
+            modelIn.head.zRot = 0F;
+            modelIn.hat.xRot = 0F;
+            modelIn.hat.yRot = 0F;
+            modelIn.hat.zRot = 0F;
+            modelIn.head.x = 0F;
+            modelIn.head.y = 0F;
+            modelIn.head.z = 0F;
+            modelIn.hat.x = 0F;
+            modelIn.hat.y = 0F;
+            modelIn.hat.z = 0F;
+            modelIn.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, red, green, blue, 1.0F);
+
         }
 
         public static ResourceLocation getArmorResource(Entity entity, ItemStack stack, EquipmentSlot slot, @javax.annotation.Nullable String type) {

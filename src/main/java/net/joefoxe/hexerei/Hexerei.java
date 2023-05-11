@@ -236,7 +236,9 @@ public class Hexerei {
 							.put(ModBlocks.MAHOGANY_LOG.get(), ModBlocks.STRIPPED_MAHOGANY_LOG.get())
 							.put(ModBlocks.MAHOGANY_WOOD.get(), ModBlocks.STRIPPED_MAHOGANY_WOOD.get())
 							.put(ModBlocks.WILLOW_LOG.get(), ModBlocks.STRIPPED_WILLOW_LOG.get())
-							.put(ModBlocks.WILLOW_WOOD.get(), ModBlocks.STRIPPED_WILLOW_WOOD.get()).build();
+							.put(ModBlocks.WILLOW_WOOD.get(), ModBlocks.STRIPPED_WILLOW_WOOD.get())
+							.put(ModBlocks.WITCH_HAZEL_LOG.get(), ModBlocks.STRIPPED_WITCH_HAZEL_LOG.get())
+							.put(ModBlocks.WITCH_HAZEL_WOOD.get(), ModBlocks.STRIPPED_WITCH_HAZEL_WOOD.get()).build();
 //            ModStructures.setupStructures();
 //            ModConfiguredStructures.registerConfiguredStructures();
 			WoodType.register(ModWoodType.MAHOGANY);

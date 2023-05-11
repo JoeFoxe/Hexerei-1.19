@@ -20,11 +20,13 @@ import java.util.Map;
 
 public class CrowModel<T extends CrowEntity> extends ColorableAgeableListModel<T> {
     public final ModelPart body;
+    public final ModelPart head;
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Hexerei.MOD_ID, "crow"), "main");
     public static final ModelLayerLocation POWER_LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Hexerei.MOD_ID, "crow_power_layer"), "main");
 
     public CrowModel(ModelPart root) {
         this.body = root.getChild("body");
+        this.head = body.getChild("head");
     }
 
 //    public CrowModel(ModelPart p_170677_) {
@@ -50,33 +52,12 @@ public class CrowModel<T extends CrowEntity> extends ColorableAgeableListModel<T
                 .texOffs(0, 14).addBox(-1.5F, -2.308F, -0.4665F, 3.0F, 2.0F, 0.0F, cube), PartPose.offsetAndRotation(0.0F, -4.0F, -2.5F, -0.5236F, 0.0F, 0.0F));
 
         PartDefinition bandana_r1 = chest.addOrReplaceChild("bandana_r1", CubeListBuilder.create().texOffs(4, 16).addBox(-0.5F, -5.225F, -0.425F, 1.0F, 1.0F, 0.0F, cube), PartPose.offsetAndRotation(0.0F, 4.0F, 2.5F, 0.5236F, 0.0F, 0.0F));
-//
-
-//        PartDefinition chest = body.addOrReplaceChild("chest", CubeListBuilder.create().texOffs(1, 6).addBox(-1.5F, -3.0F, 0.0F, 3.0F, 3.0F, 5.0F, cube)
-//                .texOffs(24, 23).addBox(-2.0F, -1.808F, -0.2165F, 4.0F, 2.0F, 0.0F, cube), PartPose.offsetAndRotation(0.0F, 20.0F, -2.5F, -0.5236F, 0.0F, 0.0F));
-
-//        PartDefinition bandana_r1 = chest.addOrReplaceChild("bandana_r1", CubeListBuilder.create().texOffs(26, 25).addBox(-0.5F, -4.225F, -0.425F, 1.0F, 1.0F, 0.0F, cube)
-//                .texOffs(30, 26).addBox(-1.5F, -5.225F, -0.425F, 3.0F, 1.0F, 0.0F, cube), PartPose.offsetAndRotation(0.0F, 4.5F, 2.75F, 0.5236F, 0.0F, 0.0F));
-//
-//
-//        PartDefinition chest = partdefinition.addOrReplaceChild("chest", CubeListBuilder.create().texOffs(1, 6).addBox(-1.5F, -3.0F, 0.0F, 3.0F, 3.0F, 5.0F, new CubeDeformation(0.0F))
-//                .texOffs(24, 23).addBox(-2.0F, -1.808F, -0.2165F, 4.0F, 2.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 20.0F, -2.5F, -0.5236F, 0.0F, 0.0F));
-//
-//        PartDefinition bandana_r1 = chest.addOrReplaceChild("bandana_r1", CubeListBuilder.create().texOffs(30, 26).addBox(-0.5F, -4.225F, -0.425F, 1.0F, 1.0F, 0.0F, new CubeDeformation(0.0F))
-//                .texOffs(26, 25).addBox(-1.5F, -5.225F, -0.425F, 3.0F, 1.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 4.5F, 2.75F, 0.5236F, 0.0F, 0.0F));
-
 
         PartDefinition amulet_r1 = body.addOrReplaceChild("amulet_r1", CubeListBuilder.create().texOffs(1, 6).addBox(-1.5F, -3.0F, 0.0F, 3.0F, 3.0F, 5.0F, cube)
                 .texOffs(24, 23).addBox(-2.0F, -1.9205F, -0.0217F, 4.0F, 2.0F, 0.0F, cube), PartPose.offsetAndRotation(0.0F, -4.0F, -2.5F, -0.5236F, 0.0F, 0.0F));
 
         PartDefinition amulet_r2 = amulet_r1.addOrReplaceChild("amulet_r2", CubeListBuilder.create().texOffs(30, 26).addBox(-1.0F, -4.225F, -0.2F, 2.0F, 1.0F, 0.0F, cube)
                 .texOffs(26, 25).addBox(-1.5F, -5.225F, -0.185F, 3.0F, 1.0F, 0.0F, cube), PartPose.offsetAndRotation(0.0F, 4.5F, 2.75F, 0.5236F, 0.0F, 0.0F));
-
-//        PartDefinition amulet_r1 = body.addOrReplaceChild("amulet_r1", CubeListBuilder.create().texOffs(1, 6).addBox(-1.5F, -3.0F, 0.0F, 3.0F, 3.0F, 5.0F, cube)
-//                .texOffs(24, 23).addBox(-2.0F, -1.808F, -0.2165F, 4.0F, 2.0F, 0.0F, cube), PartPose.offsetAndRotation(0.0F, -4.0F, -2.5F, -0.5236F, 0.0F, 0.0F));
-//
-//        PartDefinition amulet_r2 = amulet_r1.addOrReplaceChild("amulet_r2", CubeListBuilder.create().texOffs(30, 26).addBox(-1.0F, -4.225F, -0.41F, 2.0F, 1.0F, 0.0F, cube)
-//                .texOffs(26, 25).addBox(-1.5F, -5.225F, -0.41F, 3.0F, 1.0F, 0.0F, cube), PartPose.offsetAndRotation(0.0F, 4.5F, 2.75F, 0.5236F, 0.0F, 0.0F));
 
         PartDefinition rightLeg = body.addOrReplaceChild("rightLeg", CubeListBuilder.create().texOffs(12, 7).addBox(-0.5F, 0.0F, -1.0F, 1.0F, 3.0F, 1.0F, cube), PartPose.offset(-1.0F, -3.0F, 0.5F));
 
@@ -340,7 +321,7 @@ public class CrowModel<T extends CrowEntity> extends ColorableAgeableListModel<T
 
     @Override
     protected Iterable<ModelPart> headParts() {
-        return Collections.singleton(body.getChild("head"));
+        return Collections.singleton(head);
     }
 
     @Override

@@ -309,6 +309,10 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 
     }
 
+    public boolean isMaxHealth(){
+        return CrowEntity.this.getHealth() >= CrowEntity.this.getMaxHealth();
+    }
+
     public int getInteractionRange(){
         return this.interactionRange;
     }
@@ -359,9 +363,11 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
         float f = this.getHealth();
-        if (!this.level.isClientSide && !this.isNoAi() && ((float)this.level.random.nextInt(3) < pAmount || f / this.getMaxHealth() < 0.5F) && pAmount < f && (pSource.getEntity() != null || pSource.getDirectEntity() != null) && !this.isPlayingDead()) {
+        if (!this.level.isClientSide && !this.isNoAi() && ((float)this.random.nextInt(3) < pAmount || f / this.getMaxHealth() < 0.5F) && pAmount < f && (pSource.getEntity() != null || pSource.getDirectEntity() != null) && !this.isPlayingDead()) {
             this.playingDead = TOTAL_PLAYDEAD_TIME;
         }
+        if(pSource == DamageSource.SWEET_BERRY_BUSH)
+            return false;
 
         return super.hurt(pSource, pAmount);
     }
@@ -798,7 +804,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
             scale = 4;
         Vec3 vec3 = this.calculateViewVector(0, this.yBodyRot);
         for(int i = 0; i < 6; i++)
-            level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, stack), this.getRandomX(0.125D) + vec3.x / scale, this.random.nextDouble()/4f - 0.125f + this.getEyeY(), this.getRandomZ(0.125D) + vec3.z / scale, (level.random.nextDouble() - 0.5d) / 15d, (level.random.nextDouble() + 0.5d) * 0.15d, (level.random.nextDouble() - 0.5d) / 15d);
+            level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, stack), this.getRandomX(0.125D) + vec3.x / scale, this.random.nextDouble()/4f - 0.125f + this.getEyeY(), this.getRandomZ(0.125D) + vec3.z / scale, (random.nextDouble() - 0.5d) / 15d, (random.nextDouble() + 0.5d) * 0.15d, (random.nextDouble() - 0.5d) / 15d);
 
     }
 
@@ -1841,16 +1847,21 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         public boolean canUse() {
             if(CrowEntity.this.doingTask)
                 return false;
-            if(CrowEntity.this.getHealth() >= CrowEntity.this.getMaxHealth() && (CrowEntity.this.isTame() && (((CrowEntity) mob).getCommand() != 3 || ((CrowEntity) mob).getHelpCommand() != 0)))
+            if(CrowEntity.this.isTame() && ((CrowEntity.this.isMaxHealth())
+                            || (CrowEntity.this.getCommand() == 3 && CrowEntity.this.getHelpCommand() != 0)
+                            || (CrowEntity.this.getCommand() != 3))){
                 return false;
-            if (this.mob.isPassenger() || mob.isVehicle() && mob.getControllingPassenger() != null) {
+            } else if (CrowEntity.this.isMaxHealth()){
+                return false;
+            }
+            if (CrowEntity.this.isPassenger() || CrowEntity.this.isVehicle() && CrowEntity.this.getControllingPassenger() != null) {
                 return false;
             }
             if(!CrowEntity.this.itemHandler.getStackInSlot(1).isEmpty()){
                 return false;
             }
             if (!this.mustUpdate) {
-                long worldTime = this.mob.level.getGameTime() % 10;
+                long worldTime = CrowEntity.this.level.getGameTime() % 10;
                 if (this.mob.getNoActionTime() >= 100 && worldTime != 0) {
                     return false;
                 }
@@ -2231,12 +2242,12 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                         ItemStack secondOutput = ItemStack.EMPTY;
                         if (((PickableDoubleFlower) blockstate.getBlock()).secondOutput != null)
                             secondOutput = new ItemStack(((PickableDoubleFlower) blockstate.getBlock()).secondOutput.get(), ((PickableDoubleFlower) blockstate.getBlock()).maxSecondOutput);
-                        int j = Math.max(1, level.random.nextInt(firstOutput.getCount()));
+                        int j = Math.max(1, random.nextInt(firstOutput.getCount()));
                         int k = 0;
                         if (((PickableDoubleFlower) blockstate.getBlock()).secondOutput != null)
-                            k = Math.max(1, level.random.nextInt(secondOutput.getCount()));
+                            k = Math.max(1, random.nextInt(secondOutput.getCount()));
                         Block.popResource(level, this.blockPos, new ItemStack(firstOutput.getItem(), Math.max(1, (int) Math.floor(j))));
-                        if (level.random.nextInt(2) == 0 && ((PickableDoubleFlower) blockstate.getBlock()).secondOutput != null)
+                        if (random.nextInt(2) == 0 && ((PickableDoubleFlower) blockstate.getBlock()).secondOutput != null)
                             Block.popResource(level, this.blockPos, new ItemStack(secondOutput.getItem(), Math.max(1, (int) Math.floor(k))));
 
                         if (blockstate.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER) {
@@ -2257,12 +2268,12 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                         ItemStack secondOutput = ItemStack.EMPTY;
                         if (((PickableFlower) blockstate.getBlock()).secondOutput != null)
                             secondOutput = new ItemStack(((PickableFlower) blockstate.getBlock()).secondOutput.get(), ((PickableFlower) blockstate.getBlock()).maxSecondOutput);
-                        int j = Math.max(1, level.random.nextInt(firstOutput.getCount()));
+                        int j = Math.max(1, random.nextInt(firstOutput.getCount()));
                         int k = 0;
                         if (((PickableFlower) blockstate.getBlock()).secondOutput != null)
-                            k = Math.max(1, level.random.nextInt(secondOutput.getCount()));
+                            k = Math.max(1, random.nextInt(secondOutput.getCount()));
                         ((PickableFlower) blockstate.getBlock()).popResource(level, this.blockPos, new ItemStack(firstOutput.getItem(), Math.max(1, (int) Math.floor(j))));
-                        if (level.random.nextInt(2) == 0 && ((PickableFlower) blockstate.getBlock()).secondOutput != null)
+                        if (random.nextInt(2) == 0 && ((PickableFlower) blockstate.getBlock()).secondOutput != null)
                             ((PickableFlower) blockstate.getBlock()).popResource(level, this.blockPos, new ItemStack(secondOutput.getItem(), Math.max(1, (int) Math.floor(k))));
 
                         CrowEntity.this.level.setBlock(this.blockPos, blockstate.setValue(BlockStateProperties.AGE_3, 0), 2);
@@ -2311,7 +2322,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         private void pickSweetBerries(BlockState p_148929_) {
             int i = p_148929_.getValue(SweetBerryBushBlock.AGE);
             p_148929_.setValue(SweetBerryBushBlock.AGE, 1);
-            int j = 1 + CrowEntity.this.level.random.nextInt(2) + (i == 3 ? 1 : 0);
+            int j = 1 + CrowEntity.this.random.nextInt(2) + (i == 3 ? 1 : 0);
             ItemStack itemstack = CrowEntity.this.getItemBySlot(EquipmentSlot.MAINHAND);
             if (itemstack.isEmpty()) {
                 CrowEntity.this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.SWEET_BERRIES));

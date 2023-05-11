@@ -1,0 +1,40 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "liquid": {
+    "fluid": "minecraft:water"
+  },
+  "ingredients": [
+    {
+      "item": "hexerei:herb_enhanced_broom_brush"
+    },
+    {
+      "item": "hexerei:moon_dust"
+    },
+    {
+      "item": "hexerei:moon_dust"
+    },
+    {
+      "item": "hexerei:mandrake_root"
+    },
+    {
+      "item": "hexerei:mandrake_flowers"
+    },
+    {
+      "item": "hexerei:mandrake_root"
+    },
+    {
+      "item": "hexerei:moon_dust"
+    },
+    {
+      "item": "hexerei:moon_dust"
+    }
+  ],
+  "output": {
+    "item": "hexerei:wet_moon_dust_brush"
+  },
+
+  "liquidOutput": {
+    "fluid": "minecraft:water"
+  },
+  "fluidLevelsConsumed": 1000
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "hexerei:item/broom_seat",
+    "layer1": "hexerei:item/broom_seat_dye"
+  }
+}

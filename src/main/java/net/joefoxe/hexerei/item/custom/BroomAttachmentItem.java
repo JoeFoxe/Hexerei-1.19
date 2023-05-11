@@ -13,6 +13,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.Random;
+
 public class BroomAttachmentItem extends Item {
 
     public Model model = null;
@@ -24,6 +26,10 @@ public class BroomAttachmentItem extends Item {
     }
 
     public void onBrushDamage(BroomEntity broom, RandomSource random){}
+
+    public void onMount(BroomEntity broom, RandomSource random){}
+
+    public void onDismount(BroomEntity broom, RandomSource random){}
 
     @OnlyIn(Dist.CLIENT)
     public void renderParticles(BroomEntity broom, Level world, BroomEntity.Status status, RandomSource random){}

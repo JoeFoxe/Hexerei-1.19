@@ -10,24 +10,18 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 
-public class WitchArmorModel<T extends LivingEntity> extends ArmorModel<T> {
-    // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Hexerei.MOD_ID, "witch_armor"), "main");
+public class WitchArmorModel {
+    public static MeshDefinition createBodyLayer() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
 
-    public WitchArmorModel(ModelPart part) {
-        super(part);
-    }
-
-    public static LayerDefinition createBodyLayer() {
-        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0), 0);
-        PartDefinition root = createHumanoidAlias(mesh);
-
-        PartDefinition body = root.getChild("Body");
-        PartDefinition right_foot = root.getChild("RightBoot");
-        PartDefinition left_foot = root.getChild("LeftBoot");
-        PartDefinition left_arm = root.getChild("LeftArm");
-        PartDefinition right_arm = root.getChild("RightArm");
-        PartDefinition head = root.getChild("Head");
+        PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create(), PartPose.ZERO);
+        PartDefinition right_foot = root.addOrReplaceChild("right_leg", CubeListBuilder.create(), PartPose.ZERO);
+        PartDefinition left_foot = root.addOrReplaceChild("left_leg", CubeListBuilder.create(), PartPose.ZERO);
+        PartDefinition left_arm = root.addOrReplaceChild("left_arm", CubeListBuilder.create(), PartPose.ZERO);
+        PartDefinition right_arm = root.addOrReplaceChild("right_arm", CubeListBuilder.create(), PartPose.ZERO);
+        PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create(), PartPose.ZERO);
+        PartDefinition hat = root.addOrReplaceChild("hat", CubeListBuilder.create(), PartPose.ZERO);
 
 //        PartDefinition head = partdefinition.addOrReplaceChild("head", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -2.0F, 0.0F, 0.0436F, 0.0F, 0.0F));
 
@@ -203,6 +197,6 @@ public class WitchArmorModel<T extends LivingEntity> extends ArmorModel<T> {
 
         PartDefinition leftboot_r2 = left_foot.addOrReplaceChild("leftboot_r2", CubeListBuilder.create().texOffs(53, 64).addBox(-3.0F, -1.0F, -3.0F, 6.0F, 2.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 5.75F, 0.0F, 0.0718F, -0.0936F, 0.175F));
 
-        return LayerDefinition.create(mesh, 128, 128);
+        return mesh;
     }
 }

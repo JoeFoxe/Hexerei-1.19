@@ -23,6 +23,11 @@ public class ModParticleTypes {
     public static final RegistryObject<SimpleParticleType> BROOM_6 = PARTICLES.register("broom_particle_6", () -> new SimpleParticleType(true));
     public static final RegistryObject<SimpleParticleType> FOG = PARTICLES.register("fog_particle", () -> new SimpleParticleType(true));
     public static final RegistryObject<SimpleParticleType> EXTINGUISH = PARTICLES.register("extinguish_particle", () -> new SimpleParticleType(true));
+    public static final RegistryObject<SimpleParticleType> MOON_BRUSH_1 = PARTICLES.register("moon_brush_1", () -> new SimpleParticleType(true));
+    public static final RegistryObject<SimpleParticleType> MOON_BRUSH_2 = PARTICLES.register("moon_brush_2", () -> new SimpleParticleType(true));
+    public static final RegistryObject<SimpleParticleType> MOON_BRUSH_3 = PARTICLES.register("moon_brush_3", () -> new SimpleParticleType(true));
+    public static final RegistryObject<SimpleParticleType> MOON_BRUSH_4 = PARTICLES.register("moon_brush_4", () -> new SimpleParticleType(true));
+    public static final RegistryObject<SimpleParticleType> STAR_BRUSH = PARTICLES.register("star_brush", () -> new SimpleParticleType(true));
 //    public static final RegistryObject<SimpleParticleType> DOWSING_ROD_1 = PARTICLES.register("dowsing_rod_1", () -> new SimpleParticleType(true));
 //    public static final RegistryObject<SimpleParticleType> DOWSING_ROD_2 = PARTICLES.register("dowsing_rod_2", () -> new SimpleParticleType(true));
 

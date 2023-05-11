@@ -1080,7 +1080,48 @@
   "item.hexerei.witch_hazel_altar": "Witch Hazel Altar",
   "block.hexerei.witch_hazel_altar": "Witch Hazel Altar",
 
+  "item.hexerei.witch_hazel_broom": "Witch Hazel Broom",
+  "entity.hexerei.witch_hazel_broom": "Witch Hazel Broom",
+
+  "item.hexerei.stone_window": "Stone Window",
+  "item.hexerei.stone_window_pane": "Stone Window Pane",
+  "item.hexerei.wet_moon_dust_brush": "Wet Moon Dust Brush",
+  "item.hexerei.moon_dust_brush": "Moon Dust Brush",
+  "item.hexerei.broom_thruster_brush": "Broom Thruster Brush",
+  "item.hexerei.moon_dust": "Moon Dust",
+  "item.hexerei.broom_seat": "Broom Seat",
+  "tooltip.hexerei.broom_seat_1": "Allows a second player to hop onto the broom.",
+  "tooltip.hexerei.broom_seat_2": "If only one player is on the broom, that player uses the seat.",
+  "item.hexerei.willow_broom_stand": "Willow Broom Stand",
+  "item.hexerei.witch_hazel_broom_stand": "Witch Hazel Broom Stand",
+  "item.hexerei.mahogany_broom_stand": "Mahogany Broom Stand",
+  "block.hexerei.willow_broom_stand": "Willow Broom Stand",
+  "block.hexerei.witch_hazel_broom_stand": "Witch Hazel Broom Stand",
+  "block.hexerei.mahogany_broom_stand": "Mahogany Broom Stand",
+  "block.hexerei.willow_broom_stand_wall": "Willow Broom Wall Stand",
+  "block.hexerei.witch_hazel_broom_stand_wall": "Witch Hazel Broom Wall Stand",
+  "block.hexerei.mahogany_broom_stand_wall": "Mahogany Broom Wall Stand",
+  "tooltip.hexerei.broom_stand": "A stand to hold your broom when not in use. Can be placed on the side of blocks.",
+  "tooltip.hexerei.wet_broom_brush": "Must be dried before use.",
+  "tooltip.hexerei.moon_dust_brush": "Increases broom speed, and drastically increases the speed on a full moon.",
+  "tooltip.hexerei.dyeable": "Can be dyed.",
+
+  "tooltip.hexerei.full_moon": "§fFull Moon§r",
+  "tooltip.hexerei.waning_gibbous": "§fWaning Gibbous§r",
+  "tooltip.hexerei.last_quarter": "§fLast Quarter§r",
+  "tooltip.hexerei.waning_crescent": "§fWaning Crescent§r",
+  "tooltip.hexerei.new_moon": "§fNew Moon§r",
+  "tooltip.hexerei.waxing_crescent": "§fWaxing Crescent§r",
+  "tooltip.hexerei.first_quarter": "§fFirst Quarter§r",
+  "tooltip.hexerei.waxing_gibbous": "§fWaxing Gibbous§r",
+  "tooltip.hexerei.moon_phase": "§fMoon Phase§r",
+  "tooltip.hexerei.recipe_moon": "This recipe requires a moon phase of '%s' at night to craft",
+  "tooltip.hexerei.recipe_moon_1": "Only craft-able at night, must be the shown moon above.",
+
+  "block.hexerei.potted_mandrake_flower": "Potted Mandrake Plant",
+  "block.hexerei.potted_belladonna_flower": "Potted Belladonna Plant",
+  "block.hexerei.potted_mugwort_bush": "Potted Mugwort Bush",
+  "block.hexerei.potted_yellow_dock_bush": "Potted Yellow Dock Bush",
+
   "itemGroup.hexereiModTab": "Hexerei"
-
-
 }

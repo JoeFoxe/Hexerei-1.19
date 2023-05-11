@@ -49,31 +49,31 @@ public class MushroomWitchArmorItem extends WitchArmorItem {
 
 
 
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public void initializeClient(java.util.function.Consumer<IClientItemExtensions> consumer) {
-
-        consumer.accept(new IClientItemExtensions() {
-            static MushroomWitchArmorModel<LivingEntity> model;
-
-            @Override
-            public MushroomWitchArmorModel<LivingEntity> getGenericArmorModel(LivingEntity entity, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel _default) {
-                if (model == null)
-                    model = new MushroomWitchArmorModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ClientProxy.MUSHROOM_WITCH_ARMOR_LAYER));
-                float pticks = Minecraft.getInstance().getFrameTime();
-                float f = Mth.rotLerp(pticks, entity.yBodyRotO, entity.yBodyRot);
-                float f1 = Mth.rotLerp(pticks, entity.yHeadRotO, entity.yHeadRot);
-                float netHeadYaw = f1 - f;
-                float netHeadPitch = Mth.lerp(pticks, entity.xRotO, entity.getXRot());
-                model.slot = slot;
-                model.copyFromDefault(_default);
-                model.entity = entity;
-                model.crouching = entity.isCrouching();
-                model.young = entity.isBaby();
-                model.setupAnim(entity, entity.animationPosition, entity.animationSpeed, entity.tickCount + pticks, netHeadYaw, netHeadPitch);
-                return model;
-            }
-        });
-    }
+//    @OnlyIn(Dist.CLIENT)
+//    @Override
+//    public void initializeClient(java.util.function.Consumer<IClientItemExtensions> consumer) {
+//
+//        consumer.accept(new IClientItemExtensions() {
+//            static MushroomWitchArmorModel<LivingEntity> model;
+//
+//            @Override
+//            public MushroomWitchArmorModel<LivingEntity> getGenericArmorModel(LivingEntity entity, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel _default) {
+//                if (model == null)
+//                    model = new MushroomWitchArmorModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ClientProxy.MUSHROOM_WITCH_ARMOR_LAYER));
+//                float pticks = Minecraft.getInstance().getFrameTime();
+//                float f = Mth.rotLerp(pticks, entity.yBodyRotO, entity.yBodyRot);
+//                float f1 = Mth.rotLerp(pticks, entity.yHeadRotO, entity.yHeadRot);
+//                float netHeadYaw = f1 - f;
+//                float netHeadPitch = Mth.lerp(pticks, entity.xRotO, entity.getXRot());
+//                model.slot = slot;
+//                model.copyFromDefault(_default);
+//                model.entity = entity;
+//                model.crouching = entity.isCrouching();
+//                model.young = entity.isBaby();
+//                model.setupAnim(entity, entity.animationPosition, entity.animationSpeed, entity.tickCount + pticks, netHeadYaw, netHeadPitch);
+//                return model;
+//            }
+//        });
+//    }
 
 }

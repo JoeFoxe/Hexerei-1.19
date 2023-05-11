@@ -7,6 +7,7 @@ import com.mojang.math.Vector3f;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.entity.BroomType;
 import net.joefoxe.hexerei.client.renderer.entity.custom.BroomEntity;
+import net.joefoxe.hexerei.client.renderer.entity.model.ArmorModels;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.custom.*;
 import net.joefoxe.hexerei.util.HexereiTags;
@@ -27,6 +28,8 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -43,6 +46,8 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
     {
         super(context);
         this.shadowRadius = 0.0F;
+        //init armor models here to grab context
+        ArmorModels.init(context);
     }
     @Override
     public ResourceLocation getTextureLocation(BroomEntity p_114482_) {
@@ -54,9 +59,20 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
 
         matrixStackIn.pushPose();
 
-        matrixStackIn.translate(0.0D, 0.375D + entityIn.floatingOffset, 0.0D);
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180.0F - entityYaw - (entityIn.deltaRotation * 2)));
-        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees((float)entityIn.getDeltaMovement().y() * 20f));
+        if(entityIn.deltaMovementOld == null)
+            entityIn.deltaMovementOld = entityIn.getDeltaMovement();
+        if(entityIn.deltaRotationOld == 0)
+            entityIn.deltaRotationOld = entityIn.deltaRotation;
+        float deltaRotation = Mth.lerp(partialTicks, (float)entityIn.deltaRotationOld, (float)entityIn.deltaRotation);
+        float floatingOffset = Mth.lerp(partialTicks, entityIn.floatingOffsetOld, entityIn.floatingOffset);
+        float deltaMovementX = Mth.lerp(partialTicks, (float)entityIn.deltaMovementOld.x(), (float)entityIn.getDeltaMovement().x());
+        float deltaMovementY = Mth.lerp(partialTicks, (float)entityIn.deltaMovementOld.y(), (float)entityIn.getDeltaMovement().y());
+        float deltaMovementZ = Mth.lerp(partialTicks, (float)entityIn.deltaMovementOld.z(), (float)entityIn.getDeltaMovement().z());
+        Vec3 deltaLerp = new Vec3(deltaMovementX, deltaMovementY, deltaMovementZ);
+
+        matrixStackIn.translate(0.0D, 0.375D + floatingOffset, 0.0D);
+        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180.0F - entityYaw - (deltaRotation * 2)));
+        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(deltaMovementY * 25f));
         float f = (float)entityIn.getTimeSinceHit() - partialTicks;
         float f1 = entityIn.getDamageTaken() - partialTicks;
         if (f1 < 0.0F) {
@@ -113,8 +129,16 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
                     matrixStackIn.translate(broomItem.getBrushOffset().x(), broomItem.getBrushOffset().y(), broomItem.getBrushOffset().z());
                 }
                 int light = packedLightIn;
+
                 if(brushItem.shouldGlow(Minecraft.getInstance().level, brushStack)){
-                    light = LightTexture.FULL_BRIGHT;
+                    int i = entityIn.level.getBrightness(LightLayer.SKY, entityIn.blockPosition());
+                    int j = entityIn.level.getBrightness(LightLayer.BLOCK, entityIn.blockPosition());
+                    int k = entityIn.level.getLightEmission(entityIn.blockPosition());
+                    if (j < k) {
+                        j = k;
+                    }
+
+                    light = Mth.clamp(brushItem.brightness + i, 0, 15) << 20 | Mth.clamp(brushItem.brightness + j, 0, 15) << 4;
                 }
                 Model broomBrushModel = brushItem.model;
                 VertexConsumer brushVertexConsumer = bufferIn.getBuffer(broomBrushModel.renderType(brushItem.texture));
@@ -185,8 +209,8 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
                 matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180.0F));
 
 
-                matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-(float)entityIn.getDeltaMovement().y() * 20f));
-                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees((float)(Math.atan2(entityIn.getDeltaMovement().z(), entityIn.getDeltaMovement().x())/(2*Math.PI)*360) - entityYaw));
+                matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-deltaMovementY * 20f));
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees((float)(Math.atan2(deltaMovementZ, deltaMovementX)/(2*Math.PI)*360) - entityYaw));
 
                 if(entityIn.selfItem != null && entityIn.selfItem.hasTag() && Hexerei.proxy.getPlayer().getMainHandItem().hasTag() && Hexerei.proxy.getPlayer().getMainHandItem().getTag().equals(entityIn.selfItem.getTag()) && Minecraft.getInstance().options.getCameraType().isFirstPerson())
                 {
@@ -200,7 +224,7 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
                     matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(Mth.clamp((float)Hexerei.proxy.getPlayer().getDeltaMovement().dot(Hexerei.proxy.getPlayer().getLookAngle()) * -125f, -70, 70)));
 
                 }
-                matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((float)Mth.length(entityIn.getDeltaMovement().x(), entityIn.getDeltaMovement().z())) * 50f));
+                matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((float)Mth.length(deltaMovementX, deltaMovementZ)) * 50f));
 
 
 
@@ -222,7 +246,7 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
                     matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees((float)(Hexerei.proxy.getPlayer().getLookAngle().y * 20f)));
                     matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(Mth.clamp((float)Hexerei.proxy.getPlayer().getDeltaMovement().dot(Hexerei.proxy.getPlayer().getLookAngle()) * 50f, -20, 20)));
                 }
-                matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((float)Mth.length(entityIn.getDeltaMovement().x(), entityIn.getDeltaMovement().z())) * -20f));
+                matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(((float)Mth.length(deltaMovementX, deltaMovementZ)) * -20f));
 
 
 

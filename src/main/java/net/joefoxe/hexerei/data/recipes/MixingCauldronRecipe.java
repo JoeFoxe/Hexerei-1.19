@@ -36,6 +36,7 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
     protected static final List<Boolean> itemMatchesSlot = new ArrayList<>();
 
     private final FluidMixingRecipe.HeatCondition heatCondition;
+    private final MoonPhases.MoonCondition moonCondition;
 
 
     @Override
@@ -51,6 +52,7 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
         this.liquidOutput = liquidOutput;
         this.fluidLevelsConsumed = fluidLevelsConsumed;
         this.heatCondition = FluidMixingRecipe.HeatCondition.NONE;
+        this.moonCondition = MoonPhases.MoonCondition.NONE;
 
         for(int i = 0; i < 8; i++) {
             itemMatchesSlot.add(false);
@@ -58,7 +60,7 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
 
     }
     public MixingCauldronRecipe(ResourceLocation id, ItemStack output,
-                                NonNullList<Ingredient> recipeItems, FluidStack liquid, FluidStack liquidOutput, int fluidLevelsConsumed, FluidMixingRecipe.HeatCondition heatCondition) {
+                                NonNullList<Ingredient> recipeItems, FluidStack liquid, FluidStack liquidOutput, int fluidLevelsConsumed, FluidMixingRecipe.HeatCondition heatCondition, MoonPhases.MoonCondition moonCondition) {
         this.id = id;
         this.output = output;
         this.recipeItems = recipeItems;
@@ -66,6 +68,7 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
         this.liquidOutput = liquidOutput;
         this.fluidLevelsConsumed = fluidLevelsConsumed;
         this.heatCondition = heatCondition;
+        this.moonCondition = moonCondition;
 
         for(int i = 0; i < 8; i++) {
             itemMatchesSlot.add(false);
@@ -159,6 +162,7 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
     }
 
     public FluidMixingRecipe.HeatCondition getHeatCondition() { return this.heatCondition; }
+    public MoonPhases.MoonCondition getMoonCondition() { return this.moonCondition; }
     public FluidStack getLiquid() { return this.liquid; }
 
     public FluidStack getLiquidOutput() { return this.liquidOutput; }
@@ -204,6 +208,9 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
             String heatRequirement = GsonHelper.getAsString(json, "heatRequirement", "none");
             FluidMixingRecipe.HeatCondition heatCondition = FluidMixingRecipe.HeatCondition.getHeated(heatRequirement);
 
+            String moonRequirement = GsonHelper.getAsString(json, "moonRequirement", "none");
+            MoonPhases.MoonCondition moonCondition = MoonPhases.MoonCondition.getMoonCondition(moonRequirement);
+
             JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
             NonNullList<Ingredient> inputs = NonNullList.withSize(8, Ingredient.EMPTY);
 
@@ -212,7 +219,7 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
             }
 
             return new MixingCauldronRecipe(recipeId, output,
-                    inputs, liquid, liquidOutput, fluidLevelsConsumed, heatCondition);
+                    inputs, liquid, liquidOutput, fluidLevelsConsumed, heatCondition, moonCondition);
         }
 
         @Nullable
@@ -225,7 +232,7 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
             }
 
             return new MixingCauldronRecipe(recipeId, buffer.readItem(),
-                    inputs, buffer.readFluidStack(), buffer.readFluidStack(), buffer.readInt(), buffer.readEnum(FluidMixingRecipe.HeatCondition.class));
+                    inputs, buffer.readFluidStack(), buffer.readFluidStack(), buffer.readInt(), buffer.readEnum(FluidMixingRecipe.HeatCondition.class), buffer.readEnum(MoonPhases.MoonCondition.class));
         }
 
         @Override

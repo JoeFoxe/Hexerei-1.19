@@ -143,19 +143,20 @@ public class CrowWhitelistEvent {
     }
 
     public static void spawnParticlesOnBlockFaces(Level p_216314_, BlockPos p_216315_, ParticleOptions p_216316_, IntProvider p_216317_, boolean whitelisted) {
+        RandomSource randomSource = RandomSource.create();
         for(Direction direction : Direction.values()) {
-            spawnParticlesOnBlockFace(p_216314_, p_216315_, p_216316_, p_216317_, direction, () -> {
-                return getRandomSpeedRanges(p_216314_.random);
+            spawnParticlesOnBlockFace(randomSource, p_216315_, p_216316_, p_216317_, direction, () -> {
+                return getRandomSpeedRanges(randomSource);
             }, 0.55D, whitelisted);
         }
 
     }
 
-    public static void spawnParticlesOnBlockFace(Level p_216319_, BlockPos p_216320_, ParticleOptions p_216321_, IntProvider p_216322_, Direction p_216323_, Supplier<Vec3> p_216324_, double p_216325_, boolean whitelisted) {
-        int i = p_216322_.sample(p_216319_.random);
+    public static void spawnParticlesOnBlockFace(RandomSource randomSource, BlockPos p_216320_, ParticleOptions p_216321_, IntProvider p_216322_, Direction p_216323_, Supplier<Vec3> p_216324_, double p_216325_, boolean whitelisted) {
+        int i = p_216322_.sample(randomSource);
 
         for(int j = 0; j < i; ++j) {
-            spawnParticleOnFace(p_216319_, p_216320_, p_216323_, p_216321_, p_216324_.get(), p_216325_, whitelisted);
+            spawnParticleOnFace(randomSource, p_216320_, p_216323_, p_216321_, p_216324_.get(), p_216325_, whitelisted);
         }
 
     }
@@ -165,16 +166,15 @@ public class CrowWhitelistEvent {
     }
 
 
-    public static void spawnParticleOnFace(Level p_216307_, BlockPos p_216308_, Direction p_216309_, ParticleOptions p_216310_, Vec3 p_216311_, double p_216312_, boolean whitelisted) {
-
+    public static void spawnParticleOnFace(RandomSource randomSource, BlockPos p_216308_, Direction p_216309_, ParticleOptions p_216310_, Vec3 p_216311_, double p_216312_, boolean whitelisted) {
         ParticleEngine pe = Minecraft.getInstance().particleEngine;
         Vec3 vec3 = Vec3.atCenterOf(p_216308_);
         int i = p_216309_.getStepX();
         int j = p_216309_.getStepY();
         int k = p_216309_.getStepZ();
-        double d0 = vec3.x + (i == 0 ? Mth.nextDouble(p_216307_.random, -0.5D, 0.5D) : (double)i * p_216312_);
-        double d1 = vec3.y + (j == 0 ? Mth.nextDouble(p_216307_.random, -0.5D, 0.5D) : (double)j * p_216312_);
-        double d2 = vec3.z + (k == 0 ? Mth.nextDouble(p_216307_.random, -0.5D, 0.5D) : (double)k * p_216312_);
+        double d0 = vec3.x + (i == 0 ? Mth.nextDouble(randomSource, -0.5D, 0.5D) : (double)i * p_216312_);
+        double d1 = vec3.y + (j == 0 ? Mth.nextDouble(randomSource, -0.5D, 0.5D) : (double)j * p_216312_);
+        double d2 = vec3.z + (k == 0 ? Mth.nextDouble(randomSource, -0.5D, 0.5D) : (double)k * p_216312_);
         double d3 = i == 0 ? p_216311_.x() : 0.0D;
         double d4 = j == 0 ? p_216311_.y() : 0.0D;
         double d5 = k == 0 ? p_216311_.z() : 0.0D;
@@ -189,26 +189,12 @@ public class CrowWhitelistEvent {
         }
     }
     public static void spawnWhitelistParticles(Level worldIn, BlockPos pos, boolean whitelisted) {
-//        RandomSource random = worldIn.getRandom();
         SimpleParticleType basicparticletype = ParticleTypes.ELECTRIC_SPARK;
-//        ParticleEngine pe = Minecraft.getInstance().particleEngine;
 
         spawnParticlesOnBlockFaces(worldIn, pos, basicparticletype, UniformInt.of(3, 5), whitelisted);
-//        for(int i = 0; i < 10; i++){
-//            Vec3 offset = new Vec3(random.nextDouble() / 3.0D * (double) (random.nextBoolean() ? 1 : -1), 0, random.nextDouble() / 3.0D * (double) (random.nextBoolean() ? 1 : -1));
-//
-//            Particle p = pe.createParticle(basicparticletype, (double) pos.getX() + 0.5f + offset.x, (double) pos.getY() + random.nextDouble() * 0.15f, (double) pos.getZ() + 0.5f + offset.z, 0, random.nextDouble() * 0.1D + 0.25D, 0);
-//            if (p != null) {
-//                p.setLifetime(20);
-//                p.setColor(0.75f, 0, 0);
-//
-//                if (whitelisted)
-//                    p.setColor(0.1f, 1, 0.1f);
-//            }
-//        }
     }
     public static void spawnWhitelistCrowParticle(Level worldIn, CrowEntity crow, boolean whitelisted) {
-        RandomSource random = worldIn.getRandom();
+        RandomSource random = crow.getRandom();
         SimpleParticleType basicparticletype = ParticleTypes.ELECTRIC_SPARK;
         ParticleEngine pe = Minecraft.getInstance().particleEngine;
 

@@ -1,8 +1,15 @@
 package net.joefoxe.hexerei.particle;
 
+import net.joefoxe.hexerei.client.renderer.entity.custom.BroomEntity;
+import net.joefoxe.hexerei.item.custom.BroomBrushItem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.LightLayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -11,6 +18,7 @@ import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 public class BroomParticle extends TextureSheetParticle {
+
     protected float scale;
     protected float rotationDir;
     protected float fallingSpeed;

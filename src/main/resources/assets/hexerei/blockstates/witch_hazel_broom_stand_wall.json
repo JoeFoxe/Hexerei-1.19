@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "hexerei:block/witch_hazel_broom_stand_wall",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "hexerei:block/witch_hazel_broom_stand_wall",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "hexerei:block/witch_hazel_broom_stand_wall"
+    },
+    "facing=west": {
+      "model": "hexerei:block/witch_hazel_broom_stand_wall",
+      "y": 90
+    }
+  }
+}

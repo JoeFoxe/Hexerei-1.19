@@ -1,6 +1,7 @@
 package net.joefoxe.hexerei.item.custom;
 
 import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.client.renderer.entity.model.ArmorModels;
 import net.joefoxe.hexerei.client.renderer.entity.model.WitchArmorModel;
 import net.joefoxe.hexerei.util.ClientProxy;
 import net.joefoxe.hexerei.util.HexereiUtil;
@@ -135,32 +136,44 @@ public class WitchArmorItem extends DyeableArmorItem {
     }
 
 
-    @OnlyIn(Dist.CLIENT)
+
+
     @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-
         consumer.accept(new IClientItemExtensions() {
-            static WitchArmorModel<LivingEntity> model;
-
             @Override
-            public WitchArmorModel<LivingEntity> getGenericArmorModel(LivingEntity entity, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel _default) {
-                if (model == null)
-                    model = new WitchArmorModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ClientProxy.WITCH_ARMOR_LAYER));
-                float pticks = Minecraft.getInstance().getFrameTime();
-                float f = Mth.rotLerp(pticks, entity.yBodyRotO, entity.yBodyRot);
-                float f1 = Mth.rotLerp(pticks, entity.yHeadRotO, entity.yHeadRot);
-                float netHeadYaw = f1 - f;
-                float netHeadPitch = Mth.lerp(pticks, entity.xRotO, entity.getXRot());
-                model.slot = slot;
-                model.copyFromDefault(_default);
-                model.entity = entity;
-                model.entityClass = entity.getClass();
-                model.crouching = entity.isCrouching();
-                model.young = entity.isBaby();
-//                model.setupAnim(entity, entity.animationPosition, entity.animationSpeed, entity.tickCount, netHeadYaw, netHeadPitch);
-                return model;
+            public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
+                return ArmorModels.get(stack);
             }
         });
     }
+
+//    @OnlyIn(Dist.CLIENT)
+//    @Override
+//    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+//
+//        consumer.accept(new IClientItemExtensions() {
+//            static WitchArmorModel<LivingEntity> model;
+//
+//            @Override
+//            public WitchArmorModel<LivingEntity> getGenericArmorModel(LivingEntity entity, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel _default) {
+//                if (model == null)
+//                    model = new WitchArmorModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ClientProxy.WITCH_ARMOR_LAYER));
+//                float pticks = Minecraft.getInstance().getFrameTime();
+//                float f = Mth.rotLerp(pticks, entity.yBodyRotO, entity.yBodyRot);
+//                float f1 = Mth.rotLerp(pticks, entity.yHeadRotO, entity.yHeadRot);
+//                float netHeadYaw = f1 - f;
+//                float netHeadPitch = Mth.lerp(pticks, entity.xRotO, entity.getXRot());
+//                model.slot = slot;
+//                model.copyFromDefault(_default);
+//                model.entity = entity;
+//                model.entityClass = entity.getClass();
+//                model.crouching = entity.isCrouching();
+//                model.young = entity.isBaby();
+////                model.setupAnim(entity, entity.animationPosition, entity.animationSpeed, entity.tickCount, netHeadYaw, netHeadPitch);
+//                return model;
+//            }
+//        });
+//    }
 
 }

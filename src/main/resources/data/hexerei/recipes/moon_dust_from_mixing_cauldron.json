@@ -1,0 +1,41 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "liquid": {
+    "fluid": "minecraft:water"
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    }
+  ],
+  "output": {
+    "item": "hexerei:moon_dust",
+    "count": 4
+  },
+  "liquidOutput": {
+    "fluid": "minecraft:water"
+  },
+  "fluidLevelsConsumed": 333,
+  "moonRequirement": "full_moon"
+}

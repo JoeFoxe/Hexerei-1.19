@@ -17,6 +17,8 @@ import net.minecraft.BlockUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -96,7 +98,10 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
     private final float[] paddlePositions = new float[2];
     private float outOfControlTicks;
     public float deltaRotation;
+    public float deltaRotationOld;
     public float floatingOffset;
+    public float floatingOffsetOld;
+    public Vec3 deltaMovementOld;
     private int lerpSteps;
     private double lerpX;
     private double lerpY;
@@ -130,6 +135,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
     public int broomCalledDelay = 40;
     public ItemStack selfItem = null;
     public float age = 0;
+    public Entity prevControlling = null;
 
     //this is a static uuid that will be saved across the broom when broken and placed again - for the whistle to bind to.
     public UUID broomUUID;
@@ -201,12 +207,16 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         return PortalShape.getRelativePosition(result, axis, this.position(), this.getDimensions(this.getPose()));
     }
 
+
+    protected int getMaxPassengers() {
+        return this.getModule(BroomSlot.SATCHEL).is(ModItems.BROOM_SEAT.get()) ? 2 : 1;
+    }
     /**
      * Returns the Y offset from the entity's position for any entity riding this one.
      */
     @Override
     public double getPassengersRidingOffset() {
-        float height = 1.8f;
+        float height = 2.25f;
         if (this.getControllingPassenger() != null) {
             height = this.getControllingPassenger().getBbHeight();
 
@@ -384,6 +394,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
 
     }
 
+
     public Item getBroomItem() {
         return getBroomType().item();
     }
@@ -446,7 +457,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         }
         for (BroomSlot slot : BroomSlot.values()) {
             if (getModule(slot).getItem() instanceof BroomAttachmentItem broomAttachment) {
-                broomAttachment.onBrushDamage(this, random);
+                broomAttachment.onBrushDamage(this, this.random);
             }
         }
     }
@@ -481,6 +492,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
 
             if (this.getModule(BroomSlot.BRUSH).getItem() instanceof BroomBrushItem brushItem) {
                 if (brushItem.list != null) {
+                    ParticleEngine pe = Minecraft.getInstance().particleEngine;
                     Random random = new Random();
                     for (Tuple<ParticleOptions, Integer> tuple : brushItem.list) {
                         ParticleOptions option = tuple.getA();
@@ -505,6 +517,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
 
             if (this.getModule(BroomSlot.BRUSH).getItem() instanceof BroomBrushItem brushItem) {
                 if (brushItem.list != null) {
+                    ParticleEngine pe = Minecraft.getInstance().particleEngine;
                     Random random = new Random();
                     for (Tuple<ParticleOptions, Integer> tuple : brushItem.list) {
                         ParticleOptions option = tuple.getA();
@@ -542,7 +555,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
             volume = 0.5f;
         }
 
-        level.playSound(null, this.getX(), this.getY() + 0.5D, this.getZ(), sound, SoundSource.BLOCKS, volume, level.random.nextFloat() * 0.1F + 0.9F);
+        level.playSound(null, this.getX(), this.getY() + 0.5D, this.getZ(), sound, SoundSource.BLOCKS, volume, random.nextFloat() * 0.1F + 0.9F);
     }
 
     @Override
@@ -557,7 +570,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
             volume = 0.5f;
         }
 
-        level.playSound(null, this.getX(), this.getY() + 0.5D, this.getZ(), sound, SoundSource.BLOCKS, volume, level.random.nextFloat() * 0.1F + pitch);
+        level.playSound(null, this.getX(), this.getY() + 0.5D, this.getZ(), sound, SoundSource.BLOCKS, volume, random.nextFloat() * 0.1F + pitch);
     }
 
     /**
@@ -567,6 +580,22 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
     public void tick() {
 
         ++this.age;
+
+        this.floatingOffsetOld = this.floatingOffset;
+        this.deltaMovementOld = this.getDeltaMovement();
+        this.deltaRotationOld = this.deltaRotation;
+
+        //dismount
+        if(!this.level.isClientSide){
+            if (this.prevControlling != null && this.getControllingPassenger() == null) {
+                for (BroomSlot slot : BroomSlot.values()) {
+                    if (getModule(slot).getItem() instanceof BroomAttachmentItem broomAttachment) {
+                        broomAttachment.onDismount(this, this.random);
+                    }
+                }
+            }
+            this.prevControlling = this.getControllingPassenger();
+        }
 
         if (!this.broomSync && this.level instanceof ServerLevel) {
             sync();
@@ -692,7 +721,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
             this.move(MoverType.SELF, this.getDeltaMovement());
 
             if (this.getModule(BroomSlot.BRUSH).is(HexereiTags.Items.BROOM_BRUSH) && this.getModule(BroomSlot.BRUSH).getItem() instanceof BroomBrushItem brushItem) {
-                brushItem.renderParticles(this, level, status, random);
+                brushItem.renderParticles(this, level, status, this.random);
             }
         } else {
             this.setDeltaMovement(Vec3.ZERO);
@@ -702,7 +731,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
                 }
 
                 if (this.getModule(BroomSlot.BRUSH).getItem() instanceof BroomBrushItem brushItem) {
-                    brushItem.renderParticles(this, level, status, random);
+                    brushItem.renderParticles(this, level, status, this.random);
                 }
             } else
                 floatingOffset = HexereiUtil.moveTo(floatingOffset, 0, 0.04f);
@@ -737,15 +766,25 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         this.checkInsideBlocks();
         List<Entity> list = this.level.getEntities(this, this.getBoundingBox().inflate(0.2F, -0.01F, 0.2F), EntitySelector.pushableBy(this));
         if (!list.isEmpty()) {
-            boolean flag = !this.level.isClientSide && !(this.getControllingPassenger() instanceof Player);
+            boolean flag = !this.level.isClientSide && (this.getControllingPassenger() instanceof Player);
 
-            for (Entity entity : list) { //is this still used for something?
+//            for (Entity entity : list) { //is this still used for something?
+//                if (!entity.hasPassenger(this)) {
+//                    if (flag && this.broomCalled && this.getPassengers().size() < 1 && !entity.isPassenger() && entity.getBbWidth() < this.getBbWidth() && (entity instanceof Player player)) {
+////                        setYRot(this.moveToAngle(getYRot(), player.getYRot(), 1f));
+//
+//                    } else if (flag && this.getPassengers().size() < 1 && !entity.isPassenger() && entity.getBbWidth() < this.getBbWidth() && entity instanceof LivingEntity && !(entity instanceof WaterAnimal) && !(entity instanceof Player)) {
+//                        //entity.startRiding(this);
+//                    } else {
+//                        this.push(entity);
+//                    }
+//                }
+//            }
+
+            for (Entity entity : list) {
                 if (!entity.hasPassenger(this)) {
-                    if (flag && this.broomCalled && this.getPassengers().size() < 1 && !entity.isPassenger() && entity.getBbWidth() < this.getBbWidth() && (entity instanceof Player player)) {
-//                        setYRot(this.moveToAngle(getYRot(), player.getYRot(), 1f));
-
-                    } else if (flag && this.getPassengers().size() < 1 && !entity.isPassenger() && entity.getBbWidth() < this.getBbWidth() && entity instanceof LivingEntity && !(entity instanceof WaterAnimal) && !(entity instanceof Player)) {
-                        //entity.startRiding(this);
+                    if (flag && this.getPassengers().size() < this.getMaxPassengers() && !entity.isPassenger() && entity.getBbWidth() < this.getBbWidth() && entity instanceof LivingEntity && !(entity instanceof WaterAnimal) && !(entity instanceof Player)) {
+//                        entity.startRiding(this); // used for testing for mobs to hop onto the broom
                     } else {
                         this.push(entity);
                     }
@@ -756,10 +795,10 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         if (level.isClientSide() && this.getDeltaMovement().length() >= 0.01d && this.getModule(BroomSlot.BRUSH).is(HexereiTags.Items.BROOM_BRUSH)) {
             ItemStack misc = this.getModule(BroomSlot.MISC);
             if (misc.getItem() instanceof BroomAttachmentItem attachmentItem && attachmentItem.shouldRenderParticles(this, level, status)) {
-                attachmentItem.renderParticles(this, level, status, random);
+                attachmentItem.renderParticles(this, level, status, this.random);
             } else {
                 if (this.getModule(BroomSlot.BRUSH).getItem() instanceof BroomBrushItem brushItem) {
-                    brushItem.renderParticles(this, level, status, random);
+                    brushItem.renderParticles(this, level, status, this.random);
                 }
             }
         }
@@ -813,6 +852,11 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
             case UNDER_LAVA, UNDER_FLOWING_LAVA, IN_AIR -> null;
             case ON_LAND -> SoundEvents.BOAT_PADDLE_LAND;
         };
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pPos, BlockState pState) {
+//        super.playStepSound(pPos, pState);
     }
 
     private void tickLerp() {
@@ -1027,7 +1071,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         this.speedMultiplier = getBroomType().speedMultiplier();
 
         if (getModule(BroomSlot.BRUSH).getItem() instanceof BroomBrushItem brush){
-            speedMultiplier += brush.getSpeedModifier();
+            speedMultiplier += brush.getSpeedModifier(this);
         }
 
         if (this.previousStatus == BroomEntity.Status.IN_AIR && this.status != BroomEntity.Status.IN_AIR && this.status != BroomEntity.Status.ON_LAND) {
@@ -1121,7 +1165,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
                 this.setDeltaMovement(this.getDeltaMovement().add(0, 0.1275f + (0.01f * speedMultiplier), 0));
             }
             if (down) {
-                this.setDeltaMovement(this.getDeltaMovement().add(0, -0.1275f + (0.01f * speedMultiplier), 0));
+                this.setDeltaMovement(this.getDeltaMovement().add(0, -0.1275f - (0.01f * speedMultiplier), 0));
             }
             this.setDeltaMovement(this.getDeltaMovement().add((double) (Mth.sin(-(this.getYRot() + 90) * ((float) Math.PI / 180F)) * f) * speedMultiplier, 0.0D, (double) (Mth.cos((this.getYRot() + 90) * ((float) Math.PI / 180F)) * f) * speedMultiplier));
             this.setPaddleState(this.rightInputDown && !this.leftInputDown || this.forwardInputDown, this.leftInputDown && !this.rightInputDown || this.forwardInputDown);
@@ -1132,29 +1176,43 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
     public void positionRider(Entity passenger) {
         if (this.hasPassenger(passenger)) {
             float f = 0.0F;
-            float f1 = (float) ((this.isRemoved() ? (double) 0.01F : this.getPassengersRidingOffset()) + passenger.getPassengersRidingOffset());
+            float f1 = this.floatingOffset - 0.1f;
+            boolean hasSeat = this.getModule(BroomEntity.BroomSlot.SATCHEL).is(ModItems.BROOM_SEAT.get());
             if (this.getPassengers().size() > 1) {
                 int i = this.getPassengers().indexOf(passenger);
                 if (i == 0) {
-                    f = 0.2F;
-                } else {
                     f = -0.6F;
+                    Vec3 vec3 = (new Vec3((double)f, 0.0D, 0.0D))
+                            .zRot(((float)this.getDeltaMovement().y() * 25f) * ((float)Math.PI / 180F));
+                    f1 += vec3.y + passenger.getMyRidingOffset();
+                } else {
+                    f = 0.4F;
+                    Vec3 vec3 = (new Vec3((double)f, 0.0D, 0.0D))
+                            .zRot(((float)this.getDeltaMovement().y() * 25f) * ((float)Math.PI / 180F));
+                    f1 += vec3.y + passenger.getMyRidingOffset() + 0.1f;
                 }
-
-                if (passenger instanceof Animal) {
-                    f = (float) ((double) f + 0.2D);
+            } else {
+                f1 += passenger.getMyRidingOffset();
+                if(hasSeat) {
+                    f = 0.4F;
+                    Vec3 vec3 = (new Vec3((double)f, 0.0D, 0.0D))
+                            .zRot(((float)this.getDeltaMovement().y() * 25f) * ((float)Math.PI / 180F));
+                    f1 += vec3.y + 0.1f;
                 }
             }
+            if(passenger instanceof Animal){
+                f1 += 0.15f;
+            }
 
-            Vec3 vector3d = (new Vec3(f, 0.0D, 0.0D)).yRot(-this.getYRot() * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
-            passenger.setPos(this.getX() + vector3d.x, this.getY() + (double) f1, this.getZ() + vector3d.z);
+            Vec3 vec3 = (new Vec3((double)f, 0.0D, 0.0D)).yRot((-this.getYRot() - this.deltaRotation * 2 + 90) * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
+            passenger.setPos(this.getX() + vec3.x, this.getY() + (double)f1, this.getZ() + vec3.z);
             passenger.setYRot(passenger.getYRot() + this.deltaRotation);
             passenger.setYHeadRot(passenger.getYHeadRot() + this.deltaRotation);
             this.applyYawToEntity(passenger);
-            if (passenger instanceof Animal && this.getPassengers().size() > 1) {
-                int j = passenger.getId() % 2 == 0 ? 90 : 270;
-                passenger.setYBodyRot(((Animal) passenger).yBodyRot + (float) j);
-                passenger.setYHeadRot(passenger.getYHeadRot() + (float) j);
+            if (passenger instanceof Animal) {
+                int j = 270;
+                passenger.setYBodyRot(((Animal)passenger).yBodyRot + (float)j);
+                passenger.setYHeadRot(passenger.getYHeadRot() + (float)j);
             }
 
         }
@@ -1164,8 +1222,21 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
      * Applies this boat's yaw to the given entity. Used to update the orientation of its passenger.
      */
     protected void applyYawToEntity(Entity entityToUpdate) {
-        entityToUpdate.setYBodyRot(this.getYRot());
-        float f = Mth.wrapDegrees(entityToUpdate.getYRot() - this.getYRot());
+        int i = -1;
+        float rotation = 0f;
+        boolean hasSeat = this.getModule(BroomEntity.BroomSlot.SATCHEL).is(ModItems.BROOM_SEAT.get());
+        if (this.getPassengers().size() > 1) {
+            i = this.getPassengers().indexOf(entityToUpdate);
+        }
+        if (i == 0) {
+
+        } else if (i == 1){
+            rotation = 90f;
+        } else if(hasSeat) {
+            rotation = 90f;
+        }
+        entityToUpdate.setYBodyRot(this.getYRot() + rotation);
+        float f = Mth.wrapDegrees(entityToUpdate.getYRot() - this.getYRot() - rotation);
         float f1 = Mth.clamp(f, -105.0F, 105.0F);
         entityToUpdate.yRotO += f1 - f;
         entityToUpdate.setYRot(entityToUpdate.getYRot() + f1 - f);
@@ -1323,6 +1394,12 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         } else if (this.outOfControlTicks < 60.0F) {
             if (!this.level.isClientSide) {
                 if (player.startRiding(this)) {
+                    //onMount
+                    for (BroomSlot slot : BroomSlot.values()) {
+                        if (getModule(slot).getItem() instanceof BroomAttachmentItem broomAttachment) {
+                            broomAttachment.onMount(this, this.random);
+                        }
+                    }
                     if (getModule(BroomSlot.BRUSH).is(HexereiTags.Items.BROOM_BRUSH))
                         this.push(0, 0.25, 0);
                     return InteractionResult.CONSUME;
@@ -1392,6 +1469,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
     public void setRotation(float rotation) {
 //        this.deltaRotation = deltaRotation;
         this.setYRot(rotation);
+        this.yRotO = rotation;
 
         if (!this.level.isClientSide) {
             HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(blockPosition())), new BroomSyncRotation(this, rotation));
@@ -1464,7 +1542,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
 
     @Override
     protected boolean canAddPassenger(Entity passenger) {
-        return this.getPassengers().size() < 1 && !this.isEyeInFluidType(ForgeMod.WATER_TYPE.get());
+        return this.getPassengers().size() < getMaxPassengers();
     }
 
     /**

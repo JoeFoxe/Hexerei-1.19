@@ -35,6 +35,7 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -188,6 +189,7 @@ public class ModItems {
                     if (Screen.hasShiftDown()) {
                         tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                         tooltip.add(Component.translatable("tooltip.hexerei.small_satchel").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                        tooltip.add(Component.translatable("tooltip.hexerei.dyeable").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                     } else {
                         tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                         tooltip.add(Component.translatable("tooltip.hexerei.broom_attachments").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
@@ -205,6 +207,7 @@ public class ModItems {
                         items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, SMALL_SATCHEL.get());
                         items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, MEDIUM_SATCHEL.get());
                         items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, LARGE_SATCHEL.get());
+                        items.register((s, t) -> t == 1 ? BroomSeatItem.getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, BROOM_SEAT.get());
 
                     }
                 }
@@ -228,6 +231,7 @@ public class ModItems {
                     if (Screen.hasShiftDown()) {
                         tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                         tooltip.add(Component.translatable("tooltip.hexerei.medium_satchel").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                        tooltip.add(Component.translatable("tooltip.hexerei.dyeable").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                     } else {
                         tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                         tooltip.add(Component.translatable("tooltip.hexerei.broom_attachments").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
@@ -245,6 +249,7 @@ public class ModItems {
                         items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, SMALL_SATCHEL.get());
                         items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, MEDIUM_SATCHEL.get());
                         items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, LARGE_SATCHEL.get());
+                        items.register((s, t) -> t == 1 ? BroomSeatItem.getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, BROOM_SEAT.get());
 
                     }
                 }
@@ -270,6 +275,7 @@ public class ModItems {
                     if (Screen.hasShiftDown()) {
                         tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                         tooltip.add(Component.translatable("tooltip.hexerei.large_satchel").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                        tooltip.add(Component.translatable("tooltip.hexerei.dyeable").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                     } else {
                         tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                         tooltip.add(Component.translatable("tooltip.hexerei.broom_attachments").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
@@ -287,6 +293,7 @@ public class ModItems {
                         items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, SMALL_SATCHEL.get());
                         items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, MEDIUM_SATCHEL.get());
                         items.register((s, t) -> t == 1 ? getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, LARGE_SATCHEL.get());
+                        items.register((s, t) -> t == 1 ? BroomSeatItem.getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, BROOM_SEAT.get());
 
                     }
                 }
@@ -363,6 +370,36 @@ public class ModItems {
                         broom.level.playSound(null, broom, SoundEvents.ENDER_EYE_DEATH, SoundSource.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 1.0F);
                     }
                 }
+            });
+
+
+    public static final RegistryObject<Item> BROOM_SEAT = ITEMS.register("broom_seat",
+            () -> new BroomSeatItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)) {
+
+                @OnlyIn(Dist.CLIENT)
+                @Override
+                public void bakeModels() {
+                    EntityModelSet context = Minecraft.getInstance().getEntityModels();
+                    this.model = new BroomSeatModel(context.bakeLayer(BroomSeatModel.LAYER_LOCATION));
+                    this.texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/broom_seat.png");
+                    this.dye_texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/broom_seat_dye.png");
+                }
+
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+
+                    if (Screen.hasShiftDown()) {
+                        tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                        tooltip.add(Component.translatable("tooltip.hexerei.broom_seat_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                        tooltip.add(Component.translatable("tooltip.hexerei.broom_seat_2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                        tooltip.add(Component.translatable("tooltip.hexerei.dyeable").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    } else {
+                        tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                        tooltip.add(Component.translatable("tooltip.hexerei.broom_attachments").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    }
+                    super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+
             });
 
     public static final RegistryObject<Item> GOLD_RINGS = ITEMS.register("gold_rings",
@@ -491,7 +528,14 @@ public class ModItems {
             });
 
     public static final RegistryObject<Item> WET_BROOM_BRUSH = ITEMS.register("wet_broom_brush",
-            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)){
+
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+                    tooltip.add(Component.translatable("tooltip.hexerei.wet_broom_brush").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+            });
 
     public static final RegistryObject<Item> BROOM_BRUSH = ITEMS.register("broom_brush",
             () -> new BroomBrushItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.BROOM_BRUSH_DURABILITY.get()*/100)) {
@@ -539,7 +583,7 @@ public class ModItems {
 
                 @Override //TODO tester
                 public float getSpeedModifier() {
-                    return 0.5F;
+                    return 1.5F;
                 }
 
                 @Override
@@ -550,8 +594,18 @@ public class ModItems {
                 }
             });
 
+    public static final RegistryObject<Item> WET_MOON_DUST_BRUSH = ITEMS.register("wet_moon_dust_brush",
+            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)){
+
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+                    tooltip.add(Component.translatable("tooltip.hexerei.wet_broom_brush").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+            });
+
     public static final RegistryObject<Item> MOON_DUST_BRUSH = ITEMS.register("moon_dust_brush",
-            () -> new BroomBrushItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.BROOM_BRUSH_DURABILITY.get()*/100)) {
+            () -> new BroomBrushItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(200)) {
 
                 @OnlyIn(Dist.CLIENT)
                 @Override
@@ -561,32 +615,49 @@ public class ModItems {
                     this.texture = new ResourceLocation(Hexerei.MOD_ID, "textures/entity/moon_dust_brush.png");
                     this.dye_texture = null;
                     this.list = new ArrayList<>();
-                    this.list.add(new Tuple<>(ParticleTypes.END_ROD, 5));
+                    this.list.add(new Tuple<>(ModParticleTypes.STAR_BRUSH.get(), 5));
                     this.list.add(new Tuple<>(ParticleTypes.ELECTRIC_SPARK, 2));
-                    this.list.add(new Tuple<>(ModParticleTypes.BROOM_3.get(), 8));
-                    this.list.add(new Tuple<>(ModParticleTypes.BROOM_4.get(), 50));
-                    this.list.add(new Tuple<>(ModParticleTypes.BROOM_5.get(), 50));
-                    this.list.add(new Tuple<>(ModParticleTypes.BROOM_6.get(), 50));
+                    this.list.add(new Tuple<>(ModParticleTypes.MOON_BRUSH_1.get(), 8));
+                    this.list.add(new Tuple<>(ModParticleTypes.MOON_BRUSH_2.get(), 50));
+                    this.list.add(new Tuple<>(ModParticleTypes.MOON_BRUSH_3.get(), 50));
+                    this.list.add(new Tuple<>(ModParticleTypes.MOON_BRUSH_4.get(), 50));
                 }
 
                 @Override
                 public boolean shouldGlow(Level level, ItemStack brushStack) {
-                    return level != null && level.getMoonPhase() == 0;
+                    float time = level.getTimeOfDay(0);
+                    return time > 0.25f && time < 0.75f && level.getMoonPhase() == 0 && !level.dimensionType().hasFixedTime();
                 }
 
                 @Override
                 public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
 
                     tooltip.add(Component.translatable("tooltip.hexerei.broom_attachments").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    tooltip.add(Component.translatable("tooltip.hexerei.moon_dust_brush").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                     super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+
+                @Override
+                public float getSpeedModifier(BroomEntity broom) {
+                    float time = broom.level.getTimeOfDay(0);
+                    if(time > 0.25f && time < 0.75f && broom.level.getMoonPhase() == 0 && !broom.level.dimensionType().hasFixedTime())
+                        return 1.0F;
+                    return 0.25f;
                 }
             });
 
     public static final RegistryObject<Item> WET_HERB_ENHANCED_BROOM_BRUSH = ITEMS.register("wet_herb_enhanced_broom_brush",
-            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)){
+
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+                    tooltip.add(Component.translatable("tooltip.hexerei.wet_broom_brush").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+            });
 
     public static final RegistryObject<Item> HERB_ENHANCED_BROOM_BRUSH = ITEMS.register("herb_enhanced_broom_brush",
-            () -> new BroomBrushItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.ENHANCED_BROOM_BRUSH_DURABILITY.get()*/200)) {
+            () -> new BroomBrushItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(200)) {
 
                 @OnlyIn(Dist.CLIENT)
                 @Override
@@ -1468,6 +1539,31 @@ public class ModItems {
 
     public static final RegistryObject<GlassesItem> READING_GLASSES = ITEMS.register("reading_glasses",
             () -> new GlassesItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+
+    public static final RegistryObject<Item> MOON_DUST = ITEMS.register("moon_dust",
+            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
+
+    public static final RegistryObject<StandingAndWallBlockItem> MAHOGANY_BROOM_STAND = ITEMS.register("mahogany_broom_stand",
+            () -> new StandingAndWallBlockItem(ModBlocks.MAHOGANY_BROOM_STAND.get(), ModBlocks.MAHOGANY_BROOM_STAND_WALL.get(), (new Item.Properties()).tab(CreativeModeTab.TAB_DECORATIONS)){
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+                    if (Screen.hasShiftDown()) {
+                        tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                        tooltip.add(Component.translatable("tooltip.hexerei.broom_stand").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    } else {
+                        tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    }
+                    super.appendHoverText(stack, world, tooltip, flagIn);
+                }
+            });
+
+
+    public static final RegistryObject<StandingAndWallBlockItem> WILLOW_BROOM_STAND = ITEMS.register("willow_broom_stand",
+            () -> new StandingAndWallBlockItem(ModBlocks.WILLOW_BROOM_STAND.get(), ModBlocks.WILLOW_BROOM_STAND_WALL.get(), (new Item.Properties()).tab(CreativeModeTab.TAB_DECORATIONS)));
+
+
+    public static final RegistryObject<StandingAndWallBlockItem> WITCH_HAZEL_BROOM_STAND = ITEMS.register("witch_hazel_broom_stand",
+            () -> new StandingAndWallBlockItem(ModBlocks.WITCH_HAZEL_BROOM_STAND.get(), ModBlocks.WITCH_HAZEL_BROOM_STAND_WALL.get(), (new Item.Properties()).tab(CreativeModeTab.TAB_DECORATIONS)));
 
     // EGG ITEMS
 

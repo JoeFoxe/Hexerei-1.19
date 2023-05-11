@@ -29,6 +29,9 @@ public class ModTileEntities {
     public static final RegistryObject<BlockEntityType<BookOfShadowsAltarTile>> BOOK_OF_SHADOWS_ALTAR_TILE = TILE_ENTITIES.register(
             "book_of_shadows_altar_entity", () -> BlockEntityType.Builder.of(BookOfShadowsAltarTile::new, ModBlocks.BOOK_OF_SHADOWS_ALTAR.get(), ModBlocks.WILLOW_ALTAR.get(), ModBlocks.WITCH_HAZEL_ALTAR.get()).build(null));
 
+    public static final RegistryObject<BlockEntityType<BroomStandTile>> BROOM_STAND_TILE = TILE_ENTITIES.register(
+            "broom_stand_entity", () -> BlockEntityType.Builder.of(BroomStandTile::new, ModBlocks.MAHOGANY_BROOM_STAND.get(), ModBlocks.MAHOGANY_BROOM_STAND_WALL.get(), ModBlocks.WILLOW_BROOM_STAND.get(), ModBlocks.WILLOW_BROOM_STAND_WALL.get(), ModBlocks.WITCH_HAZEL_BROOM_STAND.get(), ModBlocks.WITCH_HAZEL_BROOM_STAND_WALL.get()).build(null));
+
     public static final RegistryObject<BlockEntityType<CandleTile>> CANDLE_TILE = TILE_ENTITIES.register(
             "candle_entity", () -> BlockEntityType.Builder.of(CandleTile::new, ModBlocks.CANDLE.get(), ModBlocks.CANDLE_BLUE.get(), ModBlocks.CANDLE_BLACK.get(), ModBlocks.CANDLE_LIME.get(), ModBlocks.CANDLE_ORANGE.get(), ModBlocks.CANDLE_PINK.get(), ModBlocks.CANDLE_PURPLE.get(), ModBlocks.CANDLE_RED.get(), ModBlocks.CANDLE_CYAN.get(), ModBlocks.CANDLE_YELLOW.get()).build(null));
 

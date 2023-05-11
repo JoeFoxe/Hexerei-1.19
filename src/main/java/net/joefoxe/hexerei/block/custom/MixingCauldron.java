@@ -178,12 +178,14 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
                 stack.setCount(1);
                 mixingCauldronTile.setItem(9, stack);
                 player.getItemInHand(hand).shrink(1);
+                tileEntity.setChanged();
                 return InteractionResult.SUCCESS;
             } else if (!mixingCauldronTile.getItemStackInSlot(9).is(stack.getItem())) {
                 player.inventory.placeItemBackInInventory(mixingCauldronTile.getItemStackInSlot(9));
                 stack.setCount(1);
                 mixingCauldronTile.setItem(9, stack);
                 player.getItemInHand(hand).shrink(1);
+                tileEntity.setChanged();
                 return InteractionResult.SUCCESS;
             }
 
@@ -236,6 +238,7 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
                         HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> cauldronTile.getLevel().getChunkAt(cauldronTile.getPos())), new EmitParticlesPacket(cauldronTile.getPos(), 3, false));
                     if (cauldronTile.getLevel() != null)
                         cauldronTile.getLevel().playSound(null, cauldronTile.getPos().getX() + 0.5f, cauldronTile.getPos().getY() + 0.5f, cauldronTile.getPos().getZ() + 0.5f, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 0.8F + 0.4F * random.nextFloat());
+                    tileEntity.setChanged();
                     return InteractionResult.SUCCESS;
                 } else if (cauldronTile.getFluidStack().isFluidEqual(new FluidStack(Fluids.LAVA, 1))) {
                     ItemStack itemstack4 = new ItemStack(ModItems.LAVA_BOTTLE.get());
@@ -257,6 +260,7 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
                         HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> cauldronTile.getLevel().getChunkAt(cauldronTile.getPos())), new EmitParticlesPacket(cauldronTile.getPos(), 3, false));
                     if (cauldronTile.getLevel() != null)
                         cauldronTile.getLevel().playSound(null, cauldronTile.getPos().getX() + 0.5f, cauldronTile.getPos().getY() + 0.5f, cauldronTile.getPos().getZ() + 0.5f, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 0.8F + 0.4F * random.nextFloat());
+                    tileEntity.setChanged();
                     return InteractionResult.SUCCESS;
                 } else if (cauldronTile.getFluidStack().isFluidEqual(new FluidStack(ModFluids.QUICKSILVER_FLUID.get(), 1))) {
                     ItemStack itemstack4 = new ItemStack(ModItems.QUICKSILVER_BOTTLE.get());
@@ -278,6 +282,7 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
                         HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> cauldronTile.getLevel().getChunkAt(cauldronTile.getPos())), new EmitParticlesPacket(cauldronTile.getPos(), 3, false));
                     if (cauldronTile.getLevel() != null)
                         cauldronTile.getLevel().playSound(null, cauldronTile.getPos().getX() + 0.5f, cauldronTile.getPos().getY() + 0.5f, cauldronTile.getPos().getZ() + 0.5f, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 0.8F + 0.4F * random.nextFloat());
+                    tileEntity.setChanged();
                     return InteractionResult.SUCCESS;
                 } else if (cauldronTile.getFluidStack().isFluidEqual(new FluidStack(ModFluids.TALLOW_FLUID.get(), 1))) {
                     ItemStack itemstack4 = new ItemStack(ModItems.TALLOW_BOTTLE.get());
@@ -299,6 +304,7 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
                         HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> cauldronTile.getLevel().getChunkAt(cauldronTile.getPos())), new EmitParticlesPacket(cauldronTile.getPos(), 3, false));
                     if (cauldronTile.getLevel() != null)
                         cauldronTile.getLevel().playSound(null, cauldronTile.getPos().getX() + 0.5f, cauldronTile.getPos().getY() + 0.5f, cauldronTile.getPos().getZ() + 0.5f, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 0.8F + 0.4F * random.nextFloat());
+                    tileEntity.setChanged();
                     return InteractionResult.SUCCESS;
                 } else if (cauldronTile.getFluidStack().isFluidEqual(new FluidStack(ModFluids.BLOOD_FLUID.get(), 1))) {
                     ItemStack itemstack4 = new ItemStack(ModItems.BLOOD_BOTTLE.get());
@@ -320,6 +326,7 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
                         HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> cauldronTile.getLevel().getChunkAt(cauldronTile.getPos())), new EmitParticlesPacket(cauldronTile.getPos(), 3, false));
                     if (cauldronTile.getLevel() != null)
                         cauldronTile.getLevel().playSound(null, cauldronTile.getPos().getX() + 0.5f, cauldronTile.getPos().getY() + 0.5f, cauldronTile.getPos().getZ() + 0.5f, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 0.8F + 0.4F * random.nextFloat());
+                    tileEntity.setChanged();
                     return InteractionResult.SUCCESS;
                 } else if (cauldronTile.getFluidStack().getFluid() instanceof PotionFluid) {
                     ItemStack itemstack4 = PotionFluidHandler.fillBottle(cauldronTile.getFluidStack());
@@ -342,6 +349,7 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
                         HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> cauldronTile.getLevel().getChunkAt(cauldronTile.getPos())), new EmitParticlesPacket(cauldronTile.getPos(), 3, false));
                     if (cauldronTile.getLevel() != null)
                         cauldronTile.getLevel().playSound(null, cauldronTile.getPos().getX() + 0.5f, cauldronTile.getPos().getY() + 0.5f, cauldronTile.getPos().getZ() + 0.5f, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 0.8F + 0.4F * random.nextFloat());
+                    tileEntity.setChanged();
                     return InteractionResult.SUCCESS;
                 }
             }
@@ -372,6 +380,7 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
                         HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> tileEntity.getLevel().getChunkAt(cauldronTile.getPos())), new EmitParticlesPacket(cauldronTile.getPos(), 3, false));
                     if (tileEntity.getLevel() != null)
                         tileEntity.getLevel().playSound(null, cauldronTile.getPos().getX() + 0.5f, cauldronTile.getPos().getY() + 0.5f, cauldronTile.getPos().getZ() + 0.5f, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 0.8F + 0.4F * random.nextFloat());
+                    tileEntity.setChanged();
                     return InteractionResult.SUCCESS;
                 }
 
@@ -402,6 +411,7 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
                         HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> tileEntity.getLevel().getChunkAt(cauldronTile.getPos())), new EmitParticlesPacket(cauldronTile.getPos(), 3, false));
                     if (tileEntity.getLevel() != null)
                         tileEntity.getLevel().playSound(null, cauldronTile.getPos().getX() + 0.5f, cauldronTile.getPos().getY() + 0.5f, cauldronTile.getPos().getZ() + 0.5f, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 0.8F + 0.4F * random.nextFloat());
+                    tileEntity.setChanged();
                     return InteractionResult.SUCCESS;
                 }
 
@@ -432,6 +442,7 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
                     HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> tileEntity.getLevel().getChunkAt(cauldronTile.getPos())), new EmitParticlesPacket(cauldronTile.getPos(), 3, false));
                 if (tileEntity.getLevel() != null)
                     tileEntity.getLevel().playSound(null, cauldronTile.getPos().getX() + 0.5f, cauldronTile.getPos().getY() + 0.5f, cauldronTile.getPos().getZ() + 0.5f, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 0.8F + 0.4F * random.nextFloat());
+                tileEntity.setChanged();
                 return InteractionResult.SUCCESS;
             }
         } else if (stack.getItem() == ModItems.QUICKSILVER_BOTTLE.get()) {
@@ -460,6 +471,7 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
                     HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> tileEntity.getLevel().getChunkAt(cauldronTile.getPos())), new EmitParticlesPacket(cauldronTile.getPos(), 3, false));
                 if (tileEntity.getLevel() != null)
                     tileEntity.getLevel().playSound(null, cauldronTile.getPos().getX() + 0.5f, cauldronTile.getPos().getY() + 0.5f, cauldronTile.getPos().getZ() + 0.5f, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 0.8F + 0.4F * random.nextFloat());
+                tileEntity.setChanged();
                 return InteractionResult.SUCCESS;
             }
         } else if (stack.getItem() == ModItems.TALLOW_BOTTLE.get()) {
@@ -489,6 +501,7 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
 
                 if (tileEntity.getLevel() != null)
                     tileEntity.getLevel().playSound(null, cauldronTile.getPos().getX() + 0.5f, cauldronTile.getPos().getY() + 0.5f, cauldronTile.getPos().getZ() + 0.5f, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 0.8F + 0.4F * random.nextFloat());
+                tileEntity.setChanged();
                 return InteractionResult.SUCCESS;
             }
         } else if (stack.getItem() == ModItems.BLOOD_BOTTLE.get()) {
@@ -517,6 +530,7 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
                     HexereiPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> tileEntity.getLevel().getChunkAt(cauldronTile.getPos())), new EmitParticlesPacket(cauldronTile.getPos(), 3, false));
                 if (tileEntity.getLevel() != null)
                     tileEntity.getLevel().playSound(null, cauldronTile.getPos().getX() + 0.5f, cauldronTile.getPos().getY() + 0.5f, cauldronTile.getPos().getZ() + 0.5f, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 0.8F + 0.4F * random.nextFloat());
+                tileEntity.setChanged();
                 return InteractionResult.SUCCESS;
             }
         }
@@ -655,12 +669,7 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
             height = MIN_Y + (MAX_Y - MIN_Y) * Math.min(1, (float) cauldronTile.getFluidStack().getAmount() / cauldronTile.getTankCapacity(0)) + 1 / 16f;
 //
             int num = cauldronTile.getNumberOfItems();
-//
-//        world.addParticle(ParticleTypes.FLAME, pos.getX() + Math.round(rand.nextDouble()), pos.getY() + 1.2d, pos.getZ() + Math.round(rand.nextDouble()) , (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.035d ,(rand.nextDouble() - 0.5d) / 50d);
-//        world.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state), pos.getX() + Math.round(rand.nextDouble()), pos.getY() + 1.2d, pos.getZ() + Math.round(rand.nextDouble()) , (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 2d ,(rand.nextDouble() - 0.5d) / 50d);
-//        world.addParticle(ParticleTypes.SMOKE, pos.getX() + Math.round(rand.nextDouble()), pos.getY() + 1.2d, pos.getZ() + Math.round(rand.nextDouble()) , (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.045d ,(rand.nextDouble() - 0.5d) / 50d);
-//
-//
+
             if (cauldronTile.getFluidStack().getAmount() > 0) {
                 for (int i = 0; i < Mth.floor(cauldronTile.getFluidStack().getAmount() / 666f + 0.5f); i++) {
                     if (rand.nextDouble() > 0.5f)
@@ -670,6 +679,15 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
                     if (rand.nextDouble() > 0.5f)
                         world.addParticle(ModParticleTypes.CAULDRON.get(), pos.getX() + 0.2d + (0.6d * rand.nextDouble()), pos.getY() + height, pos.getZ() + 0.2d + (0.6d * rand.nextDouble()), (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.004d, (rand.nextDouble() - 0.5d) / 50d);
                 }
+
+                BlockState heatSource = world.getBlockState(pos.below());
+                if(heatSource.is(HexereiTags.Blocks.HEAT_SOURCES)){
+                    for (int i = 0; i < num + 5; i++) {
+                        if (rand.nextDouble() > 0.5f)
+                            world.addParticle(ModParticleTypes.CAULDRON.get(), pos.getX() + 0.2d + (0.6d * rand.nextDouble()), pos.getY() + height, pos.getZ() + 0.2d + (0.6d * rand.nextDouble()), (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.014d, (rand.nextDouble() - 0.5d) / 50d);
+                    }
+                }
+
                 if (cauldronTile.getFluidStack().isFluidEqual(new FluidStack(Fluids.WATER, 1)) || cauldronTile.getFluidStack().isFluidEqual(new FluidStack(ModFluids.TALLOW_FLUID.get(), 1))) {
                     world.addParticle(ParticleTypes.BUBBLE, pos.getX() + 0.2d + (0.6d * rand.nextDouble()), pos.getY() + height, pos.getZ() + 0.2d + (0.6d * rand.nextDouble()), (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.005d, (rand.nextDouble() - 0.5d) / 50d);
                 } else if (cauldronTile.getFluidStack().isFluidEqual(new FluidStack(ModFluids.BLOOD_FLUID.get(), 1))) {

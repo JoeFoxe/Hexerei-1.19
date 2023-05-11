@@ -19,6 +19,7 @@ import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.custom.MixingCauldron;
 import net.joefoxe.hexerei.data.recipes.FluidMixingRecipe;
 import net.joefoxe.hexerei.data.recipes.MixingCauldronRecipe;
+import net.joefoxe.hexerei.data.recipes.MoonPhases;
 import net.joefoxe.hexerei.tileentity.renderer.MixingCauldronRenderer;
 import net.joefoxe.hexerei.util.HexereiTags;
 import net.minecraft.client.Minecraft;
@@ -64,6 +65,8 @@ public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauld
     public final static ResourceLocation UID = new ResourceLocation(Hexerei.MOD_ID, "mixingcauldron");
     public final static ResourceLocation TEXTURE =
             new ResourceLocation(Hexerei.MOD_ID, "textures/gui/mixing_cauldron_gui_jei.png");
+    public final static ResourceLocation MOON_PHASES =
+            new ResourceLocation(Hexerei.MOD_ID, "textures/gui/moon_phases.png");
     public final static ResourceLocation TEXTURE_BLANK =
             new ResourceLocation(Hexerei.MOD_ID, "textures/block/blank.png");
     private IDrawable background;
@@ -73,6 +76,14 @@ public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauld
     private final IDrawable cauldron;
     private final IDrawable output1;
     private final IDrawable output2;
+    private final IDrawable moonPhases_0;
+    private final IDrawable moonPhases_1;
+    private final IDrawable moonPhases_2;
+    private final IDrawable moonPhases_3;
+    private final IDrawable moonPhases_4;
+    private final IDrawable moonPhases_5;
+    private final IDrawable moonPhases_6;
+    private final IDrawable moonPhases_7;
 
     private Block heatSource;
     private boolean findNewHeatSource;
@@ -102,6 +113,23 @@ public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauld
             return tooltip;
         }
 
+        if(recipe.getMoonCondition() != MoonPhases.MoonCondition.NONE && isHovering(mouseX, mouseY, 79, 35, 24, 18)){
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(Component.translatable("tooltip.hexerei.moon_phase"));
+
+            if(Screen.hasShiftDown()) {
+                tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                tooltip.add(Component.translatable("tooltip.hexerei.recipe_moon_1").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            } else {
+                tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                tooltip.add(Component.translatable("tooltip.hexerei.recipe_moon", Component.translatable(recipe.getMoonCondition().getNameTranslated())).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            }
+
+
+
+            return tooltip;
+        }
+
 
         return IRecipeCategory.super.getTooltipStrings(recipe, recipeSlotsView, mouseX, mouseY);
     }
@@ -120,6 +148,14 @@ public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauld
         this.cauldron = helper.createDrawable(TEXTURE, 238, 50, 12, 10);
         this.output1 = helper.createDrawable(TEXTURE, 209, 64, 47, 82);
         this.output2 = helper.createDrawable(TEXTURE, 209, 146, 47, 82);
+        this.moonPhases_0 = helper.createDrawable(MOON_PHASES, 12, 12, 8, 8);
+        this.moonPhases_1 = helper.createDrawable(MOON_PHASES, 44, 12, 8, 8);
+        this.moonPhases_2 = helper.createDrawable(MOON_PHASES, 76, 12, 8, 8);
+        this.moonPhases_3 = helper.createDrawable(MOON_PHASES, 108, 12, 8, 8);
+        this.moonPhases_4 = helper.createDrawable(MOON_PHASES, 12, 44, 8, 8);
+        this.moonPhases_5 = helper.createDrawable(MOON_PHASES, 44, 44, 8, 8);
+        this.moonPhases_6 = helper.createDrawable(MOON_PHASES, 76, 44, 8, 8);
+        this.moonPhases_7 = helper.createDrawable(MOON_PHASES, 108, 44, 8, 8);
         this.heatSource = getTagStack(HexereiTags.Blocks.HEAT_SOURCES);
     }
 
@@ -221,10 +257,39 @@ public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauld
 
         FluidStack input = recipe.getLiquid();
         FluidStack output = recipe.getLiquidOutput();
+        MoonPhases.MoonCondition phase = recipe.getMoonCondition();
+        float wholeScale = 1f;
+        if(phase != MoonPhases.MoonCondition.NONE){
+            wholeScale = 0.75f;
+            matrixStack.pushPose();
+            float scale = 1.75f;
+            matrixStack.scale(scale, scale, scale);
+            matrixStack.translate(84 / scale, 38 / scale, 10);
+            if(phase == MoonPhases.MoonCondition.FULL_MOON)
+                moonPhases_0.draw(matrixStack);
+            if(phase == MoonPhases.MoonCondition.WANING_GIBBOUS)
+                moonPhases_1.draw(matrixStack);
+            if(phase == MoonPhases.MoonCondition.LAST_QUARTER)
+                moonPhases_2.draw(matrixStack);
+            if(phase == MoonPhases.MoonCondition.WANING_CRESCENT)
+                moonPhases_3.draw(matrixStack);
+            if(phase == MoonPhases.MoonCondition.NEW_MOON)
+                moonPhases_4.draw(matrixStack);
+            if(phase == MoonPhases.MoonCondition.WAXING_CRESCENT)
+                moonPhases_5.draw(matrixStack);
+            if(phase == MoonPhases.MoonCondition.FIRST_QUARTER)
+                moonPhases_6.draw(matrixStack);
+            if(phase == MoonPhases.MoonCondition.WAXING_GIBBOUS)
+                moonPhases_7.draw(matrixStack);
+
+            matrixStack.popPose();
+        }
         if(recipe.getHeatCondition() == FluidMixingRecipe.HeatCondition.HEATED || recipe.getHeatCondition() == FluidMixingRecipe.HeatCondition.SUPERHEATED){
 
-            input.setAmount(2000);
-            output.setAmount(2000);
+            if(input != null)
+                input.setAmount(2000);
+            if(output != null)
+                output.setAmount(2000);
 
             float newHeatSource = (Hexerei.getClientTicks()) % 200 / 200f;
             float craftPercent = (Hexerei.getClientTicks()) % 100 / 100f;
@@ -269,8 +334,10 @@ public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauld
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             matrixStack.pushPose();
             matrixStack.translate(75f, 67, 100.0F + renderer.blitOffset);
-            matrixStack.translate(8.0F, -8.0F, 0.0F);
-            matrixStack.scale(16.0F, 16.0F, 16.0F);
+            matrixStack.translate(8.0F / wholeScale, -8.0F / wholeScale, 0.0F);
+            if(wholeScale != 1.0f)
+                matrixStack.translate(0, 4 / wholeScale, 0.0F);
+            matrixStack.scale(16.0F * wholeScale, 16.0F * wholeScale, 16.0F * wholeScale);
             matrixStack.mulPoseMatrix(Matrix4f.createScaleMatrix(1, -1, 1));
 
             Vec3 rotationOffset = new Vec3(0.5f, 0, 0.5f);
@@ -450,8 +517,10 @@ public class MixingCauldronRecipeCategory implements IRecipeCategory<MixingCauld
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             matrixStack.pushPose();
             matrixStack.translate(70f, 73, 100.0F + renderer.blitOffset);
-            matrixStack.translate(8.0F, -8.0F, 0.0F);
-            matrixStack.scale(20.0F, 20.0F, 20.0F);
+            matrixStack.translate(8.0F / wholeScale, -8.0F / wholeScale, 0.0F);
+            if(wholeScale != 1.0f)
+                matrixStack.translate(0, 4 / wholeScale, 0.0F);
+            matrixStack.scale(20.0F * wholeScale, 20.0F * wholeScale, 20.0F * wholeScale);
             matrixStack.mulPoseMatrix(Matrix4f.createScaleMatrix(1, -1, 1));
 
             Vec3 rotationOffset = new Vec3(0, 0, 0);

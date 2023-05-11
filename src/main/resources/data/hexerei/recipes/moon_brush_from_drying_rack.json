@@ -1,0 +1,12 @@
+{
+  "type": "hexerei:drying_rack",
+  "ingredients": [
+    {
+      "item": "hexerei:wet_moon_dust_brush"
+    }
+  ],
+  "output": {
+    "item": "hexerei:moon_dust_brush"
+  },
+  "dryingTimeInTicks": 1200
+}

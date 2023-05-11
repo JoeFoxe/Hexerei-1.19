@@ -48,7 +48,7 @@ public class PotionMixingRecipes {
             for (PotionBrewing.Mix<Potion> mix : PotionBrewing.POTION_MIXES) {
                 FluidStack fromFluid = PotionFluidHandler.getFluidFromPotion(mix.from.get(), bottleType, 1000);
                 FluidStack toFluid = PotionFluidHandler.getFluidFromPotion(mix.to.get(), bottleType, 1000);
-                if(mix.ingredient.getItems()[0] == null || mix.ingredient.getItems()[0].isEmpty())
+                if(mix.ingredient.getItems().length == 0 || mix.ingredient.getItems()[0] == null || mix.ingredient.getItems()[0].isEmpty())
                     return null;
 
                 mixingRecipes.add(createRecipe("potion_mixing_vanilla_" + recipeIndex++, mix.ingredient, fromFluid, toFluid));

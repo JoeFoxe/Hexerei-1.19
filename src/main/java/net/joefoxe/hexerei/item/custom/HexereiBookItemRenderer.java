@@ -141,14 +141,14 @@ public class HexereiBookItemRenderer extends CustomItemRendererWithPageDrawing {
             if (tileEntityIn.degreesOpened != 90) {
                 try {
 
-                    drawPages(tileEntityIn, matrixStackIn, (MultiBufferSource.BufferSource) bufferIn, combinedLightIn, combinedOverlayIn, true, transformType, 0);
+                    drawPages(tileEntityIn, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, true, transformType, 0);
                 } catch (CommandSyntaxException e) {
                     e.printStackTrace();
                 }
             }
             else{
 
-                drawBaseButtons(tileEntityIn, matrixStackIn, (MultiBufferSource.BufferSource) bufferIn, combinedLightIn, combinedOverlayIn, false, false, tag.getInt("chapter"), tag.getInt("page"), true, transformType, true);
+                drawBaseButtons(tileEntityIn, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, false, false, tag.getInt("chapter"), tag.getInt("page"), true, transformType, true);
             }
 
 //            this.itemRenderer = Minecraft.getInstance().getItemRenderer();

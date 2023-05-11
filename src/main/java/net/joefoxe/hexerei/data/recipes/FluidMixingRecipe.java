@@ -296,7 +296,6 @@ public class FluidMixingRecipe implements Recipe<SimpleContainer> {
             return switch (str){
                 case "heated" -> HEATED;
                 case "superheated" -> SUPERHEATED;
-                case "none" -> NONE;
                 default -> NONE;
             };
         }

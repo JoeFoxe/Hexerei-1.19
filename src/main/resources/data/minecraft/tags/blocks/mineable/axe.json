@@ -11,6 +11,12 @@
     "hexerei:herb_drying_rack",
     "hexerei:mahogany_drying_rack",
     "hexerei:willow_drying_rack",
-    "hexerei:witch_hazel_drying_rack"
+    "hexerei:witch_hazel_drying_rack",
+    "hexerei:mahogany_broom_stand",
+    "hexerei:willow_broom_stand",
+    "hexerei:witch_hazel_broom_stand",
+    "hexerei:mahogany_broom_stand_wall",
+    "hexerei:willow_broom_stand_wall",
+    "hexerei:witch_hazel_broom_stand_wall"
   ]
 }

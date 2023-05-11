@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "hexerei:small_satchel"
+    "hexerei:small_satchel",
+    "hexerei:broom_seat"
   ]
 }

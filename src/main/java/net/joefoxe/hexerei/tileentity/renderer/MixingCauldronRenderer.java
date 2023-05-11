@@ -56,7 +56,9 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
         float craftPercent = 0;
         //Mixing the items
         if(Objects.requireNonNull(tileEntityIn.getLevel()).getBlockState(tileEntityIn.getPos()).hasBlockEntity() && tileEntityIn.getLevel().getBlockEntity(tileEntityIn.getBlockPos()) instanceof MixingCauldronTile) {
-            craftPercent = tileEntityIn.getLevel().getBlockState(tileEntityIn.getPos()).getValue(MixingCauldron.CRAFT_DELAY) / (float) MixingCauldronTile.craftDelayMax;
+            craftPercent = tileEntityIn.craftDelay / (float) MixingCauldronTile.craftDelayMax;
+            float craftPercentOld = tileEntityIn.craftDelayOld / (float) MixingCauldronTile.craftDelayMax;
+            craftPercent = Mth.lerp(partialTicks, craftPercentOld, craftPercent);
         }
         else return;
 
@@ -72,20 +74,8 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
             fluidStack = tileEntityIn.renderedFluid;
             flag = true;
         }
-        if(!fluidStack.isEmpty()) {
-            matrixStackIn.pushPose();
-
-            Color color2 = new Color(BiomeColors.getAverageWaterColor(tileEntityIn.getLevel(), new BlockPos(tileEntityIn.getPos().getX(), tileEntityIn.getPos().getY(), tileEntityIn.getPos().getZ())));
-            int waterColor = HexereiUtil.getColorValue(color2.getRed()/255f, color2.getGreen()/255f, color2.getBlue()/255f);
-
-
+        if(!fluidStack.isEmpty()){
             fillPercentage = Math.min(1, (flag ? tileEntityIn.fluidRenderLevel : fluidStack.getAmount()) / tileEntityIn.getTankCapacity(0));
-//            matrixStackIn.scale(1.05f, 1, 1.05f);
-            if (fluidStack.getFluid().is(Tags.Fluids.GASEOUS))
-                renderFluid(matrixStackIn, bufferIn, fluidStack, fillPercentage, 1, combinedLightIn, tileEntityIn, waterColor);
-            else
-                renderFluid(matrixStackIn, bufferIn, fluidStack, 1, fillPercentage, combinedLightIn, tileEntityIn, waterColor);
-            matrixStackIn.popPose();
         }
         float height = MIN_Y + (MAX_Y - MIN_Y) * fillPercentage;
 
@@ -158,13 +148,25 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
                 matrixStackIn.popPose();
             }
         }
+
+        if(!fluidStack.isEmpty()) {
+            matrixStackIn.pushPose();
+
+            Color color2 = new Color(BiomeColors.getAverageWaterColor(tileEntityIn.getLevel(), new BlockPos(tileEntityIn.getPos().getX(), tileEntityIn.getPos().getY(), tileEntityIn.getPos().getZ())));
+            int waterColor = HexereiUtil.getColorValue(color2.getRed()/255f, color2.getGreen()/255f, color2.getBlue()/255f);
+            if (fluidStack.getFluid().is(Tags.Fluids.GASEOUS))
+                renderFluid(matrixStackIn, bufferIn, fluidStack, fillPercentage, 1, combinedLightIn, tileEntityIn, waterColor);
+            else
+                renderFluid(matrixStackIn, bufferIn, fluidStack, 1, fillPercentage, combinedLightIn, tileEntityIn, waterColor);
+            matrixStackIn.popPose();
+        }
     }
 
 
 
     public static void renderFluidBox(FluidStack fluidStack, float xMin, float yMin, float zMin, float xMax, float yMax,
                                       float zMax, MultiBufferSource buffer, PoseStack ms, int light, boolean renderBottom, int waterColor) {
-        renderFluidBox(fluidStack, xMin, yMin, zMin, xMax, yMax, zMax, buffer.getBuffer(ModRenderTypes.getFluid()), ms, light,
+        renderFluidBox(fluidStack, xMin, yMin, zMin, xMax, yMax, zMax, buffer.getBuffer(RenderType.translucentNoCrumbling()), ms, light,
                 renderBottom, waterColor);
     }
 

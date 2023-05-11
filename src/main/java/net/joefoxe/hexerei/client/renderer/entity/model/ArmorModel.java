@@ -14,123 +14,143 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
-public class ArmorModel <T extends LivingEntity> extends HumanoidModel<T> implements IClientItemExtensions {
+public class ArmorModel extends HumanoidModel<LivingEntity> implements IClientItemExtensions {
 
     public EquipmentSlot slot;
     public LivingEntity entity;
-    public Class entityClass;
-    ModelPart root, modelHead, modelBody, modelLeft_arm, modelRight_arm, modelBelt, modelLeft_leg, modelRight_leg, modelLeft_foot, modelRight_foot;
 
-    public ArmorModel(ModelPart root) {
+    public ArmorModel(ModelPart root, EquipmentSlot slot) {
         super(root);
-        this.root = root;
-        this.modelBelt = root.getChild("Belt");
-        this.modelBody = root.getChild("Body");
-        this.modelRight_foot = root.getChild("RightBoot");
-        this.modelLeft_foot = root.getChild("LeftBoot");
-        this.modelLeft_arm = root.getChild("LeftArm");
-        this.modelRight_arm = root.getChild("RightArm");
-        this.modelRight_leg = root.getChild("LeftLeg");
-        this.modelLeft_leg = root.getChild("RightLeg");
-        this.modelHead = root.getChild("Head");
+        this.slot = slot;
+    }
+    @Override
+    public void setupAnim(LivingEntity pEntity, float pLimbSwing, float pLimbSwingAmount, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
+        if (!(pEntity instanceof ArmorStand entityIn)) {
+            super.setupAnim(pEntity, pLimbSwing, pLimbSwingAmount, pAgeInTicks, pNetHeadYaw, pHeadPitch);
+            return;
+        }
 
+        this.head.xRot = ((float) Math.PI / 180F) * entityIn.getHeadPose().getX();
+        this.head.yRot = ((float) Math.PI / 180F) * entityIn.getHeadPose().getY();
+        this.head.zRot = ((float) Math.PI / 180F) * entityIn.getHeadPose().getZ();
+        this.head.setPos(0.0F, 1.0F, 0.0F);
+        this.body.xRot = ((float) Math.PI / 180F) * entityIn.getBodyPose().getX();
+        this.body.yRot = ((float) Math.PI / 180F) * entityIn.getBodyPose().getY();
+        this.body.zRot = ((float) Math.PI / 180F) * entityIn.getBodyPose().getZ();
+        this.leftArm.xRot = ((float) Math.PI / 180F) * entityIn.getLeftArmPose().getX();
+        this.leftArm.yRot = ((float) Math.PI / 180F) * entityIn.getLeftArmPose().getY();
+        this.leftArm.zRot = ((float) Math.PI / 180F) * entityIn.getLeftArmPose().getZ();
+        this.rightArm.xRot = ((float) Math.PI / 180F) * entityIn.getRightArmPose().getX();
+        this.rightArm.yRot = ((float) Math.PI / 180F) * entityIn.getRightArmPose().getY();
+        this.rightArm.zRot = ((float) Math.PI / 180F) * entityIn.getRightArmPose().getZ();
+        this.leftLeg.xRot = ((float) Math.PI / 180F) * entityIn.getLeftLegPose().getX();
+        this.leftLeg.yRot = ((float) Math.PI / 180F) * entityIn.getLeftLegPose().getY();
+        this.leftLeg.zRot = ((float) Math.PI / 180F) * entityIn.getLeftLegPose().getZ();
+        this.leftLeg.setPos(1.9F, 11.0F, 0.0F);
+        this.rightLeg.xRot = ((float) Math.PI / 180F) * entityIn.getRightLegPose().getX();
+        this.rightLeg.yRot = ((float) Math.PI / 180F) * entityIn.getRightLegPose().getY();
+        this.rightLeg.zRot = ((float) Math.PI / 180F) * entityIn.getRightLegPose().getZ();
+        this.rightLeg.setPos(-1.9F, 11.0F, 0.0F);
+        this.hat.copyFrom(this.head);
     }
 
-    public static PartDefinition createHumanoidAlias(MeshDefinition mesh) {
-        PartDefinition root = mesh.getRoot();
-        root.addOrReplaceChild("Body", new CubeListBuilder(), PartPose.ZERO);
-        root.addOrReplaceChild("Belt", new CubeListBuilder(), PartPose.ZERO);
-        root.addOrReplaceChild("Head", new CubeListBuilder(), PartPose.ZERO);
-        root.addOrReplaceChild("LeftLeg", new CubeListBuilder(), PartPose.ZERO);
-        root.addOrReplaceChild("LeftBoot", new CubeListBuilder(), PartPose.ZERO);
-        root.addOrReplaceChild("RightLeg", new CubeListBuilder(), PartPose.ZERO);
-        root.addOrReplaceChild("RightBoot", new CubeListBuilder(), PartPose.ZERO);
-        root.addOrReplaceChild("LeftArm", new CubeListBuilder(), PartPose.ZERO);
-        root.addOrReplaceChild("RightArm", new CubeListBuilder(), PartPose.ZERO);
+//    @Override
+//    protected Iterable<ModelPart> headParts() {
+//        return slot == EquipmentSlot.HEAD ? ImmutableList.of(modelHead) : ImmutableList.of();
+//    }
+//
+//    @Override
+//    protected Iterable<ModelPart> bodyParts() {
+//        if (slot == EquipmentSlot.CHEST) {
+//            return ImmutableList.of(modelBody, modelLeft_arm, modelRight_arm);
+//        }
+//        else if (slot == EquipmentSlot.LEGS) {
+//            return ImmutableList.of(modelLeft_leg, modelRight_leg, modelBelt);
+//        }
+//        else if (slot == EquipmentSlot.FEET) {
+//            return ImmutableList.of(modelLeft_foot, modelRight_foot);
+//        }
+//        else return ImmutableList.of();
+//    }
 
-        return root;
-    }
+//    @Override
+//    public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
+////        super.renderToBuffer(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+//        matrixStack.pushPose();
+//
+//        if(entity != null) {
+//            EntityModel entityModel = ((LivingEntityRenderer<?, ?>) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity)).getModel();
+//            if(entityModel instanceof HumanoidModel livingModel){
+//                this.attackTime = livingModel.attackTime;
+//                this.riding = livingModel.riding;
+//                this.young = livingModel.young;
+//                this.leftArmPose = livingModel.leftArmPose;
+//                this.rightArmPose = livingModel.rightArmPose;
+//                this.crouching = livingModel.crouching;
+//                this.head.copyFrom(livingModel.head);
+//                this.body.copyFrom(livingModel.body);
+//                this.rightArm.copyFrom(livingModel.rightArm);
+//                this.leftArm.copyFrom(livingModel.leftArm);
+//                this.rightLeg.copyFrom(livingModel.rightLeg);
+//                this.leftLeg.copyFrom(livingModel.leftLeg);
+//            }
+//
+//
+//        }
+//
+//        if (this.slot == EquipmentSlot.HEAD) {
+//            this.modelHead.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+//        }
+//        else if (this.slot == EquipmentSlot.CHEST) {
+//            this.modelBody.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+//            this.modelRight_arm.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+//            this.modelLeft_arm.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+//
+//        } else if (this.slot == EquipmentSlot.LEGS) {
+//            this.modelBelt.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+//            this.modelRight_leg.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+//            this.modelLeft_leg.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+//
+//        } else if (this.slot == EquipmentSlot.FEET) {
+//            this.modelRight_foot.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+//            this.modelLeft_foot.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+//        }
+//        matrixStack.popPose();
+//    }
+
+
 
     @Override
-    protected Iterable<ModelPart> headParts() {
-        return slot == EquipmentSlot.HEAD ? ImmutableList.of(modelHead) : ImmutableList.of();
+    public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, float r, float g, float b, float a) {
+        setPartVisibility(slot);
+        super.renderToBuffer(ms, buffer, light, overlay, r, g, b, a);
     }
 
-    @Override
-    protected Iterable<ModelPart> bodyParts() {
-        if (slot == EquipmentSlot.CHEST) {
-            return ImmutableList.of(modelBody, modelLeft_arm, modelRight_arm);
-        }
-        else if (slot == EquipmentSlot.LEGS) {
-            return ImmutableList.of(modelLeft_leg, modelRight_leg, modelBelt);
-        }
-        else if (slot == EquipmentSlot.FEET) {
-            return ImmutableList.of(modelLeft_foot, modelRight_foot);
-        }
-        else return ImmutableList.of();
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
-//        super.renderToBuffer(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        matrixStack.pushPose();
-
-        if(entity != null) {
-            EntityModel entityModel = ((LivingEntityRenderer<?, ?>) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity)).getModel();
-            if(entityModel instanceof HumanoidModel livingModel){
-                this.attackTime = livingModel.attackTime;
-                this.riding = livingModel.riding;
-                this.young = livingModel.young;
-                this.leftArmPose = livingModel.leftArmPose;
-                this.rightArmPose = livingModel.rightArmPose;
-                this.crouching = livingModel.crouching;
-                this.head.copyFrom(livingModel.head);
-                this.body.copyFrom(livingModel.body);
-                this.rightArm.copyFrom(livingModel.rightArm);
-                this.leftArm.copyFrom(livingModel.leftArm);
-                this.rightLeg.copyFrom(livingModel.rightLeg);
-                this.leftLeg.copyFrom(livingModel.leftLeg);
+    private void setPartVisibility(EquipmentSlot slot) {
+        setAllVisible(false);
+        switch (slot) {
+            case HEAD -> {
+                head.visible = true;
+                hat.visible = true;
             }
-
-
+            case CHEST -> {
+                body.visible = true;
+                rightArm.visible = true;
+                leftArm.visible = true;
+            }
+            case LEGS -> {
+                body.visible = true;
+                rightLeg.visible = true;
+                leftLeg.visible = true;
+            }
+            case FEET -> {
+                rightLeg.visible = true;
+                leftLeg.visible = true;
+            }
         }
-
-        if (this.slot == EquipmentSlot.HEAD) {
-            this.modelHead.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        }
-        else if (this.slot == EquipmentSlot.CHEST) {
-            this.modelBody.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            this.modelRight_arm.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            this.modelLeft_arm.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-
-        } else if (this.slot == EquipmentSlot.LEGS) {
-            this.modelBelt.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            this.modelRight_leg.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            this.modelLeft_leg.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-
-        } else if (this.slot == EquipmentSlot.FEET) {
-            this.modelRight_foot.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            this.modelLeft_foot.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        }
-        matrixStack.popPose();
-    }
-
-    public void copyFromDefault(HumanoidModel model) {
-        modelBody.copyFrom(model.body);
-        modelBelt.copyFrom(model.body);
-        modelHead.copyFrom(model.head);
-        modelLeft_arm.copyFrom(model.leftArm);
-        modelRight_arm.copyFrom(model.rightArm);
-        modelLeft_leg.copyFrom(leftLeg);
-        modelRight_leg.copyFrom(rightLeg);
-        modelLeft_foot.copyFrom(leftLeg);
-        modelRight_foot.copyFrom(rightLeg);
-        this.riding = model.riding;
-        this.leftArmPose = model.leftArmPose;
-        this.rightArmPose = model.rightArmPose;
-        this.attackTime = model.attackTime;
     }
 
 }

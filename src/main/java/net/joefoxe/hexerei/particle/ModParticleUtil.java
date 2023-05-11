@@ -30,8 +30,11 @@ public class ModParticleUtil {
         event.register(ModParticleTypes.BROOM_6.get(), BroomParticle.Factory::new);
         event.register(ModParticleTypes.FOG.get(), FogParticle.Factory::new);
         event.register(ModParticleTypes.EXTINGUISH.get(), ExtinguishParticle.Factory::new);
-//        Minecraft.getInstance().particleEngine.register(ModParticleTypes.DOWSING_ROD_1.get(), DowsingRodParticle.Factory::new);
-//        Minecraft.getInstance().particleEngine.register(ModParticleTypes.DOWSING_ROD_2.get(), DowsingRod2Particle.Factory::new);
+        event.register(ModParticleTypes.MOON_BRUSH_1.get(), MoonBroomParticle.Factory::new);
+        event.register(ModParticleTypes.MOON_BRUSH_2.get(), MoonBroomParticle.Factory::new);
+        event.register(ModParticleTypes.MOON_BRUSH_3.get(), MoonBroomParticle.Factory::new);
+        event.register(ModParticleTypes.MOON_BRUSH_4.get(), MoonBroomParticle.Factory::new);
+        event.register(ModParticleTypes.STAR_BRUSH.get(), StarBroomParticle.Provider::new);
     }
 
 

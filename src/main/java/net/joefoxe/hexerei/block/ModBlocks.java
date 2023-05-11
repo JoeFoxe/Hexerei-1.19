@@ -849,6 +849,24 @@ public class ModBlocks {
 	public static final RegistryObject<CuttingCrystal> CUTTING_CRYSTAL = registerBlockNoItem("cutting_crystal",
 			() -> new CuttingCrystal(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).requiresCorrectToolForDrops().explosionResistance(8f)));
 
+	public static final RegistryObject<BroomStandWall> MAHOGANY_BROOM_STAND_WALL = registerBlockNoItem("mahogany_broom_stand_wall",
+			() -> new BroomStandWall(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).noOcclusion().explosionResistance(2f)));
+
+	public static final RegistryObject<BroomStand> MAHOGANY_BROOM_STAND = registerBlockNoItem("mahogany_broom_stand",
+			() -> new BroomStand(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).noOcclusion().explosionResistance(2f)));
+
+	public static final RegistryObject<BroomStandWall> WILLOW_BROOM_STAND_WALL = registerBlockNoItem("willow_broom_stand_wall",
+			() -> new BroomStandWall(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).noOcclusion().explosionResistance(2f)));
+
+	public static final RegistryObject<BroomStand> WILLOW_BROOM_STAND = registerBlockNoItem("willow_broom_stand",
+			() -> new BroomStand(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).noOcclusion().explosionResistance(2f)));
+
+	public static final RegistryObject<BroomStandWall> WITCH_HAZEL_BROOM_STAND_WALL = registerBlockNoItem("witch_hazel_broom_stand_wall",
+			() -> new BroomStandWall(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).noOcclusion().explosionResistance(2f)));
+
+	public static final RegistryObject<BroomStand> WITCH_HAZEL_BROOM_STAND = registerBlockNoItem("witch_hazel_broom_stand",
+			() -> new BroomStand(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).noOcclusion().explosionResistance(2f)));
+
 	public static final RegistryObject<Altar> BOOK_OF_SHADOWS_ALTAR = registerBlock("book_of_shadows_altar",
 			() -> new Altar(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).strength(2).explosionResistance(2f)));
 
@@ -1141,11 +1159,11 @@ public class ModBlocks {
 // WITCH HAZEL
 
 
-	public static final RegistryObject<WillowLog> WITCH_HAZEL_LOG = registerBlock("witch_hazel_log",
-			() -> new WillowLog(BlockBehaviour.Properties.copy(Blocks.OAK_LOG)));
+	public static final RegistryObject<WitchHazelLog> WITCH_HAZEL_LOG = registerBlock("witch_hazel_log",
+			() -> new WitchHazelLog(BlockBehaviour.Properties.copy(Blocks.OAK_LOG)));
 
-	public static final RegistryObject<WillowWood> WITCH_HAZEL_WOOD = registerBlock("witch_hazel_wood",
-			() -> new WillowWood(BlockBehaviour.Properties.copy(Blocks.OAK_WOOD)));
+	public static final RegistryObject<WitchHazelWood> WITCH_HAZEL_WOOD = registerBlock("witch_hazel_wood",
+			() -> new WitchHazelWood(BlockBehaviour.Properties.copy(Blocks.OAK_WOOD)));
 
 	public static final RegistryObject<RotatedPillarBlock> STRIPPED_WITCH_HAZEL_LOG = registerBlock("stripped_witch_hazel_log",
 			() -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.STRIPPED_OAK_LOG)));

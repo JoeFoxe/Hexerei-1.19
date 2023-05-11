@@ -46,7 +46,9 @@ public class BroomSyncRotation {
 
 
             if (!world.getEntity(packet.sourceId).isControlledByLocalInstance())
-                ((BroomEntity) world.getEntity(packet.sourceId)).setRotation(packet.rotation);
+                if((world.getEntity(packet.sourceId)) instanceof BroomEntity broom){
+                    broom.setRotation(packet.rotation);
+                }
         });
         ctx.get().setPacketHandled(true);
     }

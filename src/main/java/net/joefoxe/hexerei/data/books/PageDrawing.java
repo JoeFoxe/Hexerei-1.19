@@ -177,7 +177,7 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    public static void renderItem(BookOfShadowsAltarTile tileEntityIn, @NotNull BookItemsAndFluids itemStackElement, PoseStack matrixStackIn, MultiBufferSource.BufferSource buffer, float xIn, float yIn, float zLevel, int combinedLight, int combinedOverlay, PageOn pageOn, boolean isItem) {
+    public static void renderItem(BookOfShadowsAltarTile tileEntityIn, @NotNull BookItemsAndFluids itemStackElement, PoseStack matrixStackIn, MultiBufferSource buffer, float xIn, float yIn, float zLevel, int combinedLight, int combinedOverlay, PageOn pageOn, boolean isItem) {
 
         ItemStack itemStack = itemStackElement.item;
 
@@ -708,12 +708,12 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawPage(BookPage page, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource.BufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem, ItemTransforms.TransformType transformType) throws CommandSyntaxException {
+    public void drawPage(BookPage page, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem, ItemTransforms.TransformType transformType) throws CommandSyntaxException {
         drawPage(page, tileEntityIn, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, pageOn, isItem, transformType, -1);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawPage(BookPage page, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource.BufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem, ItemTransforms.TransformType transformType, int pageNum) throws CommandSyntaxException {
+    public void drawPage(BookPage page, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem, ItemTransforms.TransformType transformType, int pageNum) throws CommandSyntaxException {
 
         if (page != null) {
 
@@ -1269,7 +1269,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawLivingEntity(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource.BufferSource bufferIn, float scale, float xIn, float yIn, float rot, int p_98853_, float p_98854_, float p_98855_, LivingEntity livingEntity, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem) {
+    public void drawLivingEntity(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource bufferIn, float scale, float xIn, float yIn, float rot, int p_98853_, float p_98854_, float p_98855_, LivingEntity livingEntity, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem) {
         matrixStackIn.pushPose();
 
         if (livingEntity instanceof TamableAnimal tamableAnimal && !tamableAnimal.isInSittingPose()) {
@@ -1330,7 +1330,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawEntity(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource.BufferSource bufferIn, float scale, float xIn, float yIn, float rot, int p_98853_, float p_98854_, float p_98855_, Entity entity, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem) {
+    public void drawEntity(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStackIn, MultiBufferSource bufferIn, float scale, float xIn, float yIn, float rot, int p_98853_, float p_98854_, float p_98855_, Entity entity, int combinedLightIn, int combinedOverlayIn, PageOn pageOn, boolean isItem) {
         matrixStackIn.pushPose();
 
         if (pageOn == PageOn.LEFT_PAGE)
@@ -1372,12 +1372,12 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawPages(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, int light, int overlay, float partialTicks) throws CommandSyntaxException {
+    public void drawPages(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, int light, int overlay, float partialTicks) throws CommandSyntaxException {
         drawPages(tileEntityIn, matrixStack, bufferSource, light, overlay, false, ItemTransforms.TransformType.NONE, partialTicks);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawPages(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, int light, int overlay, boolean isItem, ItemTransforms.TransformType transformType, float partialTicks) throws CommandSyntaxException {
+    public void drawPages(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, int light, int overlay, boolean isItem, ItemTransforms.TransformType transformType, float partialTicks) throws CommandSyntaxException {
         this.tick++;
 
         if (ClientProxy.keys == null)
@@ -1570,12 +1570,12 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawBaseButtons(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, int light, int overlay, boolean drawNext, boolean drawBack, int chapter, int page, boolean isItem) {
+    public void drawBaseButtons(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, int light, int overlay, boolean drawNext, boolean drawBack, int chapter, int page, boolean isItem) {
         drawBaseButtons(tileEntityIn, matrixStack, bufferSource, light, overlay, drawNext, drawBack, chapter, page, isItem, ItemTransforms.TransformType.NONE, false);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawBaseButtons(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, int light, int overlay, boolean drawNext, boolean drawBack, int chapter, int page, boolean isItem, ItemTransforms.TransformType transformType, boolean fullyExtended) {
+    public void drawBaseButtons(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, int light, int overlay, boolean drawNext, boolean drawBack, int chapter, int page, boolean isItem, ItemTransforms.TransformType transformType, boolean fullyExtended) {
 
         Player playerIn = null;
         if (tileEntityIn.getLevel() != null && tileEntityIn.getLevel().isClientSide)
@@ -2377,7 +2377,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawItemInSlot(BookOfShadowsAltarTile tileEntityIn, BookItemsAndFluids bookItemStackInSlot, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float xIn, float yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
+    public void drawItemInSlot(BookOfShadowsAltarTile tileEntityIn, BookItemsAndFluids bookItemStackInSlot, PoseStack matrixStack, MultiBufferSource bufferSource, float xIn, float yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
         if (bookItemStackInSlot.type.equals("item") || bookItemStackInSlot.type.equals("tag")) {
             if (bookItemStackInSlot.show_slot)
                 drawSlot(tileEntityIn, bookItemStackInSlot.item, matrixStack, bufferSource, xIn, yIn, 0, light, overlay, pageOn, isItem);
@@ -3821,7 +3821,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawSlot(BookOfShadowsAltarTile tileEntityIn, ItemStack stack, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float xIn, float yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
+    public void drawSlot(BookOfShadowsAltarTile tileEntityIn, ItemStack stack, PoseStack matrixStack, MultiBufferSource bufferSource, float xIn, float yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
 
         matrixStack.pushPose();
 
@@ -3877,7 +3877,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawFluidInSlot(BookOfShadowsAltarTile tileEntityIn, @NotNull BookItemsAndFluids bookItemsAndFluids, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float xIn, float yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
+    public void drawFluidInSlot(BookOfShadowsAltarTile tileEntityIn, @NotNull BookItemsAndFluids bookItemsAndFluids, PoseStack matrixStack, MultiBufferSource bufferSource, float xIn, float yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
 
         matrixStack.pushPose();
         FluidStack stack = bookItemsAndFluids.fluid;
@@ -3939,7 +3939,7 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    private void drawFluid(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, final int tiledWidth, final int tiledHeight, FluidStack fluidStack, int capacity, int light, int overlay, float x_offset, float y_offset, float width, float height) {
+    private void drawFluid(PoseStack poseStack, MultiBufferSource bufferSource, final int tiledWidth, final int tiledHeight, FluidStack fluidStack, int capacity, int light, int overlay, float x_offset, float y_offset, float width, float height) {
         Fluid fluid = fluidStack.getFluid();
         if (fluid == null) {
             return;
@@ -3969,7 +3969,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static void drawTiledSprite(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, final int tiledWidth, final int tiledHeight, int color, int scaledAmount, TextureAtlasSprite sprite, int capacity, int amount, int light, int overlay, float x_offset, float y_offset, float width, float height) {
+    private static void drawTiledSprite(PoseStack poseStack, MultiBufferSource bufferSource, final int tiledWidth, final int tiledHeight, int color, int scaledAmount, TextureAtlasSprite sprite, int capacity, int amount, int light, int overlay, float x_offset, float y_offset, float width, float height) {
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         setGLColorFromInt(color);
 
@@ -4016,7 +4016,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static void drawTextureWithMasking(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, int capacity, int amount, float xCoord, float yCoord, TextureAtlasSprite textureSprite, int color, int maskTop, int maskRight, float zLevel, int light, int overlay, float x_offset, float y_offset, float width, float height) {
+    private static void drawTextureWithMasking(PoseStack poseStack, MultiBufferSource bufferSource, int capacity, int amount, float xCoord, float yCoord, TextureAtlasSprite textureSprite, int color, int maskTop, int maskRight, float zLevel, int light, int overlay, float x_offset, float y_offset, float width, float height) {
         float uMin = textureSprite.getU0();
         float uMax = textureSprite.getU1();
         float vMin = textureSprite.getV0();
@@ -4072,7 +4072,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawTooltipImage(ItemStack stack, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float zLevel, int light, int overlay, boolean isItem) {
+    public void drawTooltipImage(ItemStack stack, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, boolean isItem) {
 
         matrixStack.pushPose();
 
@@ -4149,7 +4149,7 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    public void drawTooltipText(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float zLevel, int light, int overlay, boolean isItem) {
+    public void drawTooltipText(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, boolean isItem) {
 
         matrixStack.pushPose();
 
@@ -4205,7 +4205,7 @@ public class PageDrawing {
             ClientTooltipComponent clientTooltipComponent;
             int l;
             for (Iterator<ClientTooltipComponent> var8 = clientTooltipComponentList.iterator(); var8.hasNext(); j += clientTooltipComponent.getHeight()) {
-                clientTooltipComponent = (ClientTooltipComponent) var8.next();
+                clientTooltipComponent = var8.next();
                 l = clientTooltipComponent.getWidth(preEvent.getFont());
                 if (l > i) {
                     i = l;
@@ -4333,7 +4333,7 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    public void drawBookmark(BookImage bookImage, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float zLevel, float rotate, int light, int overlay, PageOn pageOn, int color, boolean isItem, ItemTransforms.TransformType transformType) {
+    public void drawBookmark(BookImage bookImage, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, float zLevel, float rotate, int light, int overlay, PageOn pageOn, int color, boolean isItem, ItemTransforms.TransformType transformType) {
 
         matrixStack.pushPose();
 
@@ -4435,12 +4435,12 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    public void drawImage(BookImage bookImage, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
+    public void drawImage(BookImage bookImage, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
         drawImage(bookImage, tileEntityIn, matrixStack, bufferSource, zLevel, light, overlay, pageOn, -1, isItem, ItemTransforms.TransformType.NONE);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawImage(BookImage bookImage, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, int color, boolean isItem, ItemTransforms.TransformType transformType) {
+    public void drawImage(BookImage bookImage, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, int color, boolean isItem, ItemTransforms.TransformType transformType) {
 
         matrixStack.pushPose();
 
@@ -4712,7 +4712,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawTitle(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, int light, int overlay, PageOn pageOn, boolean isItem) {
+    public void drawTitle(BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, int light, int overlay, PageOn pageOn, boolean isItem) {
 
         matrixStack.pushPose();
 
@@ -4770,7 +4770,7 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    public void drawCharacter(char character, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float mouseX, float mouseY, int xIn, int yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
+    public void drawCharacter(char character, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, float mouseX, float mouseY, int xIn, int yIn, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
 
 
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(ClientProxy.TEXT.get(character));
@@ -4838,7 +4838,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawString(BookParagraph bookParagraph, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource.BufferSource bufferSource, float mouseX, float mouseY, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
+    public void drawString(BookParagraph bookParagraph, BookOfShadowsAltarTile tileEntityIn, PoseStack matrixStack, MultiBufferSource bufferSource, float mouseX, float mouseY, float zLevel, int light, int overlay, PageOn pageOn, boolean isItem) {
 
         MutableComponent pageText = bookParagraph.translatablePassage;
         int wordNumber = -1;
