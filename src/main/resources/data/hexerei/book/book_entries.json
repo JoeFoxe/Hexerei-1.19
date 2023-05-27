@@ -324,6 +324,20 @@
         },
 
         {
+          "page_location": "book_pages/items/items_moon_dust_brush_1"
+        },
+        {
+          "page_location": "book_pages/items/items_moon_dust_brush_2"
+        },
+
+        {
+          "page_location": "book_pages/items/items_wet_moon_dust_brush_1"
+        },
+        {
+          "page_location": "book_pages/items/items_wet_moon_dust_brush_2"
+        },
+
+        {
           "page_location": "book_pages/items/items_crow_flute_1"
         },
         {

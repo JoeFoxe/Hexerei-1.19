@@ -499,8 +499,8 @@
   "book.hexerei.items_book_of_shadows_1.passage_1": "Book of Shadows",
   "book.hexerei.items_book_of_shadows_1.passage_2": "  Yes the book is talking about itself, but you are going need this in the witching world.\n\n The cover of the book is dyed with the dye used in crafting. The corners of the book can also be dyed after crafting by placing it back into the grid with another dye.",
 
-  "book.hexerei.items_altar_1.passage_1": "Altar",
-  "book.hexerei.items_altar_1.passage_2": "  The Altar will be used for not just reading the book on, but can be used for decoration as you can place any item down on the altar, and a special surprise for anything that can be potted that is placed onto the altar.",
+  "book.hexerei.items_altar_1.passage_1": "Altars",
+  "book.hexerei.items_altar_1.passage_2": "  The Altar is not just for reading this book on. It can be used to display any item you place onto it, with a special surprise for anything that can be potted.\n\n  They can be crafted out of willow and witch hazel as well.",
 
   "book.hexerei.items_drying_rack_1.passage_1": "Drying Rack",
   "book.hexerei.items_drying_rack_1.passage_2": "  These are used for drying items that have a recipe to be dried. They are quite useful for obtaining early game leather by drying rotten flesh into leather. To place items into a drying rack simply right click with the item stack in hand.",
@@ -536,12 +536,12 @@
   "book.hexerei.items_blood_bottle_1.passage_2": "  To acquire the blood you first need a Mixing Cauldron with a Blood Sigil inside, then simply jump in the cauldron 3 times to drain enough blood for one bottle to scoop it out. To scoop it out simply right click the cauldron with an empty bottle.",
 
   "book.hexerei.items_willow_broom_1.passage_1": "Willow Broom",
-  "book.hexerei.items_willow_broom_1.passage_2": "  A witches main tool of transportation, the broom. So far there are two types of brooms, this one being the lesser of the two. These can be upgraded in 3 different slots, Misc, Satchel, and Brush. A brush is what powers the brooms flight and comes with every fresh broom made.",
+  "book.hexerei.items_willow_broom_1.passage_2": "  A witches main tool of transportation, the broom. So far there are three types of brooms, this one being the slowest of them. These can be upgraded in 3 different slots, Misc, Satchel, and Brush. A brush is what powers the brooms flight and comes with every fresh broom made.",
   "book.hexerei.items_willow_broom_3.passage_1": "  To access the brooms inventory simply crouch and right click while the broom is in the world. While flying the broom, the brush gets damaged and can break. So, the witch must come prepared and craft some additional brushes to fuel the broom.",
   "book.hexerei.items_willow_broom_4.passage_1": "  The best way is to stash the extra brushes within the broom's satchel. Adding a small satchel will add 9 extra spaces to hold items within, and each tier above will hold an additional 9 spaces.",
 
   "book.hexerei.items_mahogany_broom_1.passage_1": "Mahogany Broom",
-  "book.hexerei.items_mahogany_broom_1.passage_2": "  The faster of the two brooms. The mahogany broom as an item also has fire resistance so it cannot be lost in lava or burn to fire. Although, it can break when flying the broom into fire, unless the broom has a netherite tip attachment.",
+  "book.hexerei.items_mahogany_broom_1.passage_2": "  The fastest of the three brooms. The mahogany broom as an item also has fire resistance so it cannot be lost in lava or burn to fire. Although, it can break when flying the broom into fire, unless the broom has a netherite tip attachment.",
 
   "book.hexerei.items_gold_rings_1.passage_1": "Gold Rings",
   "book.hexerei.items_gold_rings_1.passage_2": "  The first broom attachment made, there will probably be some sort of effects to these little trinkets later but for now it is just a cosmetic addition to the broom. To use open up a broom's menu and place inside the Misc slot.",
@@ -576,6 +576,12 @@
 
   "book.hexerei.items_wet_herb_enhanced_broom_brush_1.passage_1": "Wet Enhanced Broom Brush",
   "book.hexerei.items_wet_herb_enhanced_broom_brush_1.passage_2": "  Just like the normal Wet Broom Brush this is made in a cauldron and must be dried before using.",
+
+  "book.hexerei.items_moon_dust_brush_1.passage_1": "Moon Dust Brush",
+  "book.hexerei.items_moon_dust_brush_1.passage_2": "  This Broom Brush makes the broom faster, especially during the full moon. It is otherwise the same as the Enhanced Broom Brush.",
+
+  "book.hexerei.items_wet_moon_dust_brush_1.passage_1": "Wet Moon Dust Brush",
+  "book.hexerei.items_wet_moon_dust_brush_1.passage_2": "  Like the other brushes, the Moon Dust Brush is made in the mixing cauldron and must be dried before use.",
 
   "book.hexerei.items_crow_flute_1.passage_1": "Crow Flute",
   "book.hexerei.items_crow_flute_1.passage_2": "  The Crow Flute is an essential item for controlling your crow companions! .",

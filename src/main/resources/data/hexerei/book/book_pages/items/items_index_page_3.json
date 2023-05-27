@@ -215,6 +215,18 @@
       "x": 1,
       "y": 6,
       "name": "hexerei:reading_glasses"
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 6,
+      "name": "hexerei:moon_dust_brush"
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 6,
+      "name": "hexerei:wet_moon_dust_brush"
     }
   ]
 }
