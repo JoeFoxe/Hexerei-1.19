@@ -461,19 +461,20 @@
 
 
   "book.hexerei.items_index_page_1.passage_1": "- Items -",
-  "book.hexerei.items_index_page_1.passage_2": "  This chapter will be all about items and how you obtain them and what you do with them. If you click on another item on a page and if it has a page attached to that item the book will quickly turn it's pages there!",
+  "book.hexerei.items_index_page_1.passage_2": "  This chapter is all about the items in the witching world, how you obtain them, and what you do with them. \n\n  Click an item on the following index pages, or anywhere you see an item displayed, to flip to the entry on that item.",
 
-  "book.hexerei.items_index_page_2.passage_1": "Item Index Page",
+  "book.hexerei.items_index_page_2.passage_1": "Item Index",
 
   "book.hexerei.items_index_page_3.passage_1": "",
 
   "book.hexerei.items_mixing_cauldron_1.passage_1": "Mixing Cauldron",
-  "book.hexerei.items_mixing_cauldron_1.passage_2": "  The Mixing Cauldron is one of the main tools in the witches arsenal.",
-  "book.hexerei.items_mixing_cauldron_3.passage_1": "  You are able to toss items into the cauldron from the top to fill the slots as well as use any item transporting block (ie. hoppers) to pump items in. It also has a GUI that you can access where you can place and take items.",
-  "book.hexerei.items_mixing_cauldron_4.passage_1": "  You can click the center to access the JEI recipes. While scrolling through JEI you can now click the transfer button to transfer over your items for easy crafting.\n\n  The slot on the left is for Sigils, right now its only one which is the Blood Sigil. ",
-  "book.hexerei.items_mixing_cauldron_5.passage_1": "  The cauldron can hold any kind of fluid up to two buckets. Fluid can be pumped in with other mods pipes. You can also use bottles on the base liquids and ones from this mod in the cauldron. \n  Although it seems like it would burn items when in lava but in fact they do stay safe.",
-  "book.hexerei.items_mixing_cauldron_6.passage_1": "  All of these fluids are used in some way in the cauldron. Along with the fluid being used in crafting inside the cauldron it can also be used by the Dipper item which is placed on top of the cauldron. ",
+  "book.hexerei.items_mixing_cauldron_1.passage_2": "  The Mixing Cauldron is one of the main tools in the witch's arsenal, mixing up all sorts of crafts and potions.",
+  "book.hexerei.items_mixing_cauldron_3.passage_1": "  Items can be thrown onto the cauldron from the top to fill its slots, or automatically filled with any item transporting block (i.e. hoppers, pipes from other mods). It also has a GUI for putting items in manually.",
+  "book.hexerei.items_mixing_cauldron_4.passage_1": "  You can click the center of the GUI to view all the recipes, if JEI is installed. While scrolling through JEI, you can click the + button to transfer over your items for easy crafting.\n\n  The slot on the top left is for Sigils, such as the Blood Sigil. ",
+  "book.hexerei.items_mixing_cauldron_5.passage_1": "  The cauldron can hold up to two buckets of any kind of fluid. Fluid can be pumped in with other mods' pipes, or you can use bottles or buckets on the cauldron. \n  Some recipes also require a heat source under the cauldron, like fire, lava, campfires, or magma blocks.",
+  "book.hexerei.items_mixing_cauldron_6.passage_1": "  The cauldron has other uses when certain attachments are put on it. The Dipper can make candles when the cauldron is full of tallow, or can collect blood with a Blood Sigil. Click the items below for more info. ",
   "book.hexerei.items_mixing_cauldron_6.passage_2": "Attachments: ",
+  "book.hexerei.items_mixing_cauldron_7.passage_1": "  The mixing cauldron can brew up to two buckets worth of potions at a time, when heated.\n  To do this, fill it with water, then add two of the ingredient needed to make the potion. For example, making Awkward Potion requires two nether wart.",
 
   "book.hexerei.items_coffer_1.passage_1": "Coffer",
   "book.hexerei.items_coffer_1.passage_2": "  The Coffer is a very useful storage device for witches, especially ones who have some crow friends.",
