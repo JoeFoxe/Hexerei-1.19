@@ -93,7 +93,7 @@ public abstract class HexereiLightEntityMixin implements LambHexereiDynamicLight
             if (this.isRemoved()) {
                 this.setHexereiDynamicLightEnabled(false);
             } else {
-                this.dynamicLightTick();
+                this.dynamicLightTickH();
                 LightManager.updateLightTracking(this);
             }
         }
@@ -116,37 +116,37 @@ public abstract class HexereiLightEntityMixin implements LambHexereiDynamicLight
     }
 
     @Override
-    public double getDynamicLightX() {
+    public double getDynamicLightXH() {
         return this.getX();
     }
 
     @Override
-    public double getDynamicLightY() {
+    public double getDynamicLightYH() {
         return this.getEyeY();
     }
 
     @Override
-    public double getDynamicLightZ() {
+    public double getDynamicLightZH() {
         return this.getZ();
     }
 
     @Override
-    public Level getDynamicLightWorld() {
+    public Level getDynamicLightWorldH() {
         return this.level;
     }
 
     @Override
-    public void resetDynamicLight() {
+    public void resetDynamicLightH() {
         this.lambdynlights$lastLuminance = 0;
     }
 
     @Override
-    public boolean shouldUpdateDynamicLight() {
+    public boolean shouldUpdateDynamicLightH() {
         return LightManager.shouldUpdateDynamicLight() && DynamicLightUtil.couldGiveLight((Entity) (Object) this);
     }
 
     @Override
-    public void dynamicLightTick() {
+    public void dynamicLightTickH() {
         lambdynlights$luminance = 0;
         int luminance = DynamicLightUtil.lightForEntity((Entity) (Object) this);
         if (luminance > this.lambdynlights$luminance)
@@ -154,19 +154,19 @@ public abstract class HexereiLightEntityMixin implements LambHexereiDynamicLight
     }
 
     @Override
-    public int getLuminance() {
+    public int getLuminanceH() {
         return this.lambdynlights$luminance;
     }
 
     @Override
-    public boolean lambdynlights$updateDynamicLight(LevelRenderer renderer) {
-        if (!this.shouldUpdateDynamicLight())
+    public boolean lambdynlights$updateDynamicLightH(LevelRenderer renderer) {
+        if (!this.shouldUpdateDynamicLightH())
             return false;
         double deltaX = this.getX() - this.lambdynlights$prevX;
         double deltaY = this.getY() - this.lambdynlights$prevY;
         double deltaZ = this.getZ() - this.lambdynlights$prevZ;
 
-        int luminance = this.getLuminance();
+        int luminance = this.getLuminanceH();
 
         if (Math.abs(deltaX) > 0.1D || Math.abs(deltaY) > 0.1D || Math.abs(deltaZ) > 0.1D || luminance != this.lambdynlights$lastLuminance) {
             this.lambdynlights$prevX = this.getX();
@@ -203,7 +203,7 @@ public abstract class HexereiLightEntityMixin implements LambHexereiDynamicLight
                 }
             }
             // Schedules the rebuild of removed chunks.
-            this.lambdynlights$scheduleTrackedChunksRebuild(renderer);
+            this.lambdynlights$scheduleTrackedChunksRebuildH(renderer);
             // Update tracked lit chunks.
             this.lambdynlights$trackedLitChunkPos = newPos;
             return true;
@@ -212,7 +212,7 @@ public abstract class HexereiLightEntityMixin implements LambHexereiDynamicLight
     }
 
     @Override
-    public void lambdynlights$scheduleTrackedChunksRebuild(LevelRenderer renderer) {
+    public void lambdynlights$scheduleTrackedChunksRebuildH(LevelRenderer renderer) {
         if (Minecraft.getInstance().level == this.level)
             for (long pos : this.lambdynlights$trackedLitChunkPos) {
                 LightManager.scheduleChunkRebuild(renderer, pos);

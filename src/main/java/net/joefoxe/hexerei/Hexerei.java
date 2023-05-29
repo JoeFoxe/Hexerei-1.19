@@ -13,7 +13,9 @@ import net.joefoxe.hexerei.block.ModWoodType;
 import net.joefoxe.hexerei.client.renderer.CrowPerchRenderer;
 import net.joefoxe.hexerei.client.renderer.entity.BroomType;
 import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
-import net.joefoxe.hexerei.command.ToggleLightCommand;
+import net.joefoxe.hexerei.compat.CurioCompat;
+import net.joefoxe.hexerei.compat.GlassesCurioRender;
+import net.joefoxe.hexerei.compat.LightManagerCompat;
 import net.joefoxe.hexerei.config.HexConfig;
 import net.joefoxe.hexerei.container.ModContainers;
 import net.joefoxe.hexerei.data.books.PageDrawing;
@@ -68,13 +70,11 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -96,8 +96,9 @@ import static net.joefoxe.hexerei.util.ClientProxy.MODEL_SWAPPER;
 public class Hexerei {
 
 	public static final String MOD_ID = "hexerei";
-	private static final Lazy<Registrate> REGISTRATE = Lazy.of(() -> new HexRegistrate(MOD_ID)
-	);
+    private static final Lazy<Registrate> REGISTRATE = Lazy.of(() -> new HexRegistrate(MOD_ID)
+    );
+    public static boolean curiosLoaded = false;
 
 	static class HexRegistrate extends Registrate {
 		protected HexRegistrate(String modid) {
@@ -205,17 +206,19 @@ public class Hexerei {
 		eventBus.addListener(this::doClientStuff);
 
 
-		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MODEL_SWAPPER.registerListeners(eventBus));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MODEL_SWAPPER.registerListeners(eventBus));
 
 //        forgeEventBus.addListener(EventPriority.NORMAL, this::addDimensionalSpacing);
 //        forgeEventBus.addListener(EventPriority.NORMAL, WitchHutStructure::setupStructureSpawns);
 
 
-		// Register ourselves for server and other game events we are interested in
-		MinecraftForge.EVENT_BUS.register(this);
+        // Register ourselves for server and other game events we are interested in
+        MinecraftForge.EVENT_BUS.register(this);
 
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::gatherData);
-	}
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::gatherData);
+
+        curiosLoaded = ModList.get().isLoaded("curios");
+    }
 
 	public void gatherData(GatherDataEvent event) {
 		DataGenerator gen = event.getGenerator();
@@ -337,6 +340,7 @@ public class Hexerei {
 
 		});
 
+        if (curiosLoaded) GlassesCurioRender.register();
 
 	}
 
@@ -390,11 +394,7 @@ public class Hexerei {
 //    }
 
 	private void enqueueIMC(final InterModEnqueueEvent event) {
-		// some example code to dispatch IMC to another mod
-		InterModComms.sendTo("hexerei", "helloworld", () -> {
-			LOGGER.info("Hello world from the MDK");
-			return "Hello world";
-		});
+        if (curiosLoaded) CurioCompat.sendIMC();
 	}
 
 	private void processIMC(final InterModProcessEvent event) {
@@ -402,16 +402,18 @@ public class Hexerei {
 	}
 
 	private void loadComplete(final FMLLoadCompleteEvent event) {
-		MinecraftForge.EVENT_BUS.register(new SageBurningPlateEvent());
-		MinecraftForge.EVENT_BUS.register(new WitchArmorEvent());
-		MinecraftForge.EVENT_BUS.register(new CrowFluteEvent());
-		MinecraftForge.EVENT_BUS.register(new CrowWhitelistEvent());
+        MinecraftForge.EVENT_BUS.register(new SageBurningPlateEvent());
+        MinecraftForge.EVENT_BUS.register(new WitchArmorEvent());
+        MinecraftForge.EVENT_BUS.register(new CrowFluteEvent());
+        MinecraftForge.EVENT_BUS.register(new CrowWhitelistEvent());
 
-		MinecraftForge.EVENT_BUS.register(new PageDrawing());
-		glassesZoomKeyPressEvent = new GlassesZoomKeyPressEvent();
-		MinecraftForge.EVENT_BUS.register(glassesZoomKeyPressEvent);
+        MinecraftForge.EVENT_BUS.register(new PageDrawing());
+        glassesZoomKeyPressEvent = new GlassesZoomKeyPressEvent();
+        MinecraftForge.EVENT_BUS.register(glassesZoomKeyPressEvent);
 
-	}
+        if (ModList.get().isLoaded("ars_nouveau")) LightManagerCompat.fallbackToArs();
+
+    }
 
 
 }

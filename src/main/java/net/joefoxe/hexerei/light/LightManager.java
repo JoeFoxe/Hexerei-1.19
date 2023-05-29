@@ -15,6 +15,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +26,7 @@ import java.util.function.Function;
 
 /**
  * This code is taken from LambDynamicLights, an MIT fabric mod: <a href="https://github.com/LambdAurora/LambDynamicLights">Github Link</a>
+ * Adapted by BaileyHoll for Ars Nouveau and then by JoeFoxe for Hexerei
  */
 public class LightManager {
 
@@ -38,46 +40,10 @@ public class LightManager {
 
     public static void init() {
 
-//        register(EntityType.PLAYER, (p -> {
-//            NonNullList<ItemStack> list = p.inventory.items;
-//            for (int i = 0; i < 9; i++) {
-//                ItemStack jar = list.get(i);
-//                if (jar.getItem() == ItemsRegistry.JAR_OF_LIGHT.asItem()) {
-//                    return 15;
-//                }
-//            }
-//            return p != Hexerei.proxy.getPlayer() && LightManager.jarHoldingEntityList.contains(p.getId()) ? 15 : 0;
-//        }));
-
         register(EntityType.FALLING_BLOCK, (p) -> {
             return p.getBlockState().getLightEmission(p.level, p.blockPosition());
         });
 
-//        register(ModEntities.ENCHANTED_FALLING_BLOCK.get(), p -> {
-//            return p.getBlockState().getLightEmission(p.level, p.blockPosition());
-//        });
-//        register(ModEntities.ENCHANTED_MAGE_BLOCK.get(), p -> {
-//            return p.getBlockState().getLightEmission(p.level, p.blockPosition());
-//        });
-//        register(ModEntities.ENTITY_FLYING_ITEM.get(), (p -> 10));
-//        register(ModEntities.ENTITY_FOLLOW_PROJ.get(), (p -> 10));
-//        register(ModEntities.SPELL_PROJ.get(), (p -> 15));
-//        register(ModEntities.ORBIT_SPELL.get(), (p -> 15));
-//        register(ModEntities.LINGER_SPELL.get(), (p -> 15));
-//        register(ModEntities.WALL_SPELL.get(), (p -> 15));
-//        register(ModEntities.STARBUNCLE_TYPE.get(), (p -> {
-//            if (p.level.getBrightness(LightLayer.BLOCK, p.blockPosition()) < 6) {
-//                return 10;
-//            }
-//            return 0;
-//        }));
-//
-//        register(ModEntities.ENTITY_FAMILIAR_STARBUNCLE.get(), (p -> {
-//            if (p.level.getBrightness(LightLayer.BLOCK, p.blockPosition()) < 6) {
-//                return 10;
-//            }
-//            return 0;
-//        }));
         register(EntityType.ENDERMAN, (enderMan -> {
 
             if (enderMan.getCarriedBlock() != null) {
@@ -87,42 +53,33 @@ public class LightManager {
         }));
 
         register(EntityType.ITEM, (p) -> DynamicLightUtil.fromItemLike((p.getItem().getItem())));
-        register(ModEntityTypes.BROOM.get(), (p) -> {
-            if(p.getModule(BroomEntity.BroomSlot.BRUSH).getItem() instanceof BroomBrushItem brushItem) {
-                if(brushItem.shouldGlow(p.level, p.getModule(BroomEntity.BroomSlot.BRUSH)))
-                    return 15;
-            }
-            if(p.getModule(BroomEntity.BroomSlot.MISC).getItem() instanceof KeychainItem keychainItem) {
-                NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
-                if(p.getModule(BroomEntity.BroomSlot.MISC).hasTag())
-                    ContainerHelper.loadAllItems(p.getModule(BroomEntity.BroomSlot.MISC).getOrCreateTag(), items);
-                return DynamicLightUtil.fromItemLike(items.get(0).getItem());
-            }
-            return 0;
-        });
+        register(ModEntityTypes.BROOM.get(), LightManager::broomLightCheck);
         register(EntityType.PLAYER, (p) -> {
-            if(p.getVehicle() instanceof BroomEntity broom){
-                if (broom.getModule(BroomEntity.BroomSlot.BRUSH).getItem() instanceof BroomBrushItem brushItem) {
-                    if (brushItem.shouldGlow(broom.level, broom.getModule(BroomEntity.BroomSlot.BRUSH)))
-                        return 15;
-                }
-                if (broom.getModule(BroomEntity.BroomSlot.MISC).getItem() instanceof KeychainItem keychainItem) {
-                    NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
-                    if (broom.getModule(BroomEntity.BroomSlot.MISC).hasTag())
-                        ContainerHelper.loadAllItems(broom.getModule(BroomEntity.BroomSlot.MISC).getOrCreateTag(), items);
-                    return DynamicLightUtil.fromItemLike(items.get(0).getItem());
-                }
-                return 0;
+            if (p.getVehicle() instanceof BroomEntity broom) {
+                return broomLightCheck(broom);
             }
             return 0;
         });
         register(EntityType.ITEM_FRAME, (p) -> DynamicLightUtil.fromItemLike((p.getItem().getItem())));
         register(EntityType.GLOW_ITEM_FRAME, (p) -> Math.max(14, DynamicLightUtil.fromItemLike((p.getItem().getItem()))));
         register(EntityType.GLOW_SQUID, (p) -> (int) Mth.clampedLerp(0.f, 12.f, 1.f - p.getDarkTicksRemaining() / 10.f));
-//        register(ModEntities.ANIMATED_BLOCK.get(), (p) -> p.getBlockState().getLightEmission(p.level, p.blockPosition()));
     }
 
-    public static < T extends Entity> void register(EntityType<T> type, Function<T, Integer> luminanceFunction) {
+    private static int broomLightCheck(BroomEntity broom) {
+        if (broom.getModule(BroomEntity.BroomSlot.BRUSH).getItem() instanceof BroomBrushItem brushItem) {
+            if (brushItem.shouldGlow(broom.level, broom.getModule(BroomEntity.BroomSlot.BRUSH)))
+                return 15;
+        }
+        if (broom.getModule(BroomEntity.BroomSlot.MISC).getItem() instanceof KeychainItem keychainItem) {
+            NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
+            if (broom.getModule(BroomEntity.BroomSlot.MISC).hasTag())
+                ContainerHelper.loadAllItems(broom.getModule(BroomEntity.BroomSlot.MISC).getOrCreateTag(), items);
+            return DynamicLightUtil.fromItemLike(items.get(0).getItem());
+        }
+        return 0;
+    }
+
+    public static <T extends Entity> void register(EntityType<T> type, Function<T, Integer> luminanceFunction) {
         if (!LIGHT_REGISTRY.containsKey(type)) {
             LIGHT_REGISTRY.put(type, new ArrayList<>());
         }
@@ -161,7 +118,7 @@ public class LightManager {
      * @param lightSource the light source to add
      */
     public static void addLightSource(LambHexereiDynamicLight lightSource) {
-        if (!lightSource.getDynamicLightWorld().isClientSide())
+        if (!lightSource.getDynamicLightWorldH().isClientSide())
             return;
         if (!shouldUpdateDynamicLight())
             return;
@@ -179,7 +136,7 @@ public class LightManager {
      * @return {@code true} if the light source is tracked, else {@code false}
      */
     public static boolean containsLightSource(@NotNull LambHexereiDynamicLight lightSource) {
-        if (!lightSource.getDynamicLightWorld().isClientSide())
+        if (!lightSource.getDynamicLightWorldH().isClientSide())
             return false;
 
         boolean result;
@@ -219,7 +176,7 @@ public class LightManager {
             if (it.equals(lightSource)) {
                 sourceIterator.remove();
                 if (Minecraft.getInstance().level != null)
-                    lightSource.lambdynlights$scheduleTrackedChunksRebuild(Minecraft.getInstance().levelRenderer);
+                    lightSource.lambdynlights$scheduleTrackedChunksRebuildH(Minecraft.getInstance().levelRenderer);
                 break;
             }
         }
@@ -239,9 +196,9 @@ public class LightManager {
             it = sourceIterator.next();
             sourceIterator.remove();
             if (Minecraft.getInstance().levelRenderer != null) {
-                if (it.getLuminance() > 0)
-                    it.resetDynamicLight();
-                it.lambdynlights$scheduleTrackedChunksRebuild(Minecraft.getInstance().levelRenderer);
+                if (it.getLuminanceH() > 0)
+                    it.resetDynamicLightH();
+                it.lambdynlights$scheduleTrackedChunksRebuildH(Minecraft.getInstance().levelRenderer);
             }
         }
 
@@ -282,13 +239,12 @@ public class LightManager {
     public static void updateAll(LevelRenderer renderer) {
         long now = System.currentTimeMillis();
 
-
         lastUpdate = now;
         lastUpdateCount = 0;
 
         lightSourcesLock.readLock().lock();
         for (var lightSource : dynamicLightSources) {
-            if (lightSource.lambdynlights$updateDynamicLight(renderer)) {
+            if (lightSource.lambdynlights$updateDynamicLightH(renderer)) {
                 lastUpdateCount++;
             }
         }
@@ -391,12 +347,12 @@ public class LightManager {
      * @return the dynamic light level at the specified position
      */
     public static double maxDynamicLightLevel(@NotNull BlockPos pos, @NotNull LambHexereiDynamicLight lightSource, double currentLightLevel) {
-        int luminance = lightSource.getLuminance();
+        int luminance = lightSource.getLuminanceH();
         if (luminance > 0) {
             // Can't use Entity#squaredDistanceTo because of eye Y coordinate.
-            double dx = pos.getX() - lightSource.getDynamicLightX() + 0.5;
-            double dy = pos.getY() - lightSource.getDynamicLightY() + 0.5;
-            double dz = pos.getZ() - lightSource.getDynamicLightZ() + 0.5;
+            double dx = pos.getX() - lightSource.getDynamicLightXH() + 0.5;
+            double dy = pos.getY() - lightSource.getDynamicLightYH() + 0.5;
+            double dz = pos.getZ() - lightSource.getDynamicLightZH() + 0.5;
 
             double distanceSquared = dx * dx + dy * dy + dz * dz;
             // 7.75 because else we would have to update more chunks and that's not a good idea.
@@ -418,8 +374,8 @@ public class LightManager {
      * @param lightSource the light source
      */
     public static void updateLightTracking(@NotNull LambHexereiDynamicLight lightSource) {
-        boolean enabled = lightSource.isDynamicLightEnabled();
-        int luminance = lightSource.getLuminance();
+        boolean enabled = lightSource.isDynamicLightEnabledH();
+        int luminance = lightSource.getLuminanceH();
         if (!enabled && luminance > 0) {
             lightSource.setHexereiDynamicLightEnabled(true);
         } else if (enabled && luminance < 1) {
@@ -428,10 +384,13 @@ public class LightManager {
     }
 
     public static boolean shouldUpdateDynamicLight() {
-        return HexConfig.DYNAMIC_LIGHT_TOGGLE.get(); // change to configable
+        return HexConfig.DYNAMIC_LIGHT_TOGGLE.get(); // change to configurable
     }
 
     public static void toggleLightsAndConfig(boolean enabled) {
+        if (ModList.get().isLoaded("ars_nouveau")) {
+            enabled = false;
+        }
         HexConfig.DYNAMIC_LIGHT_TOGGLE.set(enabled);
         HexConfig.DYNAMIC_LIGHT_TOGGLE.save();
         if (!enabled) {

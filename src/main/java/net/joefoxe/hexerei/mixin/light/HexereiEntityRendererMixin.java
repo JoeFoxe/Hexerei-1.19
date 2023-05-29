@@ -19,7 +19,7 @@ public class HexereiEntityRendererMixin<T extends Entity> {
             return; // Do not touch to the value.
 
         int vanilla = cir.getReturnValueI();
-        int entityLuminance = ((LambHexereiDynamicLight) entity).getLuminance();
+        int entityLuminance = ((LambHexereiDynamicLight) entity).getLuminanceH();
         if (entityLuminance >= 15)
             cir.setReturnValue(entityLuminance);
 

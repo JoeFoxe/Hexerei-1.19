@@ -17,42 +17,42 @@ public interface LambHexereiDynamicLight {
      *
      * @return the X coordinate
      */
-    double getDynamicLightX();
+    double getDynamicLightXH();
 
     /**
      * Returns the dynamic light source Y coordinate.
      *
      * @return the Y coordinate
      */
-    double getDynamicLightY();
+    double getDynamicLightYH();
 
     /**
      * Returns the dynamic light source Z coordinate.
      *
      * @return the Z coordinate
      */
-    double getDynamicLightZ();
+    double getDynamicLightZH();
 
     /**
      * Returns the dynamic light source world.
      *
      * @return the world instance
      */
-    Level getDynamicLightWorld();
+    Level getDynamicLightWorldH();
 
     /**
      * Returns whether the dynamic light is enabled or not.
      *
      * @return {@code true} if the dynamic light is enabled, else {@code false}
      */
-    default boolean isDynamicLightEnabled() {
+    default boolean isDynamicLightEnabledH() {
         return LightManager.containsLightSource(this);
     }
 
-    void resetDynamicLight();
+    void resetDynamicLightH();
 
     default void setHexereiDynamicLightEnabled(boolean enabled) {
-        this.resetDynamicLight();
+        this.resetDynamicLightH();
         if (enabled)
             LightManager.addLightSource(this);
         else
@@ -65,21 +65,21 @@ public interface LambHexereiDynamicLight {
      *
      * @return the luminance of the light source
      */
-    int getLuminance();
+    int getLuminanceH();
 
     /**
      * Executed at each tick.
      */
-    void dynamicLightTick();
+    void dynamicLightTickH();
 
     /**
      * Returns whether this dynamic light source should update.
      *
      * @return {@code true} if this dynamic light source should update, else {@code false}
      */
-    boolean shouldUpdateDynamicLight();
+    boolean shouldUpdateDynamicLightH();
 
-    boolean lambdynlights$updateDynamicLight(LevelRenderer renderer);
+    boolean lambdynlights$updateDynamicLightH(LevelRenderer renderer);
 
-    void lambdynlights$scheduleTrackedChunksRebuild(LevelRenderer renderer);
+    void lambdynlights$scheduleTrackedChunksRebuildH(LevelRenderer renderer);
 }

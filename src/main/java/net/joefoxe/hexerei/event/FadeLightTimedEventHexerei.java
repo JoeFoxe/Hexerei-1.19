@@ -44,7 +44,7 @@ public class FadeLightTimedEventHexerei implements ITimedEvent, LambHexereiDynam
             if (this.isExpired()) {
                 this.setHexereiDynamicLightEnabled(false);
             } else {
-                this.dynamicLightTick();
+                this.dynamicLightTickH();
                 LightManager.updateLightTracking(this);
             }
         }
@@ -60,48 +60,48 @@ public class FadeLightTimedEventHexerei implements ITimedEvent, LambHexereiDynam
     }
 
     @Override
-    public double getDynamicLightX() {
+    public double getDynamicLightXH() {
         return targetPos.x;
     }
 
     @Override
-    public double getDynamicLightY() {
+    public double getDynamicLightYH() {
         return targetPos.y;
     }
 
     @Override
-    public double getDynamicLightZ() {
+    public double getDynamicLightZH() {
         return targetPos.z;
     }
 
     @Override
-    public Level getDynamicLightWorld() {
+    public Level getDynamicLightWorldH() {
         return level;
     }
 
     @Override
-    public void resetDynamicLight() {
+    public void resetDynamicLightH() {
         this.lambdynlights$lastLuminance = 0;
     }
 
     @Override
-    public int getLuminance() {
+    public int getLuminanceH() {
         return lambdynlights$luminance;
     }
 
     @Override
-    public void dynamicLightTick() {
+    public void dynamicLightTickH() {
         lambdynlights$luminance = starterTicks == 0 ? 0 : (int) ((double) startLuminance * ((double) ticksLeft / (double) this.starterTicks));
     }
 
     @Override
-    public boolean shouldUpdateDynamicLight() {
+    public boolean shouldUpdateDynamicLightH() {
         return LightManager.shouldUpdateDynamicLight();
     }
 
     @Override
-    public boolean lambdynlights$updateDynamicLight(LevelRenderer renderer) {
-        int luminance = this.getLuminance();
+    public boolean lambdynlights$updateDynamicLightH(LevelRenderer renderer) {
+        int luminance = this.getLuminanceH();
 
         if (luminance != this.lambdynlights$lastLuminance) {
             this.lambdynlights$lastLuminance = luminance;
@@ -135,7 +135,7 @@ public class FadeLightTimedEventHexerei implements ITimedEvent, LambHexereiDynam
                 }
             }
             // Schedules the rebuild of removed chunks.
-            this.lambdynlights$scheduleTrackedChunksRebuild(renderer);
+            this.lambdynlights$scheduleTrackedChunksRebuildH(renderer);
             // Update tracked lit chunks.
             this.lambdynlights$trackedLitChunkPos = newPos;
             return true;
@@ -144,7 +144,7 @@ public class FadeLightTimedEventHexerei implements ITimedEvent, LambHexereiDynam
     }
 
     @Override
-    public void lambdynlights$scheduleTrackedChunksRebuild(LevelRenderer renderer) {
+    public void lambdynlights$scheduleTrackedChunksRebuildH(LevelRenderer renderer) {
         if (Minecraft.getInstance().level == this.level)
             for (long pos : this.lambdynlights$trackedLitChunkPos) {
                 LightManager.scheduleChunkRebuild(renderer, pos);
