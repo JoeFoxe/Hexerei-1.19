@@ -13,12 +13,14 @@ import net.joefoxe.hexerei.block.ModWoodType;
 import net.joefoxe.hexerei.client.renderer.CrowPerchRenderer;
 import net.joefoxe.hexerei.client.renderer.entity.BroomType;
 import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
+import net.joefoxe.hexerei.command.ToggleLightCommand;
 import net.joefoxe.hexerei.config.HexConfig;
 import net.joefoxe.hexerei.container.ModContainers;
 import net.joefoxe.hexerei.data.books.PageDrawing;
 import net.joefoxe.hexerei.data.datagen.ModRecipeProvider;
 import net.joefoxe.hexerei.data.recipes.ModRecipeTypes;
 import net.joefoxe.hexerei.data.tags.ModBiomeTagsProvider;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.event.ModLootModifiers;
 import net.joefoxe.hexerei.events.*;
 import net.joefoxe.hexerei.fluid.ModFluidTypes;
@@ -26,6 +28,7 @@ import net.joefoxe.hexerei.fluid.ModFluids;
 import net.joefoxe.hexerei.integration.HexereiModNameTooltipCompat;
 import net.joefoxe.hexerei.integration.jei.HexereiJeiCompat;
 import net.joefoxe.hexerei.item.ModItems;
+import net.joefoxe.hexerei.light.LightManager;
 import net.joefoxe.hexerei.particle.ModParticleTypes;
 import net.joefoxe.hexerei.screen.*;
 import net.joefoxe.hexerei.sounds.ModSounds;
@@ -65,6 +68,7 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -165,6 +169,7 @@ public class Hexerei {
 		//eventBus.addGenericListener(RecipeSerializer.class, ModItems::registerRecipeSerializers);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, HexConfig.CLIENT_CONFIG, "Hexerei-client.toml");
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, HexConfig.COMMON_CONFIG, "Hexerei-common.toml");
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> Mod.EventBusSubscriber.Bus.FORGE.bus().get().register(ClientEvents.class));
 
 		ModItems.register(eventBus);
 		ModBlocks.register(eventBus);
@@ -261,6 +266,7 @@ public class Hexerei {
 
 			SpawnPlacements.register(ModEntityTypes.CROW.get(), SpawnPlacements.Type.ON_GROUND,
 							Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
+			LightManager.init();
 
 			((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.MANDRAKE_FLOWER.getId(), ModBlocks.POTTED_MANDRAKE_FLOWER);
 			((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.BELLADONNA_FLOWER.getId(), ModBlocks.POTTED_BELLADONNA_FLOWER);
@@ -300,7 +306,6 @@ public class Hexerei {
 			event.enqueueWork(ModRegion::init);
 		}
 	}
-
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
 		// do something that can only be done on the client

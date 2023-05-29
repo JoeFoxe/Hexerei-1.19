@@ -9,8 +9,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
@@ -104,6 +106,9 @@ public class PotionMixingRecipes {
                 }
             }
         }
+
+        if(mixingRecipes.size() == 0)
+            mixingRecipes.add(createRecipe("potion_mixing_vanilla_" + recipeIndex++, Ingredient.EMPTY, new FluidStack(Fluids.WATER, 2000), new FluidStack(Fluids.WATER, 2000)));
 
         return mixingRecipes;
     }

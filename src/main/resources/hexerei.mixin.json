@@ -12,7 +12,11 @@
     "MouseHandlerMixin",
     "PlayerItemInHandLayerMixin",
     "ScreenEffectRendererMixin",
-    "ThirdPersonRendererMixin"
+    "ThirdPersonRendererMixin",
+    "light.HexereiClientMixin",
+    "light.HexereiEntityRendererMixin",
+    "light.HexereiLevelRendererMixin",
+    "light.HexereiLightEntityMixin"
   ],
   "mixins": [
   ],

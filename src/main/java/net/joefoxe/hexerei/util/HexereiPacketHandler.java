@@ -410,6 +410,14 @@ public class HexereiPacketHandler {
                 MapDataPacket::decode,
                 MapDataPacket::consume
         );
+
+        instance.registerMessage(
+                ++ id,
+                ToggleDynamicLightPacket.class,
+                ToggleDynamicLightPacket::encode,
+                ToggleDynamicLightPacket::decode,
+                ToggleDynamicLightPacket::consume
+        );
     }
 
     private static <T> void register(Class<T> clazz, IMessage<T> message)

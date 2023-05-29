@@ -2,7 +2,9 @@ package net.joefoxe.hexerei.event;
 
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.CrowWhitelistRenderer;
+import net.joefoxe.hexerei.command.ToggleLightCommand;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

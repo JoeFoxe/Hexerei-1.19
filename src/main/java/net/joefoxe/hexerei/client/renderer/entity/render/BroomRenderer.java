@@ -131,14 +131,7 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
                 int light = packedLightIn;
 
                 if(brushItem.shouldGlow(Minecraft.getInstance().level, brushStack)){
-                    int i = entityIn.level.getBrightness(LightLayer.SKY, entityIn.blockPosition());
-                    int j = entityIn.level.getBrightness(LightLayer.BLOCK, entityIn.blockPosition());
-                    int k = entityIn.level.getLightEmission(entityIn.blockPosition());
-                    if (j < k) {
-                        j = k;
-                    }
-
-                    light = Mth.clamp(brushItem.brightness + i, 0, 15) << 20 | Mth.clamp(brushItem.brightness + j, 0, 15) << 4;
+                    light = 15 << 20 | 15 << 4;
                 }
                 Model broomBrushModel = brushItem.model;
                 VertexConsumer brushVertexConsumer = bufferIn.getBuffer(broomBrushModel.renderType(brushItem.texture));
