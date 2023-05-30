@@ -15,7 +15,6 @@ import net.joefoxe.hexerei.client.renderer.entity.BroomType;
 import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
 import net.joefoxe.hexerei.compat.CurioCompat;
 import net.joefoxe.hexerei.compat.GlassesCurioRender;
-import net.joefoxe.hexerei.compat.LightManagerCompat;
 import net.joefoxe.hexerei.config.HexConfig;
 import net.joefoxe.hexerei.container.ModContainers;
 import net.joefoxe.hexerei.data.books.PageDrawing;
@@ -411,7 +410,9 @@ public class Hexerei {
         glassesZoomKeyPressEvent = new GlassesZoomKeyPressEvent();
         MinecraftForge.EVENT_BUS.register(glassesZoomKeyPressEvent);
 
-        if (ModList.get().isLoaded("ars_nouveau")) LightManagerCompat.fallbackToArs();
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+			if (ModList.get().isLoaded("ars_nouveau")) net.joefoxe.hexerei.compat.LightManagerCompat.fallbackToArs();
+		});
 
     }
 
