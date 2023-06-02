@@ -772,7 +772,23 @@
   "book.hexerei.structures_nature_coven_page_1.passage_1": "Nature Coven",
   "book.hexerei.structures_nature_coven_page_1.passage_2": "  In forests, Nature Covens may be found, though aside from some animals in some huts they are largely unpopulated, for now.",
   "book.hexerei.structures_nature_coven_page_2.passage_1": "  These places are a good source for witch tools, crows, bees, and herbs.",
+  
+  "book.hexerei.tooltip_go_to_page": "Go to Page",
+  "book.hexerei.crafting_type.crafting_table": "  To craft, you need a 3x3 crafting space and the items shown below.",
+  "book.hexerei.crafting_type.mixing_cauldron": "  To craft, you need a Mixing Cauldron and the items shown below.",
+  "book.hexerei.crafting_type.dipper": "  To craft, you need a Mixing Cauldron with a Dipper attached and the item and fluid shown below.",
+  "book.hexerei.crafting_type.herb_drying_rack": "  To craft, you need a Drying Rack and the item shown below.",
+  "book.hexerei.crafting_type.pestle_and_mortar": "  To craft, you need a Pestle and Mortar and the items shown below.",
 
+  "book.hexerei.tooltip.liquid.amount": "%s mB",
+  "book.hexerei.tooltip.liquid.amount.with.capacity": "%s / %s mB",
+  "hexerei.generic.unit.millibuckets": "%1$smB",
+  "book.hexerei.tooltip.empty": "Empty",
+
+  "book.hexerei.tooltip.accepts_any": "Accepts any: %s",
+
+  
+  
   "hexerei.key.category.book_hovering": "Hexerei (Book Hovering)",
   "key.hexerei.book_hovering_recipe": "Show Recipe",
   "key.hexerei.book_hovering_uses": "Show Uses",
