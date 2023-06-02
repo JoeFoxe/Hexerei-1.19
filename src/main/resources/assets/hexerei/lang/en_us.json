@@ -479,12 +479,12 @@
   "book.hexerei.items_mixing_cauldron_7.passage_1": "  The mixing cauldron can brew up to two buckets worth of potions at a time, when heated.\n  To do this, fill it with water, then add two of the ingredient needed to make the potion. For example, making Awkward Potion requires two nether wart.",
 
   "book.hexerei.items_coffer_1.passage_1": "Coffer",
-  "book.hexerei.items_coffer_1.passage_2": "  The Coffer is a very useful storage device for witches, especially ones who have some crow friends.",
+  "book.hexerei.items_coffer_1.passage_2": "  The Coffer is a very useful storage device for witches, especially thoae who have crow familiars.",
   "book.hexerei.items_coffer_2.passage_1": "  To craft you need a Mixing Cauldron and the items shown below.",
   "book.hexerei.items_coffer_3.passage_1": "  Coffers can also be dyed with any color and be renamed to change their colors in a loop.",
   "book.hexerei.items_coffer_3.passage_2": "  Once dyed, if not named, they can be dyed again to mix the dye colors like leather armor.",
-  "book.hexerei.items_coffer_4.passage_1": "  For ease of use coffers can be picked up with a simple punch. They will retain all of their data when moved by the player. They also will display their items while opened.\n\n  On the right side of the GUI of the coffer will show a button with a crow on it.",
-  "book.hexerei.items_coffer_5.passage_1": "  While toggled the crow button will allow crows on gather mode to check items inside its coffers and look in the area for items matching the any of the contents of the coffer to deposit. \n\n  Crows also with a perch located on a coffer will pick up any item in the area and return it to that coffer.",
+  "book.hexerei.items_coffer_4.passage_1": "  When punched, a placed coffer will be picked up into your inventory, keeping their items, name, and colors.\n\n  On the right side of the coffer's GUI is a button with a crow on it.",
+  "book.hexerei.items_coffer_5.passage_1": "  While toggled, the crow button will allow crows on gather mode to check items inside the coffer and look in the area for items matching its contents to deposit. \n\n  Crows with a perch located on a coffer will pick up any item in the area and return it to that coffer.",
 
   "book.hexerei.items_herb_jar_1.passage_1": "Herb Jar",
   "book.hexerei.items_herb_jar_1.passage_2": "  The Herb Jar is perfect for the witch who wants to keep ingredients in bulk. It can hold up to 1024 items of one type.\n  Like coffers, herb jars also have a crow button, letting your crows keep your herb collection neat and tidy.",
@@ -505,7 +505,7 @@
   "book.hexerei.items_altar_1.passage_2": "  The Altar is not just for reading this book on. It can be used to display any item you place onto it, with a special surprise for anything that can be potted.\n\n  They can be crafted out of willow and witch hazel as well.",
 
   "book.hexerei.items_drying_rack_1.passage_1": "Drying Rack",
-  "book.hexerei.items_drying_rack_1.passage_2": "  These are used for drying items that have a recipe to be dried. They are quite useful for obtaining early game leather by drying rotten flesh into leather. To place items into a drying rack simply right click with the item stack in hand.",
+  "book.hexerei.items_drying_rack_1.passage_2": "  Special racks for the drying of items and herbs, or holding items for decoration. Right click a drying rack to place what you are holding on it.",
   "book.hexerei.items_drying_rack_3.passage_1": "  There are 3 separate slots in the drying rack, each slot can hold up to 3 of that item. Each time you right click it with an item in hand, it will take up to 3 of those items and place it into the drying rack.\n  To remove all items from the drying rack that arent crafting, both hands must be bare and you crouch and right click the drying rack.",
   "book.hexerei.items_drying_rack_4.passage_1": "  You can also simply right click to remove items that have completed their drying process, no crouching necessary.\n  Automation can be done using item transportation blocks, like hoppers or item pipes.",
 
@@ -521,13 +521,13 @@
   "book.hexerei.items_candle_1.passage_1": "Candles",
   "book.hexerei.items_candle_1.passage_2": "  Candles are a dyeable, decorative block which can be used for lighting, or for magic. Up to 4 different candles can be placed in the same block. A candle can be lit with flint and steel, and will typically stay lit for 35 minutes.",
   "book.hexerei.items_candle_3.passage_1": "  Candles are lit individually, in the order they were placed in. When placed near an altar and lit, the candles will float around it.\n  You can craft several items with a candle to add a decorative base to it, including planks, selenite shards, and more.",
-  "book.hexerei.items_candle_4.passage_1": "  Candles can be infused with a potion effect with a Dipper. When lit, they will apply their effects to anyone nearby. Only certain potions work for this.\n  Certain blends can also be made and applied to candles, such as the Mindful Trance blend.",
+  "book.hexerei.items_candle_4.passage_1": "  Candles can be infused with a potion effect with a Dipper. When lit, they will apply their effects to anyone nearby. Only certain potions work for this.\n  Special herb blends can also be made and applied to candles, such as the Mindful Trance blend.",
 
   "book.hexerei.items_candelabra_1.passage_1": "Candelabra",
   "book.hexerei.items_candelabra_1.passage_2": "  Candelabras, unlike the candles used to make them, won't go out on their own. They can be placed on the top of a block, or under a block, including blocks like chains.",
 
   "book.hexerei.items_crystal_ball_1.passage_1": "Crystal Ball",
-  "book.hexerei.items_crystal_ball_1.passage_2": "  The Crystal Ball is still a work in progress, right now it acts as just a decoration item. This will probably be used for either scrying to find players or positions, or for infusing certain items.",
+  "book.hexerei.items_crystal_ball_1.passage_2": "  The Crystal Ball is a useful tool, able to reveal the phase of the moon, or the sun if it's daytime. Handy for crafting moon dust!",
 
   "book.hexerei.items_dowsing_rod_1.passage_1": "Dowsing Rod",
   "book.hexerei.items_dowsing_rod_1.passage_2": "  The Dowsing Rod is able to locate certain biomes containing the needed plants for the witch to begin their craft. Sneak right click to flip between searching for Swamps and Jungles. Right clicking will make the rod look for a new biome of the selected type.",
@@ -593,13 +593,13 @@
   "book.hexerei.items_crow_flute_1.passage_2": "  The Crow Flute is an essential item for controlling your crow companions. It has a menu for assigning commands, selecting crows, and setting a crow's perch position.",
 
   "book.hexerei.items_seed_mixture_1.passage_1": "Seed Mixture",
-  "book.hexerei.items_seed_mixture_1.passage_2": "  Looking for a way to tame the crows? Well, Crows love this mixture of seeds. These crows are quite useful so it does take a bit to get one on your side. Be sure to make a fair amount of seed mixture to tame your crows.",
+  "book.hexerei.items_seed_mixture_1.passage_2": "  A blend of seeds perfect for taming wild crows to act as familiars.",
 
   "book.hexerei.items_warhammer_1.passage_1": "Warhammer",
-  "book.hexerei.items_warhammer_1.passage_2": "  Wait a minute, this isn't a witchy item. Looks like this is more for someone like the god of thunder. Maybe a crow will like to use this item. If not its quite good for bashing things in the face.",
+  "book.hexerei.items_warhammer_1.passage_2": "  Wait a minute, this isn't a witchy item. Looks like this is more for someone like the god of thunder. Maybe a crow would like to use this item. If not, it's quite good for bashing things in the face.",
 
   "book.hexerei.items_sage_seed_1.passage_1": "Sage Seeds",
-  "book.hexerei.items_sage_seed_1.passage_2": "  These seeds are found by breaking grass. These are the seeds needed to grow the sage crop.",
+  "book.hexerei.items_sage_seed_1.passage_2": "  Sage seeds can be found by breaking grass, similar to wheat seeds. When planted on farmland they will grow into sage crops.",
 
   "book.hexerei.items_sage_1.passage_1": "Sage",
   "book.hexerei.items_sage_1.passage_2": "  The Sage Leaf is obtained by farming the sage crop. Sage is a very useful herb in witchery as it is used to cleanse the area of evil spirits. This sage can be burned if bundled up and then dried.",
@@ -620,22 +620,22 @@
   "book.hexerei.items_infused_fabric_1.passage_2": "  Infused Fabric is used to craft the witch armor set, and can be made into decorative blocks and carpets.",
 
   "book.hexerei.items_witch_helmet_1.passage_1": "Witch's Hat",
-  "book.hexerei.items_witch_helmet_1.passage_2": "  These pieces will have additional effects once spells and the coven witches are added. Each piece of the witch outfit can be dyed to be customized to your liking. They can also be renamed to give the color changing effects.",
+  "book.hexerei.items_witch_helmet_1.passage_2": "  A witch's classic hat, giving a few perks when the full set is worn. Each piece can be dyed to your liking, and renamed to give the color changing effects.",
 
   "book.hexerei.items_witch_chestplate_1.passage_1": "Witch's Robe",
-  "book.hexerei.items_witch_chestplate_1.passage_2": "  These pieces will have additional effects once spells and the coven witches are added. Each piece of the witch outfit can be dyed to be customized to your liking. They can also be renamed to give the color changing effects.",
+  "book.hexerei.items_witch_chestplate_1.passage_2": "  A witch's classic attire, giving a few perks when the full set is worn. Each piece can be dyed to your liking, and renamed to give the color changing effects.",
 
   "book.hexerei.items_witch_boots_1.passage_1": "Witch's Boots",
-  "book.hexerei.items_witch_boots_1.passage_2": "  These pieces will have additional effects once spells and the coven witches are added. Each piece of the witch outfit can be dyed to be customized to your liking. They can also be renamed to give the color changing effects.",
+  "book.hexerei.items_witch_boots_1.passage_2": "  A witch's classic pair of boots, giving a few perks when the full set is worn. Each piece can be dyed to your liking, and renamed to give the color changing effects.",
 
   "book.hexerei.items_mushroom_witch_hat_1.passage_1": "Mushroom Witch's Hat",
-  "book.hexerei.items_mushroom_witch_hat_1.passage_2": "  This hat is being a little hint towards what types off witches and covens are to come in future updates.",
+  "book.hexerei.items_mushroom_witch_hat_1.passage_2": "  Currently, just a cosmetic variant of the regular witch's hat.",
 
   "book.hexerei.items_mandrake_flower_1.passage_1": "Mandrake Plant",
   "book.hexerei.items_mandrake_flower_1.passage_2": "  One of the flowers of Hexerei, the Mandrake, can be harvested by simply right clicking it when it is fully grown just like a sweet berry bush. Can be harvested when fully grown by right clicking just like a sweet berry bush.",
 
   "book.hexerei.items_belladonna_flower_1.passage_1": "Belladonna Plant",
-  "book.hexerei.items_belladonna_flower_1.passage_2": "  The most poisonous plant of Hexerei, the Belladonna, probably should not be consumed in any way unless prepared in the proper manor. These plants can be harvested by simply right clicking it when it is fully grown just like a sweet berry bush.",
+  "book.hexerei.items_belladonna_flower_1.passage_2": "  The most poisonous plant of Hexerei, the Belladonna, probably should not be consumed in any way unless prepared in the proper manner. These plants can be harvested by simply right clicking it when it is fully grown just like a sweet berry bush.",
 
   "book.hexerei.items_mugwort_bush_1.passage_1": "Mugwort Bush",
   "book.hexerei.items_mugwort_bush_1.passage_2": "  A bush flower of Hexerei, the Mugwort, has been used to open up a more direct channel to the lunar side of magic. This has no uses for magic yet, these will come at a later date. Can be harvested when fully grown by right clicking.",
@@ -648,6 +648,9 @@
 
   "book.hexerei.items_mahogany_sapling_1.passage_1": "Mahogany Sapling",
   "book.hexerei.items_mahogany_sapling_1.passage_2": "  Sapling used to grow Mahogany trees. Can be obtained by breaking Mahogany Leaves.",
+
+  "book.hexerei.items_witch_hazel_sapling_1.passage_1": "Witch Hazel Sapling",
+  "book.hexerei.items_witch_hazel_sapling_1.passage_2": "  Sapling used to grow With Hazel trees. Can be obtained by breaking Witch Hazel Leaves.",
 
   "book.hexerei.items_mandrake_flowers_1.passage_1": "Mandrake Flowers",
   "book.hexerei.items_mandrake_flowers_1.passage_2": "  Mandrake flowers are used in the recipe to make the herb enhanced broom brush, they can also be dried and later on will be used in different infuses and rituals.\n  Obtained by right clicking a fully grown Mandrake Plant.",
@@ -704,20 +707,20 @@
   "book.hexerei.items_dried_yellow_dock_leaves_1.passage_2": "  The dried variant of the yellow dock leaves, this does not have any uses yet but will be used in various blends and in rituals in the future.",
 
   "book.hexerei.items_mindful_trance_blend_1.passage_1": "Mindful Trance Blend",
-  "book.hexerei.items_mindful_trance_blend_1.passage_2": "  This is a hint to what is to come for candles. This will be for infusing candles with special effects to give off in the area when they are lit. This will be coming shortly in the future.",
+  "book.hexerei.items_mindful_trance_blend_1.passage_2": "  A blend that can be applied to candles.",
 
   "book.hexerei.items_reading_glasses_1.passage_1": "Reading Glasses",
   "book.hexerei.items_reading_glasses_1.passage_2": "  Need help reading the book? want to just slightly zoom into the book to better look at images? Well these are the glasses for you! Acts like a spyglass when holding the item and right clicking, but zooms in just a bit. You can also put these on your head and press %kkey.hexerei.glasses_zoom to toggle zoom in.",
 
 
   "book.hexerei.entities_index_page_1.passage_1": "- Entities -",
-  "book.hexerei.entities_index_page_1.passage_2": "  This chapter will be all about entities and how you interact with them!",
+  "book.hexerei.entities_index_page_1.passage_2": "  This chapter is all about entities and how you interact with them!",
 
-  "book.hexerei.entities_index_page_2.passage_1": "Entity Index Page",
+  "book.hexerei.entities_index_page_2.passage_1": "Entity Index",
   "book.hexerei.entities_index_page_2.passage_2": "",
 
   "book.hexerei.entities_crow_page_1.passage_1": "Crow",
-  "book.hexerei.entities_crow_page_1.passage_2": "  The Crow is the first familiar of many to come to Hexerei. They can be tamed by giving the crows their favorite snackies which is the seed mixture made in the pestle and mortar. You can either throw the seeds onto the ground and nearby",
+  "book.hexerei.entities_crow_page_1.passage_2": "  The Crow is the first familiar of many to come to Hexerei. They can be tamed with seed mixture, in two different ways. You can either throw the seeds onto the ground and nearby",
   "book.hexerei.entities_crow_page_2.passage_1": "untamed crows will fly over and munch on them for a chance to tame, or they can just be right clicked onto the crow. Crows have a better chance of taming when the seeds are thrown onto the ground. Players are able to tame more than one crow at a time, allowing for a crow army to work with the player!",
   "book.hexerei.entities_crow_page_3.passage_1": "Once tamed crows can be set to different commands. The player can change these commands by simply right clicking the crow, this will cycle through the 4 main commands the crows have. These commands can also be changed by opening up the crow's GUI. To open the GUI crouch and right click a tamed crow.",
   "book.hexerei.entities_crow_page_4.passage_1": "  Each crow contains 3 slots, the first being what the crow is holding, the second being the hat the crow is wearing, and the third is a misc slot still to be determined but can act as a storage slot. The crows can be equip with weapons to help fight with you.",
@@ -753,34 +756,22 @@
 
 
   "book.hexerei.structures_index_page_1.passage_1": "- Structures -",
-  "book.hexerei.structures_index_page_1.passage_2": "  This chapter will be all about the structures added to the world and how you can find them!",
+  "book.hexerei.structures_index_page_1.passage_2": "  Numerous structures dot the world wherein witches praxtice their art. The pages in this chapter will inform where to find these places, and what they might be useful for.",
 
-  "book.hexerei.structures_index_page_2.passage_1": "Structure Index Page",
+  "book.hexerei.structures_index_page_2.passage_1": "Structure Index",
   "book.hexerei.structures_index_page_2.passage_2": "",
 
   "book.hexerei.structures_witch_hut_page_1.passage_1": "Witch Hut",
-  "book.hexerei.structures_witch_hut_page_1.passage_2": "  Throughout the swamp you may come across different variations of a Hexerei witch hut. These huts come along with witches and all of their tools, and will later have more uses in future updates!",
-  "book.hexerei.structures_witch_hut_page_2.passage_1": "  A great place to start off a base for an aspiring witch!",
+  "book.hexerei.structures_witch_hut_page_1.passage_2": "  Throughout the swamps, you may come across different variations of witch huts. These huts are home to witches and their tools.",
+  "book.hexerei.structures_witch_hut_page_2.passage_1": "  A great place to start off as an aspiring witch!",
 
   "book.hexerei.structures_dark_coven_page_1.passage_1": "Dark Coven",
-  "book.hexerei.structures_dark_coven_page_1.passage_2": "  As well as witch huts you can also find Dark Covens within swamps. These are the home of witches, and in future updates they will be replaced with custom coven witches which will have their own special fitting in Hexerei.",
-  "book.hexerei.structures_dark_coven_page_2.passage_1": "  Until then, you can find various crafting tools, armor, and herbs within the covens.",
+  "book.hexerei.structures_dark_coven_page_1.passage_2": "  Swamps are also the home of Dark Covens, structures similar to villages, but for the witches of their coven.",
+  "book.hexerei.structures_dark_coven_page_2.passage_1": "  You can find various crafting tools, armor, and herbs within the covens.",
 
-
-
-  "book.hexerei.tooltip_go_to_page": "Go to Page",
-  "book.hexerei.crafting_type.crafting_table": "  To craft you need a 3x3 crafting space and the items shown below.",
-  "book.hexerei.crafting_type.mixing_cauldron": "  To craft you need a Mixing Cauldron and the items shown below.",
-  "book.hexerei.crafting_type.dipper": "  To craft you need a Mixing Cauldron with a Dipper on top with the item and fluid shown below.",
-  "book.hexerei.crafting_type.herb_drying_rack": "  To craft you need a Drying Rack with the item shown below.",
-  "book.hexerei.crafting_type.pestle_and_mortar": "  To craft you need a Pestle and Mortar with the items shown below.",
-
-  "book.hexerei.tooltip.liquid.amount": "%s mB",
-  "book.hexerei.tooltip.liquid.amount.with.capacity": "%s / %s mB",
-  "hexerei.generic.unit.millibuckets": "%1$smB",
-  "book.hexerei.tooltip.empty": "Empty",
-
-  "book.hexerei.tooltip.accepts_any": "Accepts any: %s",
+  "book.hexerei.structures_nature_coven_page_1.passage_1": "Nature Coven",
+  "book.hexerei.structures_nature_coven_page_1.passage_2": "  In forests, Nature Covens may be found, though aside from some animals in some huts they are largely unpopulated, for now.",
+  "book.hexerei.structures_nature_coven_page_2.passage_1": "  These places are a good source for witch tools, crows, bees, and herbs.",
 
   "hexerei.key.category.book_hovering": "Hexerei (Book Hovering)",
   "key.hexerei.book_hovering_recipe": "Show Recipe",
