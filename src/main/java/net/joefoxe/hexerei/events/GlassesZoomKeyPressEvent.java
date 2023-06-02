@@ -1,11 +1,12 @@
 package net.joefoxe.hexerei.events;
 
 import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.compat.CurioCompat;
 import net.joefoxe.hexerei.config.ModKeyBindings;
 import net.joefoxe.hexerei.item.custom.GlassesItem;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,44 +28,54 @@ public class GlassesZoomKeyPressEvent {
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public void onKeyEvent(InputEvent.Key event) {
-        if(Minecraft.getInstance().screen == null) {
+        if (Minecraft.getInstance().screen == null) {
             if (event.getAction() == 1) {
-
-
 
                 if (event.getKey() == ModKeyBindings.glassesZoom.getKey().getValue() && Hexerei.proxy.getPlayer() != null) {
 
-                    Inventory inventory = Hexerei.proxy.getPlayer().inventory;
-                    Item item = inventory.getArmor(3).getItem();
-                    if(item instanceof GlassesItem){
+                    Player player = Hexerei.proxy.getPlayer();
+                    if (player == null) return;
+                    boolean curioFlag = false;
+                    if (Hexerei.curiosLoaded) {
+                        curioFlag = CurioCompat.hasGlasses(player);
+                    }
+                    if (player.inventory.getArmor(3).getItem() instanceof GlassesItem || curioFlag) {
                         zoomWithKeyToggled = !zoomWithKeyToggled;
-                        if(zoomWithKeyToggled)
+                        if (zoomWithKeyToggled)
                             zoomAmount = Minecraft.getInstance().gameRenderer.fov;
                     }
 
                 }
-            }if (event.getAction() == 0) {
-//                if (event.getKey() == ModKeyBindings.glassesZoom.getKey().getValue()) {
-//
-//                    zoomWithKeyToggled = false;
-//
-//                }
             }
+            /*
+            if (event.getAction() == 0) {
+                if (event.getKey() == ModKeyBindings.glassesZoom.getKey().getValue()) {
+
+                    zoomWithKeyToggled = false;
+
+                }
+            }*/
         }
+
     }
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public void onModifyFOV(ComputeFovModifierEvent event){
-        if(zoomWithKeyToggled){
-            Inventory inventory = Hexerei.proxy.getPlayer().inventory;
-            Item item = inventory.getArmor(3).getItem();
-            if (!(item instanceof GlassesItem)) {
+    public void onModifyFOV(ComputeFovModifierEvent event) {
+        if (zoomWithKeyToggled) {
+            Player player = Hexerei.proxy.getPlayer();
+            if (player == null) return;
+            Item item = player.inventory.getArmor(3).getItem();
+            boolean curioFlag = false;
+            if (Hexerei.curiosLoaded) {
+                curioFlag = CurioCompat.hasGlasses(player);
+            }
+            if (!(item instanceof GlassesItem || curioFlag)) {
                 zoomWithKeyToggled = false;
             }
         }
         zoomToggled = zoomWithItemToggled || zoomWithKeyToggled;
-        if(zoomToggled) {
+        if (zoomToggled) {
             event.setNewFovModifier(zoomAmount);
         }
 
@@ -73,7 +84,7 @@ public class GlassesZoomKeyPressEvent {
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public void onRenderLast(RenderLevelStageEvent event) {
-        if(zoomToggled)
+        if (zoomToggled)
             zoomAmount = HexereiUtil.moveTo(zoomAmount, zoomTo, 0.02f);
     }
 

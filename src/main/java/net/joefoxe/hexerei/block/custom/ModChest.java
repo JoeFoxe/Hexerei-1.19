@@ -238,11 +238,6 @@ public class ModChest extends AbstractChestBlock<ModChestBlockEntity> implements
                 pPlayer.openMenu(menuprovider);
                 pPlayer.awardStat(this.getOpenChestStat());
                 PiglinAi.angerNearbyPiglins(pPlayer, true);
-                BlockEntity be = pLevel.getBlockEntity(pPos);
-                if(be instanceof ModChestBlockEntity chest)
-                {
-                    chest.sync();
-                }
             }
 
             return InteractionResult.CONSUME;
@@ -358,7 +353,15 @@ public class ModChest extends AbstractChestBlock<ModChestBlockEntity> implements
 
     }
 
-
+    @Override
+    public ItemStack getCloneItemStack(BlockGetter pLevel, BlockPos pPos, BlockState pState) {
+        ItemStack stack = super.getCloneItemStack(pLevel, pPos, pState);
+        if(pLevel.getBlockEntity(pPos) instanceof ModChestBlockEntity modChestBlockEntity){
+            if(modChestBlockEntity.hasCustomName())
+                stack.setHoverName(modChestBlockEntity.getCustomName());
+        }
+        return stack;
+    }
 
     public enum WoodType implements StringRepresentable {
         WILLOW("willow", ModBlocks.WILLOW_PLANKS),

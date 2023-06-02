@@ -8,6 +8,7 @@ import net.joefoxe.hexerei.client.renderer.entity.custom.BroomEntity;
 import net.joefoxe.hexerei.client.renderer.entity.custom.ModBoatEntity;
 import net.joefoxe.hexerei.client.renderer.entity.custom.ModChestBoatEntity;
 import net.joefoxe.hexerei.client.renderer.entity.model.*;
+import net.joefoxe.hexerei.config.HexConfig;
 import net.joefoxe.hexerei.data.books.HexereiBookItem;
 import net.joefoxe.hexerei.fluid.ModFluids;
 import net.joefoxe.hexerei.item.custom.*;
@@ -15,6 +16,7 @@ import net.joefoxe.hexerei.item.custom.bottles.*;
 import net.joefoxe.hexerei.particle.ModParticleTypes;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
 import net.joefoxe.hexerei.util.message.BroomEnderSatchelBrushParticlePacket;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -423,8 +425,12 @@ public class ModItems {
             });
 
     public static final RegistryObject<Item> BROOM_NETHERITE_TIP = ITEMS.register("broom_netherite_tip",
-            () -> new BroomAttachmentItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.BROOM_NETHERITE_TIP_DURABILITY.get()*/200)) {
+            () -> new BroomAttachmentItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(200)) {
 
+                @Override
+                public int getMaxDamage(ItemStack stack) {
+                    return HexConfig.BROOM_NETHERITE_TIP_DURABILITY.get();
+                }
 
                 @OnlyIn(Dist.CLIENT)
                 @Override
@@ -470,8 +476,12 @@ public class ModItems {
             });
 
     public static final RegistryObject<Item> BROOM_WATERPROOF_TIP = ITEMS.register("broom_waterproof_tip",
-            () -> new BroomAttachmentItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.BROOM_WATERPROOF_TIP_DURABILITY.get()*/800)) {
+            () -> new BroomAttachmentItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(800)) {
 
+                @Override
+                public int getMaxDamage(ItemStack stack) {
+                    return HexConfig.BROOM_WATERPROOF_TIP_DURABILITY.get();
+                }
                 @OnlyIn(Dist.CLIENT)
                 @Override
                 public void bakeModels() {
@@ -538,8 +548,12 @@ public class ModItems {
             });
 
     public static final RegistryObject<Item> BROOM_BRUSH = ITEMS.register("broom_brush",
-            () -> new BroomBrushItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.BROOM_BRUSH_DURABILITY.get()*/100)) {
+            () -> new BroomBrushItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(100)) {
 
+                @Override
+                public int getMaxDamage(ItemStack stack) {
+                    return HexConfig.BROOM_BRUSH_DURABILITY.get();
+                }
                 @OnlyIn(Dist.CLIENT)
                 @Override
                 public void bakeModels() {
@@ -565,7 +579,12 @@ public class ModItems {
             });
 
     public static final RegistryObject<Item> BROOM_THRUSTER_BRUSH = ITEMS.register("broom_thruster_brush",
-            () -> new BroomBrushItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.BROOM_BRUSH_DURABILITY.get()*/100)) {
+            () -> new BroomBrushItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(400)) {
+
+                @Override
+                public int getMaxDamage(ItemStack stack) {
+                    return HexConfig.THRUSTER_BRUSH_DURABILITY.get();
+                }
 
                 @OnlyIn(Dist.CLIENT)
                 @Override
@@ -607,6 +626,10 @@ public class ModItems {
     public static final RegistryObject<Item> MOON_DUST_BRUSH = ITEMS.register("moon_dust_brush",
             () -> new BroomBrushItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(200)) {
 
+                @Override
+                public int getMaxDamage(ItemStack stack) {
+                    return HexConfig.MOON_DUST_BRUSH_DURABILITY.get();
+                }
                 @OnlyIn(Dist.CLIENT)
                 @Override
                 public void bakeModels() {
@@ -659,6 +682,10 @@ public class ModItems {
     public static final RegistryObject<Item> HERB_ENHANCED_BROOM_BRUSH = ITEMS.register("herb_enhanced_broom_brush",
             () -> new BroomBrushItem(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(200)) {
 
+                @Override
+                public int getMaxDamage(ItemStack stack) {
+                    return HexConfig.HERB_ENHANCED_BRUSH_DURABILITY.get();
+                }
                 @OnlyIn(Dist.CLIENT)
                 @Override
                 public void bakeModels() {
@@ -765,7 +792,11 @@ public class ModItems {
             () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP)));
 
     public static final RegistryObject<Item> DRIED_SAGE_BUNDLE = ITEMS.register("dried_sage_bundle",
-            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(/*HexConfig.SAGE_BUNDLE_DURATION.get()*/3600)) {
+            () -> new Item(new Item.Properties().tab(ModItemGroup.HEXEREI_GROUP).durability(3600)) {
+                @Override
+                public int getMaxDamage(ItemStack stack) {
+                    return HexConfig.SAGE_BUNDLE_DURATION.get();
+                }
                 @Override
                 public boolean isEnchantable(ItemStack p_41456_) {
                     return false;
@@ -780,28 +811,57 @@ public class ModItems {
                         float percentDamaged = stack.getDamageValue() / (float) stack.getMaxDamage();
                         int minutes = duration / 60;
                         int seconds = duration % 60;
-                        char color = 'a';
+                        ChatFormatting col = ChatFormatting.GREEN;
+                        MutableComponent component = Component.literal("");
 
-                        if (percentDamaged > 0.4f)
-                            color = '2';
-                        if (percentDamaged > 0.60f)
-                            color = 'e';
-                        if (percentDamaged > 0.70f)
-                            color = '6';
-                        if (percentDamaged > 0.85f)
-                            color = 'c';
-                        if (percentDamaged > 0.95f)
-                            color = '4';
-                        String string = (minutes > 1 ? "§" + color + minutes + "§r" + " minutes" + (seconds >= 1 ? " " : "") : minutes == 1 ? "§" + color + minutes + "§r" + " minute" + (seconds >= 1 ? " " : "") : "") + (seconds > 1 ? "§" + color + seconds + "§r" + " seconds" : seconds == 1 ? "§" + color + seconds + "§r" + " second" : "");
+                        if (percentDamaged > 0.4f) {
+                            col = ChatFormatting.DARK_GREEN;
+                        }
+                        if (percentDamaged > 0.60f) {
+                            col = ChatFormatting.YELLOW;
+                        }
+                        if (percentDamaged > 0.70f) {
+                            col = ChatFormatting.GOLD;
+                        }
+                        if (percentDamaged > 0.85f) {
+                            col = ChatFormatting.RED;
+                        }
+                        if (percentDamaged > 0.95f) {
+                            col = ChatFormatting.DARK_RED;
+                        }
+                        MutableComponent minutesText = Component.translatable("tooltip.hexerei.minutes").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999)));
+                        MutableComponent minuteText = Component.translatable("tooltip.hexerei.minute").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999)));
+                        MutableComponent secondsText = Component.translatable("tooltip.hexerei.seconds").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999)));
+                        MutableComponent secondText = Component.translatable("tooltip.hexerei.second").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999)));
+
+                        if(minutes > 1){
+                            component.append(String.valueOf(minutes)).withStyle(Style.EMPTY.withColor(col)).append(" ").append(minutesText);
+                            if(seconds >= 1){
+                                component.append(" ");
+                                if(seconds > 1){
+                                    component.append(String.valueOf(seconds)).withStyle(Style.EMPTY.withColor(col)).append(" ").append(secondsText);
+                                } else {
+                                    component.append(String.valueOf(seconds)).withStyle(Style.EMPTY.withColor(col)).append(" ").append(secondText);
+                                }
+                            }
+                        } else if(minutes == 1){
+                            component.append(String.valueOf(minutes)).withStyle(Style.EMPTY.withColor(col)).append(" ").append(minuteText);
+                            if(seconds >= 1){
+                                component.append(" ");
+                                if(seconds > 1){
+                                    component.append(String.valueOf(seconds)).withStyle(Style.EMPTY.withColor(col)).append(" ").append(secondsText);
+                                } else {
+                                    component.append(String.valueOf(seconds)).withStyle(Style.EMPTY.withColor(col)).append(" ").append(secondText);
+                                }
+                            }
+                        }
+
                         MutableComponent itemText = Component.translatable(ModBlocks.SAGE_BURNING_PLATE.get().getDescriptionId()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x998800)));
 
-                        tooltip.add(Component.translatable("tooltip.hexerei.dried_sage_bundle_shift_1", string).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                        tooltip.add(Component.translatable("tooltip.hexerei.dried_sage_bundle_shift_1", component).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                         tooltip.add(Component.translatable("tooltip.hexerei.dried_sage_bundle_shift_2", itemText).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                     } else {
                         tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-
-//                        tooltip.add(Component.translatable("tooltip.hexerei.dried_sage_bundle").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
-//                        tooltip.add(Component.translatable("tooltip.hexerei.shift_for_info"));
                     }
 
                     super.appendHoverText(stack, world, tooltip, flagIn);
@@ -1553,17 +1613,36 @@ public class ModItems {
                     } else {
                         tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
                     }
-                    super.appendHoverText(stack, world, tooltip, flagIn);
                 }
             });
 
 
     public static final RegistryObject<StandingAndWallBlockItem> WILLOW_BROOM_STAND = ITEMS.register("willow_broom_stand",
-            () -> new StandingAndWallBlockItem(ModBlocks.WILLOW_BROOM_STAND.get(), ModBlocks.WILLOW_BROOM_STAND_WALL.get(), (new Item.Properties()).tab(CreativeModeTab.TAB_DECORATIONS)));
+            () -> new StandingAndWallBlockItem(ModBlocks.WILLOW_BROOM_STAND.get(), ModBlocks.WILLOW_BROOM_STAND_WALL.get(), (new Item.Properties()).tab(CreativeModeTab.TAB_DECORATIONS)){
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+                    if (Screen.hasShiftDown()) {
+                        tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                        tooltip.add(Component.translatable("tooltip.hexerei.broom_stand").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    } else {
+                        tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    }
+                }
+            });
 
 
     public static final RegistryObject<StandingAndWallBlockItem> WITCH_HAZEL_BROOM_STAND = ITEMS.register("witch_hazel_broom_stand",
-            () -> new StandingAndWallBlockItem(ModBlocks.WITCH_HAZEL_BROOM_STAND.get(), ModBlocks.WITCH_HAZEL_BROOM_STAND_WALL.get(), (new Item.Properties()).tab(CreativeModeTab.TAB_DECORATIONS)));
+            () -> new StandingAndWallBlockItem(ModBlocks.WITCH_HAZEL_BROOM_STAND.get(), ModBlocks.WITCH_HAZEL_BROOM_STAND_WALL.get(), (new Item.Properties()).tab(CreativeModeTab.TAB_DECORATIONS)){
+                @Override
+                public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flagIn) {
+                    if (Screen.hasShiftDown()) {
+                        tooltip.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                        tooltip.add(Component.translatable("tooltip.hexerei.broom_stand").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    } else {
+                        tooltip.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+                    }
+                }
+            });
 
     // EGG ITEMS
 

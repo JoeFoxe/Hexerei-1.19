@@ -37,6 +37,22 @@ public class ModRenderTypes extends RenderType {
                     .createCompositeState(false)
     );
 
+    public static final RenderType MOON_PHASE = RenderType.create(
+            "moon_phase",
+            DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
+            VertexFormat.Mode.QUADS,
+            256,
+            true,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
+                    .setTextureState(new TextureStateShard(new ResourceLocation(Hexerei.MOD_ID, "textures/gui/moon_phases.png"), false, false))
+                    .setCullState(RenderStateShard.NO_CULL)
+                    .setLightmapState(RenderStateShard.LIGHTMAP)
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .createCompositeState(false)
+    );
+
     public static final RenderType BLOCK_HILIGHT_LINE = create("block_hilight_line",
             DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.LINES, 256, false, false,
             RenderType.CompositeState.builder().setLineState(THICK_LINE)

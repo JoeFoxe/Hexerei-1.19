@@ -13,12 +13,15 @@ import net.joefoxe.hexerei.block.ModWoodType;
 import net.joefoxe.hexerei.client.renderer.CrowPerchRenderer;
 import net.joefoxe.hexerei.client.renderer.entity.BroomType;
 import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
+import net.joefoxe.hexerei.compat.CurioCompat;
+import net.joefoxe.hexerei.compat.GlassesCurioRender;
 import net.joefoxe.hexerei.config.HexConfig;
 import net.joefoxe.hexerei.container.ModContainers;
 import net.joefoxe.hexerei.data.books.PageDrawing;
 import net.joefoxe.hexerei.data.datagen.ModRecipeProvider;
 import net.joefoxe.hexerei.data.recipes.ModRecipeTypes;
 import net.joefoxe.hexerei.data.tags.ModBiomeTagsProvider;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.event.ModLootModifiers;
 import net.joefoxe.hexerei.events.*;
 import net.joefoxe.hexerei.fluid.ModFluidTypes;
@@ -26,6 +29,7 @@ import net.joefoxe.hexerei.fluid.ModFluids;
 import net.joefoxe.hexerei.integration.HexereiModNameTooltipCompat;
 import net.joefoxe.hexerei.integration.jei.HexereiJeiCompat;
 import net.joefoxe.hexerei.item.ModItems;
+import net.joefoxe.hexerei.light.LightManager;
 import net.joefoxe.hexerei.particle.ModParticleTypes;
 import net.joefoxe.hexerei.screen.*;
 import net.joefoxe.hexerei.sounds.ModSounds;
@@ -70,7 +74,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -92,8 +95,9 @@ import static net.joefoxe.hexerei.util.ClientProxy.MODEL_SWAPPER;
 public class Hexerei {
 
 	public static final String MOD_ID = "hexerei";
-	private static final Lazy<Registrate> REGISTRATE = Lazy.of(() -> new HexRegistrate(MOD_ID)
-	);
+    private static final Lazy<Registrate> REGISTRATE = Lazy.of(() -> new HexRegistrate(MOD_ID)
+    );
+    public static boolean curiosLoaded = false;
 
 	static class HexRegistrate extends Registrate {
 		protected HexRegistrate(String modid) {
@@ -165,6 +169,7 @@ public class Hexerei {
 		//eventBus.addGenericListener(RecipeSerializer.class, ModItems::registerRecipeSerializers);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, HexConfig.CLIENT_CONFIG, "Hexerei-client.toml");
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, HexConfig.COMMON_CONFIG, "Hexerei-common.toml");
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> Mod.EventBusSubscriber.Bus.FORGE.bus().get().register(ClientEvents.class));
 
 		ModItems.register(eventBus);
 		ModBlocks.register(eventBus);
@@ -200,17 +205,19 @@ public class Hexerei {
 		eventBus.addListener(this::doClientStuff);
 
 
-		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MODEL_SWAPPER.registerListeners(eventBus));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MODEL_SWAPPER.registerListeners(eventBus));
 
 //        forgeEventBus.addListener(EventPriority.NORMAL, this::addDimensionalSpacing);
 //        forgeEventBus.addListener(EventPriority.NORMAL, WitchHutStructure::setupStructureSpawns);
 
 
-		// Register ourselves for server and other game events we are interested in
-		MinecraftForge.EVENT_BUS.register(this);
+        // Register ourselves for server and other game events we are interested in
+        MinecraftForge.EVENT_BUS.register(this);
 
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::gatherData);
-	}
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::gatherData);
+
+        curiosLoaded = ModList.get().isLoaded("curios");
+    }
 
 	public void gatherData(GatherDataEvent event) {
 		DataGenerator gen = event.getGenerator();
@@ -261,6 +268,7 @@ public class Hexerei {
 
 			SpawnPlacements.register(ModEntityTypes.CROW.get(), SpawnPlacements.Type.ON_GROUND,
 							Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
+			LightManager.init();
 
 			((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.MANDRAKE_FLOWER.getId(), ModBlocks.POTTED_MANDRAKE_FLOWER);
 			((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.BELLADONNA_FLOWER.getId(), ModBlocks.POTTED_BELLADONNA_FLOWER);
@@ -301,7 +309,6 @@ public class Hexerei {
 		}
 	}
 
-
 	private void doClientStuff(final FMLClientSetupEvent event) {
 		// do something that can only be done on the client
 
@@ -332,6 +339,7 @@ public class Hexerei {
 
 		});
 
+        if (curiosLoaded) GlassesCurioRender.register();
 
 	}
 
@@ -385,11 +393,7 @@ public class Hexerei {
 //    }
 
 	private void enqueueIMC(final InterModEnqueueEvent event) {
-		// some example code to dispatch IMC to another mod
-		InterModComms.sendTo("hexerei", "helloworld", () -> {
-			LOGGER.info("Hello world from the MDK");
-			return "Hello world";
-		});
+        if (curiosLoaded) CurioCompat.sendIMC();
 	}
 
 	private void processIMC(final InterModProcessEvent event) {
@@ -397,16 +401,20 @@ public class Hexerei {
 	}
 
 	private void loadComplete(final FMLLoadCompleteEvent event) {
-		MinecraftForge.EVENT_BUS.register(new SageBurningPlateEvent());
-		MinecraftForge.EVENT_BUS.register(new WitchArmorEvent());
-		MinecraftForge.EVENT_BUS.register(new CrowFluteEvent());
-		MinecraftForge.EVENT_BUS.register(new CrowWhitelistEvent());
+        MinecraftForge.EVENT_BUS.register(new SageBurningPlateEvent());
+        MinecraftForge.EVENT_BUS.register(new WitchArmorEvent());
+        MinecraftForge.EVENT_BUS.register(new CrowFluteEvent());
+        MinecraftForge.EVENT_BUS.register(new CrowWhitelistEvent());
 
-		MinecraftForge.EVENT_BUS.register(new PageDrawing());
-		glassesZoomKeyPressEvent = new GlassesZoomKeyPressEvent();
-		MinecraftForge.EVENT_BUS.register(glassesZoomKeyPressEvent);
+        MinecraftForge.EVENT_BUS.register(new PageDrawing());
+        glassesZoomKeyPressEvent = new GlassesZoomKeyPressEvent();
+        MinecraftForge.EVENT_BUS.register(glassesZoomKeyPressEvent);
 
-	}
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+			if (ModList.get().isLoaded("ars_nouveau")) net.joefoxe.hexerei.compat.LightManagerCompat.fallbackToArs();
+		});
+
+    }
 
 
 }

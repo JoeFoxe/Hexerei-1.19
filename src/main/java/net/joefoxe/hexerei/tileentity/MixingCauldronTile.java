@@ -106,6 +106,8 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
     public float fluidRenderLevel = 0;
     public FluidStack renderedFluid;
 
+    boolean checkCraft = true;
+
 
     public MixingCauldronTile(BlockEntityType<?> tileEntityTypeIn, BlockPos blockPos, BlockState blockState) {
         super(tileEntityTypeIn, blockPos, blockState);
@@ -162,6 +164,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
     @Override
     public void setChanged() {
         super.setChanged();
+        this.checkCraft = true;
         sync();
     }
 
@@ -569,20 +572,22 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
 
 
     public void craft(){
+
+        this.crafting = false;
         SimpleContainer inv = new SimpleContainer(10);
         for (int i = 0; i < 9; i++) {
             inv.setItem(i, this.items.get(i));
         }
 
-        if(PotionMixingRecipes.ALL == null || PotionMixingRecipes.ALL.isEmpty()){
+        if (PotionMixingRecipes.ALL == null || PotionMixingRecipes.ALL.isEmpty()) {
             PotionMixingRecipes.ALL = PotionMixingRecipes.createRecipes();
             PotionMixingRecipes.BY_ITEM = PotionMixingRecipes.sortRecipesByItem(PotionMixingRecipes.ALL);
         }
 
         Optional<MixingCauldronRecipe> recipe = level.getRecipeManager()
                 .getRecipeFor(MixingCauldronRecipe.Type.INSTANCE, inv, level);
-        List<FluidMixingRecipe> recipe2 = PotionMixingRecipes.ALL.stream().filter((potionRecipe) ->{
-            if(potionRecipe.getIngredients().isEmpty()) {
+        List<FluidMixingRecipe> recipe2 = PotionMixingRecipes.ALL.stream().filter((potionRecipe) -> {
+            if (potionRecipe.getIngredients().isEmpty()) {
                 PotionMixingRecipes.ALL = null;
                 return false;
 
@@ -597,18 +602,17 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
         CompoundTag tag = this.fluidStack.isEmpty() ? new CompoundTag() : this.fluidStack.copy().getOrCreateTag();
 
 
-
-        for(FluidMixingRecipe fluidMixingRecipe : recipe2){
+        for (FluidMixingRecipe fluidMixingRecipe : recipe2) {
             boolean fluidEqual = fluidMixingRecipe.getLiquid().isFluidEqual(this.fluidStack);
             ResourceLocation fl1 = ForgeRegistries.FLUIDS.getKey(fluidMixingRecipe.getLiquid().getFluid());
-            if(!fluidEqual && fl1 != null && fl2 != null && fl1.getPath().equals(fl2.getPath())) {
+            if (!fluidEqual && fl1 != null && fl2 != null && fl1.getPath().equals(fl2.getPath())) {
                 boolean flag = NbtUtils.compareNbt(fluidMixingRecipe.getLiquid().copy().getOrCreateTag(), tag, true);
-                if(flag){
+                if (flag) {
                     fluidEqual = true;
                 }
             }
 
-            if(fluidEqual) {
+            if (fluidEqual) {
                 matchesRecipe = true;
                 break;
             }
@@ -620,10 +624,8 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
 //        })) : Optional.empty();
 
 
-        if(!matchesRecipe)
+        if (!matchesRecipe)
             recipe2 = level.getRecipeManager().getRecipeFor(FluidMixingRecipe.Type.INSTANCE, inv, level).stream().toList();
-
-
 
 
         AtomicBoolean firstRecipe = new AtomicBoolean(false);
@@ -638,7 +640,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
             boolean hasEnoughFluid = iRecipe.getFluidLevelsConsumed() <= this.getFluidStack().getAmount();
             boolean needsHeat = iRecipe.getHeatCondition() != FluidMixingRecipe.HeatCondition.NONE;
             boolean needsMoonPhase = iRecipe.getMoonCondition() != MoonPhases.MoonCondition.NONE;
-            if(!needsMoonPhase || MoonPhases.MoonCondition.getMoonPhase(this.level) == iRecipe.getMoonCondition()){
+            if (!needsMoonPhase || MoonPhases.MoonCondition.getMoonPhase(this.level) == iRecipe.getMoonCondition()) {
                 if (fluidEqual && !this.crafted && hasEnoughFluid && outputClear) {
                     BlockState heatSource = level.getBlockState(getPos().below());
                     if (!needsHeat || heatSource.is(HexereiTags.Blocks.HEAT_SOURCES)) {
@@ -672,8 +674,8 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
         });
 
 
-        if(!firstRecipe.get() && !recipe2.isEmpty()){
-            for(FluidMixingRecipe fluidMixingRecipe : recipe2) {
+        if (!firstRecipe.get() && !recipe2.isEmpty()) {
+            for (FluidMixingRecipe fluidMixingRecipe : recipe2) {
                 ItemStack output = fluidMixingRecipe.getResultItem();
                 //ask for delay
                 FluidStack recipeFluid = fluidMixingRecipe.getLiquid();
@@ -682,9 +684,9 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
                 boolean fluidEqual = recipeFluid.isFluidEqual(containerFluid);
 
                 ResourceLocation fl1 = ForgeRegistries.FLUIDS.getKey(fluidMixingRecipe.getLiquid().getFluid());
-                if(!fluidEqual && fl1 != null && fl2 != null && fl1.getPath().equals(fl2.getPath())) {
+                if (!fluidEqual && fl1 != null && fl2 != null && fl1.getPath().equals(fl2.getPath())) {
                     boolean flag = NbtUtils.compareNbt(fluidMixingRecipe.getLiquid().copy().getOrCreateTag(), tag, true);
-                    if(flag){
+                    if (flag) {
                         fluidEqual = true;
                     }
                 }
@@ -694,8 +696,8 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
                 boolean needsHeat = fluidMixingRecipe.getHeatCondition() != FluidMixingRecipe.HeatCondition.NONE;
                 if (fluidEqual && !this.crafted && hasEnoughFluid) {
                     BlockState heatSource = level.getBlockState(getPos().below());
-                    if(!needsHeat || heatSource.is(HexereiTags.Blocks.HEAT_SOURCES)){
-                        if(!heatSource.hasProperty(LIT) || heatSource.getValue(LIT)){
+                    if (!needsHeat || heatSource.is(HexereiTags.Blocks.HEAT_SOURCES)) {
+                        if (!heatSource.hasProperty(LIT) || heatSource.getValue(LIT)) {
                             this.crafting = true;
                             if (this.craftDelay >= craftDelayMax) {
                                 craftTheItem(output);
@@ -714,19 +716,6 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
                 }
             }
         }
-
-        if(this.crafting)
-            this.craftDelay += 2;
-        if(this.craftDelay >= 1)
-            this.craftDelay--;
-        this.crafting = false;
-        if(this.craftDelay > 0 && !level.isClientSide) {
-            this.sync();
-//            this.level.setBlock(worldPosition, this.level.getBlockState(this.worldPosition).setValue(MixingCauldron.CRAFT_DELAY, Mth.clamp(this.craftDelay - 1, 0, MixingCauldronTile.craftDelayMax)), 2);
-        }
-        if(this.craftDelay < 10)
-            this.crafted = false;
-
     }
 
     private void craftTheItem(ItemStack output) {
@@ -772,6 +761,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
 
 
 
+
 //    @Override
     public void tick() {
 
@@ -788,7 +778,27 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
         }
 
         this.tickedGameTime = this.level.getGameTime();
-        craft();
+        if(this.checkCraft) {
+            craft();
+            this.checkCraft = false;
+        }
+
+        if(this.crafting)
+            this.craftDelay += 2;
+        if(this.craftDelay >= 1)
+            this.craftDelay--;
+        if(this.craftDelay > 0 && !level.isClientSide) {
+            this.sync();
+        }
+        if(this.craftDelay > craftDelayMax)
+            craft();
+        if(this.craftDelay < 10) {
+            if(this.crafted){
+                this.checkCraft = true;
+                this.crafted = false;
+            }
+        }
+
         if(extracted)
         {
             extracted = false;

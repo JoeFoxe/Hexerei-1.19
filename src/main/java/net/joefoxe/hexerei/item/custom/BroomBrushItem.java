@@ -8,8 +8,6 @@ import net.joefoxe.hexerei.particle.ModParticleTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -18,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -33,20 +32,12 @@ public class BroomBrushItem extends BroomTickableAttachmentItem {
     // list of particles and their respective random delay
     public List<Tuple<ParticleOptions, Integer>> list = null;
 
-    public int brightness = 0;
     public BroomBrushItem(Properties properties) {
         super(properties);
     }
 
     @Override
     public void tick(BroomEntity broom, ItemStack stack) {
-        if(shouldGlow(broom.level, stack)){
-            if(brightness < 15 && broom.tickCount % 4 == 0)
-                brightness++;
-        } else {
-            if(brightness > 0)
-                brightness--;
-        }
         super.tick(broom, stack);
     }
 

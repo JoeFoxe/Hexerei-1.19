@@ -207,7 +207,7 @@
   "tooltip.hexerei.herb_drying_rack_full": "Hold \u00A7eSHIFT\u00A7r for more Information",
   "tooltip.hexerei.herb_drying_rack_full_shift": "This is just for decoration.",
   "tooltip.hexerei.crystal_ball": "Hold \u00A7eSHIFT\u00A7r for more Information",
-  "tooltip.hexerei.crystal_ball_shift": "WIP for uses for infusing or scrying",
+  "tooltip.hexerei.crystal_ball_shift": "Used to tell if its night/day and what phase of the moon cycle if it's night.",
   "tooltip.hexerei.flower_output_item": "Hold \u00A7eSHIFT\u00A7r for more Information",
   "tooltip.hexerei.flower_output_item_shift": "Can be picked from the related plant by right clicking on the plant when almost fully grown or fully grown, the plant acts like a berry bush and can regrow its products",
   "tooltip.hexerei.coffer": "Decorative storage block",
@@ -1135,6 +1135,19 @@
   "block.hexerei.potted_belladonna_flower": "Potted Belladonna Plant",
   "block.hexerei.potted_mugwort_bush": "Potted Mugwort Bush",
   "block.hexerei.potted_yellow_dock_bush": "Potted Yellow Dock Bush",
+
+  "tooltip.hexerei.hour": "hour",
+  "tooltip.hexerei.hours": "hours",
+  "tooltip.hexerei.minute": "minute",
+  "tooltip.hexerei.minutes": "minutes",
+  "tooltip.hexerei.second": "second",
+  "tooltip.hexerei.seconds": "seconds",
+
+  "hexerei.dynamic_light_on": "Dynamic Light: Enabled",
+  "hexerei.dynamic_light_off": "Dynamic Light: Disabled",
+
+  "block.hexerei.stone_window": "Stone Window",
+  "block.hexerei.stone_window_pane": "Stone Window Pane",
 
   "itemGroup.hexereiModTab": "Hexerei"
 }
