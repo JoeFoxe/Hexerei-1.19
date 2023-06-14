@@ -27,7 +27,7 @@ public class WitchArmorEvent {
     public void onLivingSetAttackTarget(LivingChangeTargetEvent event) {
         if (event.getEntity() instanceof Witch witch) {
             if (isEquippedBy(witch.getTarget(), 2))
-                witch.setTarget(null);
+                event.setNewTarget(null);
         }
     }
 
