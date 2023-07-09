@@ -776,6 +776,7 @@
   "book.hexerei.tooltip_go_to_page": "Go to Page",
   "book.hexerei.crafting_type.crafting_table": "  To craft, you need a 3x3 crafting space and the items shown below.",
   "book.hexerei.crafting_type.mixing_cauldron": "  To craft, you need a Mixing Cauldron and the items shown below.",
+  "book.hexerei.crafting_type.mixing_cauldron_heated": "  To craft, you need a heated Mixing Cauldron and the items shown below.",
   "book.hexerei.crafting_type.dipper": "  To craft, you need a Mixing Cauldron with a Dipper attached and the item and fluid shown below.",
   "book.hexerei.crafting_type.herb_drying_rack": "  To craft, you need a Drying Rack and the item shown below.",
   "book.hexerei.crafting_type.pestle_and_mortar": "  To craft, you need a Pestle and Mortar and the items shown below.",
