@@ -187,6 +187,9 @@
         {
           "page_location": "book_pages/items/items_candle_3"
         },
+        {
+          "page_location": "book_pages/items/items_candle_4"
+        },
 
         {
           "page_location": "book_pages/items/items_candelabra_1"
@@ -231,6 +234,13 @@
         },
         {
           "page_location": "book_pages/items/items_willow_broom_4"
+        },
+
+        {
+          "page_location": "book_pages/items/items_witch_hazel_broom_1"
+        },
+        {
+          "page_location": "book_pages/items/items_witch_hazel_broom_2"
         },
 
         {
@@ -672,6 +682,9 @@
         },
         {
           "page_location": "book_pages/structures/structures_dark_coven_page_2"
+        },
+        {
+          "page_location": "book_pages/structures/structures_nature_coven_page_1"
         }
       ]
     }
