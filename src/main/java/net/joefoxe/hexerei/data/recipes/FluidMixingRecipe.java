@@ -212,7 +212,7 @@ public class FluidMixingRecipe implements Recipe<SimpleContainer> {
             JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
             NonNullList<Ingredient> inputs = NonNullList.withSize(8, Ingredient.EMPTY);
 
-            for (int i = 0; i < inputs.size(); i++) {
+            for (int i = 0; i < ingredients.size(); i++) {
                 inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
             }
 

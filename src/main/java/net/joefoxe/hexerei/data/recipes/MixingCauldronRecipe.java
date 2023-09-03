@@ -94,11 +94,11 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
         boolean flag = false;
 
         // cycle through each recipe slot
-        for(int j = 0; j < 8; j++) {
+        for(Ingredient recipeItem : recipeItems) {
             //cycle through each slot for each recipe slot
             for (int i = 0; i < 8; i++) {
                 //if the recipe matches a slot
-                if (recipeItems.get(j).test(inv.getItem(i))) {
+                if (recipeItem.test(inv.getItem(i))) {
                     // if the slot is not taken up
                     if (!itemMatchesSlot.get(i)) {
                         //mark the slot as taken up
@@ -214,7 +214,7 @@ public class MixingCauldronRecipe implements Recipe<SimpleContainer> {
             JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
             NonNullList<Ingredient> inputs = NonNullList.withSize(8, Ingredient.EMPTY);
 
-            for (int i = 0; i < inputs.size(); i++) {
+            for(int i = 0; i < ingredients.size(); i++) {
                 inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
             }
 
