@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.entity.custom.CrowEntity;
 import net.joefoxe.hexerei.client.renderer.entity.custom.OwlEntity;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.model.ColorableAgeableListModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -159,12 +160,13 @@ public class OwlModel<T extends OwlEntity> extends ColorableAgeableListModel<T> 
         if (!entity.onGround() || !entity.isInSittingPose())
             owl.y = 18.5f;
 
-        float ticks = (entity.tickCount + (entity.getId() * 235f) + Hexerei.getPartial());
+        float ticks = (entity.tickCount + (entity.getId() * 235f) + ClientEvents.getPartial());
+        float partial = ClientEvents.getPartial();
 
-        rightWingBase.zRot = Mth.lerp(Hexerei.getPartial(), entity.rightWingAngleLast, entity.rightWingAngle);
-        leftWingBase.zRot = Mth.lerp(Hexerei.getPartial(), entity.leftWingAngleLast, entity.leftWingAngle);
-        rightWingCloseMiddle.zRot = Mth.lerp(Hexerei.getPartial(), entity.rightWingMiddleAngleLast, entity.rightWingMiddleAngle);
-        leftWingCloseMiddle.zRot = Mth.lerp(Hexerei.getPartial(), entity.leftWingMiddleAngleLast, entity.leftWingMiddleAngle);
+        rightWingBase.zRot = Mth.lerp(partial, entity.rightWingAngleLast, entity.rightWingAngle);
+        leftWingBase.zRot = Mth.lerp(partial, entity.leftWingAngleLast, entity.leftWingAngle);
+        rightWingCloseMiddle.zRot = Mth.lerp(partial, entity.rightWingMiddleAngleLast, entity.rightWingMiddleAngle);
+        leftWingCloseMiddle.zRot = Mth.lerp(partial, entity.leftWingMiddleAngleLast, entity.leftWingMiddleAngle);
         rightWingBase.xRot = 0;
         leftWingBase.xRot = 0;
         rightWingBase.yRot = entity.rightWingFoldAngle;
@@ -226,7 +228,7 @@ public class OwlModel<T extends OwlEntity> extends ColorableAgeableListModel<T> 
             leftTail.xRot = Mth.sin(ticks / 15f) * 0.1f;
             tailMid.xRot = Mth.sin(ticks / 15f) * 0.1f;
 
-            if (entity.isTame() && entity.isInSittingPose()) {
+            if (entity.isInSittingPose()) {
                 rightLeg.xRot = -(float) Math.PI / 4;
                 leftLeg.xRot = -(float) Math.PI / 4;
                 rightLeg.y = -4f + 6.25f;
@@ -319,11 +321,12 @@ public class OwlModel<T extends OwlEntity> extends ColorableAgeableListModel<T> 
                 rightTail.yRot = -Mth.sin(0.15f);
                 leftTail.yRot = Mth.sin(0.15f);
 
-                owl.y = 18.5f + Mth.lerp(Hexerei.getPartial(), entity.bodyYOffsetLast, entity.bodyYOffset);
+                owl.y = 18.5f + Mth.lerp(partial, entity.bodyYOffsetLast, entity.bodyYOffset);
 
-                owl.xRot += Mth.lerp(Hexerei.getPartial(), entity.bodyXRotLast, entity.bodyXRot);
+
+                owl.xRot += (float) (Mth.lerp(partial, entity.bodyXRotLast, entity.bodyXRot) + Math.toRadians(Mth.lerp(partial, entity.itemHeldSwingLast, entity.itemHeldSwing) / 4f));
                 head.xRot -= owl.xRot / 1.5f;
-                head.zRot -= Math.toRadians(netHeadYaw) / 2f;
+                head.zRot -= (float) (Math.toRadians(netHeadYaw) / 2f);
 
 
                 leftLeg.z = -1f;
@@ -335,8 +338,8 @@ public class OwlModel<T extends OwlEntity> extends ColorableAgeableListModel<T> 
                 tailMid.xRot = -owl.xRot / 1.15f;
                 leftTail.xRot = -owl.xRot / 1.15f;
                 rightTail.xRot = -owl.xRot / 1.15f;
-                rightWingBase.yRot += Mth.lerp(Hexerei.getPartial(), entity.rightWingAngleLast, entity.rightWingAngle) / 2f;
-                leftWingBase.yRot += Mth.lerp(Hexerei.getPartial(), entity.leftWingAngleLast, entity.leftWingAngle) / 2f;
+                rightWingBase.yRot += Mth.lerp(partial, entity.rightWingAngleLast, entity.rightWingAngle) / 2f;
+                leftWingBase.yRot += Mth.lerp(partial, entity.leftWingAngleLast, entity.leftWingAngle) / 2f;
             }
 
         }
@@ -353,11 +356,11 @@ public class OwlModel<T extends OwlEntity> extends ColorableAgeableListModel<T> 
             }
             if (entity.browHappyAnimation.getBrowAnim() == OwlEntity.BrowAnim.RIGHT){
                 rightBrow.yRot -= Mth.sin(entity.browHappyAnimation.getBrowRot() / 100f) * 0.2f;
-                body.yRot += Mth.sin(Mth.lerp(Hexerei.getPartial(), entity.browHappyAnimation.getBrowRotLast(), entity.browHappyAnimation.getBrowRot()) / 90f) * 0.2f;
+                body.yRot += Mth.sin(Mth.lerp(partial, entity.browHappyAnimation.getBrowRotLast(), entity.browHappyAnimation.getBrowRot()) / 90f) * 0.2f;
             }
             if (entity.browHappyAnimation.getBrowAnim() == OwlEntity.BrowAnim.LEFT){
                 leftBrow.yRot += Mth.sin(entity.browHappyAnimation.getBrowRot() / 100f) * 0.2f;
-                body.yRot += Mth.sin(Mth.lerp(Hexerei.getPartial(), entity.browHappyAnimation.getBrowRotLast(), entity.browHappyAnimation.getBrowRot()) / 90f) * 0.2f;
+                body.yRot += Mth.sin(Mth.lerp(partial, entity.browHappyAnimation.getBrowRotLast(), entity.browHappyAnimation.getBrowRot()) / 90f) * 0.2f;
             }
             if (entity.isInSittingPose() || entity.isFlying()) {
                 rightLeg.xRot += Mth.sin(entity.browHappyAnimation.getBrowRot() / 100f);
@@ -412,7 +415,7 @@ public class OwlModel<T extends OwlEntity> extends ColorableAgeableListModel<T> 
             beak.xRot = Mth.sin(-entity.peckAnimation.getPeckRot() / 100f);
 
         head.visible = true;
-        head.yRot += Mth.sin(Mth.lerp(Hexerei.getPartial(), entity.headShakeAnimation.getzTiltLast(), entity.headShakeAnimation.getzTilt()) / 100f) * 1.5f;
+        head.yRot += Mth.sin(Mth.lerp(partial, entity.headShakeAnimation.getzTiltLast(), entity.headShakeAnimation.getzTilt()) / 100f) * 1.5f;
 
         this.saveAnimationValues(entity);
     }

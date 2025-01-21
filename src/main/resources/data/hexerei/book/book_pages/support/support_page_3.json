@@ -30,7 +30,31 @@
       "imageWidth": 320,
       "imageHeight": 90,
       "scale": 0.25,
-      "texture": "hexerei:textures/book/pictures/hexerei_patreon.png"
+      "texture": "hexerei:textures/book/pictures/hexerei_patreon.png",
+      "hyperlink": {
+        "url": "https://www.patreon.com/bePatron?u=65768745"
+      },
+      "tooltip":[
+        {
+          "color": 16777215,
+          "text": "book.hexerei.support_page_2.patreon_link_tooltip_1"
+        },
+        {
+          "color_hex": "C64625",
+          "text": "book.hexerei.support_page_2.patreon_link_tooltip_2",
+          "type": "append"
+        },
+        {
+          "color_hex": "A5A5A5",
+          "text": "book.hexerei.support_page_2.patreon_link_tooltip_3",
+          "type": "trail"
+        },
+        {
+          "color_hex": "A5A5A5",
+          "text": "book.hexerei.support_page_2.patreon_link_tooltip_4",
+          "type": "trail"
+        }
+      ]
     },{
       "x": 4.45,
       "y": 4.6,
@@ -70,38 +94,6 @@
       "imageHeight": 184,
       "scale": 0.3,
       "texture": "hexerei:textures/book/pictures/patreon_perks.png"
-    }
-  ],
-  "non_item_tooltips": [
-    {
-      "x": 2.5,
-      "y": 4.1,
-      "width": 0.1,
-      "height": 0.03,
-      "hyperlink": {
-        "url": "https://www.patreon.com/bePatron?u=65768745"
-      },
-      "text_components":[
-        {
-          "color": 16777215,
-          "text": "book.hexerei.support_page_2.patreon_link_tooltip_1"
-        },
-        {
-          "color_hex": "C64625",
-          "text": "book.hexerei.support_page_2.patreon_link_tooltip_2",
-          "type": "append"
-        },
-        {
-          "color_hex": "A5A5A5",
-          "text": "book.hexerei.support_page_2.patreon_link_tooltip_3",
-          "type": "trail"
-        },
-        {
-          "color_hex": "A5A5A5",
-          "text": "book.hexerei.support_page_2.patreon_link_tooltip_4",
-          "type": "trail"
-        }
-      ]
     }
   ]
 }

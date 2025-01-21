@@ -34,8 +34,8 @@ import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -125,7 +125,8 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
             tag.putInt("timesDipped", this.timesDipped);
             tag.putInt("timesDippedMax", this.timesDippedMax);
             tag.putInt("fluidConsumptionAmount", this.fluidConsumptionAmount);
-            tag.put("output", this.output.save(registries));
+            if (!this.output.isEmpty())
+                tag.put("output", this.output.save(registries));
 
             return tag;
         }
@@ -139,7 +140,8 @@ public class CandleDipperTile extends RandomizableContainerBlockEntity implement
             this.timesDipped = tag.getInt("timesDipped");
             this.timesDippedMax = tag.getInt("timesDippedMax");
             this.fluidConsumptionAmount = tag.getInt("fluidConsumptionAmount");
-            this.output = ItemStack.parse(registries, tag.getCompound("output")).orElse(ItemStack.EMPTY);
+            if (tag.contains("output"))
+                this.output = ItemStack.parse(registries, tag.getCompound("output")).orElse(ItemStack.EMPTY);
         }
     }
 

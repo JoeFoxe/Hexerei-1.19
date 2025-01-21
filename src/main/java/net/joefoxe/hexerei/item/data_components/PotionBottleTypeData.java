@@ -12,7 +12,9 @@ public record PotionBottleTypeData(PotionFluid.BottleType bottleType) {
     public static final PotionBottleTypeData EMPTY = new PotionBottleTypeData(PotionFluid.BottleType.REGULAR);
 
     public static final Codec<PotionBottleTypeData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.INT.xmap(PotionFluid.BottleType::byId, PotionFluid.BottleType::ordinal).fieldOf("bottleType").forGetter(PotionBottleTypeData::bottleType)
+
+            PotionFluid.BottleType.CODEC.fieldOf("Bottle").forGetter(PotionBottleTypeData::bottleType)
+//            Codec.INT.xmap(PotionFluid.BottleType::byId, PotionFluid.BottleType::ordinal).fieldOf("Bottle").forGetter(PotionBottleTypeData::bottleType)
         ).apply(instance, PotionBottleTypeData::new)
     );
 

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " L ",
+    "ABS",
+    " L "
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "A": {
+      "tag": "hexerei:tallow_meltable"
+    },
+    "B": {
+      "item": "minecraft:book"
+    },
+    "S": {
+      "item": "hexerei:sage_seed"
+    }
+  },
+  "result": {
+    "id": "hexerei:book_of_shadows"
+  }
+}

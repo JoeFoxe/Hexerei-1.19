@@ -42,6 +42,7 @@ import net.minecraft.world.level.block.AbstractSkullBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.ClientHooks;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
 import java.util.Map;
@@ -71,8 +72,8 @@ public class OwlRenderer extends MobRenderer<OwlEntity, OwlModel<OwlEntity>> {
     }
 
     @Override
-    public void render(OwlEntity crowEntity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn) {
-        super.render(crowEntity, entityYaw, partialTicks, poseStack, bufferIn, packedLightIn);
+    public void render(OwlEntity owlEntity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn) {
+        super.render(owlEntity, entityYaw, partialTicks, poseStack, bufferIn, packedLightIn);
     }
 
     @Override
@@ -120,7 +121,7 @@ public class OwlRenderer extends MobRenderer<OwlEntity, OwlModel<OwlEntity>> {
                     translateToFeet(poseStack);
                     poseStack.translate(0f, 0.1f, 0f);
                     poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, owl.itemHeldSwingLast, owl.itemHeldSwing) * 1.5f));
-                    poseStack.translate(-0.42f, 0.0f, -0.7f);
+                    poseStack.translate(-0.42f, 0.0f, -0.65f);
                     poseStack.scale(1, 1, 1);
 
                     renderBlock(poseStack, bufferIn, packedLightIn, ModBlocks.COURIER_LETTER.get().defaultBlockState());
@@ -131,8 +132,8 @@ public class OwlRenderer extends MobRenderer<OwlEntity, OwlModel<OwlEntity>> {
                     poseStack.pushPose();
                     translateToFeet(poseStack);
                     poseStack.mulPose(Axis.XP.rotationDegrees(180));
-                    poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, owl.itemHeldSwingLast, owl.itemHeldSwing)));
-                    poseStack.translate(0.57f, 0.35f, -0.175f);
+                    poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, owl.itemHeldSwingLast, owl.itemHeldSwing) * 1.5f));
+                    poseStack.translate(0.57f, 0.3f, -0.20f);
                     poseStack.mulPose(Axis.ZP.rotationDegrees(180));
                     poseStack.scale(1, 1, 1);
 
@@ -208,27 +209,34 @@ public class OwlRenderer extends MobRenderer<OwlEntity, OwlModel<OwlEntity>> {
         }
 
         @Override
-        public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, OwlEntity crow, float p_117353_, float p_117354_, float p_117355_, float p_117356_, float p_117357_, float p_117358_) {
+        public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, OwlEntity owl, float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
 
             poseStack.pushPose();
-            ItemStack itemstack = crow.itemHandler.getStackInSlot(0);
+            ItemStack itemstack = owl.itemHandler.getStackInSlot(0);
             if (itemstack.getItem() instanceof ArmorItem armoritem) {
 
 
                 EquipmentSlot pSlot = armoritem.getEquipmentSlot();
                 HumanoidModel<?> a = defaultBipedModel;
-                a = getArmorModelHook(crow, itemstack, EquipmentSlot.HEAD, a);
+                a = getArmorModelHook(owl, itemstack, EquipmentSlot.HEAD, a);
+                a.setAllVisible(false);
                 a.hat.visible = true;
                 a.head.visible = true;
+                translateToHead(poseStack);
 
-                Model model = ClientHooks.getArmorModel(Minecraft.getInstance().player, itemstack, pSlot, a);
-                var dyeColor = itemstack.get(DataComponents.DYED_COLOR);
-                int color = dyeColor != null ? FastColor.ABGR32.opaque(dyeColor.rgb()) : -1;
+                poseStack.scale(0.65F, 0.65F, 0.65F);
+                poseStack.translate(0f,  0.15F, -0.05F);
+
+                Model model = ClientHooks.getArmorModel(owl, itemstack, pSlot, a);
                 ArmorMaterial armormaterial = armoritem.getMaterial().value();
                 boolean flag1 = itemstack.hasFoil();
-                for (ArmorMaterial.Layer layer : armormaterial.layers()) {
-                    int j = layer.dyeable() ? color : -1;
-                    ResourceLocation texture = ClientHooks.getArmorTexture(Minecraft.getInstance().player, itemstack, layer, false, pSlot);
+                IClientItemExtensions extensions = IClientItemExtensions.of(itemstack);
+                extensions.setupModelAnimations(owl, itemstack, EquipmentSlot.HEAD, model, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch);
+
+                for (int layerIdx = 0; layerIdx < armormaterial.layers().size(); layerIdx++) {
+                    ArmorMaterial.Layer armormaterial$layer = armormaterial.layers().get(layerIdx);
+                    int j = extensions.getArmorLayerTintColor(itemstack, owl, armormaterial$layer, layerIdx, -1);
+                    ResourceLocation texture = ClientHooks.getArmorTexture(owl, itemstack, armormaterial$layer, false, pSlot);
                     renderHelmet(poseStack, bufferIn, packedLightIn, flag1, a, j, texture);
                 }
 
@@ -241,25 +249,6 @@ public class OwlRenderer extends MobRenderer<OwlEntity, OwlModel<OwlEntity>> {
                     this.renderGlint(poseStack, bufferIn, packedLightIn, model);
                 }
 
-//                HumanoidModel<?> a = defaultBipedModel;
-//                a = getArmorModelHook(crow, itemstack, EquipmentSlot.HEAD, a);
-//                boolean notAVanillaModel = a != defaultBipedModel;
-//                this.setModelSlotVisible(a, EquipmentSlot.HEAD);
-//                translateToHead(poseStack);
-//
-//                poseStack.scale(0.65F, 0.65F, 0.65F);
-//                poseStack.translate(0f,  0.2F, -0.05F);
-//                boolean flag1 = itemstack.hasFoil();
-//                if (armoritem instanceof DyeableLeatherItem) { // Allow this for anything, not only cloth
-//                    int i = ((DyeableLeatherItem) armoritem).getColor(itemstack);
-//                    float f = (float) (i >> 16 & 255) / 255.0F;
-//                    float f1 = (float) (i >> 8 & 255) / 255.0F;
-//                    float f2 = (float) (i & 255) / 255.0F;
-//                    renderHelmet(crow, poseStack, bufferIn, packedLightIn, flag1, a, f, f1, f2, getArmorResource(crow, itemstack, EquipmentSlot.HEAD, null), notAVanillaModel);
-//                    renderHelmet(crow, poseStack, bufferIn, packedLightIn, flag1, a, 1.0F, 1.0F, 1.0F, getArmorResource(crow, itemstack, EquipmentSlot.HEAD, "overlay"), notAVanillaModel);
-//                } else {
-//                    renderHelmet(crow, poseStack, bufferIn, packedLightIn, flag1, a, 1.0F, 1.0F, 1.0F, getArmorResource(crow, itemstack, EquipmentSlot.HEAD, null), notAVanillaModel);
-//                }
             }
             else if((Block.byItem(itemstack.getItem())) instanceof AbstractSkullBlock)
             {
@@ -267,12 +256,10 @@ public class OwlRenderer extends MobRenderer<OwlEntity, OwlModel<OwlEntity>> {
                 poseStack.scale(0.45F, 0.45F, 0.45F);
                 poseStack.translate(0f, -0.25F, -0.2F);
                 poseStack.mulPose(Axis.ZP.rotationDegrees(180));
-                renderItem(itemstack, crow.level(), poseStack, bufferIn, packedLightIn);
+                renderItem(itemstack, owl.level(), poseStack, bufferIn, packedLightIn);
             }
 
             poseStack.popPose();
-
-
 
         }
 
@@ -281,8 +268,6 @@ public class OwlRenderer extends MobRenderer<OwlEntity, OwlModel<OwlEntity>> {
             Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, combinedLightIn,
                     OverlayTexture.NO_OVERLAY, poseStack, bufferIn, level, 1);
         }
-
-        private static final Map<String, ResourceLocation> ARMOR_TEXTURE_RES_MAP = Maps.newHashMap();
 
         private void translateToHead(PoseStack poseStack) {
             translateToChest(poseStack);

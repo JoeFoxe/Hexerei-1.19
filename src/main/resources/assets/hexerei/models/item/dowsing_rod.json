@@ -1,9 +1,9 @@
 {
 	"parent": "item/generated",
 	"overrides": [
-		{ "predicate": { "angle": 0.0 }, "model": "hexerei:item/dowsing_rod1" },
-		{ "predicate": { "angle": 0.1 }, "model": "hexerei:item/dowsing_rod2" },
-		{ "predicate": { "angle": 0.2 }, "model": "hexerei:item/dowsing_rod3" },
-		{ "predicate": { "angle": 0.3 }, "model": "hexerei:item/dowsing_rod4" }
+		{ "predicate": { "hexerei:angle": 0.0 }, "model": "hexerei:item/dowsing_rod1" },
+		{ "predicate": { "hexerei:angle": 0.1 }, "model": "hexerei:item/dowsing_rod2" },
+		{ "predicate": { "hexerei:angle": 0.2 }, "model": "hexerei:item/dowsing_rod3" },
+		{ "predicate": { "hexerei:angle": 0.3 }, "model": "hexerei:item/dowsing_rod4" }
 	]
 }

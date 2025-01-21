@@ -2,6 +2,7 @@ package net.joefoxe.hexerei.mixin;
 
 import com.mojang.blaze3d.Blaze3D;
 import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.events.GlassesZoomKeyPressEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.util.SmoothDouble;
@@ -20,7 +21,7 @@ public class MouseHandlerMixin {
     @Shadow
     Minecraft minecraft;
     @Shadow
-    private double lastMouseEventTime;
+    private double lastHandleMovementTime;
     @Shadow
     private double accumulatedDX;
     @Shadow
@@ -45,9 +46,9 @@ public class MouseHandlerMixin {
 
             callback.cancel();
         }
-        if(this.minecraft.options.getCameraType().isFirstPerson() && Hexerei.glassesZoomKeyPressEvent != null && Hexerei.glassesZoomKeyPressEvent.zoomToggled){
+        if(this.minecraft.options.getCameraType().isFirstPerson() && GlassesZoomKeyPressEvent.zoomToggled){
             double d0 = Blaze3D.getTime();
-            this.lastMouseEventTime = d0;
+            this.lastHandleMovementTime = d0;
             if (this.isMouseGrabbed() && this.minecraft.isWindowActive() && this.minecraft.player != null && !this.minecraft.player.isScoping()) {
                 double d4 = this.minecraft.options.sensitivity().get() * (double) 0.6F + (double) 0.2F;
 

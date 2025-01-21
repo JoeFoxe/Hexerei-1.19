@@ -28,7 +28,7 @@ public class BottlingRecipeJEI {
     public static List<CauldronEmptyingRecipe> getRecipeList(RecipeManager rm) {
 
 
-        List<CauldronEmptyingRecipe> recipeList = new ArrayList<>(rm.getAllRecipesFor(ModRecipeTypes.CAULDRON_EMPTYING_TYPE.get())).stream().map(RecipeHolder::value).toList();
+        List<CauldronEmptyingRecipe> recipeList = new ArrayList<>(new ArrayList<>(rm.getAllRecipesFor(ModRecipeTypes.CAULDRON_EMPTYING_TYPE.get())).stream().map(RecipeHolder::value).toList());
 //        recipeList.add(new CauldronEmptyingRecipe(HexereiUtil.getResource("cauldron_emptying/" + val + "_to_bottle"), Items.GLASS_BOTTLE.getDefaultInstance(), new FluidStack(Fluids.WATER, 250), PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER)));
 //        recipeList.add(new CauldronEmptyingRecipe(Items.GLASS_BOTTLE.getDefaultInstance(), new FluidStack(Fluids.LAVA, 250), ModItems.LAVA_BOTTLE.get().getDefaultInstance()));
 //        recipeList.add(new CauldronEmptyingRecipe(Items.GLASS_BOTTLE.getDefaultInstance(), new FluidStack(ModFluids.TALLOW_FLUID.get(), 250), ModItems.TALLOW_BOTTLE.get().getDefaultInstance()));
@@ -38,7 +38,7 @@ public class BottlingRecipeJEI {
 
             AtomicBoolean atomicBoolean = new AtomicBoolean(false);
             recipeList.forEach((rec) -> {
-                if (FluidStack.isSameFluidSameComponents(Arrays.stream(rec.getFluid().getFluids()).findFirst().orElse(FluidStack.EMPTY), recipe.getLiquidOutput())){
+                if (FluidStack.isSameFluidSameComponents(rec.getFluid(), recipe.getLiquidOutput())){
                     atomicBoolean.set(true);
                 }
             });
@@ -48,7 +48,7 @@ public class BottlingRecipeJEI {
 //                PotionContents potion = recipe.getLiquidOutput().get(DataComponents.POTION_CONTENTS);
 //                String val = potion != null ? Potion.getName(potion.potion(), "") : "missing";
 //                HexereiUtil.getResource("cauldron_emptying/" + val + "_to_bottle"),
-                recipeList.add(new CauldronEmptyingRecipe(Ingredient.of(Items.GLASS_BOTTLE.getDefaultInstance()), SizedFluidIngredient.of(recipe.getLiquidOutput()), potionItem));
+                recipeList.add(new CauldronEmptyingRecipe(Ingredient.of(Items.GLASS_BOTTLE.getDefaultInstance()), recipe.getLiquidOutput().copyWithAmount(250), potionItem));
             }
         }
 

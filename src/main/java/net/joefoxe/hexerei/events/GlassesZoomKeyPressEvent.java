@@ -1,7 +1,6 @@
 package net.joefoxe.hexerei.events;
 
 import net.joefoxe.hexerei.Hexerei;
-import net.joefoxe.hexerei.compat.CurioCompat;
 import net.joefoxe.hexerei.config.ModKeyBindings;
 import net.joefoxe.hexerei.item.custom.GlassesItem;
 import net.joefoxe.hexerei.util.HexereiUtil;
@@ -19,11 +18,11 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 //@EventBusSubscriber(value = Dist.CLIENT)
 public class GlassesZoomKeyPressEvent {
 
-    public boolean zoomToggled = false;
-    public boolean zoomWithItemToggled = false;
-    public boolean zoomWithKeyToggled = false;
-    public float zoomTo = 0.6f;
-    public float zoomAmount = 1f;
+    public static boolean zoomToggled = false;
+    public static boolean zoomWithItemToggled = false;
+    public static boolean zoomWithKeyToggled = false;
+    public static float zoomTo = 0.6f;
+    public static float zoomAmount = 1f;
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
@@ -36,9 +35,9 @@ public class GlassesZoomKeyPressEvent {
                     Player player = Hexerei.proxy.getPlayer();
                     if (player == null) return;
                     boolean curioFlag = false;
-                    if (Hexerei.curiosLoaded) {
-                        curioFlag = CurioCompat.hasGlasses(player);
-                    }
+//                    if (Hexerei.curiosLoaded) {
+//                        curioFlag = CurioCompat.hasGlasses(player);
+//                    }
                     if (player.getInventory().getArmor(3).getItem() instanceof GlassesItem || curioFlag) {
                         zoomWithKeyToggled = !zoomWithKeyToggled;
                         if (zoomWithKeyToggled)
@@ -67,9 +66,9 @@ public class GlassesZoomKeyPressEvent {
             if (player == null) return;
             Item item = player.getInventory().getArmor(3).getItem();
             boolean curioFlag = false;
-            if (Hexerei.curiosLoaded) {
-                curioFlag = CurioCompat.hasGlasses(player);
-            }
+//            if (Hexerei.curiosLoaded) {
+//                curioFlag = CurioCompat.hasGlasses(player);
+//            }
             if (!(item instanceof GlassesItem || curioFlag)) {
                 zoomWithKeyToggled = false;
             }

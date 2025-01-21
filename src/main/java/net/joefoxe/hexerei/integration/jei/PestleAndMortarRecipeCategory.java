@@ -35,6 +35,16 @@ public class PestleAndMortarRecipeCategory implements IRecipeCategory<PestleAndM
     }
 
     @Override
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
+    }
+
+    @Override
     public RecipeType<PestleAndMortarRecipe> getRecipeType() {
         return new RecipeType<>(PestleAndMortarRecipeCategory.UID, PestleAndMortarRecipe.class);
     }

@@ -31,7 +31,7 @@
       "type": "item",
       "x": 2.5,
       "y": 0.75,
-      "name": "hexerei:reading_glasses"
+      "id": "hexerei:reading_glasses"
     }
   ],
   "images": [

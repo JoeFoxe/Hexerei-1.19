@@ -1,0 +1,36 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 2000
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:red_mushroom"
+    },
+    {
+      "item": "minecraft:brown_mushroom"
+    },
+    {
+      "item": "minecraft:red_mushroom"
+    },
+    {
+      "item": "minecraft:brown_mushroom"
+    },
+    {
+      "item": "hexerei:witch_helmet"
+    },
+    {
+      "item": "minecraft:brown_mushroom"
+    },
+    {
+      "item": "minecraft:red_mushroom"
+    },
+    {
+      "item": "minecraft:brown_mushroom"
+    }
+  ],
+  "output": {
+    "id": "hexerei:mushroom_witch_hat"
+  }
+}

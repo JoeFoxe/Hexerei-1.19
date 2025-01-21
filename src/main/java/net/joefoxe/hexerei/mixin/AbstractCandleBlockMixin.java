@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 
 @Mixin(AbstractCandleBlock.class)
 public abstract class AbstractCandleBlockMixin {
-    @Inject(method = "extinguish", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "extinguish", at = @At("HEAD"), cancellable = true)
     private static void extinguish(@Nullable Player player, BlockState blockState, LevelAccessor level, BlockPos blockPos, CallbackInfo ci) {
 
         if(blockState.getBlock() instanceof Candle candle){

@@ -8,6 +8,7 @@ import net.joefoxe.hexerei.block.custom.Candle;
 import net.joefoxe.hexerei.client.renderer.entity.model.CandleModel;
 import net.joefoxe.hexerei.data.candle.CandleData;
 import net.joefoxe.hexerei.data.candle.PotionCandleEffect;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.tileentity.CandleTile;
 import net.joefoxe.hexerei.tileentity.renderer.CandleRenderer;
 import net.joefoxe.hexerei.util.DynamicTextureHandler;
@@ -60,9 +61,12 @@ public class CandleItemRenderer extends CustomItemRenderer {
             Block block = blockItem.getBlock();
             if (block instanceof Candle candle && candle.newBlockEntity(BlockPos.ZERO, block.defaultBlockState()) instanceof CandleTile te) {
                 te.setHeight(CandleItem.getHeight(stack));
-                te.setDyeColor(HexereiUtil.getDyeColor(stack));
-                if (!stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().isEmpty())
-                    te.candles.get(0).load(stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag(), Hexerei.proxy.getLevel().registryAccess());
+                te.setDyeColor(HexereiUtil.getDyeColor(stack, Candle.BASE_COLOR));
+                if (!stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().isEmpty()) {
+                    te.candles.get(0).load(stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag(), Hexerei.DynamicRegistries.get());
+                    if (stack.has(DataComponents.DYED_COLOR))
+                        te.candles.get(0).dyeColor = stack.get(DataComponents.DYED_COLOR).rgb();
+                }
                 return te;
             }
         }
@@ -244,7 +248,7 @@ public class CandleItemRenderer extends CustomItemRenderer {
 
                     TextureAtlasSprite sprite = CandleRenderer.getFirstSprite(blockState);
                     if (sprite != null) {
-                        float offset = Hexerei.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTimeNs();
+                        float offset = ClientEvents.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTimeNs();
                         VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(ResourceLocation.parse(sprite.contents().name().getNamespace() + ":textures/" + sprite.contents().name().getPath() + ".png"), (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
                         if (candleData.height != 0 && candleData.height <= 7) {
                             swirlLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, HexereiUtil.getColorValueAlpha(col[0], col[1], col[2], 0.75F));
@@ -253,7 +257,7 @@ public class CandleItemRenderer extends CustomItemRenderer {
                 }
             } else {
 
-                float offset = Hexerei.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTimeNs();
+                float offset = ClientEvents.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTimeNs();
                 VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(candleData.swirl.layer, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
                 if (candleData.height != 0 && candleData.height <= 7) {
                     swirlLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, HexereiUtil.getColorValueAlpha(col[0], col[1], col[2], 0.75F));

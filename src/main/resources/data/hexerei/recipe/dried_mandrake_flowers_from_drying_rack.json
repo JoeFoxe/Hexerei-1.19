@@ -1,0 +1,10 @@
+{
+  "type": "hexerei:drying_rack",
+  "input": {
+    "item": "hexerei:mandrake_flowers"
+  },
+  "output": {
+    "id": "hexerei:dried_mandrake_flowers"
+  },
+  "dryingTime": 2000
+}

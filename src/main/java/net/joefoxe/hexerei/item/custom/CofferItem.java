@@ -2,6 +2,7 @@ package net.joefoxe.hexerei.item.custom;
 
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.container.CofferContainer;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.item.ModDataComponents;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.Minecraft;
@@ -68,7 +69,7 @@ public class CofferItem extends BlockItem {
     public static int getDyeColorNamed(String name) {
 
         if(HexereiUtil.getDyeColorNamed(name)!= null){
-            float f3 = (((Hexerei.getClientTicks()) / 10f * 4) % 16) / (float) 16;
+            float f3 = (((ClientEvents.getClientTicks()) / 10f * 4) % 16) / (float) 16;
 
             DyeColor col1 = HexereiUtil.getDyeColorNamed(name, 0);
             DyeColor col2 = HexereiUtil.getDyeColorNamed(name, 1);

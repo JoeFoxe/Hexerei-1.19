@@ -1,0 +1,44 @@
+{
+  "type": "hexerei:dipper",
+  "fluid": {
+    "id": "hexerei:potion",
+    "amount": 100,
+    "components": {
+      "hexerei:potion_bottle_type": {
+        "Bottle": "REGULAR"
+      },
+      "minecraft:potion_contents": {
+        "potion": "minecraft:thick"
+      }
+    }
+  },
+  "input": {
+    "id": "hexerei:candle"
+  },
+  "output": {
+    "id": "hexerei:candle",
+    "components": {
+      "minecraft:custom_data": {
+        "effect": "hexerei:sunshine_effect",
+        "effectParticle": {
+          "particle0": "minecraft:electric_spark",
+          "particle1": "minecraft:firework",
+          "particle2": "minecraft:enchanted_hit",
+          "particle3": "minecraft:end_rod"
+        },
+        "swirl": {
+          "layer": "hexerei:textures/block/candle_swirl_layer.png",
+          "meltingSpeedMultiplier": 1.0,
+          "radiusMultiplier": 1.0,
+          "effectAmplifierMultiplier": 1.0,
+          "effectCooldownMultiplier": 1.0,
+          "effectDurationMultiplier": 1.0
+        }
+      }
+    }
+  },
+  "useInputItemAsOutput": true,
+  "dippingTime": 150,
+  "dryingTime": 100,
+  "numberOfDips": 3
+}

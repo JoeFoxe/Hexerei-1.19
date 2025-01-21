@@ -1,0 +1,37 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "fluid": {
+    "id": "minecraft:lava",
+    "amount": 250
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    }
+  ],
+  "output": {
+    "id": "hexerei:sage_burning_plate"
+  },
+  "heatRequirement": "heated"
+}

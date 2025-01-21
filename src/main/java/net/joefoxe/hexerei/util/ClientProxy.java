@@ -8,6 +8,7 @@ import net.joefoxe.hexerei.block.connected.StitchedSprite;
 import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
 import net.joefoxe.hexerei.client.renderer.entity.model.*;
 import net.joefoxe.hexerei.client.renderer.entity.render.*;
+import net.joefoxe.hexerei.config.HexConfig;
 import net.joefoxe.hexerei.item.ModItemProperties;
 import net.joefoxe.hexerei.item.custom.BroomItem;
 import net.joefoxe.hexerei.item.custom.CofferItem;
@@ -24,16 +25,19 @@ import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -50,6 +54,7 @@ import java.util.function.Supplier;
 
 import static net.joefoxe.hexerei.block.connected.StitchedSprite.ALL;
 
+@OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(value = Dist.CLIENT, modid = Hexerei.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class ClientProxy implements SidedProxy {
     public static KeyMapping[] keys = null;
@@ -67,6 +72,21 @@ public class ClientProxy implements SidedProxy {
 
     public static Map<String, Font> fontList = new HashMap<>();
     public static int fontIndex = 0;
+
+
+    public static Font font() {
+        if (ClientProxy.fontIndex == 0)
+            return Minecraft.getInstance().font;
+        else {
+            int index = ClientProxy.fontIndex % HexConfig.FONT_LIST.get().size();
+            Font toReturn = ClientProxy.fontList.get(HexConfig.FONT_LIST.get().get(index));
+            return toReturn == null ? Minecraft.getInstance().font : toReturn;
+        }
+//		if(clientTicks % 40 > 20)
+//			return fontList.values().stream().toList().get(0);
+//		return fontList.values().stream().toList().get(1);
+//		return font;
+    }
 
     @Override
     public Player getPlayer() {
@@ -192,7 +212,7 @@ public class ClientProxy implements SidedProxy {
 
     public static void initArmors(BiConsumer<ModelLayerLocation, Supplier<LayerDefinition>> consumer) {
 
-        consumer.accept(ClientProxy.WITCH_ARMOR_LAYER, () -> LayerDefinition.create(WitchArmorModel.createBodyLayer(), 128, 128));
+        consumer.accept(ClientProxy.WITCH_ARMOR_LAYER, () -> LayerDefinition.create(WitchArmorModel.createBodyLayer(CubeDeformation.NONE), 128, 128));
         consumer.accept(ClientProxy.MUSHROOM_WITCH_ARMOR_LAYER, () -> LayerDefinition.create(MushroomWitchArmorModel.createBodyLayer(), 128, 128));
     }
 

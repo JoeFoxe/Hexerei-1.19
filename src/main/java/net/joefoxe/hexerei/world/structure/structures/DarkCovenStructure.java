@@ -117,39 +117,38 @@ public class DarkCovenStructure extends Structure {
 
         try {
 
-            //TODO uncomment once connecting textures fixed
-//            for (BlockPos blockPos : BlockPos.betweenClosed(pBoundingBox.minX(), pBoundingBox.minY(), pBoundingBox.minZ(), pBoundingBox.maxX(), pBoundingBox.maxY(), pBoundingBox.maxZ())) {
-//                if (pPieces.isInsidePiece(blockPos) && pLevel.isAreaLoaded(blockPos, 1) && pLevel.getBlockState(blockPos).is(Blocks.YELLOW_STAINED_GLASS_PANE)) {
-//                    if (pLevel instanceof ServerLevel serverLevel) {
-//                        // Always replace the glass itself with witch hazel pillar
-//                        serverLevel.setBlockAndUpdate(blockPos, ModBlocks.POLISHED_WITCH_HAZEL_PILLAR.get().defaultBlockState());
-//
-//                        // Generate vertical pillar down
-//                        BlockPos.MutableBlockPos mutable = blockPos.below().mutable();
-//                        BlockState currBlock = pLevel.getBlockState(mutable);
-//                        while (mutable.getY() > 0 && canBeReplaced(currBlock)) {
-//                            serverLevel.setBlockAndUpdate(mutable, Blocks.DARK_OAK_LOG.defaultBlockState());
-//                            mutable.move(Direction.DOWN);
-//                            currBlock = serverLevel.getBlockState(mutable);
-//                        }
-//                    } else if (pLevel instanceof WorldGenRegion worldGenRegion) {
-//
-//                        // Always replace the glass itself with witch hazel pillar
-//                        worldGenRegion.setBlock(blockPos, ModBlocks.POLISHED_WITCH_HAZEL_PILLAR.get().defaultBlockState(), 3);
-//
-//                        // Generate vertical pillar down
-//                        BlockPos.MutableBlockPos mutable = blockPos.below().mutable();
-//                        BlockState currBlock = pLevel.getBlockState(mutable);
-//                        while (mutable.getY() > 0 && (currBlock.canBeReplaced() || currBlock.isAir() || currBlock.is(BlockTags.LEAVES) || currBlock.is(Blocks.WATER) || currBlock.is(Blocks.LAVA))) {
-//                            worldGenRegion.setBlock(mutable, Blocks.DARK_OAK_LOG.defaultBlockState(), 3);
-//                            mutable.move(Direction.DOWN);
-//                            currBlock = worldGenRegion.getBlockState(mutable);
-//                        }
-//                    }
-//
-//
-//                }
-//            }
+            for (BlockPos blockPos : BlockPos.betweenClosed(pBoundingBox.minX(), pBoundingBox.minY(), pBoundingBox.minZ(), pBoundingBox.maxX(), pBoundingBox.maxY(), pBoundingBox.maxZ())) {
+                if (pPieces.isInsidePiece(blockPos) && pLevel.isAreaLoaded(blockPos, 1) && pLevel.getBlockState(blockPos).is(Blocks.YELLOW_STAINED_GLASS_PANE)) {
+                    if (pLevel instanceof ServerLevel serverLevel) {
+                        // Always replace the glass itself with witch hazel pillar
+                        serverLevel.setBlockAndUpdate(blockPos, ModBlocks.POLISHED_WITCH_HAZEL_PILLAR.get().defaultBlockState());
+
+                        // Generate vertical pillar down
+                        BlockPos.MutableBlockPos mutable = blockPos.below().mutable();
+                        BlockState currBlock = pLevel.getBlockState(mutable);
+                        while (mutable.getY() > 0 && canBeReplaced(currBlock)) {
+                            serverLevel.setBlockAndUpdate(mutable, Blocks.DARK_OAK_LOG.defaultBlockState());
+                            mutable.move(Direction.DOWN);
+                            currBlock = serverLevel.getBlockState(mutable);
+                        }
+                    } else if (pLevel instanceof WorldGenRegion worldGenRegion) {
+
+                        // Always replace the glass itself with witch hazel pillar
+                        worldGenRegion.setBlock(blockPos, ModBlocks.POLISHED_WITCH_HAZEL_PILLAR.get().defaultBlockState(), 3);
+
+                        // Generate vertical pillar down
+                        BlockPos.MutableBlockPos mutable = blockPos.below().mutable();
+                        BlockState currBlock = pLevel.getBlockState(mutable);
+                        while (mutable.getY() > 0 && (currBlock.canBeReplaced() || currBlock.isAir() || currBlock.is(BlockTags.LEAVES) || currBlock.is(Blocks.WATER) || currBlock.is(Blocks.LAVA))) {
+                            worldGenRegion.setBlock(mutable, Blocks.DARK_OAK_LOG.defaultBlockState(), 3);
+                            mutable.move(Direction.DOWN);
+                            currBlock = worldGenRegion.getBlockState(mutable);
+                        }
+                    }
+
+
+                }
+            }
 
         } catch (Exception err) {
             err.printStackTrace();

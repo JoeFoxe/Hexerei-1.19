@@ -1,21 +1,15 @@
 package net.joefoxe.hexerei.data.recipes;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -23,19 +17,17 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class MixingCauldronRecipe implements Recipe<CraftingInput> {
+public class MixingCauldronRecipe implements Recipe<MixingCauldronRecipe.MixingCauldronRecipeInput> {
 
     private final ItemStack output;
     private final NonNullList<Ingredient> recipeItems;
-    private final FluidStack liquid;
-    private final FluidStack liquidOutput;
-    private final int fluidLevelsConsumed;
+    private final FluidStack fluid;
+    private final FluidStack fluidOutput;
     protected static final List<Boolean> itemMatchesSlot = new ArrayList<>();
 
     private final FluidMixingRecipe.HeatCondition heatCondition;
@@ -47,29 +39,57 @@ public class MixingCauldronRecipe implements Recipe<CraftingInput> {
         return true;
     }
 
-    public MixingCauldronRecipe(ItemStack output, NonNullList<Ingredient> recipeItems, FluidStack liquid, FluidStack liquidOutput, int fluidLevelsConsumed, FluidMixingRecipe.HeatCondition heatCondition, MoonPhases.MoonCondition moonCondition) {
+    public MixingCauldronRecipe(ItemStack output, NonNullList<Ingredient> recipeItems, FluidStack fluid, FluidStack fluidOutput, FluidMixingRecipe.HeatCondition heatCondition, MoonPhases.MoonCondition moonCondition) {
         this.output = output;
         this.recipeItems = recipeItems;
-        this.liquid = liquid;
-        this.liquidOutput = liquidOutput;
-        this.fluidLevelsConsumed = fluidLevelsConsumed;
+        this.fluid = fluid;
+        this.fluidOutput = fluidOutput;
         this.heatCondition = heatCondition;
         this.moonCondition = moonCondition;
 
     }
 
+    public static MixingCauldronRecipeInput createInput(List<ItemStack> items) {
+        return new MixingCauldronRecipeInput(items);
+    }
+
+    public static class MixingCauldronRecipeInput implements RecipeInput {
+        private final List<ItemStack> items;
+        private final StackedContents stackedContents = new StackedContents();
+
+        public MixingCauldronRecipeInput(List<ItemStack> item) {
+            this.items = item;
+
+            for (ItemStack itemstack : item) {
+                if (!itemstack.isEmpty()) {
+                    this.stackedContents.accountStack(itemstack, 1);
+                }
+            }
+        }
+
+        @Override
+        public ItemStack getItem(int i) {
+            return items.get(i);
+        }
+
+        @Override
+        public int size() {
+            return items.size();
+        }
+    }
+
     public List<FluidIngredient> getFluidIngredients(){
-        return new ArrayList<>(List.of(FluidIngredient.of(this.liquid)));
+        return new ArrayList<>(List.of(FluidIngredient.of(this.fluid)));
     }
     public FluidIngredient getFluidIngredient(){
-        return FluidIngredient.of(this.liquid);
+        return FluidIngredient.of(this.fluid);
     }
 
 
     @Override
-    public boolean matches(CraftingInput inv, Level worldIn) {
+    public boolean matches(MixingCauldronRecipeInput inv, Level worldIn) {
 
-        List<Boolean> itemMatchesSlot = Stream.generate(() -> false).limit(8).collect(Collectors.toList());
+        List<Boolean> itemMatchesSlot = Stream.generate(() -> false).limit(inv.size()).collect(Collectors.toList());
 
         // the flag is to break out early in case nothing matches for that slot
         boolean flag = false;
@@ -77,7 +97,7 @@ public class MixingCauldronRecipe implements Recipe<CraftingInput> {
         // cycle through each recipe slot
         for(Ingredient recipeItem : recipeItems) {
             //cycle through each slot for each recipe slot
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < inv.size(); i++) {
                 //if the recipe matches a slot
                 if (recipeItem.test(inv.getItem(i))) {
                     // if the slot is not taken up
@@ -96,7 +116,7 @@ public class MixingCauldronRecipe implements Recipe<CraftingInput> {
             flag = false;
         }
         // checks if a slot is not taken up, if its not taken up then itll not craft
-        for(int i = 0; i < 8; i++) {
+        for(int i = 0; i < inv.size(); i++) {
             if (!itemMatchesSlot.get(i))
                 return false;
         }
@@ -127,7 +147,7 @@ public class MixingCauldronRecipe implements Recipe<CraftingInput> {
 
 
     @Override
-    public ItemStack assemble(CraftingInput p_44001_, HolderLookup.Provider registryAccess) {
+    public ItemStack assemble(MixingCauldronRecipeInput p_44001_, HolderLookup.Provider registryAccess) {
         return output;
     }
 
@@ -148,11 +168,11 @@ public class MixingCauldronRecipe implements Recipe<CraftingInput> {
 
     public FluidMixingRecipe.HeatCondition getHeatCondition() { return this.heatCondition; }
     public MoonPhases.MoonCondition getMoonCondition() { return this.moonCondition; }
-    public FluidStack getLiquid() { return this.liquid; }
+    public FluidStack getLiquid() { return this.fluid.copy(); }
 
-    public FluidStack getLiquidOutput() { return this.liquidOutput; }
+    public FluidStack getLiquidOutput() { return this.fluidOutput.isEmpty() ? this.fluid.copy() : this.fluidOutput.copy(); }
 
-    public int getFluidLevelsConsumed() { return this.fluidLevelsConsumed; }
+    public int getFluidLevelsConsumed() { return this.getLiquid().getAmount(); }
 
     public ItemStack getToastSymbol() {
         return new ItemStack(ModBlocks.MIXING_CAULDRON.get());
@@ -178,10 +198,9 @@ public class MixingCauldronRecipe implements Recipe<CraftingInput> {
         public static final MapCodec<MixingCauldronRecipe> CODEC = RecordCodecBuilder.mapCodec(
                 instance -> instance.group(
                                 ItemStack.CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
-                                NonNullList.codecOf(Ingredient.CODEC).fieldOf("input").forGetter(recipe -> recipe.recipeItems),
-                                FluidStack.CODEC.fieldOf("liquidOutput").forGetter(recipe -> recipe.liquidOutput),
-                                FluidStack.CODEC.fieldOf("liquid").forGetter(recipe -> recipe.liquid),
-                                Codec.INT.fieldOf("fluidLevelsConsumed").forGetter(recipe -> recipe.fluidLevelsConsumed),
+                                NonNullList.codecOf(Ingredient.CODEC).fieldOf("ingredients").forGetter(recipe -> recipe.recipeItems),
+                                FluidStack.CODEC.fieldOf("fluid").forGetter(recipe -> recipe.fluid),
+                                FluidStack.CODEC.optionalFieldOf("fluidOutput", FluidStack.EMPTY).forGetter(recipe -> recipe.fluidOutput),
                                 FluidMixingRecipe.HeatCondition.CODEC.optionalFieldOf("heatRequirement", FluidMixingRecipe.HeatCondition.NONE).forGetter(recipe -> recipe.heatCondition),
                                 MoonPhases.MoonCondition.CODEC.optionalFieldOf("moonRequirement", MoonPhases.MoonCondition.NONE).forGetter(recipe -> recipe.moonCondition)
                         )
@@ -206,12 +225,13 @@ public class MixingCauldronRecipe implements Recipe<CraftingInput> {
             NonNullList<Ingredient> inputs = NonNullList.withSize(buffer.readInt(), Ingredient.EMPTY);
             inputs.replaceAll(ignored -> Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
             FluidStack inputFluid = FluidStack.STREAM_CODEC.decode(buffer);
-            FluidStack outputFluid = FluidStack.STREAM_CODEC.decode(buffer);
-            int fluidLevelsConsumed = ByteBufCodecs.INT.decode(buffer);
+            FluidStack outputFluid = FluidStack.EMPTY;
+            if (buffer.readBoolean())
+                outputFluid = FluidStack.STREAM_CODEC.decode(buffer);
             FluidMixingRecipe.HeatCondition heatCondition = NeoForgeStreamCodecs.enumCodec(FluidMixingRecipe.HeatCondition.class).decode(buffer);
             MoonPhases.MoonCondition moonCondition = NeoForgeStreamCodecs.enumCodec(MoonPhases.MoonCondition.class).decode(buffer);
 
-            return new MixingCauldronRecipe(output, inputs, inputFluid, outputFluid, fluidLevelsConsumed, heatCondition, moonCondition);
+            return new MixingCauldronRecipe(output, inputs, inputFluid, outputFluid, heatCondition, moonCondition);
         }
 
         private static void toNetwork(RegistryFriendlyByteBuf buffer, MixingCauldronRecipe recipe) {
@@ -219,9 +239,10 @@ public class MixingCauldronRecipe implements Recipe<CraftingInput> {
             buffer.writeInt(recipe.recipeItems.size());
             for (Ingredient ingredient : recipe.recipeItems)
                 Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient);
-            FluidStack.STREAM_CODEC.encode(buffer, recipe.liquid);
-            FluidStack.STREAM_CODEC.encode(buffer, recipe.liquidOutput);
-            ByteBufCodecs.INT.encode(buffer, recipe.fluidLevelsConsumed);
+            FluidStack.STREAM_CODEC.encode(buffer, recipe.fluid);
+            buffer.writeBoolean(!recipe.fluidOutput.isEmpty());
+            if (!recipe.fluidOutput.isEmpty())
+                FluidStack.STREAM_CODEC.encode(buffer, recipe.fluidOutput);
             NeoForgeStreamCodecs.enumCodec(FluidMixingRecipe.HeatCondition.class).encode(buffer, recipe.heatCondition);
             NeoForgeStreamCodecs.enumCodec(MoonPhases.MoonCondition.class).encode(buffer, recipe.moonCondition);
         }

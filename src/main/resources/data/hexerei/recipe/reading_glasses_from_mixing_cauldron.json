@@ -1,0 +1,37 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "fluid": {
+    "id": "minecraft:lava",
+    "amount": 250
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "tag": "c:glass_panes/colorless"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:spyglass"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "tag": "c:glass_panes/colorless"
+    }
+  ],
+  "output": {
+    "id": "hexerei:reading_glasses"
+  },
+  "heatRequirement": "heated"
+}

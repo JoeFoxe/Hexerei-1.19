@@ -79,26 +79,11 @@ public class ModConfiguredFeatures {
                 new RandomPatchConfiguration(10, 7, 3, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK,
                         new SimpleBlockConfiguration(BlockStateProvider.simple(ModBlocks.LILY_PAD_BLOCK.get().defaultBlockState())))));
 //
-        register(context, WILLOW_KEY, ModFeatures.WILLOW_TREE.get(), new TreeConfiguration.TreeConfigurationBuilder(
-                BlockStateProvider.simple(ModBlocks.WILLOW_LOG.get()),
-                new StraightTrunkPlacer(5, 6, 3),
-                BlockStateProvider.simple(ModBlocks.WILLOW_LEAVES.get()),
-                new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 4),
-                new TwoLayersFeatureSize(1, 0, 2)).build());
+        register(context, WILLOW_KEY, ModFeatures.WILLOW_TREE.get(), NoneFeatureConfiguration.INSTANCE);
 //
-        register(context, WITCH_HAZEL_KEY, ModFeatures.WITCH_HAZEL_TREE.get(), new TreeConfiguration.TreeConfigurationBuilder(
-                BlockStateProvider.simple(ModBlocks.WITCH_HAZEL_LOG.get()),
-                new StraightTrunkPlacer(5, 6, 3),
-                BlockStateProvider.simple(ModBlocks.WITCH_HAZEL_LEAVES.get()),
-                new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 4),
-                new TwoLayersFeatureSize(1, 0, 2)).build());
+        register(context, WITCH_HAZEL_KEY, ModFeatures.WITCH_HAZEL_TREE.get(), NoneFeatureConfiguration.INSTANCE);
 
-        register(context, MAHOGANY_KEY, ModFeatures.MAHOGANY_TREE.get(), new TreeConfiguration.TreeConfigurationBuilder(
-                BlockStateProvider.simple(ModBlocks.MAHOGANY_LOG.get()),
-                new StraightTrunkPlacer(5, 6, 3),
-                BlockStateProvider.simple(ModBlocks.MAHOGANY_LEAVES.get()),
-                new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 4),
-                new TwoLayersFeatureSize(1, 0, 2)).build());
+        register(context, MAHOGANY_KEY, ModFeatures.MAHOGANY_TREE.get(), NoneFeatureConfiguration.INSTANCE);
     }
 
 }

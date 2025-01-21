@@ -1,0 +1,37 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "fluid": {
+    "id": "minecraft:lava",
+    "amount": 250
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:sand"
+    },
+    {
+      "item": "minecraft:sand"
+    },
+    {
+      "item": "minecraft:sand"
+    },
+    {
+      "item": "minecraft:sand"
+    },
+    {
+      "item": "minecraft:sand"
+    },
+    {
+      "item": "minecraft:sand"
+    },
+    {
+      "item": "minecraft:sand"
+    },
+    {
+      "item": "minecraft:sand"
+    }
+  ],
+  "output": {
+    "id": "hexerei:herb_jar"
+  },
+  "heatRequirement": "heated"
+}

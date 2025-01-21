@@ -1,0 +1,37 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 250
+  },
+  "ingredients": [
+    {
+      "item": "hexerei:infused_fabric"
+    },
+    {
+      "tag": "minecraft:wool"
+    },
+    {
+      "tag": "minecraft:wool"
+    },
+    {
+      "tag": "minecraft:wool"
+    },
+    {
+      "tag": "minecraft:wool"
+    },
+    {
+      "tag": "minecraft:wool"
+    },
+    {
+      "tag": "minecraft:wool"
+    },
+    {
+      "tag": "minecraft:wool"
+    }
+  ],
+  "output": {
+    "id": "hexerei:infused_fabric_block",
+    "count": 8
+  }
+}

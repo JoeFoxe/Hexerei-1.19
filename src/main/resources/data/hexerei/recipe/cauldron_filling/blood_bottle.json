@@ -1,0 +1,14 @@
+{
+    "type": "hexerei:cauldron_filling",
+    "input": {
+        "item": "hexerei:blood_bottle"
+    },
+    "output": {
+        "id": "minecraft:glass_bottle",
+        "count": 1
+    },
+    "fluid": {
+        "id": "hexerei:blood_fluid",
+        "amount": 250
+    }
+}

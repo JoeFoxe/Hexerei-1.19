@@ -152,12 +152,12 @@
 	],
 	"groups": [
 		{
-			"name": "chest",
+			"id": "chest",
 			"origin": [8, 2.5, 8],
 			"color": 0,
 			"children": [
 				{
-					"name": "dyeable",
+					"id": "dyeable",
 					"origin": [8, 4, 12],
 					"color": 0,
 					"children": [0, 1]

@@ -34,28 +34,28 @@ public class ModItemGroup {
 						if (!isBlacklist(entry.get()))
 							output.accept(stack);
 
-//						if (stack.is(ModItems.INFUSED_FABRIC_BLOCK.get())) {
-//							for (DyeColor color : DyeColor.values()) {
-//								if (color.getName().equals("white"))
-//									continue;
-//								ItemStack newStack = ModItems.INFUSED_FABRIC_BLOCK.get().getDefaultInstance();
-//								CompoundTag tag = newStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-//								tag.putString("color", color.getName());
-//								newStack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
-//								output.accept(newStack);
-//							}
-//						}
-//						else if (stack.is(ModItems.INFUSED_FABRIC_CARPET.get())) {
-//							for (DyeColor color : DyeColor.values()) {
-//								if (color.getName().equals("white"))
-//									continue;
-//								ItemStack newStack = ModItems.INFUSED_FABRIC_CARPET.get().getDefaultInstance();
-//								CompoundTag tag = newStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-//								tag.putString("color", color.getName());
-//								newStack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
-//								output.accept(newStack);
-//							}
-//						}
+						if (stack.is(ModItems.INFUSED_FABRIC_BLOCK.get())) {
+							for (DyeColor color : DyeColor.values()) {
+								if (color.getName().equals("white"))
+									continue;
+								ItemStack newStack = ModItems.INFUSED_FABRIC_BLOCK.get().getDefaultInstance();
+								CompoundTag tag = newStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+								tag.putString("color", color.getName());
+								newStack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+								output.accept(newStack);
+							}
+						}
+						else if (stack.is(ModItems.INFUSED_FABRIC_CARPET.get())) {
+							for (DyeColor color : DyeColor.values()) {
+								if (color.getName().equals("white"))
+									continue;
+								ItemStack newStack = ModItems.INFUSED_FABRIC_CARPET.get().getDefaultInstance();
+								CompoundTag tag = newStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+								tag.putString("color", color.getName());
+								newStack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+								output.accept(newStack);
+							}
+						}
 					});
 				}
 			})

@@ -39,7 +39,7 @@ public class SageSeedAdditionModifier extends LootModifier {
     private static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> REGISTER = DeferredRegister.create(
             NeoForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, Hexerei.MOD_ID);
     private static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<SageSeedAdditionModifier>> GRASS_DROPS = REGISTER.register(
-            "animal_fat_drops", () -> CODEC
+            "sage_seed_drops", () -> CODEC
     );
 
     public SageSeedAdditionModifier(LootItemCondition[] lootItemConditions, String addition, Integer count) {
@@ -62,7 +62,7 @@ public class SageSeedAdditionModifier extends LootModifier {
 
     @Override
     public MapCodec<? extends IGlobalLootModifier> codec() {
-        return CODEC;
+        return GRASS_DROPS.get();
     }
 
 }

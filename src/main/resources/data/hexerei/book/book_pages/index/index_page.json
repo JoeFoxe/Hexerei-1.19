@@ -76,10 +76,10 @@
   ],
   "non_item_tooltips": [
     {
-      "x": 1,
-      "y": 0.5,
-      "width": 0.08,
-      "height": 0.03,
+      "x": 0.7,
+      "y": 1,
+      "width": 2.74,
+      "height": 0.564,
       "hyperlink":
       {
         "id": "hexerei:book_pages/intro/intro_page_1"
@@ -97,10 +97,10 @@
       ]
 
     },{
-      "x": 1,
-      "y": 1.5,
-      "width": 0.08,
-      "height": 0.03,
+      "x": 0.7,
+      "y": 1.8,
+      "width": 2.74,
+      "height": 0.564,
       "hyperlink":
       {
         "id": "hexerei:book_pages/items/items_index_page_1"
@@ -118,10 +118,10 @@
       ]
 
     },{
-      "x": 1,
-      "y": 2.5,
-      "width": 0.08,
-      "height": 0.03,
+      "x": 0.7,
+      "y": 2.6,
+      "width": 2.74,
+      "height": 0.564,
       "hyperlink":
       {
         "id": "hexerei:book_pages/entities/entities_index_page_1"
@@ -139,10 +139,10 @@
       ]
 
     },{
-      "x": 1,
-      "y": 3.5,
-      "width": 0.08,
-      "height": 0.03,
+      "x": 0.7,
+      "y": 3.4,
+      "width": 2.74,
+      "height": 0.564,
       "hyperlink":
       {
         "id": "hexerei:book_pages/structures/structures_index_page_1"
@@ -160,10 +160,10 @@
       ]
 
     },{
-      "x": 1,
-      "y": 4.5,
-      "width": 0.08,
-      "height": 0.03,
+      "x": 0.7,
+      "y": 4.2,
+      "width": 2.74,
+      "height": 0.564,
       "hyperlink":
       {
         "id": "hexerei:book_pages/support/support_page_1"

@@ -1,7 +1,7 @@
 package net.joefoxe.hexerei.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.events.GlassesZoomKeyPressEvent;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -21,7 +21,7 @@ public abstract class ItemInHandMixin {
     @OnlyIn(Dist.CLIENT)
     @Inject(method = "renderArmWithItem", at = @At(value = "HEAD"), cancellable = true)
     public void renderArmWithItem(AbstractClientPlayer p_109372_, float p_109373_, float p_109374_, InteractionHand p_109375_, float p_109376_, ItemStack p_109377_, float p_109378_, PoseStack p_109379_, MultiBufferSource p_109380_, int p_109381_, CallbackInfo ci) {
-        if(Hexerei.glassesZoomKeyPressEvent.zoomWithItemToggled){
+        if(GlassesZoomKeyPressEvent.zoomWithItemToggled){
             ci.cancel();
         }
     }

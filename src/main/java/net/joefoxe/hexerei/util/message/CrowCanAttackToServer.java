@@ -13,7 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 public class CrowCanAttackToServer extends AbstractPacket {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CrowCanAttackToServer> CODEC  = StreamCodec.ofMember(CrowCanAttackToServer::encode, CrowCanAttackToServer::new);
-    public static final Type<CrowCanAttackToServer> TYPE = new Type<>(HexereiUtil.getResource("crow_interaction_range_server"));
+    public static final Type<CrowCanAttackToServer> TYPE = new Type<>(HexereiUtil.getResource("crow_can_attack_server"));
 
     @Override
     public Type<? extends CustomPacketPayload> type() {

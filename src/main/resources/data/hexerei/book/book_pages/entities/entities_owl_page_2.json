@@ -76,14 +76,14 @@
       "type": "tag",
       "x": 3.5,
       "y": 2.5,
-      "name": "hexerei:owl_taming_food",
+      "id": "hexerei:owl_taming_food",
       "show_slot": false
     },
     {
       "type": "tag",
       "x": 3.5,
       "y": 3.75,
-      "name": "hexerei:owl_breeding_food",
+      "id": "hexerei:owl_breeding_food",
       "show_slot": false
     }
   ]

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:stone"
+    },
+    {
+      "tag": "c:glass"
+    },
+    {
+      "item": "minecraft:iron_bars"
+    }
+  ],
+
+  "result": {
+    "id": "hexerei:stone_window",
+    "count": 2
+  }
+}

@@ -31,7 +31,7 @@
       "type": "item",
       "x": 2.5,
       "y": 0.75,
-      "name": "hexerei:infused_fabric"
+      "id": "hexerei:infused_fabric"
     }
   ],
   "images": [

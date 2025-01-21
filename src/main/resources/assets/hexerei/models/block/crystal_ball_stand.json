@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"ambientocclusion": false,
-	"render_type": "translucent",
+	"render_type": "cutout",
 	"texture_size": [64, 64],
 	"textures": {
 		"0": "hexerei:block/crystal_ball",

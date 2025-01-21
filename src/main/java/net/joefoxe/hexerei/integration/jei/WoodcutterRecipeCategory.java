@@ -1,6 +1,5 @@
 package net.joefoxe.hexerei.integration.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -34,6 +33,16 @@ public class WoodcutterRecipeCategory implements IRecipeCategory<WoodcutterRecip
     public WoodcutterRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 100, 53);
         this.icon = helper.createDrawableItemStack(new ItemStack(ModBlocks.WILLOW_WOODCUTTER.get()));
+    }
+
+    @Override
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
     }
 
     @Override
@@ -72,6 +81,7 @@ public class WoodcutterRecipeCategory implements IRecipeCategory<WoodcutterRecip
     @Override
     public void draw(WoodcutterRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
 
+        background.draw(guiGraphics);
 //        int dryingTime = recipe.getDryingTime();
         Minecraft minecraft = Minecraft.getInstance();
         guiGraphics.pose().pushPose();

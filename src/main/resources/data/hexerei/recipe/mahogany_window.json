@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "hexerei:mahogany_planks"
+    },
+    {
+      "tag": "c:glass"
+    }
+  ],
+
+  "result": {
+    "id": "hexerei:mahogany_window",
+    "count": 2
+  }
+}

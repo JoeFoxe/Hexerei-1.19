@@ -9,6 +9,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class ClientboundOpenCourierLetterScreenPacket extends AbstractPacket {
 
@@ -40,6 +42,7 @@ public class ClientboundOpenCourierLetterScreenPacket extends AbstractPacket {
         return new ClientboundOpenCourierLetterScreenPacket(buffer.readInt(), buffer.readBoolean() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onClientReceived(Minecraft minecraft, Player player) {
         minecraft.setScreen(new net.joefoxe.hexerei.screen.CourierLetterScreen(slotIndex, hand, slotIndex > 0 ? player.getInventory().getItem(slotIndex) : player.getItemInHand(InteractionHand.OFF_HAND)));

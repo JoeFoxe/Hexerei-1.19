@@ -209,11 +209,11 @@ public class CandleDipperRenderer implements BlockEntityRenderer<CandleDipperTil
             matrixStackIn.pushPose();
             matrixStackIn.translate(tileEntityIn.dipperSlots.get(2).pos.x(), tileEntityIn.dipperSlots.get(2).pos.y(), tileEntityIn.dipperSlots.get(2).pos.z());
             matrixStackIn.mulPose(Axis.YP.rotationDegrees(rotation));
-            if(tileEntityIn.dipperSlots.get(3).timesDipped == 1)
+            if(tileEntityIn.dipperSlots.get(2).timesDipped == 1)
                 renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.CANDLE_DIPPER_CANDLE_1.get().defaultBlockState());
-            if(tileEntityIn.dipperSlots.get(3).timesDipped == 2)
+            if(tileEntityIn.dipperSlots.get(2).timesDipped == 2)
                 renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.CANDLE_DIPPER_CANDLE_2.get().defaultBlockState());
-            if(tileEntityIn.dipperSlots.get(3).timesDipped == 3)
+            if(tileEntityIn.dipperSlots.get(2).timesDipped == 3)
                 renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.CANDLE_DIPPER_CANDLE_3.get().defaultBlockState());
             matrixStackIn.popPose();
         }

@@ -1,0 +1,36 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 250
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "item": "minecraft:stick"
+    },
+    {
+      "item": "hexerei:mandrake_plant"
+    },
+    {
+      "item": "hexerei:belladonna_plant"
+    },
+    {
+      "item": "hexerei:yellow_dock_bush"
+    },
+    {
+      "item": "minecraft:brown_mushroom"
+    },
+    {
+      "item": "minecraft:red_mushroom"
+    },
+    {
+      "item": "minecraft:stick"
+    }
+  ],
+  "output": {
+    "id": "hexerei:herb_drying_rack_full"
+  }
+}

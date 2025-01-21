@@ -18,12 +18,13 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
 
 import java.util.Optional;
 
-public class HexereiMahoganyTreeFeature extends Feature<TreeConfiguration> {
+public class HexereiMahoganyTreeFeature extends Feature<NoneFeatureConfiguration> {
 
     private static final ResourceLocation MAHOGANY_TREE1 = ResourceLocation.parse("hexerei:mahogany_tree1");
     private static final ResourceLocation MAHOGANY_TREE2 = ResourceLocation.parse("hexerei:mahogany_tree2");
@@ -52,11 +53,10 @@ public class HexereiMahoganyTreeFeature extends Feature<TreeConfiguration> {
             return isDirt(state) || block == Blocks.FARMLAND;
         });
     }
-    //    (WorldGenLevel reader, ChunkGenerator generator, Random rand, BlockPos pos, TreeConfiguration config)
+    //    (WorldGenLevel reader, ChunkGenerator generator, Random rand, BlockPos pos, NoneFeatureConfiguration config)
     @Override
-    public boolean place(FeaturePlaceContext<TreeConfiguration> context) {
+    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
         WorldGenLevel reader = context.level();
-        TreeConfiguration config = context.config();
         BlockPos pos = context.origin();
         RandomSource rand = context.random();
 

@@ -203,16 +203,10 @@
 	},
 	"groups": [
 		{
-			"name": "cutout",
+			"id": "cutout",
 			"origin": [14, 3, 7],
 			"color": 0,
-			"children": [0, 1, 2, 3, 4, 5, 6, 7]
-		},
-		{
-			"name": "dyed",
-			"origin": [14, 3, 7],
-			"color": 0,
-			"children": [8, 9, 10, 11]
+			"children": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 		}
 	]
 }

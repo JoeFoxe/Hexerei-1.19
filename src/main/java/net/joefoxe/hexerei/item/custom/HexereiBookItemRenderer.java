@@ -3,9 +3,10 @@ package net.joefoxe.hexerei.item.custom;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.math.Axis;
-import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.data.books.HexereiBookItem;
+import net.joefoxe.hexerei.data.books.PageDrawing;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.item.ModDataComponents;
 import net.joefoxe.hexerei.item.data_components.BookData;
 import net.joefoxe.hexerei.tileentity.BookOfShadowsAltarTile;
@@ -17,7 +18,6 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +28,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
-public class HexereiBookItemRenderer extends CustomItemRendererWithPageDrawing {
+public class HexereiBookItemRenderer extends CustomItemRenderer {
 
     float degreesOpened;
     float degreesOpened2;
@@ -38,20 +38,7 @@ public class HexereiBookItemRenderer extends CustomItemRendererWithPageDrawing {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void renderByItem(ItemStack stack, ItemDisplayContext transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
-
-//        matrixStackIn.pushPose();
-//        matrixStackIn.translate(0.2, -0.1, -0.10);
-//        BlockItem item = ((BlockItem) stack.getItem());
-//        BlockState state = item.getBlock().defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, Direction.SOUTH);
-//        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, ModelData.EMPTY, null);
-//        matrixStackIn.popPose();
-
         this.renderTileStuff(stack, transformType, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
-    }
-
-    public static int getCustomColor(CompoundTag tag) {
-        CompoundTag compoundtag = tag.contains("display") ? tag.getCompound("display") : null;
-        return compoundtag != null && compoundtag.contains("color", 99) ? compoundtag.getInt("color") : 0x422F1E;
     }
 
     public static BookOfShadowsAltarTile loadBlockEntityFromItem(ItemStack item) {
@@ -71,15 +58,15 @@ public class HexereiBookItemRenderer extends CustomItemRendererWithPageDrawing {
     @OnlyIn(Dist.CLIENT)
     public void renderTileStuff(ItemStack stack, ItemDisplayContext transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
 
-        BookOfShadowsAltarTile tileEntityIn = loadBlockEntityFromItem(stack);
+        BookOfShadowsAltarTile altarTile = loadBlockEntityFromItem(stack);
 
 
-        if(tileEntityIn == null)
+        if(altarTile == null)
             return;
 
-        tileEntityIn.tickCount = Hexerei.getClientTicks();
+        altarTile.tickCount = ClientEvents.getClientTicks();
 
-        if(tileEntityIn.itemHandler.getStackInSlot(0).getItem() instanceof HexereiBookItem){
+        if(altarTile.itemHandler.getStackInSlot(0).getItem() instanceof HexereiBookItem) {
 
             BookData bookData = stack.getOrDefault(ModDataComponents.BOOK, BookData.EMPTY);
 
@@ -89,27 +76,22 @@ public class HexereiBookItemRenderer extends CustomItemRendererWithPageDrawing {
             this.degreesOpened2 = 0;
             this.degreesOpened = 45;
             matrixStackIn.pushPose();
-            tileEntityIn.degreesOpened = 90;
-            tileEntityIn.degreesFlopped = 90;
+            altarTile.degreesOpened = 90;
+            altarTile.degreesFlopped = 90;
             if(bookData.isOpened()) {
-                tileEntityIn.degreesOpened = 18;
-                tileEntityIn.degreesFlopped = 0;
+                altarTile.degreesOpened = 18;
+                altarTile.degreesFlopped = 0;
                 this.degreesOpened = -10;
-                tileEntityIn.degreesSpun = 270;
+                altarTile.degreesSpun = 270;
             }
 
-            tileEntityIn.degreesSpunRender = tileEntityIn.degreesSpun;
-            tileEntityIn.degreesFloppedRender = tileEntityIn.degreesFlopped;
-            tileEntityIn.degreesOpenedRender = tileEntityIn.degreesOpened;
-            tileEntityIn.pageOneRotationRender = tileEntityIn.pageOneRotation;
-            tileEntityIn.pageTwoRotationRender = tileEntityIn.pageTwoRotation;
-            if (tileEntityIn.degreesOpened != 90) {
-                try {
-
-                    drawPages(tileEntityIn, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, true, transformType, 0);
-                } catch (CommandSyntaxException e) {
-                    e.printStackTrace();
-                }
+            altarTile.degreesSpunRender = altarTile.degreesSpun;
+            altarTile.degreesFloppedRender = altarTile.degreesFlopped;
+            altarTile.degreesOpenedRender = altarTile.degreesOpened;
+            altarTile.pageOneRotationRender = altarTile.pageOneRotation;
+            altarTile.pageTwoRotationRender = altarTile.pageTwoRotation;
+            if (altarTile.degreesOpened != 90) {
+                altarTile.drawing.drawPages(altarTile, 0, 0, 0, 0, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, PageDrawing.DrawingType.GUI, transformType, ClientEvents.getPartial());
             }
 
 //            this.itemRenderer = Minecraft.getInstance().getItemRenderer();
@@ -121,13 +103,13 @@ public class HexereiBookItemRenderer extends CustomItemRendererWithPageDrawing {
             this.degreesOpened2 = 0;
             this.degreesOpened = 45;
             if (bookData.isOpened()) {
-                tileEntityIn.degreesOpened = 18;
-                tileEntityIn.degreesFlopped = 0;
+                altarTile.degreesOpened = 18;
+                altarTile.degreesFlopped = 0;
                 this.degreesOpened = -10;
-                tileEntityIn.degreesSpun = 270;
+                altarTile.degreesSpun = 270;
             } else {
-                tileEntityIn.degreesOpened = 90;
-                tileEntityIn.degreesFlopped = 90;
+                altarTile.degreesOpened = 90;
+                altarTile.degreesFlopped = 90;
                 if (transformType == ItemDisplayContext.GUI) {
                     yPos = 6 / 16f;
                     xPos = 2 / 16f;
@@ -147,25 +129,24 @@ public class HexereiBookItemRenderer extends CustomItemRendererWithPageDrawing {
             }
 
 
-            tileEntityIn.degreesSpunRender = tileEntityIn.degreesSpun;
-            tileEntityIn.degreesFloppedRender = tileEntityIn.degreesFlopped;
-            tileEntityIn.degreesOpenedRender = tileEntityIn.degreesOpened;
-            tileEntityIn.pageOneRotationRender = tileEntityIn.pageOneRotation;
-            tileEntityIn.pageTwoRotationRender = tileEntityIn.pageTwoRotation;
+            altarTile.degreesSpunRender = altarTile.degreesSpun;
+            altarTile.degreesFloppedRender = altarTile.degreesFlopped;
+            altarTile.degreesOpenedRender = altarTile.degreesOpened;
+            altarTile.pageOneRotationRender = altarTile.pageOneRotation;
+            altarTile.pageTwoRotationRender = altarTile.pageTwoRotation;
 
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f / 16f + xPos, 18f / 16f + yPos, 8f / 16f + zPos);
-            matrixStackIn.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpened / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpened / 5f - 12f));
-            matrixStackIn.translate((float) Math.sin((tileEntityIn.degreesSpunRender + 90f) / 57.1f) / 32f, 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender + 90f) / 57.1f) / 32f);
-            matrixStackIn.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
-            matrixStackIn.mulPose(Axis.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-            matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(tileEntityIn.degreesOpened / 2 + this.degreesOpened)));
+            matrixStackIn.translate((float) Math.sin((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpenedRender / 5f - 12f), 0f / 16f, (float) Math.cos((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpenedRender / 5f - 12f));
+            matrixStackIn.translate(0, ((BookOfShadowsAltarTile.easeFlop(1 - altarTile.degreesFlopped / 90) - 1) / 16f), 0);
+            matrixStackIn.mulPose(Axis.YP.rotationDegrees(altarTile.degreesSpunRender));
+            matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(altarTile.degreesOpened / 2 + this.degreesOpened)));
             matrixStackIn.mulPose(Axis.XP.rotationDegrees(degreesOpened2));
-            matrixStackIn.mulPose(Axis.ZP.rotationDegrees(tileEntityIn.degreesOpened));
-            matrixStackIn.mulPose(Axis.XP.rotationDegrees(-tileEntityIn.degreesFloppedRender));
-            matrixStackIn.translate(0, 0, -(tileEntityIn.degreesFloppedRender / 10f) / 32);
-            matrixStackIn.translate(0, (-0.5f * (tileEntityIn.degreesFloppedRender / 90)) / 16f, (float) Math.sin((tileEntityIn.degreesFloppedRender) / 57.1f) / 32f);
+            matrixStackIn.mulPose(Axis.YP.rotationDegrees(-altarTile.degreesFloppedRender));
+            matrixStackIn.translate(0, 0, -(altarTile.degreesFloppedRender / 10f) / 32);
+            matrixStackIn.mulPose(Axis.ZP.rotationDegrees(altarTile.degreesOpenedRender - 90));
+            matrixStackIn.translate(1f / 32f * (altarTile.degreesOpenedRender / 90f), 1f / 32f * (1 - (altarTile.degreesOpenedRender / 90f)), 0);
             DyeColor col = HexereiUtil.getDyeColorNamed(stack.getHoverName().getString());
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_COVER.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_COVER_CORNERS.get().defaultBlockState(), col == null ? HexereiBookItem.getColor1(stack) : HexereiUtil.getColorValue(col));
@@ -173,113 +154,112 @@ public class HexereiBookItemRenderer extends CustomItemRendererWithPageDrawing {
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f / 16f + xPos, 18f / 16f + yPos, 8f / 16f + zPos);
-            matrixStackIn.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpened / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpened / 5f - 12f));
-            matrixStackIn.translate(-(float) Math.sin((tileEntityIn.degreesSpunRender + 90f) / 57.1f) / 32f, 0f / 16f, -(float) Math.cos((tileEntityIn.degreesSpunRender + 90f) / 57.1f) / 32f);
-            matrixStackIn.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
-            matrixStackIn.mulPose(Axis.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-            matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(tileEntityIn.degreesOpened / 2 + this.degreesOpened)));
+            matrixStackIn.translate((float) Math.sin((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpenedRender / 5f - 12f), 0f / 16f, (float) Math.cos((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpenedRender / 5f - 12f));
+            matrixStackIn.translate(0, ((BookOfShadowsAltarTile.easeFlop(1 - altarTile.degreesFlopped / 90) - 1) / 16f), 0);
+            matrixStackIn.mulPose(Axis.YP.rotationDegrees(altarTile.degreesSpunRender));
+            matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(altarTile.degreesOpened / 2 + this.degreesOpened)));
             matrixStackIn.mulPose(Axis.XP.rotationDegrees(degreesOpened2));
-            matrixStackIn.mulPose(Axis.ZP.rotationDegrees(-tileEntityIn.degreesOpened));
-            matrixStackIn.mulPose(Axis.XP.rotationDegrees(tileEntityIn.degreesFloppedRender));
-            matrixStackIn.translate(0, 0, -(tileEntityIn.degreesFloppedRender / 10f) / 32);
-            matrixStackIn.translate(0, (-0.5f * (tileEntityIn.degreesFloppedRender / 90)) / 16f, -(float) Math.sin((tileEntityIn.degreesFloppedRender) / 57.1f) / 32f);
+            matrixStackIn.mulPose(Axis.YP.rotationDegrees(-altarTile.degreesFloppedRender));
+            matrixStackIn.translate(0, 0, -(altarTile.degreesFloppedRender / 10f) / 32);
+            matrixStackIn.mulPose(Axis.ZP.rotationDegrees(-(altarTile.degreesOpenedRender - 90)));
+            matrixStackIn.translate(-1f / 32f * (altarTile.degreesOpenedRender / 90f), 1f / 32f * (1 - (altarTile.degreesOpenedRender / 90f)), 0);
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_BACK.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_BACK_CORNERS.get().defaultBlockState(), col == null ? HexereiBookItem.getColor1(stack) : HexereiUtil.getColorValue(col));
             matrixStackIn.popPose();
 
             matrixStackIn.pushPose();
             matrixStackIn.translate(8f / 16f + xPos, 18f / 16f + yPos, 8f / 16f + zPos);
-            matrixStackIn.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpened / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpened / 5f - 12f));
-            matrixStackIn.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
-            matrixStackIn.mulPose(Axis.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-            matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(tileEntityIn.degreesOpened / 2 + this.degreesOpened)));
+            matrixStackIn.translate((float) Math.sin((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpened / 5f - 12f), 0f / 16f, (float) Math.cos((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpened / 5f - 12f));
+            matrixStackIn.translate(0, ((BookOfShadowsAltarTile.easeFlop(1 - altarTile.degreesFlopped / 90) - 1) / 16f), 0);
+            matrixStackIn.mulPose(Axis.YP.rotationDegrees(altarTile.degreesSpunRender));
+            matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(altarTile.degreesOpened / 2 + this.degreesOpened)));
             matrixStackIn.mulPose(Axis.XP.rotationDegrees(degreesOpened2));
-            matrixStackIn.mulPose(Axis.YP.rotationDegrees(-tileEntityIn.degreesFloppedRender));
-            matrixStackIn.translate(0, 0, -(tileEntityIn.degreesFloppedRender / 10f) / 32);
+            matrixStackIn.mulPose(Axis.YP.rotationDegrees(-altarTile.degreesFloppedRender));
+            matrixStackIn.translate(0, 0, -(altarTile.degreesFloppedRender / 10f) / 32);
             renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_BINDING.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
             matrixStackIn.popPose();
 
-            if(tileEntityIn.degreesFloppedRender != 90){
+            if(altarTile.degreesFloppedRender != 90){
                 matrixStackIn.pushPose();
                 matrixStackIn.translate(8f / 16f + xPos, 18f / 16f + yPos, 8f / 16f + zPos);
-                matrixStackIn.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpened / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpened / 5f - 12f));
-                matrixStackIn.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
-                matrixStackIn.mulPose(Axis.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-                matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(tileEntityIn.degreesOpened / 2 + this.degreesOpened)));
+                matrixStackIn.translate((float) Math.sin((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpened / 5f - 12f), 0f / 16f, (float) Math.cos((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpened / 5f - 12f));
+                matrixStackIn.translate(0, ((BookOfShadowsAltarTile.easeFlop(1 - altarTile.degreesFlopped / 90) - 1) / 16f), 0);
+                matrixStackIn.mulPose(Axis.YP.rotationDegrees(altarTile.degreesSpunRender));
+                matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(altarTile.degreesOpened / 2 + this.degreesOpened)));
                 matrixStackIn.mulPose(Axis.XP.rotationDegrees(degreesOpened2));
-                matrixStackIn.mulPose(Axis.YP.rotationDegrees(-tileEntityIn.degreesFloppedRender));
-                matrixStackIn.translate(0, 0, -(tileEntityIn.degreesFloppedRender / 10f) / 32);
+                matrixStackIn.mulPose(Axis.YP.rotationDegrees(-altarTile.degreesFloppedRender));
+                matrixStackIn.translate(0, 0, -(altarTile.degreesFloppedRender / 10f) / 32);
                 matrixStackIn.translate(0, 1f / 32f, 0);
-                matrixStackIn.mulPose(Axis.ZP.rotationDegrees((80f - tileEntityIn.degreesOpened / 1.12f)));
-                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(((80f - tileEntityIn.degreesOpened / 1.12f) / 90f) * (-tileEntityIn.pageOneRotationRender)));
-                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(((80f - tileEntityIn.degreesOpened / 1.12f) / 90f) * (tileEntityIn.pageTwoRotationRender / 16f)));
+                matrixStackIn.mulPose(Axis.ZP.rotationDegrees((80f - altarTile.degreesOpened / 1.12f)));
+                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(((80f - altarTile.degreesOpened / 1.12f) / 90f) * (-altarTile.pageOneRotationRender)));
+                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(((80f - altarTile.degreesOpened / 1.12f) / 90f) * (altarTile.pageTwoRotationRender / 16f)));
                 renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_PAGE.get().defaultBlockState());
                 matrixStackIn.popPose();
                 matrixStackIn.pushPose();
                 matrixStackIn.translate(8f / 16f + xPos, 18f / 16f + yPos, 8f / 16f + zPos);
-                matrixStackIn.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpened / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpened / 5f - 12f));
-                matrixStackIn.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
-                matrixStackIn.mulPose(Axis.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-                matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(tileEntityIn.degreesOpened / 2 + this.degreesOpened)));
+                matrixStackIn.translate((float) Math.sin((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpened / 5f - 12f), 0f / 16f, (float) Math.cos((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpened / 5f - 12f));
+                matrixStackIn.translate(0, ((BookOfShadowsAltarTile.easeFlop(1 - altarTile.degreesFlopped / 90) - 1) / 16f), 0);
+                matrixStackIn.mulPose(Axis.YP.rotationDegrees(altarTile.degreesSpunRender));
+                matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(altarTile.degreesOpened / 2 + this.degreesOpened)));
                 matrixStackIn.mulPose(Axis.XP.rotationDegrees(degreesOpened2));
-                matrixStackIn.mulPose(Axis.YP.rotationDegrees(-tileEntityIn.degreesFloppedRender));
-                matrixStackIn.translate(0, 0, -(tileEntityIn.degreesFloppedRender / 10f) / 32);
+                matrixStackIn.mulPose(Axis.YP.rotationDegrees(-altarTile.degreesFloppedRender));
+                matrixStackIn.translate(0, 0, -(altarTile.degreesFloppedRender / 10f) / 32);
                 matrixStackIn.translate(0, 1f / 32f, 0);
-                matrixStackIn.mulPose(Axis.ZP.rotationDegrees((80f - tileEntityIn.degreesOpened / 1.12f)));
-                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(((80f - tileEntityIn.degreesOpened / 1.12f) / 90f) * (-tileEntityIn.pageOneRotation)));
-                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(((80f - tileEntityIn.degreesOpened / 1.12f) / 90f) * (tileEntityIn.pageTwoRotation / 16f)));
-                renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_PAGE.get().defaultBlockState());
-                matrixStackIn.popPose();
-            }
-
-            if(tileEntityIn.turnPage == 1 || tileEntityIn.turnPage == -1){
-                matrixStackIn.pushPose();
-                matrixStackIn.translate(8f / 16f + xPos, 18f / 16f + yPos, 8f / 16f + zPos);
-                matrixStackIn.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpened / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpened / 5f - 12f));
-                matrixStackIn.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
-                matrixStackIn.mulPose(Axis.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-                matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(tileEntityIn.degreesOpened / 2 + this.degreesOpened)));
-                matrixStackIn.mulPose(Axis.XP.rotationDegrees(degreesOpened2));
-                matrixStackIn.mulPose(Axis.YP.rotationDegrees(-tileEntityIn.degreesFloppedRender));
-                matrixStackIn.translate(0, 0, -(tileEntityIn.degreesFloppedRender / 10f) / 32);
-                matrixStackIn.translate(0, 1f / 32f, 0);
-                matrixStackIn.mulPose(Axis.ZP.rotationDegrees((80f - tileEntityIn.degreesOpened / 1.12f)));
-                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(((80f - tileEntityIn.degreesOpened / 1.12f) / 90f) * (-tileEntityIn.pageOneRotationRender / 16f + 180/16f)));
+                matrixStackIn.mulPose(Axis.ZP.rotationDegrees((80f - altarTile.degreesOpened / 1.12f)));
+                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(((80f - altarTile.degreesOpened / 1.12f) / 90f) * (-altarTile.pageOneRotation)));
+                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(((80f - altarTile.degreesOpened / 1.12f) / 90f) * (altarTile.pageTwoRotation / 16f)));
                 renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_PAGE.get().defaultBlockState());
                 matrixStackIn.popPose();
             }
 
-            if(tileEntityIn.degreesFloppedRender != 90){
+            if(altarTile.turnPage == 1 || altarTile.turnPage == -1){
                 matrixStackIn.pushPose();
                 matrixStackIn.translate(8f / 16f + xPos, 18f / 16f + yPos, 8f / 16f + zPos);
-                matrixStackIn.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpened / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpened / 5f - 12f));
-                matrixStackIn.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
-                matrixStackIn.mulPose(Axis.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-                matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(tileEntityIn.degreesOpened / 2 + this.degreesOpened)));
+                matrixStackIn.translate((float) Math.sin((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpened / 5f - 12f), 0f / 16f, (float) Math.cos((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpened / 5f - 12f));
+                matrixStackIn.translate(0, ((BookOfShadowsAltarTile.easeFlop(1 - altarTile.degreesFlopped / 90) - 1) / 16f), 0);
+                matrixStackIn.mulPose(Axis.YP.rotationDegrees(altarTile.degreesSpunRender));
+                matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(altarTile.degreesOpened / 2 + this.degreesOpened)));
                 matrixStackIn.mulPose(Axis.XP.rotationDegrees(degreesOpened2));
-                matrixStackIn.mulPose(Axis.YP.rotationDegrees(-tileEntityIn.degreesFloppedRender));
-                matrixStackIn.translate(0, 0, -(tileEntityIn.degreesFloppedRender / 10f) / 32);
+                matrixStackIn.mulPose(Axis.YP.rotationDegrees(-altarTile.degreesFloppedRender));
+                matrixStackIn.translate(0, 0, -(altarTile.degreesFloppedRender / 10f) / 32);
                 matrixStackIn.translate(0, 1f / 32f, 0);
-                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(-(80f - tileEntityIn.degreesOpened / 1.12f)));
-                matrixStackIn.mulPose(Axis.ZP.rotationDegrees((-(80f - tileEntityIn.degreesOpened / 1.12f) / 90f)*(-tileEntityIn.pageTwoRotationRender)));
-                matrixStackIn.mulPose(Axis.ZP.rotationDegrees((-(80f - tileEntityIn.degreesOpened / 1.12f) / 90f)*(tileEntityIn.pageOneRotationRender / 16f)));
+                matrixStackIn.mulPose(Axis.ZP.rotationDegrees((80f - altarTile.degreesOpened / 1.12f)));
+                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(((80f - altarTile.degreesOpened / 1.12f) / 90f) * (-altarTile.pageOneRotationRender / 16f + 180/16f)));
                 renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_PAGE.get().defaultBlockState());
                 matrixStackIn.popPose();
             }
 
-            if(tileEntityIn.turnPage == 2 || tileEntityIn.turnPage == -1){
+            if(altarTile.degreesFloppedRender != 90){
                 matrixStackIn.pushPose();
                 matrixStackIn.translate(8f / 16f + xPos, 18f / 16f + yPos, 8f / 16f + zPos);
-                matrixStackIn.translate((float) Math.sin((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpened / 5f - 12f), 0f / 16f, (float) Math.cos((tileEntityIn.degreesSpunRender) / 57.1f) / 32f * (tileEntityIn.degreesOpened / 5f - 12f));
-                matrixStackIn.translate(0, -((tileEntityIn.degreesFloppedRender / 90)) / 16f, 0);
-                matrixStackIn.mulPose(Axis.YP.rotationDegrees(tileEntityIn.degreesSpunRender));
-                matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(tileEntityIn.degreesOpened / 2 + this.degreesOpened)));
+                matrixStackIn.translate((float) Math.sin((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpened / 5f - 12f), 0f / 16f, (float) Math.cos((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpened / 5f - 12f));
+                matrixStackIn.translate(0, ((BookOfShadowsAltarTile.easeFlop(1 - altarTile.degreesFlopped / 90) - 1) / 16f), 0);
+                matrixStackIn.mulPose(Axis.YP.rotationDegrees(altarTile.degreesSpunRender));
+                matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(altarTile.degreesOpened / 2 + this.degreesOpened)));
                 matrixStackIn.mulPose(Axis.XP.rotationDegrees(degreesOpened2));
-                matrixStackIn.mulPose(Axis.YP.rotationDegrees(-tileEntityIn.degreesFloppedRender));
-                matrixStackIn.translate(0, 0, -(tileEntityIn.degreesFloppedRender / 10f) / 32);
+                matrixStackIn.mulPose(Axis.YP.rotationDegrees(-altarTile.degreesFloppedRender));
+                matrixStackIn.translate(0, 0, -(altarTile.degreesFloppedRender / 10f) / 32);
                 matrixStackIn.translate(0, 1f / 32f, 0);
-                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(-(80f - tileEntityIn.degreesOpened / 1.12f)));
-                matrixStackIn.mulPose(Axis.ZP.rotationDegrees((-(80f - tileEntityIn.degreesOpened / 1.12f) / 90f) * (-tileEntityIn.pageTwoRotationRender / 16f + 180/16f)));
+                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(-(80f - altarTile.degreesOpened / 1.12f)));
+                matrixStackIn.mulPose(Axis.ZP.rotationDegrees((-(80f - altarTile.degreesOpened / 1.12f) / 90f)*(-altarTile.pageTwoRotationRender)));
+                matrixStackIn.mulPose(Axis.ZP.rotationDegrees((-(80f - altarTile.degreesOpened / 1.12f) / 90f)*(altarTile.pageOneRotationRender / 16f)));
+                renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_PAGE.get().defaultBlockState());
+                matrixStackIn.popPose();
+            }
+
+            if(altarTile.turnPage == 2 || altarTile.turnPage == -1){
+                matrixStackIn.pushPose();
+                matrixStackIn.translate(8f / 16f + xPos, 18f / 16f + yPos, 8f / 16f + zPos);
+                matrixStackIn.translate((float) Math.sin((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpened / 5f - 12f), 0f / 16f, (float) Math.cos((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpened / 5f - 12f));
+                matrixStackIn.translate(0, ((BookOfShadowsAltarTile.easeFlop(1 - altarTile.degreesFlopped / 90) - 1) / 16f), 0);
+                matrixStackIn.mulPose(Axis.YP.rotationDegrees(altarTile.degreesSpunRender));
+                matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(altarTile.degreesOpened / 2 + this.degreesOpened)));
+                matrixStackIn.mulPose(Axis.XP.rotationDegrees(degreesOpened2));
+                matrixStackIn.mulPose(Axis.YP.rotationDegrees(-altarTile.degreesFloppedRender));
+                matrixStackIn.translate(0, 0, -(altarTile.degreesFloppedRender / 10f) / 32);
+                matrixStackIn.translate(0, 1f / 32f, 0);
+                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(-(80f - altarTile.degreesOpened / 1.12f)));
+                matrixStackIn.mulPose(Axis.ZP.rotationDegrees((-(80f - altarTile.degreesOpened / 1.12f) / 90f) * (-altarTile.pageTwoRotationRender / 16f + 180/16f)));
                 renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_PAGE.get().defaultBlockState());
                 matrixStackIn.popPose();
             }

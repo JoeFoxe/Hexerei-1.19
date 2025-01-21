@@ -28,7 +28,7 @@ public class CandleData {
     public int height;
     public boolean lit;
     public float meltTimer;
-    public static int meltTimerMAX = 100;
+    public static int meltTimerMAX = 6000;
     public int dyeColor;
     public int cooldown;
     public CandleLayer base;
@@ -145,10 +145,13 @@ public class CandleData {
     }
 
     public CompoundTag save(HolderLookup.Provider registries){
-        return save(new CompoundTag(), registries, false);
+        return save(new CompoundTag(), registries, false, true);
     }
     public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries, boolean asItem){
-        if(this.dyeColor != Candle.BASE_COLOR)
+        return save(tag, registries, asItem, true);
+    }
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries, boolean asItem, boolean withColor){
+        if(this.dyeColor != Candle.BASE_COLOR && withColor)
             tag.putInt("dyeColor", this.dyeColor);
         if(this.height < 7)
             tag.putInt("height", this.height);

@@ -1,5 +1,6 @@
 package net.joefoxe.hexerei.data.recipes;
 
+import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.item.custom.KeychainItem;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
@@ -73,11 +74,7 @@ public class KeychainRecipe extends CustomRecipe {
             ListTag listtag = new ListTag();
 
             if (!other.isEmpty()) {
-                CompoundTag compoundtag = new CompoundTag();
-                compoundtag.putByte("Slot", (byte)0);
-                other.save(registryAccess, compoundtag);
-                listtag.add(compoundtag);
-
+                listtag.add(other.save(registryAccess));
             }
 
             tag.put("Items", listtag);

@@ -1,0 +1,38 @@
+{
+  "type": "hexerei:fluid_mixing",
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 250
+  },
+  "ingredients": [
+    {
+      "tag": "hexerei:tallow_meltable"
+    },
+    {
+      "tag": "hexerei:tallow_meltable"
+    },
+    {
+      "tag": "hexerei:tallow_meltable"
+    },
+    {
+      "tag": "hexerei:tallow_meltable"
+    },
+    {
+      "tag": "hexerei:tallow_meltable"
+    },
+    {
+      "tag": "hexerei:tallow_meltable"
+    },
+    {
+      "tag": "hexerei:tallow_meltable"
+    },
+    {
+      "tag": "hexerei:tallow_meltable"
+    }
+  ],
+  "output": {
+    "id": "hexerei:tallow_fluid",
+    "amount": 250
+  },
+  "heatRequirement": "heated"
+}

@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "hexerei:willow_chest_boat",
+    "hexerei:mahogany_chest_boat",
+    "hexerei:polished_willow_chest_boat",
+    "hexerei:polished_mahogany_chest_boat"
+  ]
+}

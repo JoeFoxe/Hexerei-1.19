@@ -29,21 +29,21 @@
       "x": 2.5,
       "y": 2,
       "scale": 2.5,
-      "name": "hexerei:crow",
-      "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe_\"}',DyeColor:15,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:crow\",inv:{Items:[{Count:1b,Slot:0,id:\"hexerei:witch_helmet\",tag:{Damage:0,RepairCost:0,display:{Name:'{\"text\":\"joe_\"}',color:1481884}}}],Size:3}}",
+      "id": "hexerei:crow",
+      "tag": "{Owner: [I; 940439953, -167562164, -1601161573, -1389718966], Sitting: 1b, UUID: [I; -1634668069, 186008803, -1187431543, -118718510], OnGround: 1b, DyeColor: -1, Variant: 0, inv: {Size: 3, Items: [{count: 1, Slot: 0, id: \"hexerei:mushroom_witch_hat\"}, {count: 1, Slot: 1, id: \"hexerei:seed_mixture\"}]}, Command: 1}",
 
       "tag_array": [
         {
-          "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe\"}',DyeColor:-1,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:crow\",inv:{Items:[],Size:3}}"
+          "tag": "{Owner: [I; 940439953, -167562164, -1601161573, -1389718966], Sitting: 1b, UUID: [I; -1634668069, 186008803, -1187431543, -118718510], OnGround: 1b, DyeColor: -1, Variant: 0, inv: {Size: 3, Items: []}, Command: 1}"
         },
         {
-          "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe\"}',DyeColor:12,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:crow\",inv:{Items:[],Size:3}}"
+          "tag": "{Owner: [I; 940439953, -167562164, -1601161573, -1389718966], Sitting: 1b, UUID: [I; -1634668069, 186008803, -1187431543, -118718510], CustomName: '\"joe_\"', OnGround: 1b, DyeColor: 12, Variant: 0, inv: {Size: 3, Items: []}, Command: 1}"
         },
         {
-          "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe_\"}',DyeColor:15,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:crow\",inv:{Items:[{Count:1b,Slot:0,id:\"hexerei:witch_helmet\",tag:{Damage:0,RepairCost:0,display:{Name:'{\"text\":\"joe_\"}',color:1481884}}}],Size:3}}"
+          "tag": "{Owner: [I; 940439953, -167562164, -1601161573, -1389718966], Sitting: 1b, UUID: [I; -1634668069, 186008803, -1187431543, -118718510], OnGround: 1b, DyeColor: 15, Variant: 1, inv: {Size: 3, Items: [{count: 1, Slot: 0, id: \"minecraft:turtle_helmet\"}]}, Command: 1}"
         },
         {
-          "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe\"}',DyeColor:-1,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:crow\",inv:{Items:[{Count:1b,Slot:1,id:\"hexerei:seed_mixture\",tag:{}}],Size:3}}"
+          "tag": "{Owner: [I; 940439953, -167562164, -1601161573, -1389718966], Sitting: 1b, UUID: [I; -1634668069, 186008803, -1187431543, -118718510], CustomName: '\"joe_\"', OnGround: 1b, DyeColor: -1, Variant: 2, inv: {Size: 3, Items: [{count: 1, Slot: 0, id: \"hexerei:mushroom_witch_hat\"}, {count: 1, Slot: 1, id: \"hexerei:seed_mixture\"}]}, Command: 1}"
         }
       ],
       "hover_offset": {
@@ -56,7 +56,7 @@
       "x": 2.5,
       "y": 4,
       "scale": 1.5,
-      "name": "hexerei:broom",
+      "id": "hexerei:broom",
       "tag": "{inv: {Size: 30, Items: [{Slot: 0, id: \"hexerei:broom_keychain\", Count: 1b, tag: {Items: [{Slot: 0b, id: \"hexerei:coffer\", Count: 1b, tag: {}}]}}, {Slot: 1, id: \"hexerei:large_satchel\", Count: 1b}, {Slot: 2, id: \"hexerei:broom_brush\", Count: 1b, tag: {Damage: 0}}]}, Type: \"willow\", CustomName: '{\"translate\":\"item.hexerei.willow_broom\"}', floatMode: 0b}",
 
       "tag_array": [
@@ -104,21 +104,27 @@
       "x": 2.5,
       "y": 6.5,
       "scale": 2.5,
-      "name": "hexerei:owl",
-      "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe_\"}',DyeColor:15,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:owl\",inv:{Items:[{Count:1b,Slot:0,id:\"hexerei:witch_helmet\",tag:{Damage:0,RepairCost:0,display:{Name:'{\"text\":\"joe_\"}',color:1481884}}}],Size:3}}",
+      "id": "hexerei:owl",
+      "tag": "{CustomName:'{\"text\":\"joe_\"}',inv:{Size:2,Items:[{count:1,Slot:0,components:{\"minecraft:custom_name\":'\"joe_\"',\"minecraft:dyed_color\":{rgb:12687579}},id:\"hexerei:witch_helmet\"}]},Variant:0,DyeColor:15,Sitting:1b,IsFlyingNav:1b,Age:0,Health:12.0f,OnGround:1b,IsFlying:1b}",
 
       "tag_array": [
         {
-          "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe\"}',DyeColor:-1,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:owl\",inv:{Items:[],Size:3}}"
+          "tag": "{CustomName:'{\"text\":\"joe_\"}',inv:{Size:2,Items:[{count:1,Slot:0,components:{\"minecraft:custom_name\":'\"joe_\"',\"minecraft:dyed_color\":{rgb:12687579}},id:\"hexerei:witch_helmet\"}]},Variant:0,DyeColor:15,Sitting:1b,IsFlyingNav:1b,Age:0,Health:12.0f,OnGround:1b,IsFlying:1b}"
+        },
+        {
+          "tag": "{CustomName:'{\"text\":\"jeb_\"}',inv:{Size:2,Items:[{count:1,Slot:0,id:\"hexerei:mushroom_witch_hat\"}]},Variant:0,DyeColor:-1,Sitting:1b,IsFlyingNav:1b,Age:0,Health:12.0f,OnGround:1b,IsFlying:1b}"
+        },
+        {
+          "tag": "{CustomName:'{\"text\":\"joe\"}',inv:{Size:2,Items:[{count:1b,Slot:1,id:\"minecraft:salmon\"}]},Variant:0,DyeColor:-1,Sitting:1b,IsFlyingNav:1b,Age:0,Health:12.0f,OnGround:1b,IsFlying:1b}"
+        },
+        {
+          "tag": "{CustomName:'{\"text\":\"joe_\"}',inv:{Size:2,Items:[{count:1,Slot:0,components:{\"minecraft:custom_name\":'\"joe_\"',\"minecraft:dyed_color\":{rgb:12687579}},id:\"hexerei:witch_helmet\"},{count:1b,Slot:1,id:\"minecraft:cod\"}]},Variant:0,DyeColor:-1,Sitting:1b,IsFlyingNav:1b,Age:0,Health:12.0f,OnGround:1b,IsFlying:1b}"
+        },
+        {
+          "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe\"}',DyeColor:-1,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:owl\",inv:{Items:[{Count:1b,Slot:0,id:\"minecraft:iron_helmet\",tag:{}}],Size:3}}"
         },
         {
           "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe\"}',DyeColor:12,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:owl\",inv:{Items:[],Size:3}}"
-        },
-        {
-          "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe_\"}',DyeColor:15,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:owl\",inv:{Items:[{Count:1b,Slot:0,id:\"hexerei:witch_helmet\",tag:{Damage:0,RepairCost:0,display:{Name:'{\"text\":\"joe_\"}',color:1481884}}}],Size:3}}"
-        },
-        {
-          "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe\"}',DyeColor:-1,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:owl\",inv:{Items:[{Count:1b,Slot:1,id:\"hexerei:seed_mixture\",tag:{}}],Size:3}}"
         }
       ],
       "hover_offset": {

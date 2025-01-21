@@ -2,6 +2,7 @@ package net.joefoxe.hexerei.block;
 
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.connected.*;
+import net.joefoxe.hexerei.block.connected.behavior.*;
 import net.joefoxe.hexerei.block.custom.*;
 import net.joefoxe.hexerei.block.custom.trees.HexereiTree;
 import net.joefoxe.hexerei.item.ModItems;
@@ -19,10 +20,7 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.ParticleUtils;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -35,389 +33,307 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ModBlocks {
 
-//	private final List<NonNullConsumer<?>> callbacks = new ArrayList<>();
-//	@SubscribeEvent
-//	public void registerEvent(RegisterEvent event) {
-//
-//		callbacks.forEach(c -> c.accept(entry));
-//		callbacks.clear();
-//	}
-
 	public static final DeferredRegister<Block> BLOCKS
 					= DeferredRegister.create(BuiltInRegistries.BLOCK, Hexerei.MOD_ID);
-
-//	public static final Registrate REGISTRATE = Hexerei.registrate();
-
+	public static Map<DeferredHolder<Block, ?>, Consumer<? super Block>> afterRegisterConsumer = new HashMap<>();
 
 
-//	public static final BlockEntry<Block> WILLOW_CONNECTED = REGISTRATE.block("willow_connected", Block::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_GREEN))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WILLOW_CONNECTED)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WILLOW_CONNECTED)))
-//			.register();
-//	public static final BlockEntry<WaxedLayeredBlock> WAXED_WILLOW_CONNECTED = REGISTRATE.block("waxed_willow_connected", WaxedLayeredBlock::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_GREEN))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_WILLOW_CONNECTED)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_WILLOW_CONNECTED)))
-//			.register();
-//
-//	public static final BlockEntry<Block> POLISHED_WILLOW_CONNECTED = REGISTRATE.block("polished_willow_connected", Block::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_GREEN))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_WILLOW_CONNECTED)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_WILLOW_CONNECTED)))
-//			.register();
-//
-//	public static final BlockEntry<WaxedLayeredBlock> WAXED_POLISHED_WILLOW_CONNECTED = REGISTRATE.block("waxed_polished_willow_connected", WaxedLayeredBlock::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_GREEN))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WILLOW_CONNECTED)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_WILLOW_CONNECTED)))
-//			.register();
-//
-//	public static final BlockEntry<ConnectedPillarBlock> POLISHED_WILLOW_PILLAR = REGISTRATE.block("polished_willow_pillar", ConnectedPillarBlock::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_GREEN))
-//			.onRegister(connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.POLISHED_WILLOW_PILLAR_SIDE, AllSpriteShifts.POLISHED_WILLOW_PILLAR_TOP)))
-//			.register();
-//
-//	public static final BlockEntry<WaxedConnectedRotatedPillarBlock> WAXED_POLISHED_WILLOW_PILLAR = REGISTRATE.block("waxed_polished_willow_pillar", WaxedConnectedRotatedPillarBlock::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_GREEN))
-//			.onRegister(connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WILLOW_PILLAR_SIDE, AllSpriteShifts.WAXED_POLISHED_WILLOW_PILLAR_TOP)))
-//			.register();
-//
-//	public static final BlockEntry<LayeredBlock> POLISHED_WILLOW_LAYERED = REGISTRATE.block("polished_willow_layered", LayeredBlock::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_GREEN))
-//			.onRegister(connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.POLISHED_WILLOW_LAYERED, AllSpriteShifts.POLISHED_SMOOTH_WILLOW)))
-//			.register();
-//
-//	public static final BlockEntry<WaxedLayeredBlock> WAXED_POLISHED_WILLOW_LAYERED = REGISTRATE.block("waxed_polished_willow_layered", WaxedLayeredBlock::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_GREEN))
-//			.onRegister(connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WILLOW_LAYERED, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW)))
-//			.register();
-//
-//
-//
-//	public static final BlockEntry<Block> WITCH_HAZEL_CONNECTED = REGISTRATE.block("witch_hazel_connected", Block::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_GREEN))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WITCH_HAZEL_CONNECTED)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WITCH_HAZEL_CONNECTED)))
-//			.register();
-//	public static final BlockEntry<WaxedLayeredBlock> WAXED_WITCH_HAZEL_CONNECTED = REGISTRATE.block("waxed_witch_hazel_connected", WaxedLayeredBlock::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_GREEN))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_WITCH_HAZEL_CONNECTED)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_WITCH_HAZEL_CONNECTED)))
-//			.register();
-//
-//	public static final BlockEntry<Block> POLISHED_WITCH_HAZEL_CONNECTED = REGISTRATE.block("polished_witch_hazel_connected", Block::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_GREEN))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_WITCH_HAZEL_CONNECTED)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_WITCH_HAZEL_CONNECTED)))
-//			.register();
-//
-//	public static final BlockEntry<WaxedLayeredBlock> WAXED_POLISHED_WITCH_HAZEL_CONNECTED = REGISTRATE.block("waxed_polished_witch_hazel_connected", WaxedLayeredBlock::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_GREEN))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WITCH_HAZEL_CONNECTED)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_WITCH_HAZEL_CONNECTED)))
-//			.register();
-//
-//	public static final BlockEntry<ConnectedPillarBlock> POLISHED_WITCH_HAZEL_PILLAR = REGISTRATE.block("polished_witch_hazel_pillar", ConnectedPillarBlock::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_GREEN))
-//			.onRegister(connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.POLISHED_WITCH_HAZEL_PILLAR_SIDE, AllSpriteShifts.POLISHED_WITCH_HAZEL_PILLAR_TOP)))
-//			.register();
-//
-//	public static final BlockEntry<WaxedConnectedRotatedPillarBlock> WAXED_POLISHED_WITCH_HAZEL_PILLAR = REGISTRATE.block("waxed_polished_witch_hazel_pillar", WaxedConnectedRotatedPillarBlock::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_GREEN))
-//			.onRegister(connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WITCH_HAZEL_PILLAR_SIDE, AllSpriteShifts.WAXED_POLISHED_WITCH_HAZEL_PILLAR_TOP)))
-//			.register();
-//
-//	public static final BlockEntry<LayeredBlock> POLISHED_WITCH_HAZEL_LAYERED = REGISTRATE.block("polished_witch_hazel_layered", LayeredBlock::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_GREEN))
-//			.onRegister(connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.POLISHED_WITCH_HAZEL_LAYERED, AllSpriteShifts.POLISHED_SMOOTH_WITCH_HAZEL)))
-//			.register();
-//
-//	public static final BlockEntry<WaxedLayeredBlock> WAXED_POLISHED_WITCH_HAZEL_LAYERED = REGISTRATE.block("waxed_polished_witch_hazel_layered", WaxedLayeredBlock::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_GREEN))
-//			.onRegister(connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WITCH_HAZEL_LAYERED, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WITCH_HAZEL)))
-//			.register();
-//
-//
-//	public static final BlockEntry<Block> MAHOGANY_CONNECTED = REGISTRATE.block("mahogany_connected", Block::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.MAHOGANY_CONNECTED)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.MAHOGANY_CONNECTED)))
-//			.register();
-//
-//
-//	public static final BlockEntry<Block> POLISHED_MAHOGANY_CONNECTED = REGISTRATE.block("polished_mahogany_connected", Block::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_MAHOGANY_CONNECTED)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_MAHOGANY_CONNECTED)))
-//			.register();
-//	public static final BlockEntry<WaxedLayeredBlock> WAXED_MAHOGANY_CONNECTED = REGISTRATE.block("waxed_mahogany_connected", (properties) -> new WaxedLayeredBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_MAHOGANY_CONNECTED)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_MAHOGANY_CONNECTED)))
-//			.register();
-//	public static final BlockEntry<WaxedLayeredBlock> WAXED_POLISHED_MAHOGANY_CONNECTED = REGISTRATE.block("waxed_polished_mahogany_connected", (properties) -> new WaxedLayeredBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_MAHOGANY_CONNECTED)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_MAHOGANY_CONNECTED)))
-//			.register();
-//
-//	public static final BlockEntry<ConnectedPillarBlock> POLISHED_MAHOGANY_PILLAR = REGISTRATE.block("polished_mahogany_pillar", ConnectedPillarBlock::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.POLISHED_MAHOGANY_PILLAR_SIDE, AllSpriteShifts.POLISHED_MAHOGANY_PILLAR_TOP)))
-//			.register();
-//
-//	public static final BlockEntry<WaxedConnectedRotatedPillarBlock> WAXED_POLISHED_MAHOGANY_PILLAR = REGISTRATE.block("waxed_polished_mahogany_pillar", WaxedConnectedRotatedPillarBlock::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.WAXED_POLISHED_MAHOGANY_PILLAR_SIDE, AllSpriteShifts.WAXED_POLISHED_MAHOGANY_PILLAR_TOP)))
-//			.register();
-//
-//	public static final BlockEntry<LayeredBlock> POLISHED_MAHOGANY_LAYERED = REGISTRATE.block("polished_mahogany_layered", LayeredBlock::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.POLISHED_MAHOGANY_LAYERED, AllSpriteShifts.POLISHED_SMOOTH_MAHOGANY)))
-//			.register();
-//
-//
-//	public static final BlockEntry<WaxedLayeredBlock> WAXED_POLISHED_MAHOGANY_LAYERED = REGISTRATE.block("waxed_polished_mahogany_layered", WaxedLayeredBlock::new)
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.WAXED_POLISHED_MAHOGANY_LAYERED, AllSpriteShifts.WAXED_POLISHED_SMOOTH_MAHOGANY)))
-//			.register();
-//
-//
-//	public static final BlockEntry<WaxedGlassPaneBlock> STONE_WINDOW_PANE = REGISTRATE.block("stone_window_pane", (properties) -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.copy(Blocks.GLASS_PANE)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.GLASS_PANE).mapColor(MapColor.STONE))
-//			.onRegister(connectedTextures(() -> new GlassPaneTransparentCTBehaviour(AllSpriteShifts.STONE_WINDOW_PANE_CONNECTED, AllSpriteShifts.STONE_WINDOW_PANE_CONNECTED_GLASS)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.STONE_WINDOW_PANE_CONNECTED)))
-//			.register();
-//	public static final BlockEntry<WaxedGlassPaneBlock> WAXED_STONE_WINDOW_PANE = REGISTRATE.block("waxed_stone_window_pane", (properties) -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.copy(Blocks.GLASS_PANE)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.GLASS_PANE).mapColor(MapColor.STONE))
-//			.onRegister(connectedTextures(() -> new GlassPaneTransparentCTBehaviour(AllSpriteShifts.WAXED_STONE_WINDOW_PANE_CONNECTED, AllSpriteShifts.WAXED_STONE_WINDOW_PANE_CONNECTED_GLASS)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_STONE_WINDOW_PANE_CONNECTED)))
-//			.register();
-//
-//	public static final BlockEntry<GlassBlock> STONE_WINDOW = REGISTRATE.block("stone_window", (properties) -> new GlassBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new FullBlockTopBottomShiftCTBehaviour(AllSpriteShifts.STONE_WINDOW_CONNECTED, AllSpriteShifts.STONE_WINDOW_CONNECTED_GLASS, AllSpriteShifts.STONE_WINDOW_CONNECTED_TOP, AllSpriteShifts.STONE_WINDOW_CONNECTED_TOP_GLASS)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.STONE_WINDOW_CONNECTED)))
-//			.register();
-//
-//	public static final BlockEntry<GlassBlock> WAXED_STONE_WINDOW = REGISTRATE.block("waxed_stone_window", (properties) -> new GlassBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new FullBlockTopBottomShiftCTBehaviour(AllSpriteShifts.WAXED_STONE_WINDOW_CONNECTED, AllSpriteShifts.WAXED_STONE_WINDOW_CONNECTED_GLASS, AllSpriteShifts.WAXED_STONE_WINDOW_CONNECTED_TOP, AllSpriteShifts.WAXED_STONE_WINDOW_CONNECTED_TOP_GLASS)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_STONE_WINDOW_CONNECTED)))
-//			.register();
-//
-//
-//	public static final BlockEntry<WaxedGlassPaneBlock> MAHOGANY_WINDOW_PANE = REGISTRATE.block("mahogany_window_pane", (properties) -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.copy(Blocks.GLASS_PANE)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.GLASS_PANE).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_MAHOGANY_GLASS_PANE)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_MAHOGANY_GLASS_PANE)))
-//			.register();
-//
-//
-//	public static final BlockEntry<WaxedGlassPaneBlock> WAXED_MAHOGANY_WINDOW_PANE = REGISTRATE.block("waxed_mahogany_window_pane", (properties) -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.copy(Blocks.GLASS_PANE)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.GLASS_PANE).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_MAHOGANY_GLASS_PANE)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_MAHOGANY_GLASS_PANE)))
-//			.register();
-//
-//
-//	public static final BlockEntry<WaxedGlassPaneBlock> WILLOW_WINDOW_PANE = REGISTRATE.block("willow_window_pane", (properties) -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.copy(Blocks.GLASS_PANE)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.GLASS_PANE).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_WILLOW_GLASS_PANE)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_WILLOW_GLASS_PANE)))
-//			.register();
-//
-//
-//	public static final BlockEntry<WaxedGlassPaneBlock> WAXED_WILLOW_WINDOW_PANE = REGISTRATE.block("waxed_willow_window_pane", (properties) -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.copy(Blocks.GLASS_PANE)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.GLASS_PANE).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW_GLASS_PANE)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW_GLASS_PANE)))
-//			.register();
-//
-//
-//	public static final BlockEntry<WaxedGlassPaneBlock> WITCH_HAZEL_WINDOW_PANE = REGISTRATE.block("witch_hazel_window_pane", (properties) -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.copy(Blocks.GLASS_PANE)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.GLASS_PANE).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_WITCH_HAZEL_GLASS_PANE)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_WITCH_HAZEL_GLASS_PANE)))
-//			.register();
-//
-//
-//	public static final BlockEntry<WaxedGlassPaneBlock> WAXED_WITCH_HAZEL_WINDOW_PANE = REGISTRATE.block("waxed_witch_hazel_window_pane", (properties) -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.copy(Blocks.GLASS_PANE)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.GLASS_PANE).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_WITCH_HAZEL_GLASS_PANE)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WITCH_HAZEL_GLASS_PANE)))
-//			.register();
-//
-//	public static final BlockEntry<GlassBlock> MAHOGANY_WINDOW = REGISTRATE.block("mahogany_window", (properties) -> new GlassBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_MAHOGANY_GLASS)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_MAHOGANY_GLASS)))
-//			.register();
-//
-//	public static final BlockEntry<WaxedGlassBlock> WAXED_MAHOGANY_WINDOW = REGISTRATE.block("waxed_mahogany_window", (properties) -> new WaxedGlassBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_MAHOGANY_GLASS)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_MAHOGANY_GLASS)))
-//			.register();
-//
-//	public static final BlockEntry<GlassBlock> WILLOW_WINDOW = REGISTRATE.block("willow_window", (properties) -> new GlassBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_WILLOW_GLASS)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_WILLOW_GLASS)))
-//			.register();
-//
-//	public static final BlockEntry<WaxedGlassBlock> WAXED_WILLOW_WINDOW = REGISTRATE.block("waxed_willow_window", (properties) -> new WaxedGlassBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW_GLASS)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW_GLASS)))
-//			.register();
-//
-//	public static final BlockEntry<GlassBlock> WITCH_HAZEL_WINDOW = REGISTRATE.block("witch_hazel_window", (properties) -> new GlassBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_WITCH_HAZEL_GLASS)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_WITCH_HAZEL_GLASS)))
-//			.register();
-//
-//	public static final BlockEntry<WaxedGlassBlock> WAXED_WITCH_HAZEL_WINDOW = REGISTRATE.block("waxed_witch_hazel_window", (properties) -> new WaxedGlassBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_STAINED_GLASS_PANE).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_WITCH_HAZEL_GLASS)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WITCH_HAZEL_GLASS)))
-//			.register();
-//
-//
-//	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK_ORNATE = REGISTRATE.block("infused_fabric_block_ornate", (properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE)))
-//			.register();
-//
-//	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_ORNATE = REGISTRATE.block("waxed_infused_fabric_block_ornate", (properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_ORNATE)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_ORNATE)))
-//			.register();
-//
-//	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_ORNATE = REGISTRATE.block("infused_fabric_carpet_ornate",
-//			(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).mapColor(MapColor.TERRACOTTA_BLACK), DyeColor.WHITE))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE, AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE)))
-//			.register();
-//
-//	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_ORNATE = REGISTRATE.block("waxed_infused_fabric_carpet_ornate",
-//			(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).mapColor(MapColor.TERRACOTTA_BLACK), DyeColor.WHITE))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_ORNATE, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_ORNATE)))
-//			.loot((lootTables, block) -> lootTables.dropOther(block, block.asItem()))
-//			.register();
-//
-//	public static final BlockEntry<ConnectingCarpetDyed> INFUSED_FABRIC_CARPET = REGISTRATE.block("infused_fabric_carpet",
-//			(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).mapColor(MapColor.TERRACOTTA_BLACK), DyeColor.WHITE))
-//			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
-//			.register();
-//
-//	public static final BlockEntry<ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET = REGISTRATE.block("waxed_infused_fabric_carpet",
-//			(properties) -> new ConnectingCarpetDyed(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).mapColor(MapColor.TERRACOTTA_BLACK), DyeColor.WHITE))
-//			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
-//			.register();
-//
-//	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_ORNATE_STAIRS = REGISTRATE.block("infused_fabric_carpet_ornate_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET), ModBlocks.INFUSED_FABRIC_CARPET_ORNATE.get())))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).mapColor(MapColor.TERRACOTTA_BLACK))
-//			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE, AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE)))
-//			.loot((lootTables, block) -> lootTables.dropOther(block, block.parentBlock.asItem()))
-//			.register();
-//
-//	public static final BlockEntry<ConnectingCarpetStairs> WAXED_INFUSED_FABRIC_CARPET_ORNATE_STAIRS = REGISTRATE.block("waxed_infused_fabric_carpet_ornate_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET), ModBlocks.WAXED_INFUSED_FABRIC_CARPET_ORNATE.get())))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).mapColor(MapColor.TERRACOTTA_BLACK))
-//			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_ORNATE, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_ORNATE)))
-//			.loot((lootTables, block) -> lootTables.dropOther(block, block.parentBlock.asItem()))
-//			.register();
-//
-//	public static final BlockEntry<ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_STAIRS = REGISTRATE.block("infused_fabric_carpet_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET), ModBlocks.INFUSED_FABRIC_CARPET.get())))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
-//			.loot((lootTables, block) -> lootTables.dropOther(block, block.parentBlock.asItem()))
-//			.register();
-//
-//	public static final BlockEntry<ConnectingCarpetStairs> WAXED_INFUSED_FABRIC_CARPET_STAIRS = REGISTRATE.block("waxed_infused_fabric_carpet_stairs", (properties -> new ConnectingCarpetStairs(BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET), ModBlocks.WAXED_INFUSED_FABRIC_CARPET.get())))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
-//			.loot((lootTables, block) -> lootTables.dropOther(block, block.parentBlock.asItem()))
-//			.register();
-//
-//	public static final BlockEntry<ConnectingCarpetSlab> INFUSED_FABRIC_CARPET_ORNATE_SLAB = REGISTRATE.block("infused_fabric_carpet_ornate_slab", (p) -> new ConnectingCarpetSlab(p, ModBlocks.INFUSED_FABRIC_CARPET_ORNATE.get()))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE, AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE)))
-//			.loot((lootTables, block) -> lootTables.dropOther(block, block.parentBlock.asItem()))
-//			.register();
-//
-//	public static final BlockEntry<ConnectingCarpetSlab> WAXED_INFUSED_FABRIC_CARPET_ORNATE_SLAB = REGISTRATE.block("waxed_infused_fabric_carpet_ornate_slab", (p) -> new ConnectingCarpetSlab(p, ModBlocks.WAXED_INFUSED_FABRIC_CARPET_ORNATE.get()))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_ORNATE, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_ORNATE)))
-//			.loot((lootTables, block) -> lootTables.dropOther(block, block.parentBlock.asItem()))
-//			.register();
-//
-//	public static final BlockEntry<ConnectingCarpetSlab> INFUSED_FABRIC_CARPET_SLAB = REGISTRATE.block("infused_fabric_carpet_slab", (p -> new ConnectingCarpetSlab(p, ModBlocks.INFUSED_FABRIC_CARPET.get())))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
-//			.loot((lootTables, block) -> lootTables.dropOther(block, block.parentBlock.asItem()))
-//			.register();
-//
-//	public static final BlockEntry<ConnectingCarpetSlab> WAXED_INFUSED_FABRIC_CARPET_SLAB = REGISTRATE.block("waxed_infused_fabric_carpet_slab", (p -> new ConnectingCarpetSlab(p, ModBlocks.WAXED_INFUSED_FABRIC_CARPET.get())))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.CYAN_CARPET).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)))
-//			.loot((lootTables, block) -> lootTables.dropOther(block, block.parentBlock.asItem()))
-//			.register();
-//
-//
-//
-//	public static final BlockEntry<FabricBlock> INFUSED_FABRIC_BLOCK = REGISTRATE.block("infused_fabric_block", (properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
-//			.register();
-//
-//
-//	public static final BlockEntry<FabricBlock> WAXED_INFUSED_FABRIC_BLOCK = REGISTRATE.block("waxed_infused_fabric_block", (properties) -> new FabricBlock(BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL)))
-//			.properties((p) -> BlockBehaviour.Properties.copy(Blocks.BLACK_WOOL).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)))
-//			.register();
+	public static final DeferredHolder<Block, Block> WILLOW_CONNECTED = registerBlockWithConsumer("willow_connected",
+			() -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WILLOW_CONNECTED)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WILLOW_CONNECTED)));
+
+	public static final DeferredHolder<Block, WaxedLayeredBlock> WAXED_WILLOW_CONNECTED = registerBlockWithConsumer("waxed_willow_connected",
+			() -> new WaxedLayeredBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_WILLOW_CONNECTED)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_WILLOW_CONNECTED)));
+
+	public static final DeferredHolder<Block, Block> POLISHED_WILLOW_CONNECTED = registerBlockWithConsumer("polished_willow_connected",
+			() -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_WILLOW_CONNECTED)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_WILLOW_CONNECTED)));
+
+	public static final DeferredHolder<Block, WaxedLayeredBlock> WAXED_POLISHED_WILLOW_CONNECTED = registerBlockWithConsumer("waxed_polished_willow_connected",
+			() -> new WaxedLayeredBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WILLOW_CONNECTED)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_WILLOW_CONNECTED)));
+
+	public static final DeferredHolder<Block, ConnectedPillarBlock> POLISHED_WILLOW_PILLAR = registerBlockWithConsumer("polished_willow_pillar",
+			() -> new ConnectedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.POLISHED_WILLOW_PILLAR_SIDE, AllSpriteShifts.POLISHED_WILLOW_PILLAR_TOP)));
+
+	public static final DeferredHolder<Block, WaxedConnectedRotatedPillarBlock> WAXED_POLISHED_WILLOW_PILLAR = registerBlockWithConsumer("waxed_polished_willow_pillar",
+			() -> new WaxedConnectedRotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WILLOW_PILLAR_SIDE, AllSpriteShifts.WAXED_POLISHED_WILLOW_PILLAR_TOP)));
+
+	public static final DeferredHolder<Block, LayeredBlock> POLISHED_WILLOW_LAYERED = registerBlockWithConsumer("polished_willow_layered",
+			() -> new LayeredBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.POLISHED_WILLOW_LAYERED, AllSpriteShifts.POLISHED_SMOOTH_WILLOW)));
+
+	public static final DeferredHolder<Block, WaxedLayeredBlock> WAXED_POLISHED_WILLOW_LAYERED = registerBlockWithConsumer("waxed_polished_willow_layered",
+			() -> new WaxedLayeredBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WILLOW_LAYERED, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW)));
 
 
 
-	private static void registerCTBehviour(Block entry, Supplier<ConnectedTextureBehaviour> behaviorSupplier) {
-		ConnectedTextureBehaviour behavior = behaviorSupplier.get();
-		ClientProxy.MODEL_SWAPPER.getCustomBlockModels()
-				.register(HexereiUtil.getKeyOrThrow(entry), model -> new CTModel(model, behavior));
-	}
+	public static final DeferredHolder<Block, Block> WITCH_HAZEL_CONNECTED = registerBlockWithConsumer("witch_hazel_connected",
+			() -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WITCH_HAZEL_CONNECTED)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WITCH_HAZEL_CONNECTED)));
+
+	public static final DeferredHolder<Block, WaxedLayeredBlock> WAXED_WITCH_HAZEL_CONNECTED = registerBlockWithConsumer("waxed_witch_hazel_connected",
+			() -> new WaxedLayeredBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_WITCH_HAZEL_CONNECTED)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_WITCH_HAZEL_CONNECTED)));
+
+	public static final DeferredHolder<Block, Block> POLISHED_WITCH_HAZEL_CONNECTED = registerBlockWithConsumer("polished_witch_hazel_connected",
+			() -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_WITCH_HAZEL_CONNECTED)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_WITCH_HAZEL_CONNECTED)));
+
+	public static final DeferredHolder<Block, WaxedLayeredBlock> WAXED_POLISHED_WITCH_HAZEL_CONNECTED = registerBlockWithConsumer("waxed_polished_witch_hazel_connected",
+			() -> new WaxedLayeredBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WITCH_HAZEL_CONNECTED)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_WITCH_HAZEL_CONNECTED)));
+
+	public static final DeferredHolder<Block, ConnectedPillarBlock> POLISHED_WITCH_HAZEL_PILLAR = registerBlockWithConsumer("polished_witch_hazel_pillar",
+			() -> new ConnectedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.POLISHED_WITCH_HAZEL_PILLAR_SIDE, AllSpriteShifts.POLISHED_WITCH_HAZEL_PILLAR_TOP)));
+
+	public static final DeferredHolder<Block, WaxedConnectedRotatedPillarBlock> WAXED_POLISHED_WITCH_HAZEL_PILLAR = registerBlockWithConsumer("waxed_polished_witch_hazel_pillar",
+			() -> new WaxedConnectedRotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WITCH_HAZEL_PILLAR_SIDE, AllSpriteShifts.WAXED_POLISHED_WITCH_HAZEL_PILLAR_TOP)));
+
+	public static final DeferredHolder<Block, LayeredBlock> POLISHED_WITCH_HAZEL_LAYERED = registerBlockWithConsumer("polished_witch_hazel_layered",
+			() -> new LayeredBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.POLISHED_WITCH_HAZEL_LAYERED, AllSpriteShifts.POLISHED_SMOOTH_WITCH_HAZEL)));
+
+	public static final DeferredHolder<Block, WaxedLayeredBlock> WAXED_POLISHED_WITCH_HAZEL_LAYERED = registerBlockWithConsumer("waxed_polished_witch_hazel_layered",
+			() -> new WaxedLayeredBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.WAXED_POLISHED_WITCH_HAZEL_LAYERED, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WITCH_HAZEL)));
 
 
-	public static <T extends Block> Consumer<? super T> blockConnectivity(
-			BiConsumer<T, BlockConnectivity> consumer) {
-		return entry -> onClient(() -> () -> registerBlockConnectivity(entry, consumer));
-	}
+	public static final DeferredHolder<Block, Block> MAHOGANY_CONNECTED = registerBlockWithConsumer("mahogany_connected",
+			() -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.MAHOGANY_CONNECTED)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.MAHOGANY_CONNECTED)));
 
-	private static <T extends Block> void registerBlockConnectivity(T entry,
-																	 BiConsumer<T, BlockConnectivity> consumer) {
-		consumer.accept(entry, ClientProxy.BLOCK_CONNECTIVITY);
-	}
+	public static final DeferredHolder<Block, Block> POLISHED_MAHOGANY_CONNECTED = registerBlockWithConsumer("polished_mahogany_connected",
+			() -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_MAHOGANY_CONNECTED)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_MAHOGANY_CONNECTED)));
+
+	public static final DeferredHolder<Block, WaxedLayeredBlock> WAXED_MAHOGANY_CONNECTED = registerBlockWithConsumer("waxed_mahogany_connected",
+			() -> new WaxedLayeredBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_MAHOGANY_CONNECTED)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_MAHOGANY_CONNECTED)));
+
+	public static final DeferredHolder<Block, WaxedLayeredBlock> WAXED_POLISHED_MAHOGANY_CONNECTED = registerBlockWithConsumer("waxed_polished_mahogany_connected",
+			() -> new WaxedLayeredBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_MAHOGANY_CONNECTED)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_MAHOGANY_CONNECTED)));
+
+	public static final DeferredHolder<Block, ConnectedPillarBlock> POLISHED_MAHOGANY_PILLAR = registerBlockWithConsumer("polished_mahogany_pillar",
+			() -> new ConnectedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.POLISHED_MAHOGANY_PILLAR_SIDE, AllSpriteShifts.POLISHED_MAHOGANY_PILLAR_TOP)));
+
+	public static final DeferredHolder<Block, WaxedConnectedRotatedPillarBlock> WAXED_POLISHED_MAHOGANY_PILLAR = registerBlockWithConsumer("waxed_polished_mahogany_pillar",
+			() -> new WaxedConnectedRotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new RotatedPillarCTBehaviour(AllSpriteShifts.WAXED_POLISHED_MAHOGANY_PILLAR_SIDE, AllSpriteShifts.WAXED_POLISHED_MAHOGANY_PILLAR_TOP)));
+
+	public static final DeferredHolder<Block, LayeredBlock> POLISHED_MAHOGANY_LAYERED = registerBlockWithConsumer("polished_mahogany_layered",
+			() -> new LayeredBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.POLISHED_MAHOGANY_LAYERED, AllSpriteShifts.POLISHED_SMOOTH_MAHOGANY)));
+
+	public static final DeferredHolder<Block, WaxedLayeredBlock> WAXED_POLISHED_MAHOGANY_LAYERED = registerBlockWithConsumer("waxed_polished_mahogany_layered",
+			() -> new WaxedLayeredBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new HorizontalCTBehaviour(AllSpriteShifts.WAXED_POLISHED_MAHOGANY_LAYERED, AllSpriteShifts.WAXED_POLISHED_SMOOTH_MAHOGANY)));
+
+	public static final DeferredHolder<Block, WaxedGlassPaneBlock> STONE_WINDOW_PANE = registerBlockWithConsumer("stone_window_pane",
+			() -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new GlassPaneTransparentCTBehaviour(AllSpriteShifts.STONE_WINDOW_PANE_CONNECTED, AllSpriteShifts.STONE_WINDOW_PANE_CONNECTED_GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.STONE_WINDOW_PANE_CONNECTED)));
+
+	public static final DeferredHolder<Block, WaxedGlassPaneBlock> WAXED_STONE_WINDOW_PANE = registerBlockWithConsumer("waxed_stone_window_pane",
+			() -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new GlassPaneTransparentCTBehaviour(AllSpriteShifts.WAXED_STONE_WINDOW_PANE_CONNECTED, AllSpriteShifts.WAXED_STONE_WINDOW_PANE_CONNECTED_GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_STONE_WINDOW_PANE_CONNECTED)));
+
+	public static final DeferredHolder<Block, TransparentBlock> STONE_WINDOW = registerBlockWithConsumer("stone_window",
+			() -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockTopBottomShiftCTBehaviour(AllSpriteShifts.STONE_WINDOW_CONNECTED, AllSpriteShifts.STONE_WINDOW_CONNECTED_GLASS, AllSpriteShifts.STONE_WINDOW_CONNECTED_TOP, AllSpriteShifts.STONE_WINDOW_CONNECTED_TOP_GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.STONE_WINDOW_CONNECTED)));
+
+	public static final DeferredHolder<Block, WaxedBlock> WAXED_STONE_WINDOW = registerBlockWithConsumer("waxed_stone_window",
+			() -> new WaxedBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockTopBottomShiftCTBehaviour(AllSpriteShifts.WAXED_STONE_WINDOW_CONNECTED, AllSpriteShifts.WAXED_STONE_WINDOW_CONNECTED_GLASS, AllSpriteShifts.WAXED_STONE_WINDOW_CONNECTED_TOP, AllSpriteShifts.WAXED_STONE_WINDOW_CONNECTED_TOP_GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_STONE_WINDOW_CONNECTED)));
+
+	public static final DeferredHolder<Block, WaxedGlassPaneBlock> MAHOGANY_WINDOW_PANE = registerBlockWithConsumer("mahogany_window_pane",
+			() -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_MAHOGANY_GLASS_PANE)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_MAHOGANY_GLASS_PANE)));
+
+	public static final DeferredHolder<Block, WaxedGlassPaneBlock> WAXED_MAHOGANY_WINDOW_PANE = registerBlockWithConsumer("waxed_mahogany_window_pane",
+			() -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_MAHOGANY_GLASS_PANE)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_MAHOGANY_GLASS_PANE)));
+
+	public static final DeferredHolder<Block, WaxedGlassPaneBlock> WILLOW_WINDOW_PANE = registerBlockWithConsumer("willow_window_pane",
+			() -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_WILLOW_GLASS_PANE)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_WILLOW_GLASS_PANE)));
+
+	public static final DeferredHolder<Block, WaxedGlassPaneBlock> WAXED_WILLOW_WINDOW_PANE = registerBlockWithConsumer("waxed_willow_window_pane",
+			() -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW_GLASS_PANE)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW_GLASS_PANE)));
+
+	public static final DeferredHolder<Block, WaxedGlassPaneBlock> WITCH_HAZEL_WINDOW_PANE = registerBlockWithConsumer("witch_hazel_window_pane",
+			() -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_WITCH_HAZEL_GLASS_PANE)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_WITCH_HAZEL_GLASS_PANE)));
+
+	public static final DeferredHolder<Block, WaxedGlassPaneBlock> WAXED_WITCH_HAZEL_WINDOW_PANE = registerBlockWithConsumer("waxed_witch_hazel_window_pane",
+			() -> new WaxedGlassPaneBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new GlassPaneCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_WITCH_HAZEL_GLASS_PANE)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WITCH_HAZEL_GLASS_PANE)));
+
+	public static final DeferredHolder<Block, TransparentBlock> MAHOGANY_WINDOW = registerBlockWithConsumer("mahogany_window",
+			() -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_MAHOGANY_GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_MAHOGANY_GLASS)));
+
+	public static final DeferredHolder<Block, WaxedGlassBlock> WAXED_MAHOGANY_WINDOW = registerBlockWithConsumer("waxed_mahogany_window",
+			() -> new WaxedGlassBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_MAHOGANY_GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_MAHOGANY_GLASS)));
+
+	public static final DeferredHolder<Block, TransparentBlock> WILLOW_WINDOW = registerBlockWithConsumer("willow_window",
+			() -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_WILLOW_GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_WILLOW_GLASS)));
+
+	public static final DeferredHolder<Block, WaxedGlassBlock> WAXED_WILLOW_WINDOW = registerBlockWithConsumer("waxed_willow_window",
+			() -> new WaxedGlassBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW_GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WILLOW_GLASS)));
+
+	public static final DeferredHolder<Block, TransparentBlock> WITCH_HAZEL_WINDOW = registerBlockWithConsumer("witch_hazel_window",
+			() -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.POLISHED_SMOOTH_WITCH_HAZEL_GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_SMOOTH_WITCH_HAZEL_GLASS)));
+
+	public static final DeferredHolder<Block, TransparentBlock> WAXED_WITCH_HAZEL_WINDOW = registerBlockWithConsumer("waxed_witch_hazel_window",
+			() -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_POLISHED_SMOOTH_WITCH_HAZEL_GLASS)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_POLISHED_SMOOTH_WITCH_HAZEL_GLASS)));
+
+	public static final DeferredHolder<Block, FabricBlock> INFUSED_FABRIC_BLOCK_ORNATE = registerBlockWithConsumer("infused_fabric_block_ornate",
+			() -> new FabricBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BLACK_WOOL)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE)));
+
+	public static final DeferredHolder<Block, FabricBlock> WAXED_INFUSED_FABRIC_BLOCK_ORNATE = registerBlockWithConsumer("waxed_infused_fabric_block_ornate",
+			() -> new FabricBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BLACK_WOOL)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new FullBlockCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_ORNATE)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_ORNATE)));
+
+	public static final DeferredHolder<Block, ConnectingCarpetDyed> INFUSED_FABRIC_CARPET_ORNATE = registerBlockWithConsumer("infused_fabric_carpet_ornate",
+			() -> new ConnectingCarpetDyed(BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_CARPET), DyeColor.WHITE),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE, AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE)));
+
+	public static final DeferredHolder<Block, ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET_ORNATE = registerBlockWithConsumer("waxed_infused_fabric_carpet_ornate",
+			() -> new ConnectingCarpetDyed(BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_CARPET), DyeColor.WHITE),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_ORNATE, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_ORNATE)));
+
+	public static final DeferredHolder<Block, ConnectingCarpetDyed> INFUSED_FABRIC_CARPET = registerBlockWithConsumer("infused_fabric_carpet",
+			() -> new ConnectingCarpetDyed(BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_CARPET), DyeColor.WHITE),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)));
+
+	public static final DeferredHolder<Block, ConnectingCarpetDyed> WAXED_INFUSED_FABRIC_CARPET = registerBlockWithConsumer("waxed_infused_fabric_carpet",
+			() -> new ConnectingCarpetDyed(BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_CARPET), DyeColor.WHITE),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)));
+
+	public static final DeferredHolder<Block, ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_ORNATE_STAIRS = registerBlockWithConsumer("infused_fabric_carpet_ornate_stairs",
+			() -> new ConnectingCarpetStairs(BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_CARPET), INFUSED_FABRIC_CARPET_ORNATE.get()),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE, AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE)));
+
+	public static final DeferredHolder<Block, ConnectingCarpetStairs> WAXED_INFUSED_FABRIC_CARPET_ORNATE_STAIRS = registerBlockWithConsumer("waxed_infused_fabric_carpet_ornate_stairs",
+			() -> new ConnectingCarpetStairs(BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_CARPET), WAXED_INFUSED_FABRIC_CARPET_ORNATE.get()),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_ORNATE, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_ORNATE)));
+
+	public static final DeferredHolder<Block, ConnectingCarpetStairs> INFUSED_FABRIC_CARPET_STAIRS = registerBlockWithConsumer("infused_fabric_carpet_stairs",
+			() -> new ConnectingCarpetStairs(BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_CARPET), INFUSED_FABRIC_CARPET.get()),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)));
+
+	public static final DeferredHolder<Block, ConnectingCarpetStairs> WAXED_INFUSED_FABRIC_CARPET_STAIRS = registerBlockWithConsumer("waxed_infused_fabric_carpet_stairs",
+			() -> new ConnectingCarpetStairs(BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_CARPET), WAXED_INFUSED_FABRIC_CARPET.get()),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new CarpetStairsCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)));
+
+	public static final DeferredHolder<Block, ConnectingCarpetSlab> INFUSED_FABRIC_CARPET_ORNATE_SLAB = registerBlockWithConsumer("infused_fabric_carpet_ornate_slab",
+			() -> new ConnectingCarpetSlab(BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_CARPET), WAXED_INFUSED_FABRIC_CARPET_ORNATE.get()),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE, AllSpriteShifts.INFUSED_FABRIC_CARPET_ORNATE)));
+
+	public static final DeferredHolder<Block, ConnectingCarpetSlab> WAXED_INFUSED_FABRIC_CARPET_ORNATE_SLAB = registerBlockWithConsumer("waxed_infused_fabric_carpet_ornate_slab",
+			() -> new ConnectingCarpetSlab(BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_CARPET), WAXED_INFUSED_FABRIC_CARPET_ORNATE.get()),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_ORNATE, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_ORNATE)));
+
+	public static final DeferredHolder<Block, ConnectingCarpetSlab> INFUSED_FABRIC_CARPET_SLAB = registerBlockWithConsumer("infused_fabric_carpet_slab",
+			() -> new ConnectingCarpetSlab(BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_CARPET), INFUSED_FABRIC_CARPET.get()),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)));
+
+	public static final DeferredHolder<Block, ConnectingCarpetSlab> WAXED_INFUSED_FABRIC_CARPET_SLAB = registerBlockWithConsumer("waxed_infused_fabric_carpet_slab",
+			() -> new ConnectingCarpetSlab(BlockBehaviour.Properties.ofFullCopy(Blocks.CYAN_CARPET), WAXED_INFUSED_FABRIC_CARPET.get()),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new CarpetCTBehaviour(AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED, AllSpriteShifts.WAXED_INFUSED_FABRIC_CARPET_DYED)));
+
+	public static final DeferredHolder<Block, FabricBlock> INFUSED_FABRIC_BLOCK = registerBlockWithConsumer("infused_fabric_block",
+			() -> new FabricBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BLACK_WOOL)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)));
+
+	public static final DeferredHolder<Block, ?> WAXED_INFUSED_FABRIC_BLOCK = registerBlockWithConsumer("waxed_infused_fabric_block",
+			() -> new FabricBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BLACK_WOOL)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new DyedFullBlockCTBehaviour(AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.INFUSED_FABRIC_CARPET_DYED)));
+
+	public static class ClientCTHandler {
+
+		private static void registerCTBehviour(Block entry, Supplier<ConnectedTextureBehaviour> behaviorSupplier) {
+			ConnectedTextureBehaviour behavior = behaviorSupplier.get();
+			ClientProxy.MODEL_SWAPPER.getCustomBlockModels()
+					.register(HexereiUtil.getKeyOrThrow(entry), model -> new CTModel(model, behavior));
+		}
 
 
-	protected static void onClient(Supplier<Runnable> toRun) {
-		if (FMLEnvironment.dist.isClient())
-			toRun.get().run();
-	}
-	public static <T extends Block> Consumer<? super T> connectedTextures(Supplier<ConnectedTextureBehaviour> behavior) {
-		return entry -> onClient(() -> () -> registerCTBehviour(entry, behavior));
+		public static Consumer<Block> blockConnectivity(
+				BiConsumer<Block, BlockConnectivity> consumer) {
+			return entry -> onClient(() -> () -> registerBlockConnectivity(entry, consumer));
+		}
+
+		private static void registerBlockConnectivity(Block entry,
+													  BiConsumer<Block, BlockConnectivity> consumer) {
+			consumer.accept(entry, ClientProxy.BLOCK_CONNECTIVITY);
+		}
+
+
+		protected static void onClient(Supplier<Runnable> toRun) {
+			if (FMLEnvironment.dist.isClient())
+				toRun.get().run();
+		}
+
+		public static Consumer<Block> connectedTextures(Supplier<ConnectedTextureBehaviour> behavior) {
+			return entry -> onClient(() -> () -> registerCTBehviour(entry, behavior));
+		}
 	}
 
 
@@ -674,11 +590,10 @@ public class ModBlocks {
 	public static final DeferredHolder<Block, DoorBlock> POLISHED_MAHOGANY_DOOR = registerBlock("polished_mahogany_door",
 			() -> new DoorBlock(ModBlockSetType.POLISHED_MAHOGANY, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).noOcclusion()));
 
-//	public static final BlockEntry<TrapDoorBlock> POLISHED_MAHOGANY_TRAPDOOR = REGISTRATE.block("polished_mahogany_trapdoor", (properties) -> new TrapDoorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).noOcclusion(), ModBlockSetType.POLISHED_MAHOGANY))
-//			.properties((p) -> BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new TrapdoorCTBehaviour(AllSpriteShifts.POLISHED_MAHOGANY_TRAPDOOR)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_MAHOGANY_TRAPDOOR)))
-//			.register();
+	public static final DeferredHolder<Block, TrapDoorBlock> POLISHED_MAHOGANY_TRAPDOOR = registerBlockWithConsumer("polished_mahogany_trapdoor",
+			() -> new TrapDoorBlock(ModBlockSetType.POLISHED_MAHOGANY, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_TRAPDOOR)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new TrapdoorCTBehaviour(AllSpriteShifts.POLISHED_MAHOGANY_TRAPDOOR)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_MAHOGANY_TRAPDOOR)));
 
 
 //	WILLOW
@@ -760,14 +675,10 @@ public class ModBlocks {
 	public static final DeferredHolder<Block, DoorBlock> POLISHED_WILLOW_DOOR = registerBlock("polished_willow_door",
 			() -> new DoorBlock(ModBlockSetType.POLISHED_WILLOW, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).noOcclusion()));
 
-//	public static final DeferredHolder<Block, TrapDoorBlock> POLISHED_WILLOW_TRAPDOOR = registerBlock("polished_willow_trapdoor",
-//			() -> new TrapDoorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).noOcclusion(), ModBlockSetType.POLISHED_WILLOW));
-//	public static final BlockEntry<TrapDoorBlock> POLISHED_WILLOW_TRAPDOOR = REGISTRATE.block("polished_willow_trapdoor",
-//				(properties) -> new TrapDoorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).noOcclusion(), ModBlockSetType.POLISHED_WILLOW))
-//			.properties((p) -> BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new TrapdoorCTBehaviour(AllSpriteShifts.POLISHED_WILLOW_TRAPDOOR)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_WILLOW_TRAPDOOR)))
-//			.register();
+	public static final DeferredHolder<Block, TrapDoorBlock> POLISHED_WILLOW_TRAPDOOR = registerBlockWithConsumer("polished_willow_trapdoor",
+			() -> new TrapDoorBlock(ModBlockSetType.POLISHED_MAHOGANY, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_TRAPDOOR)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new TrapdoorCTBehaviour(AllSpriteShifts.POLISHED_WILLOW_TRAPDOOR)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_WILLOW_TRAPDOOR)));
 
 // WITCH HAZEL
 
@@ -859,13 +770,11 @@ public class ModBlocks {
 	public static final DeferredHolder<Block, DoorBlock> POLISHED_WITCH_HAZEL_DOOR = registerBlock("polished_witch_hazel_door",
 			() -> new DoorBlock(ModBlockSetType.POLISHED_WITCH_HAZEL, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).noOcclusion()));
 
-//	public static final DeferredHolder<Block, TrapDoorBlock> POLISHED_WITCH_HAZEL_TRAPDOOR = registerBlock("polished_witch_hazel_trapdoor",
-//			() -> new TrapDoorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).noOcclusion(), ModBlockSetType.POLISHED_WITCH_HAZEL));
-//	public static final BlockEntry<TrapDoorBlock> POLISHED_WITCH_HAZEL_TRAPDOOR = REGISTRATE.block("polished_witch_hazel_trapdoor", (properties) -> new TrapDoorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).noOcclusion(), ModBlockSetType.POLISHED_WITCH_HAZEL))
-//			.properties((p) -> BlockBehaviour.Properties.ofFullCopy(Blocks.BLACK_STAINED_GLASS_PANE).mapColor(MapColor.TERRACOTTA_RED))
-//			.onRegister(connectedTextures(() -> new TrapdoorCTBehaviour(AllSpriteShifts.POLISHED_WITCH_HAZEL_TRAPDOOR)))
-//			.onRegister(blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_WITCH_HAZEL_TRAPDOOR)))
-//			.register();
+
+	public static final DeferredHolder<Block, TrapDoorBlock> POLISHED_WITCH_HAZEL_TRAPDOOR = registerBlockWithConsumer("polished_witch_hazel_trapdoor",
+			() -> new TrapDoorBlock(ModBlockSetType.POLISHED_WITCH_HAZEL, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_TRAPDOOR)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.connectedTextures(() -> new TrapdoorCTBehaviour(AllSpriteShifts.POLISHED_WITCH_HAZEL_TRAPDOOR)),
+			(!FMLEnvironment.dist.isClient()) ? block -> {} : ClientCTHandler.blockConnectivity((block, cc) -> cc.makeBlock(block, AllSpriteShifts.POLISHED_WITCH_HAZEL_TRAPDOOR)));
 
 	public static final DeferredHolder<Block, FloweringLilyPadBlock> LILY_PAD_BLOCK = registerBlockNoItem("flowering_lily_pad",
 					() -> new FloweringLilyPadBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).instabreak().sound(SoundType.LILY_PAD).noOcclusion()));
@@ -1082,12 +991,23 @@ public class ModBlocks {
 	public static final DeferredHolder<Block, Block> DRIED_SAGE_BUNDLE_PLATE_1_LIT = registerBlockNoItem("dried_sage_bundle_plate_1_lit",
 					() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(2).explosionResistance(8f)));
 
-
 	private static <T extends Block> DeferredHolder<Block, T> registerBlock(String name, Supplier<T> block) {
 		DeferredHolder<Block, T> toReturn = BLOCKS.register(name, block);
 		registerBlockItem(name, toReturn);
 		return toReturn;
 	}
+
+	private static <T extends Block> DeferredHolder<Block, T> registerBlockWithConsumer(String name, Supplier<T> block, Consumer<Block>... consumers) {
+		DeferredHolder<Block, T> toReturn = BLOCKS.register(name, block);
+
+		afterRegisterConsumer.put(toReturn, (block1) -> {
+			for(Consumer<Block> consumer1 : consumers)
+				consumer1.accept(toReturn.get());
+		});
+
+		return toReturn;
+	}
+
 
 	private static <T extends Block> DeferredHolder<Block, T> registerBlockNoItem(String name, Supplier<T> block) {
 		DeferredHolder<Block, T> toReturn = BLOCKS.register(name, block);

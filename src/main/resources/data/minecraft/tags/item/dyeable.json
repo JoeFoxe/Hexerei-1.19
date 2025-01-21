@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "hexerei:witch_helmet",
+    "hexerei:witch_chestplate",
+    "hexerei:witch_boots",
+    "hexerei:coffer",
+    "hexerei:small_satchel",
+    "hexerei:medium_satchel",
+    "hexerei:large_satchel",
+    "hexerei:candle",
+    "hexerei:mixing_cauldron",
+    "hexerei:broom_seat",
+    "hexerei:herb_jar"
+  ]
+}

@@ -1,31 +1,5 @@
 {
   "values": [
-    "minecraft:oak_planks",
-    "minecraft:dark_oak_planks",
-    "minecraft:jungle_planks",
-    "minecraft:birch_planks",
-    "minecraft:spruce_planks",
-    "minecraft:acacia_planks",
-
-    "hexerei:willow_planks",
-    "hexerei:willow_connected",
-    "hexerei:polished_willow_planks",
-    "hexerei:polished_willow_connected",
-    "hexerei:polished_willow_layered",
-    "hexerei:polished_willow_pillar",
-
-    "hexerei:mahogany_planks",
-    "hexerei:mahogany_connected",
-    "hexerei:polished_mahogany_planks",
-    "hexerei:polished_mahogany_connected",
-    "hexerei:polished_mahogany_layered",
-    "hexerei:polished_mahogany_pillar",
-
-    "hexerei:witch_hazel_planks",
-    "hexerei:witch_hazel_connected",
-    "hexerei:polished_witch_hazel_planks",
-    "hexerei:polished_witch_hazel_connected",
-    "hexerei:polished_witch_hazel_layered",
-    "hexerei:polished_witch_hazel_pillar"
+    "minecraft:oak_planks"
   ]
 }

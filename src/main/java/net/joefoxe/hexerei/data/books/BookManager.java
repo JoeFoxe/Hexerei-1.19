@@ -37,11 +37,13 @@ public class  BookManager {
     }
 
     public static void sendBookPagesToClient() {
-        HexereiPacketHandler.sendToAllPlayers(new BookPagesPacket(BOOK_PAGES), ServerLifecycleHooks.getCurrentServer());
+        if (ServerLifecycleHooks.getCurrentServer() != null)
+            HexereiPacketHandler.sendToAllPlayers(new BookPagesPacket(BOOK_PAGES), ServerLifecycleHooks.getCurrentServer());
     }
 
     public static void sendBookEntriesToClient() {
-        HexereiPacketHandler.sendToAllPlayers(new BookEntriesPacket(BOOK_ENTRIES), ServerLifecycleHooks.getCurrentServer());
+        if (ServerLifecycleHooks.getCurrentServer() != null)
+            HexereiPacketHandler.sendToAllPlayers(new BookEntriesPacket(BOOK_ENTRIES), ServerLifecycleHooks.getCurrentServer());
     }
 
     public static void sendBookPagesToClient(ServerPlayer player) {

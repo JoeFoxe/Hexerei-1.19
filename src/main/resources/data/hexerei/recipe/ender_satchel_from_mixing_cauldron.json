@@ -1,0 +1,37 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "fluid": {
+    "id": "minecraft:lava",
+    "amount": 500
+  },
+  "ingredients": [
+    {
+      "item": "hexerei:medium_satchel"
+    },
+    {
+      "item": "minecraft:obsidian"
+    },
+    {
+      "item": "minecraft:obsidian"
+    },
+    {
+      "item": "minecraft:obsidian"
+    },
+    {
+      "item": "minecraft:ender_eye"
+    },
+    {
+      "item": "minecraft:obsidian"
+    },
+    {
+      "item": "minecraft:obsidian"
+    },
+    {
+      "item": "minecraft:obsidian"
+    }
+  ],
+  "output": {
+    "id": "hexerei:ender_satchel"
+  },
+  "heatRequirement": "heated"
+}

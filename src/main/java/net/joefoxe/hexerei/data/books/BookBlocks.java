@@ -3,7 +3,6 @@ package net.joefoxe.hexerei.data.books;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -18,8 +17,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Random;
 
 public class BookBlocks {
     public float x;
@@ -30,7 +27,7 @@ public class BookBlocks {
     public boolean show_slot;
     public boolean refreshTag = false;
     public TagKey<Block> key;
-    List<Component> extra_tooltips;
+    public List<Component> extra_tooltips;
     List<BookTooltipExtra> extra_tooltips_raw;
 
     BookBlocks(float x, float y, BlockState blockState, boolean show_slot){
@@ -99,7 +96,7 @@ public class BookBlocks {
         boolean show_slot = GsonHelper.getAsBoolean(object, "show_slot", false);
         switch (type) {
             case "block" -> {
-                Block block = BuiltInRegistries.BLOCK.containsKey(ResourceLocation.parse(GsonHelper.getAsString(object, "name"))) ? BuiltInRegistries.BLOCK.get(ResourceLocation.parse(GsonHelper.getAsString(object, "name"))) : Blocks.AIR;
+                Block block = BuiltInRegistries.BLOCK.containsKey(ResourceLocation.parse(GsonHelper.getAsString(object, "id"))) ? BuiltInRegistries.BLOCK.get(ResourceLocation.parse(GsonHelper.getAsString(object, "id"))) : Blocks.AIR;
 
                 BlockState state = block.defaultBlockState();
 //                if (object.has("tag")) {
@@ -123,7 +120,7 @@ public class BookBlocks {
                     String string_type = GsonHelper.getAsString(extraItemObject, "type", "append");
                     String hex_color = GsonHelper.getAsString(extraItemObject, "color_hex", "");
 
-                    if (!hex_color.equals(""))
+                    if (!hex_color.isEmpty())
                         color = (int) Long.parseLong(hex_color, 16);
 
                     if (string_type.equals("trail")) {
@@ -136,7 +133,7 @@ public class BookBlocks {
                     }
 
                     if (!(i + 1 < yourJson.size())) {
-                        if (!component.getString().equals(""))
+                        if (!component.getString().isEmpty())
                             textComponentsList.add(component);
                     }
                     bookTooltipExtraList.add(new BookTooltipExtra(color, hex_color, string, string_type));
@@ -158,7 +155,7 @@ public class BookBlocks {
                     String string = GsonHelper.getAsString(extraItemObject, "text", "empty");
                     String string_type = GsonHelper.getAsString(extraItemObject, "type", "append");
                     String hex_color = GsonHelper.getAsString(extraItemObject, "color_hex", "");
-                    if (!hex_color.equals(""))
+                    if (!hex_color.isEmpty())
                         color = (int) Long.parseLong(hex_color, 16);
 
                     if (string_type.equals("trail")) {
@@ -171,13 +168,13 @@ public class BookBlocks {
                     }
 
                     if (!(i + 1 < yourJson.size())) {
-                        if (!component.getString().equals(""))
+                        if (!component.getString().isEmpty())
                             textComponentsList.add(component);
                     }
                     bookTooltipExtraList.add(new BookTooltipExtra(color, hex_color, string, string_type));
                 }
 
-                return new BookBlocks(x, y, GsonHelper.getAsString(object, "name", "null"), show_slot, textComponentsList, bookTooltipExtraList);
+                return new BookBlocks(x, y, GsonHelper.getAsString(object, "id", "null"), show_slot, textComponentsList, bookTooltipExtraList);
             }
             default -> {
                 return new BookBlocks(x, y, Blocks.AIR.defaultBlockState(), show_slot);

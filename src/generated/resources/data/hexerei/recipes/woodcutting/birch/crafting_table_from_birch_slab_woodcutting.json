@@ -1,8 +1,0 @@
-{
-  "type": "hexerei:woodcutting",
-  "ingredient": {
-    "item": "minecraft:birch_slab"
-  },
-  "ingredient_count": 4,
-  "result": "minecraft:crafting_table"
-}

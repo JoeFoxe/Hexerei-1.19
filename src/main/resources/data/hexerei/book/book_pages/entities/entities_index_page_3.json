@@ -29,7 +29,7 @@
       "x": 2.5,
       "y": 3,
       "scale": 2.5,
-      "name": "hexerei:owl",
+      "id": "hexerei:owl",
       "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe_\"}',DyeColor:15,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:owl\",inv:{Items:[{Count:1b,Slot:0,id:\"hexerei:witch_helmet\",tag:{Damage:0,RepairCost:0,display:{Name:'{\"text\":\"joe_\"}',color:1481884}}}],Size:3}}",
 
       "tag_array": [

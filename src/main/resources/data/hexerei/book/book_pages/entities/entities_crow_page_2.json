@@ -61,7 +61,7 @@
       "type": "item",
       "x": 0.75,
       "y": 3.25,
-      "name": "hexerei:seed_mixture"
+      "id": "hexerei:seed_mixture"
     }
   ]
 }

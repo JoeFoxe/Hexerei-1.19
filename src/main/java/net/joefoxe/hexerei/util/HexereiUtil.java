@@ -3,6 +3,7 @@ package net.joefoxe.hexerei.util;
 import com.mojang.blaze3d.shaders.FogShape;
 import io.netty.buffer.Unpooled;
 import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.tileentity.CofferTile;
 import net.joefoxe.hexerei.tileentity.HerbJarTile;
 import net.minecraft.client.model.AnimationUtils;
@@ -191,6 +192,33 @@ public class HexereiUtil {
                 .orElseGet(() -> StringUtils.capitalize(modId));
     }
 
+    public static float lerpAngle(float startAngle, float endAngle, float alpha) {
+        startAngle = normalizeAngle(startAngle);
+        endAngle = normalizeAngle(endAngle);
+        float difference = endAngle - startAngle;
+        if (difference > 180.0f) {
+            difference -= 360.0f;
+        } else if (difference < -180.0f) {
+            difference += 360.0f;
+        }
+        return normalizeAngle(startAngle + alpha * difference);
+    }
+    public static float normalizeAngle(float angle) {
+        return normalizeAngle(angle, 180f, -180f);
+    }
+    public static float normalizeAngle(float angle, float max, float min) {
+        while (angle > max) {
+            angle -= 360.0f;
+        } while (angle < min) {
+            angle += 360.0f;
+        } return angle;
+    }
+
+    public static double angleDifference(double angle1, double angle2) {
+        double diff = ( angle2 - angle1 + 180 ) % 360 - 180;
+        return diff < -180 ? diff + 360 : diff;
+    }
+
     public static float moveTo(float input, float movedTo, float speed) {
         float distance = movedTo - input;
 
@@ -317,7 +345,11 @@ public class HexereiUtil {
 
     public static int getDyeColor(ItemStack stack, int fallback) {
         DyedItemColor color = stack.get(DataComponents.DYED_COLOR);
-        return color != null ? color.rgb() : fallback;
+        return 255 << 24 | (color != null ? color.rgb() : fallback);
+    }
+
+    public static DyedItemColor getDyeColor(ItemStack stack, DyedItemColor fallback) {
+        return stack.getOrDefault(DataComponents.DYED_COLOR, fallback);
     }
 
 
@@ -337,10 +369,10 @@ public class HexereiUtil {
     public static DyeColor getDyeColorNamed(String name, int offset, int offset2) {
 
         if (name.equals("jeb_"))
-            return DyeColor.byId((int) (((Hexerei.getClientTicks() + offset2) / 40 + offset) % 16));
+            return DyeColor.byId((int) (((ClientEvents.getClientTicks() + offset2) / 40 + offset) % 16));
 
         if (name.equals("les_"))
-            return DyeColor.byId(switch ((int) (((Hexerei.getClientTicks() + offset2) / 40 + offset) % 5)) {
+            return DyeColor.byId(switch ((int) (((ClientEvents.getClientTicks() + offset2) / 40 + offset) % 5)) {
                 case 1 -> 1;
                 case 2 -> 2;
                 case 3 -> 6;
@@ -349,28 +381,28 @@ public class HexereiUtil {
             });
 
         if (name.equals("bi_"))
-            return DyeColor.byId(switch ((int) (((Hexerei.getClientTicks() + offset2) / 40 + offset) % 3)) {
+            return DyeColor.byId(switch ((int) (((ClientEvents.getClientTicks() + offset2) / 40 + offset) % 3)) {
                 case 1 -> 10;
                 case 2 -> 11;
                 default -> 2;
             });
 
         if (name.equals("trans_"))
-            return DyeColor.byId(switch ((int) (((Hexerei.getClientTicks() + offset2) / 40 + offset) % 3)) {
+            return DyeColor.byId(switch ((int) (((ClientEvents.getClientTicks() + offset2) / 40 + offset) % 3)) {
                 case 1 -> 3;
                 case 2 -> 0;
                 default -> 6;
             });
 
         if (name.equals("joe_"))
-            return DyeColor.byId(switch ((int) (((Hexerei.getClientTicks() + offset2) / 40 + offset) % 4)) {
+            return DyeColor.byId(switch ((int) (((ClientEvents.getClientTicks() + offset2) / 40 + offset) % 4)) {
                 case 1, 3 -> 3;
                 case 2 -> 9;
                 default -> 11;
             });
 
 //        if(this.getName().getString().equals("les_"))
-//            return DyeColor.byId(switch((int)(((Hexerei.getClientTicks())/40) % 15)) {
+//            return DyeColor.byId(switch((int)(((ClientEvents.getClientTicks())/40) % 15)) {
 //                case 1 -> 0;
 //                case 2 -> 0;
 //                case 3 -> 0;
@@ -390,7 +422,7 @@ public class HexereiUtil {
 //            });
 
 
-        //DyeColor.byId((int)(((Hexerei.getClientTicks())/40) % 16));
+        //DyeColor.byId((int)(((ClientEvents.getClientTicks())/40) % 16));
         return null;
     }
 

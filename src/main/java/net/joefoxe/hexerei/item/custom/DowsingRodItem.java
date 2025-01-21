@@ -124,7 +124,7 @@ public class DowsingRodItem extends Item {
     public void findSwamp(Level worldIn, Entity entity)
     {
         if(worldIn instanceof ServerLevel serverLevel){
-            ResourceOrTag<Biome> key = ResourceOrTag.get("#forge:is_swamp", Registries.BIOME);
+            ResourceOrTag<Biome> key = ResourceOrTag.get("#c:is_swamp", Registries.BIOME);
             Pair<BlockPos, Holder<Biome>> pair = serverLevel.findClosestBiome3d(key.holderPredicate(), entity.blockPosition(), 6400, 32, 64);
             if(pair != null)
                 this.nearestPos = pair.getFirst();
@@ -135,7 +135,7 @@ public class DowsingRodItem extends Item {
 //    private static int locateBiome(CommandSourceStack pSource, ResourceOrTagArgument.Result<Biome> pBiome) throws CommandSyntaxException {
 //        BlockPos blockpos = BlockPos.containing(pSource.getPosition());
 //        Stopwatch stopwatch = Stopwatch.createStarted(Util.TICKER);
-//        ResourceOrTag<Biome> rot = ResourceOrTag.get("#forge:is_swamp", Registries.BIOME);
+//        ResourceOrTag<Biome> rot = ResourceOrTag.get("#c:is_swamp", Registries.BIOME);
 //        Pair<BlockPos, Holder<Biome>> pair = pSource.getLevel().findClosestBiome3d(rot.asHolderPredicate(), blockpos, 6400, 32, 64);
 //        stopwatch.stop();
 //        if (pair == null) {

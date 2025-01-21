@@ -1,26 +1,15 @@
 package net.joefoxe.hexerei.particle;
 
-import com.hollingsworth.arsnouveau.client.particle.ColoredDynamicTypeData;
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.Mth;
-import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import java.awt.*;
-import java.util.Locale;
 
 /**
  * Created by TGG on 25/03/2020.

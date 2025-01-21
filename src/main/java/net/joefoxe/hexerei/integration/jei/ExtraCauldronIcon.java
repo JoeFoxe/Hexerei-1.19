@@ -11,6 +11,7 @@ import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.custom.MixingCauldron;
 import net.joefoxe.hexerei.data.recipes.FluidMixingRecipe;
 import net.joefoxe.hexerei.data.recipes.MixingCauldronRecipe;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.fluid.PotionMixingRecipes;
 import net.joefoxe.hexerei.tileentity.renderer.MixingCauldronRenderer;
 import net.minecraft.client.Minecraft;
@@ -25,6 +26,8 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -93,19 +96,22 @@ public class ExtraCauldronIcon implements IDrawable {
             extraStack = extraSupplier.get();
         }
 
-        float craftPercent = (Hexerei.getClientTicks()) % 100 / 100f;
+        float craftPercent = (ClientEvents.getClientTicks()) % 100 / 100f;
         if((craftPercent <= 0.1 && findNewRecipe) || recipeShown == null){
             findNewRecipe = false;
             if(Minecraft.getInstance().level != null) {
-                List<?> list;
-                if(this.type.equals("Fluid"))
-                    list = Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(FluidMixingRecipe.Type.INSTANCE);
-                else if(this.type.equals("Potion"))
-                    list = PotionMixingRecipes.ALL;
-                else
-                    list = Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(MixingCauldronRecipe.Type.INSTANCE);
+                if(this.type.equals("Fluid")) {
+                    List<RecipeHolder<FluidMixingRecipe>> list = Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(FluidMixingRecipe.Type.INSTANCE);
+                    recipeShown = list.get(new Random().nextInt(list.size())).value();
+                }
+                else if(this.type.equals("Potion")) {
+                    recipeShown = PotionMixingRecipes.ALL.get(new Random().nextInt(PotionMixingRecipes.ALL.size()));
+                }
+                else{
+                    List<RecipeHolder<MixingCauldronRecipe>> list = Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(MixingCauldronRecipe.Type.INSTANCE);
+                    recipeShown = list.get(new Random().nextInt(list.size())).value();
+                }
 
-                recipeShown = (Recipe<?>) list.get(new Random().nextInt(list.size()));
             }
 
         }
@@ -187,15 +193,15 @@ public class ExtraCauldronIcon implements IDrawable {
                         double itemRotationOffset = 0.8 * i + (craftPercent * (20f * craftPercent));
                         guiGraphics.pose().translate(
                                 0D + Math.sin(itemRotationOffset) / (3.5f + ((craftPercent * craftPercent) * 10.0f)),
-                                (Math.sin(Math.PI * (Hexerei.getClientTicks()) / 30 + (i * 20)) / 10) * 0.2D,
+                                (Math.sin(Math.PI * (ClientEvents.getClientTicks()) / 30 + (i * 20)) / 10) * 0.2D,
                                 0D + Math.cos(itemRotationOffset)  / (3.5f + ((craftPercent * craftPercent) * 10.0f)));
-                        guiGraphics.pose().mulPose(Axis.YP.rotationDegrees((float)((45 * i) -1f + (2 * Math.sin((Hexerei.getClientTicks() + i * 20) / 40)))));
-                        guiGraphics.pose().mulPose(Axis.XP.rotationDegrees((float)(82.5f + (5 * Math.cos((Hexerei.getClientTicks() + i * 22) / 40)))));
-                        guiGraphics.pose().mulPose(Axis.ZP.rotationDegrees((float)(-2.5f + (5 * Math.cos((Hexerei.getClientTicks() + i * 24) / 40))) ));
+                        guiGraphics.pose().mulPose(Axis.YP.rotationDegrees((float)((45 * i) -1f + (2 * Math.sin((ClientEvents.getClientTicks() + i * 20) / 40)))));
+                        guiGraphics.pose().mulPose(Axis.XP.rotationDegrees((float)(82.5f + (5 * Math.cos((ClientEvents.getClientTicks() + i * 22) / 40)))));
+                        guiGraphics.pose().mulPose(Axis.ZP.rotationDegrees((float)(-2.5f + (5 * Math.cos((ClientEvents.getClientTicks() + i * 24) / 40))) ));
                         guiGraphics.pose().scale(1 - (craftPercent * 0.5f),1 - (craftPercent * 0.5f), 1 - (craftPercent * 0.5f));
 
                         guiGraphics.pose().scale(0.4f, 0.4f, 0.4f);
-                        renderItemFixed(items[((int)Hexerei.getClientTicksWithoutPartial() / 40) % items.length], Minecraft.getInstance().level, guiGraphics.pose(), buffer, LightTexture.FULL_BRIGHT);
+                        renderItemFixed(items[((int)ClientEvents.getClientTicksWithoutPartial() / 40) % items.length], Minecraft.getInstance().level, guiGraphics.pose(), buffer, LightTexture.FULL_BRIGHT);
                         guiGraphics.pose().popPose();
                     }
                 }

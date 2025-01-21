@@ -1,6 +1,5 @@
 package net.joefoxe.hexerei.data.owl;
 
-import com.hollingsworth.arsnouveau.common.world.saved_data.RedstoneSavedData;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
 import net.joefoxe.hexerei.util.message.ClientboundOwlCourierDepotDataInventoryPacket;
@@ -13,7 +12,9 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -56,6 +57,12 @@ public class OwlCourierDepotSavedData extends SavedData {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server != null)
             HexereiPacketHandler.sendToAllPlayers(new ClientboundOwlCourierDepotDataPacket(save(new CompoundTag(), server.registryAccess())), server);
+    }
+
+    public void syncToClient(Player player) {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        if (server != null && player instanceof ServerPlayer serverPlayer)
+            HexereiPacketHandler.sendToPlayerClient(new ClientboundOwlCourierDepotDataPacket(save(new CompoundTag(), server.registryAccess())), serverPlayer);
     }
 
     public void syncInvToClient(GlobalPos pos) {
@@ -139,7 +146,7 @@ public class OwlCourierDepotSavedData extends SavedData {
         Optional<Tag> tag = GlobalPos.CODEC.encodeStart(NbtOps.INSTANCE, pos).result();
         tag.ifPresent(value -> pCompoundTag.put("Pos", value));
 
-        ContainerHelper.saveAllItems(pCompoundTag, depots.get(pos).items, Hexerei.proxy.getLevel().registryAccess());
+        ContainerHelper.saveAllItems(pCompoundTag, depots.get(pos).items, Hexerei.DynamicRegistries.get());
 
         return pCompoundTag;
     }

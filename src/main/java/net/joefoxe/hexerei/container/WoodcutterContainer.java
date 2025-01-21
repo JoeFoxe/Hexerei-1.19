@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.data.recipes.ModRecipeTypes;
 import net.joefoxe.hexerei.data.recipes.WoodcutterRecipe;
+import net.joefoxe.hexerei.data.recipes.WoodcutterRecipes;
+import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -14,12 +16,16 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WoodcutterContainer extends AbstractContainerMenu {
     private final ContainerLevelAccess access;
@@ -172,6 +178,17 @@ public class WoodcutterContainer extends AbstractContainerMenu {
         return new SingleRecipeInput(container.getItem(0));
     }
 
+    private List<RecipeHolder<WoodcutterRecipe>> getRecipesFor(SingleRecipeInput input, Level level) {
+        List<RecipeHolder<WoodcutterRecipe>> list = this.level.getRecipeManager().getRecipesFor(ModRecipeTypes.WOODCUTTING_TYPE.get(), input, this.level);
+        List<RecipeHolder<WoodcutterRecipe>> list2 = WoodcutterRecipes.ALL.stream().filter((recipe) -> recipe.matches(input, level))
+                .map((recipe -> new RecipeHolder<>(HexereiUtil.getResource("woodcutter"), recipe))).toList();
+        list.addAll(list2);
+//        return list.stream().sorted(Comparator.comparing((recipe) -> recipe.value().getResultItem(level.registryAccess()).getDescriptionId())).toList();
+        return list;
+    }
+
+
+
     private void setupRecipeList(Container pContainer, ItemStack pStack) {
         this.recipes = new ArrayList<>();
 
@@ -182,10 +199,10 @@ public class WoodcutterContainer extends AbstractContainerMenu {
                 this.lastInput = this.input;
         }
         if (!pStack.isEmpty()) {
-            this.recipes = this.level.getRecipeManager().getRecipesFor(ModRecipeTypes.WOODCUTTING_TYPE.get(), createRecipeInput(container), this.level);
-            this.recipes = this.recipes.stream().filter((craftingRecipe) -> {
-                return container.getItem(0).getCount() >= craftingRecipe.value().ingredientCount;
-            }).toList();
+            SingleRecipeInput recipeInput = createRecipeInput(container);
+            this.recipes = getRecipesFor(recipeInput, this.level);
+            this.recipes = this.recipes.stream().filter(
+                    (craftingRecipe) -> container.getItem(0).getCount() >= craftingRecipe.value().ingredientCount).toList();
         }
         if(this.recipesSize != this.recipes.size() && this.selectedRecipeIndex.get() != -1)
         {
@@ -258,7 +275,7 @@ public class WoodcutterContainer extends AbstractContainerMenu {
                 if (!this.moveItemStackTo(itemstack1, 2, 38, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.WOODCUTTING_TYPE.get(), new SingleRecipeInput(itemstack1), this.level).isPresent()) {
+            } else if (!getRecipesFor(new SingleRecipeInput(itemstack1), this.level).isEmpty()) {
                 if (!this.moveItemStackTo(itemstack1, 0, 1, false)) {
                     return ItemStack.EMPTY;
                 }

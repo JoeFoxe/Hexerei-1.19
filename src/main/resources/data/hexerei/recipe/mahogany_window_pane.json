@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "GGG"
+
+  ],
+  "key": {
+    "G": {
+      "item": "hexerei:mahogany_window"
+    }
+  },
+  "result": {
+    "id": "hexerei:mahogany_window_pane",
+    "count": 16
+  }
+}

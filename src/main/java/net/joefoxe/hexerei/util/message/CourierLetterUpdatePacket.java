@@ -1,6 +1,7 @@
 package net.joefoxe.hexerei.util.message;
 
 import net.joefoxe.hexerei.item.custom.CourierLetterItem;
+import net.joefoxe.hexerei.tileentity.ModTileEntities;
 import net.joefoxe.hexerei.util.AbstractPacket;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.core.component.DataComponents;
@@ -12,6 +13,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 
@@ -60,8 +62,9 @@ public class CourierLetterUpdatePacket extends AbstractPacket {
                         tag.put("Message", lines);
                         if (sealed) {
                             tag.putBoolean("Sealed", true);
-                            stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(tag));
+//                            stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(tag));
                         }
+                        BlockItem.setBlockEntityData(stack, ModTileEntities.COURIER_LETTER_TILE.get(), tag);
                     }
 
                 }
@@ -74,8 +77,8 @@ public class CourierLetterUpdatePacket extends AbstractPacket {
                     tag.put("Message", lines);
                     if (sealed) {
                         tag.putBoolean("Sealed", true);
-                        stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(tag));
                     }
+                    BlockItem.setBlockEntityData(stack, ModTileEntities.COURIER_LETTER_TILE.get(), tag);
                 }
             }
         }

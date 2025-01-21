@@ -27,6 +27,9 @@ public class ModFluidTypes {
             DeferredRegister.create(NeoForgeRegistries.FLUID_TYPES, Hexerei.MOD_ID);
 
 
+    public static final DeferredHolder<FluidType, FluidType> POTION_FLUID_TYPE = FLUID_TYPES.register("potion_fluid", () ->
+            new PotionFluidType(FluidType.Properties.create().supportsBoating(true).canHydrate(true).lightLevel(0).density(15).viscosity(5).sound(SoundAction.get("bucket_fill"), SoundEvents.BUCKET_FILL)));
+
     public static final DeferredHolder<FluidType, FluidType> QUICKSILVER_FLUID_TYPE = FLUID_TYPES.register("quicksilver_fluid", () ->
             new FluidType(FluidType.Properties.create().supportsBoating(true).canHydrate(true).lightLevel(0).density(15).viscosity(5).sound(SoundAction.get("bucket_fill"), SoundEvents.BUCKET_FILL_LAVA)));
 

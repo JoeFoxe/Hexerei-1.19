@@ -30,7 +30,7 @@
       "type": "item",
       "x": 2.5,
       "y": 0.75,
-      "name": "hexerei:ender_satchel"
+      "id": "hexerei:ender_satchel"
     }
   ],
   "images": [

@@ -14,6 +14,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.custom.MixingCauldron;
 import net.joefoxe.hexerei.data.recipes.CauldronEmptyingRecipe;
@@ -27,10 +28,12 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +46,9 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,9 +58,21 @@ public class BottlingRecipeCategory implements IRecipeCategory<CauldronEmptyingR
             HexereiUtil.getResource("textures/gui/bottling_gui_jei.png");
     private IDrawable background;
     private final IDrawable icon;
+    private final IDrawable cauldronFG;
     public BottlingRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 126, 59);
         this.icon = helper.createDrawableItemStack(new ItemStack(ModItems.BLOOD_BOTTLE.get()));
+        this.cauldronFG = helper.createDrawable(TEXTURE, 232, 48, 24, 16);
+    }
+
+    @Override
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
     }
 
     @Override
@@ -84,9 +101,10 @@ public class BottlingRecipeCategory implements IRecipeCategory<CauldronEmptyingR
         builder.moveRecipeTransferButton(160, 90);
 
         builder.addSlot(RecipeIngredientRole.INPUT,14, 24).addIngredients(recipe.getInput());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 96, 24).addItemStack(recipe.getResultItem());
         builder.addSlot(RecipeIngredientRole.INPUT,62, 24)
             .setFluidRenderer(2000, true, 16, 16)
-            .addIngredients(NeoForgeTypes.FLUID_STACK, Arrays.stream(recipe.getFluid().ingredient().getStacks()).toList())
+            .addIngredients(NeoForgeTypes.FLUID_STACK, List.of(recipe.getFluid()))
             .setOverlay(new IDrawable() {
                     @Override
                 public int getWidth() {
@@ -101,43 +119,30 @@ public class BottlingRecipeCategory implements IRecipeCategory<CauldronEmptyingR
                 @Override
                 public void draw(GuiGraphics guiGraphics, int xOffset, int yOffset) {
 
-                    Lighting.setupFor3DItems();
-                    RenderSystem.enableDepthTest();
-                    guiGraphics.pose().pushPose();
+                    MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
+                    BlockState blockState = ModBlocks.MIXING_CAULDRON.get().defaultBlockState().setValue(MixingCauldron.GUI_RENDER, true);
 
-                    guiGraphics.pose().translate(xOffset, yOffset, 0);
+                    guiGraphics.pose().pushPose();
+                    guiGraphics.pose().translate(62, 24, 0);
                     guiGraphics.pose().mulPose(new Matrix4f().scale(1, -1, 1));
                     guiGraphics.pose().translate(-3, -15, 0);
                     guiGraphics.pose().scale(17, 17, 17);
-                    MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-                    Vec3 rotationOffset = new Vec3(0, 0, 0);
-
-                    float zRot = 0;
-                    float xRot = 20;
-                    float yRot = 30;
-
-                    guiGraphics.pose().translate(rotationOffset.x, rotationOffset.y, rotationOffset.z);
-                    guiGraphics.pose().mulPose(Axis.ZP.rotationDegrees(zRot));
-                    guiGraphics.pose().mulPose(Axis.XP.rotationDegrees(xRot));
-                    guiGraphics.pose().mulPose(Axis.YP.rotationDegrees(yRot));
-                    guiGraphics.pose().translate(-rotationOffset.x, -rotationOffset.y, -rotationOffset.z);
-
-                    BlockState blockState = ModBlocks.MIXING_CAULDRON.get().defaultBlockState().setValue(MixingCauldron.GUI_RENDER, true);
-
+                    guiGraphics.pose().mulPose(Axis.ZP.rotationDegrees(0));
+                    guiGraphics.pose().mulPose(Axis.XP.rotationDegrees(20));
+                    guiGraphics.pose().mulPose(Axis.YP.rotationDegrees(30));
+                    Lighting.setupFor3DItems();
+                    RenderSystem.enableDepthTest();
                     RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
                     RenderSystem.enableBlend();
                     RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
                     renderBlock(guiGraphics.pose(), buffer, LightTexture.FULL_BRIGHT, blockState, 0xFF404040);
-
-                    MixingCauldronRenderer.renderFluidGUI(guiGraphics.pose(), buffer, Arrays.stream(recipe.getFluid().ingredient().getStacks()).toList().get(0), 1, 1, OverlayTexture.NO_OVERLAY);
-
+                    MixingCauldronRenderer.renderFluidGUI(guiGraphics.pose(), buffer, recipe.getFluid(), 1, 1, OverlayTexture.NO_OVERLAY);
                     guiGraphics.pose().popPose();
+
                 }
             }, 0, 0);
 
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 96, 24).addItemStack(recipe.getResultItem());
 
     }
 
@@ -147,7 +152,7 @@ public class BottlingRecipeCategory implements IRecipeCategory<CauldronEmptyingR
         Minecraft minecraft = Minecraft.getInstance();
         Component outputName = recipe.getResultItem().getHoverName();
 
-
+        background.draw(guiGraphics);
 
         int width = minecraft.font.width(outputName);
         float lineHeight = minecraft.font.lineHeight / 2f;
@@ -161,6 +166,46 @@ public class BottlingRecipeCategory implements IRecipeCategory<CauldronEmptyingR
         }else {
             minecraft.font.drawInBatch(outputName, 7, 5f + lineHeight - 4.5f, 0xFF404040, false, guiGraphics.pose().last().pose(), guiGraphics.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
         }
+
+
+//        Lighting.setupFor3DItems();
+//        RenderSystem.enableDepthTest();
+//        guiGraphics.pose().pushPose();
+//
+//        guiGraphics.pose().translate(62, 24, 0);
+//        guiGraphics.pose().mulPose(new Matrix4f().scale(1, -1, 1));
+//        guiGraphics.pose().translate(-3, -15, 0);
+//        guiGraphics.pose().scale(17, 17, 17);
+//        MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
+//        Vec3 rotationOffset = new Vec3(0, 0, 0);
+//
+//        float zRot = 0;
+//        float xRot = 20;
+//        float yRot = 30;
+//
+//        guiGraphics.pose().translate(rotationOffset.x, rotationOffset.y, rotationOffset.z);
+//        guiGraphics.pose().mulPose(Axis.ZP.rotationDegrees(zRot));
+//        guiGraphics.pose().mulPose(Axis.XP.rotationDegrees(xRot));
+//        guiGraphics.pose().mulPose(Axis.YP.rotationDegrees(yRot));
+//        guiGraphics.pose().translate(-rotationOffset.x, -rotationOffset.y, -rotationOffset.z);
+//
+//        BlockState blockState = ModBlocks.MIXING_CAULDRON.get().defaultBlockState().setValue(MixingCauldron.GUI_RENDER, true);
+//
+//        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
+//        RenderSystem.enableBlend();
+//        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+//        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+//
+//        renderBlock(guiGraphics.pose(), buffer, LightTexture.FULL_BRIGHT, blockState, 0xFF404040);
+//
+//        MixingCauldronRenderer.renderFluidGUI(guiGraphics.pose(), buffer, recipe.getFluid(), 1, 1, OverlayTexture.NO_OVERLAY);
+//
+//        guiGraphics.pose().popPose();
+//
+//
+//
+//
+
 
     }
 
@@ -192,6 +237,53 @@ public class BottlingRecipeCategory implements IRecipeCategory<CauldronEmptyingR
             }
 
         }
+    }
+
+
+    public static void renderEntityInInventoryFollowsAngle(GuiGraphics pGuiGraphics, double pX, double pY, double pZ, int pScale, float angleXComponent, float angleYComponent, LivingEntity pEntity) {
+        float f = angleXComponent;
+        float f1 = angleYComponent;
+        Quaternionf quaternionf = (new Quaternionf()).rotateZ((float)Math.PI);
+        Quaternionf quaternionf1 = (new Quaternionf()).rotateX(f1 * 20.0F * ((float)Math.PI / 180F));
+        quaternionf.mul(quaternionf1);
+        float f2 = pEntity.yBodyRot;
+        float f3 = pEntity.getYRot();
+        float f4 = pEntity.getXRot();
+        float f5 = pEntity.yHeadRotO;
+        float f6 = pEntity.yHeadRot;
+        pEntity.yBodyRot = 180.0F + f * 20.0F;
+        pEntity.setYRot(180.0F + f * 40.0F);
+        pEntity.setXRot(-f1 * 20.0F);
+        pEntity.yHeadRot = pEntity.getYRot();
+        pEntity.yHeadRotO = pEntity.getYRot();
+        renderEntityInInventory(pGuiGraphics, pX, pY, pZ, pScale, quaternionf, quaternionf1, pEntity);
+        pEntity.yBodyRot = f2;
+        pEntity.setYRot(f3);
+        pEntity.setXRot(f4);
+        pEntity.yHeadRotO = f5;
+        pEntity.yHeadRot = f6;
+    }
+
+    public static void renderEntityInInventory(GuiGraphics pGuiGraphics, double pX, double pY, double pZ, int pScale, Quaternionf pPose, @Nullable Quaternionf pCameraOrientation, LivingEntity pEntity) {
+        pGuiGraphics.pose().pushPose();
+        pGuiGraphics.pose().translate((double)pX, (double)pY, (double)pZ);
+        pGuiGraphics.pose().mulPose((new Matrix4f()).scaling((float)pScale, (float)pScale, (float)(-pScale)));
+        pGuiGraphics.pose().mulPose(pPose);
+        Lighting.setupForEntityInInventory();
+        EntityRenderDispatcher entityrenderdispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+        if (pCameraOrientation != null) {
+            pCameraOrientation.conjugate();
+            entityrenderdispatcher.overrideCameraOrientation(pCameraOrientation);
+        }
+
+        entityrenderdispatcher.setRenderShadow(false);
+        RenderSystem.runAsFancy(() -> {
+            entityrenderdispatcher.render(pEntity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, pGuiGraphics.pose(), pGuiGraphics.bufferSource(), 15728880);
+        });
+        pGuiGraphics.flush();
+        entityrenderdispatcher.setRenderShadow(true);
+        pGuiGraphics.pose().popPose();
+        Lighting.setupFor3DItems();
     }
 
 }

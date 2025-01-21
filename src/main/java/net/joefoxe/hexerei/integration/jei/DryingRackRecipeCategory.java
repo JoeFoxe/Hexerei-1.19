@@ -1,6 +1,5 @@
 package net.joefoxe.hexerei.integration.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -9,7 +8,6 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.data.recipes.DryingRackRecipe;
 import net.joefoxe.hexerei.util.HexereiUtil;
@@ -34,6 +32,16 @@ public class DryingRackRecipeCategory implements IRecipeCategory<DryingRackRecip
     }
 
     @Override
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
+    }
+
+    @Override
     public RecipeType<DryingRackRecipe> getRecipeType() {
         return new RecipeType<>(DryingRackRecipeCategory.UID, DryingRackRecipe.class);
     }
@@ -55,8 +63,7 @@ public class DryingRackRecipeCategory implements IRecipeCategory<DryingRackRecip
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, DryingRackRecipe recipe, IFocusGroup focuses) {
-
-        builder.addSlot(RecipeIngredientRole.INPUT,14, 16).addIngredients(recipe.getIngredients().get(0));
+        builder.addSlot(RecipeIngredientRole.INPUT,14, 16).addIngredients(recipe.getIngredients().getFirst());
         builder.addSlot(RecipeIngredientRole.OUTPUT,70, 16).addItemStack(recipe.getOutput());
     }
 

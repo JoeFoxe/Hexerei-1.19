@@ -1,0 +1,10 @@
+{
+  "type": "hexerei:drying_rack",
+  "input": {
+    "item": "hexerei:wet_herb_enhanced_broom_brush"
+  },
+  "output": {
+    "id": "hexerei:herb_enhanced_broom_brush"
+  },
+  "dryingTime": 2400
+}

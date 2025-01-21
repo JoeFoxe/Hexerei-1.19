@@ -7,6 +7,7 @@ import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.entity.BroomType;
 import net.joefoxe.hexerei.client.renderer.entity.custom.BroomEntity;
 import net.joefoxe.hexerei.client.renderer.entity.model.ArmorModels;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.custom.*;
 import net.joefoxe.hexerei.util.HexereiTags;
@@ -106,7 +107,7 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
                     float[] afloat = new float[]{1, 1, 1};
                     if (dyeColor != null)
                         afloat = HexereiUtil.rgbIntToFloatArray(dyeColor.getTextureDiffuseColor());
-                    float offset = Hexerei.getClientTicks() + partialTicks;
+                    float offset = ClientEvents.getClientTicks() + partialTicks;
                     VertexConsumer ivertexbuilderStick = bufferIn.getBuffer(RenderType.energySwirl(POWER_LOCATION, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
                     broomItem.outter_model.renderToBuffer(matrixStackIn, ivertexbuilderStick, packedLightIn, OverlayTexture.NO_OVERLAY, HexereiUtil.getColorValueAlpha(afloat[0], afloat[1], afloat[2], 1.0F));
                 }
@@ -141,7 +142,7 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
                     float[] afloat = new float[]{1, 1, 1};
                     if (dyeColor != null)
                         afloat = HexereiUtil.rgbIntToFloatArray(dyeColor.getTextureDiffuseColor());
-                    float offset = Hexerei.getClientTicks() + partialTicks;
+                    float offset = ClientEvents.getClientTicks() + partialTicks;
                     VertexConsumer vertexconsumer = bufferIn.getBuffer(RenderType.energySwirl(POWER_LOCATION, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
                     broomBrushModel.renderToBuffer(matrixStackIn, vertexconsumer, light, OverlayTexture.NO_OVERLAY, HexereiUtil.getColorValueAlpha(afloat[0], afloat[1], afloat[2], 1.0F));
                 }

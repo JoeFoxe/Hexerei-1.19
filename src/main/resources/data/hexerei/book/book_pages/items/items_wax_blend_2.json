@@ -18,7 +18,7 @@
       "type": "item",
       "x": 3.75,
       "y": 2.5,
-      "name": "hexerei:pestle_and_mortar"
+      "id": "hexerei:pestle_and_mortar"
     },
 
 
@@ -27,31 +27,31 @@
       "type": "item",
       "x": 0,
       "y": 3.5,
-      "name": "minecraft:glow_berries"
+      "id": "minecraft:glow_berries"
     },
     {
       "type": "tag",
       "x": 0.25,
       "y": 4.5,
-      "name": "hexerei:flower_biproduct"
+      "id": "hexerei:flower_biproduct"
     },
     {
       "type": "item",
       "x": 1.25,
       "y": 4.75,
-      "name": "minecraft:air"
+      "id": "minecraft:air"
     },
     {
       "type": "item",
       "x": 2.25,
       "y": 4.5,
-      "name": "minecraft:air"
+      "id": "minecraft:air"
     },
     {
       "type": "item",
       "x": 2.5,
       "y": 3.5,
-      "name": "minecraft:air"
+      "id": "minecraft:air"
     },
 
 
@@ -61,7 +61,7 @@
       "type": "item",
       "x": 5,
       "y": 4,
-      "name": "hexerei:wax_blend",
+      "id": "hexerei:wax_blend",
       "count": 2
     }
   ],

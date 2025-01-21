@@ -16,24 +16,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ModFluids {
 
-//	public static final Registrate REGISTRATE = Hexerei.registrate();
-
-
-	// TODO implement potion fluid based on this, then run genData
-//	public static final FluidEntry<PotionFluid> POTION =
-//			REGISTRATE.fluid("potion", PotionFluidType::new, PotionFluid::new)
-//					.lang("Potion")
-//					.register();
-	// Better example form Ender IO since Create has their own extensions for virtual fluids
-//	public static final FluidEntry<PotionFluid> POTION = REGISTRATE.fluid("potion", ResourceLocation.fromNamespaceAndPath(Hexerei.MOD_ID, "block/potion_still"),
-//					ResourceLocation.fromNamespaceAndPath(Hexerei.MOD_ID, "block/potion_flow"), PotionFluidType::new, PotionFluid::new)
-//					//.renderType(RenderType::translucent) //TODO it will crash servers if called here apparently
-//            .source(PotionFluid::new)
-//			.lang("Potion")
-//            .noBlock()
-//			.noBucket()
-//			.register();
-
 
 //
 //	public <T extends ForgeFlowingFluid> FluidBuilder<T, CreateRegistrate> virtualFluid(String name,

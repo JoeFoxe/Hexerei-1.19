@@ -54,6 +54,16 @@ public class BookOfShadowsRecipeCategory implements IRecipeCategory<BookOfShadow
     }
 
     @Override
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
+    }
+
+    @Override
     public RecipeType<BookOfShadowsRecipe> getRecipeType() {
         return new RecipeType<>(HexereiUtil.getResource("book_of_shadows_dye"), BookOfShadowsRecipe.class);
     }
@@ -103,10 +113,6 @@ public class BookOfShadowsRecipeCategory implements IRecipeCategory<BookOfShadow
 
     @Override
     public void draw(BookOfShadowsRecipe recipe, IRecipeSlotsView view, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-
-        float newHeatSource = (Hexerei.getClientTicks()) % 200 / 200f;
-        float craftPercent = (Hexerei.getClientTicks()) % 100 / 100f;
-        boolean showOutput = (Hexerei.getClientTicks()) % 200 > 100;
 
         Minecraft minecraft = Minecraft.getInstance();
 

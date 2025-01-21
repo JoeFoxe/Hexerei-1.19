@@ -38,15 +38,17 @@ public class PestleAndMortarRecipe implements Recipe<CraftingInput> {
     @Override
     public boolean matches(CraftingInput input, Level level) {
 
-        List<Boolean> itemMatchesSlot = Stream.generate(() -> false).limit(5).collect(Collectors.toList());
+        List<Boolean> itemMatchesSlot = Stream.generate(() -> false).limit(input.size()).collect(Collectors.toList());
 
         // the flag is to break out early in case nothing matches for that slot
         boolean flag = false;
-        int numberOfEmpty = 5 - this.input.size();
+//        int numberOfEmpty = 5 - this.input.size();
+        if (input.size() != this.input.size())
+            return false;
         // cycle through each recipe slot
         for (Ingredient recipeItem : this.input) {
             //cycle through each slot for each recipe slot
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < input.size(); i++) {
                 //if the recipe matches a slot
                 if (recipeItem.test(input.getItem(i))) {
                     // if the slot is not taken up
@@ -64,31 +66,31 @@ public class PestleAndMortarRecipe implements Recipe<CraftingInput> {
             //reset the flag for the next iteration
             flag = false;
         }
-        // cycle through each recipe slot
-        for(int j = 0; j < numberOfEmpty; j++) {
-            //cycle through each slot for each recipe slot
-            for (int i = 0; i < 5; i++) {
-                //if the recipe matches a slot
-                if (input.getItem(i).isEmpty()) {
-                    // if the slot is not taken up
-                    if (!itemMatchesSlot.get(i)) {
-                        //mark the slot as taken up
-                        itemMatchesSlot.set(i, true);
-                        flag = true;
-                        break;
-                    }
-                }
-            }
-            //this is where it breaks out early to stop the craft
-            if(!flag)
-                break;
-            //reset the flag for the next iteration
-            flag = false;
-        }
+//        // cycle through each recipe slot
+//        for(int j = 0; j < numberOfEmpty; j++) {
+//            //cycle through each slot for each recipe slot
+//            for (int i = 0; i < input.size(); i++) {
+//                //if the recipe matches a slot
+//                if (input.getItem(i).isEmpty()) {
+//                    // if the slot is not taken up
+//                    if (!itemMatchesSlot.get(i)) {
+//                        //mark the slot as taken up
+//                        itemMatchesSlot.set(i, true);
+//                        flag = true;
+//                        break;
+//                    }
+//                }
+//            }
+//            //this is where it breaks out early to stop the craft
+//            if(!flag)
+//                break;
+//            //reset the flag for the next iteration
+//            flag = false;
+//        }
 
 
         // checks if a slot is not taken up, if it's not taken up then itll not craft
-        for(int i = 0; i < 5; i++) {
+        for(int i = 0; i < input.size(); i++) {
             if (!itemMatchesSlot.get(i)) {
                 return false;
             }

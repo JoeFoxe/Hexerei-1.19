@@ -1,7 +1,0 @@
-{
-  "type": "hexerei:woodcutting",
-  "ingredient": {
-    "item": "hexerei:witch_hazel_log"
-  },
-  "result": "hexerei:stripped_witch_hazel_log"
-}

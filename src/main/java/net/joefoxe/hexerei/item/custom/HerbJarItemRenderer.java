@@ -21,6 +21,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -29,6 +30,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -62,19 +64,17 @@ public class HerbJarItemRenderer extends CustomItemRenderer {
         this.renderTileStuff(stack, transformType, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
     }
 
-    public static int getCustomColor(CompoundTag tag) {
-        CompoundTag compoundtag = tag.contains("display") ? tag.getCompound("display") : null;
-        return compoundtag != null && compoundtag.contains("color", 99) ? compoundtag.getInt("color") : 0x422F1E;
-    }
-
     @OnlyIn(Dist.CLIENT)
     public static HerbJarTile loadBlockEntityFromItem(CompoundTag tag, ItemStack item) {
         if (item.getItem() instanceof BlockItem blockItem) {
             Block block = blockItem.getBlock();
             if (block instanceof HerbJar herbJar) {
                 HerbJarTile te = (HerbJarTile)herbJar.newBlockEntity(BlockPos.ZERO, block.defaultBlockState().setValue(HerbJar.GUI_RENDER, true).setValue(HorizontalDirectionalBlock.FACING, Direction.SOUTH));
-                te.itemHandler.deserializeNBT(Hexerei.proxy.getLevel().registryAccess(), tag.getCompound("Inventory"));
-                te.dyeColor = getCustomColor(tag);
+                te.itemHandler.deserializeNBT(Hexerei.DynamicRegistries.get(), tag.getCompound("Inventory"));
+                if (item.has(DataComponents.DYED_COLOR))
+                    te.setComponents(DataComponentMap.builder().set(DataComponents.DYED_COLOR, item.get(DataComponents.DYED_COLOR)).build());
+
+//                te.dyeColor = item.getOrDefault(DataComponents.DYED_COLOR, HerbJar.DEFAULT_COLOR);
                 if(item.has(DataComponents.CUSTOM_NAME))
                     te.customName = item.getHoverName();
 //                if (te != null) te.load(tag);
@@ -98,7 +98,7 @@ public class HerbJarItemRenderer extends CustomItemRenderer {
         String name = tileEntityIn.getDisplayName().getString();
         DyeColor col = HexereiUtil.getDyeColorNamed(name);
 
-        int color = col != null ? HexereiUtil.getColorValue(col) : HexereiUtil.getDyeColor(stack);
+        int color = col != null ? HexereiUtil.getColorValue(col) : HexereiUtil.getDyeColor(stack, HerbJar.DEFAULT_COLOR.rgb());
 
         matrixStackIn.pushPose();
 
@@ -115,7 +115,7 @@ public class HerbJarItemRenderer extends CustomItemRenderer {
         matrixStackIn.mulPose(Axis.YP.rotationDegrees(0));
         matrixStackIn.translate(0.2, -0.1, -0.1);
 //        Lighting.setupFor3DItems();
-        renderBlock(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, ModBlocks.HERB_JAR.get().defaultBlockState().setValue(HerbJar.GUI_RENDER, true).setValue(HerbJar.DYED, color != 0x422F1E && color != 0), null, color);
+        renderBlock(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, ModBlocks.HERB_JAR.get().defaultBlockState().setValue(HerbJar.GUI_RENDER, true).setValue(HerbJar.DYED, color != HerbJar.DEFAULT_COLOR.rgb()), null, color);
 //        renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.HERB_JAR.get().defaultBlockState().setValue(HerbJar.GUI_RENDER, true).setValue(HerbJar.DYED, color != 0x422F1E && color != 0));
 
 //        renderBlock(matrixStackIn, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY, ModBlocks.HERB_JAR.get().defaultBlockState().setValue(HerbJar.GUI_RENDER, true).setValue(HerbJar.DYED, (color != 0x422F1E && color != 0)), color);
@@ -212,7 +212,7 @@ public class HerbJarItemRenderer extends CustomItemRenderer {
         if(component != null){
             List<FormattedCharSequence> list = Minecraft.getInstance().font.split(component, 70);
             float f3 = (float) (-Minecraft.getInstance().font.width(list.get(0)) / 2);
-            if(tileEntityIn.dyeColor != 0x422F1E && tileEntityIn.dyeColor != 0)
+            if(tileEntityIn.components().has(DataComponents.DYED_COLOR))
                 matrixStackIn.translate(0, 5, 1);
             Minecraft.getInstance().font.drawInBatch(list.get(0), f3, 0, i1, false, matrixStackIn.last().pose(), bufferIn, Font.DisplayMode.NORMAL, 0, combinedLightIn);
 

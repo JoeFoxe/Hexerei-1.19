@@ -19,6 +19,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
@@ -37,6 +38,7 @@ public class BroomScreen extends AbstractContainerScreen<BroomContainer> {
 
     public final BroomEntity broomEntity;
     public float dropdownOffset = 0;
+    public float dropdownOffsetO = 0;
     public int offset = 0;
     public boolean dropdownClicked = false;
 
@@ -52,10 +54,20 @@ public class BroomScreen extends AbstractContainerScreen<BroomContainer> {
     protected void containerTick() {
         super.containerTick();
 
+        dropdownOffsetO = dropdownOffset;
         if (dropdownClicked)
             dropdownOffset = moveTo(dropdownOffset, 58, 4f);
         else
-            dropdownOffset = moveTo(dropdownOffset, 0, 4f);
+            dropdownOffset = moveTo(dropdownOffset, 15, 4f);
+    }
+
+    public double easeInOutCubic(float x) {
+        double c1 = 1.70158;
+        double c2 = c1 * 1.525;
+
+        return x < 0.5
+                ? (Math.pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
+                : (Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
     }
 
     @Override
@@ -148,6 +160,7 @@ public class BroomScreen extends AbstractContainerScreen<BroomContainer> {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, GUI);
 
+        int ddOffset = (int) (easeInOutCubic(Mth.lerp(partialTicks, dropdownOffsetO, dropdownOffset) / 58f) * 58f);
 
         int i = this.leftPos;
         int j = this.topPos;
@@ -160,11 +173,11 @@ public class BroomScreen extends AbstractContainerScreen<BroomContainer> {
             offset = 63;
         inventoryLabelY = 94 + offset - OFFSET;
 
-        guiGraphics.blit(GUI, i + 184, j + 55 + offset + ((int) dropdownOffset) - OFFSET, 230, 164, 26, 58);
+        guiGraphics.blit(GUI, i + 184, j + 55 + offset + ddOffset - OFFSET - 5, 230, 164, 26, 63);
         if (this.menu.getFloatMode()) {
-            guiGraphics.blit(GUI, i + 188, j + 60 + offset + ((int) dropdownOffset) - OFFSET, 238, 106, 18, 18);
+            guiGraphics.blit(GUI, i + 188, j + 60 + offset + ddOffset - OFFSET, 238, 106, 18, 18);
         } else {
-            guiGraphics.blit(GUI, i + 188, j + 88 + offset + ((int) dropdownOffset) - OFFSET, 238, 70, 18, 18);
+            guiGraphics.blit(GUI, i + 188, j + 88 + offset + ddOffset - OFFSET, 238, 70, 18, 18);
         }
 
         guiGraphics.blit(GUI, i, j - 3 - OFFSET, 0, 0, 214, 82);

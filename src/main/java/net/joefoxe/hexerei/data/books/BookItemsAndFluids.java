@@ -1,11 +1,15 @@
 package net.joefoxe.hexerei.data.books;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.JsonOps;
+import net.joefoxe.hexerei.Hexerei;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -14,6 +18,7 @@ import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
@@ -44,7 +49,7 @@ public class BookItemsAndFluids {
     public boolean refreshTag = false;
     public String type;
     public TagKey<Item> key;
-    List<Component> extra_tooltips;
+    public List<Component> extra_tooltips;
     List<BookTooltipExtra> extra_tooltips_raw;
     public BakedModel modelCache = null;
 
@@ -208,16 +213,25 @@ public class BookItemsAndFluids {
         String type = GsonHelper.getAsString(object, "type", "item");
         switch (type) {
             case "item" -> {
-                Holder<Item> item = GsonHelper.getAsItem(object, "name", Holder.direct(Items.AIR));
-                int count = GsonHelper.getAsInt(object, "count", 1);
-
-                ItemStack stack = new ItemStack(item, count);
-                if (object.has("tag")) {
-                    String tagString = GsonHelper.getAsString(object, "tag", "");
-                    CompoundTag tag = TagParser.parseTag(tagString);
-
-                    stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+                Holder<Item> item = GsonHelper.getAsItem(object, "id", Holder.direct(Items.AIR));
+                ItemStack stack = ItemStack.EMPTY;
+                try {
+                    if (item.value() != Items.AIR)
+                        stack = ItemStack.CODEC.decode(JsonOps.INSTANCE, object).getOrThrow().getFirst();
+                } catch (Exception e) {
+                    System.out.println(object);
+                    throw new RuntimeException(e);
                 }
+
+//                ItemStack stack = new ItemStack(item, count);
+//                if (object.has("components")) {
+//
+//                    DataComponentMap components = DataComponentMap.CODEC.decode(JsonOps.INSTANCE, object.get("components")).getOrThrow().getFirst();
+//
+//                    stack.applyComponents(components);
+//
+////                    stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+//                }
 
 
                 JsonArray yourJson = GsonHelper.getAsJsonArray(object, "extra_tooltips", new JsonArray());
@@ -287,7 +301,7 @@ public class BookItemsAndFluids {
                     bookTooltipExtraList.add(new BookTooltipExtra(color, hex_color, string, string_type));
                 }
 
-                return new BookItemsAndFluids(x, y, GsonHelper.getAsString(object, "name", "null"), show_slot, textComponentsList, bookTooltipExtraList);
+                return new BookItemsAndFluids(x, y, GsonHelper.getAsString(object, "id", "null"), show_slot, textComponentsList, bookTooltipExtraList);
             }
             case "fluid" -> {
                 String loc = GsonHelper.getAsString(object, "name", "minecraft:water");

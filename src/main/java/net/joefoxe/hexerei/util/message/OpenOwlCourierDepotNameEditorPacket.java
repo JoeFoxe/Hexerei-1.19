@@ -11,6 +11,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class OpenOwlCourierDepotNameEditorPacket extends AbstractPacket {
 
@@ -36,6 +38,7 @@ public class OpenOwlCourierDepotNameEditorPacket extends AbstractPacket {
         buffer.writeBlockPos(object.pos);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onClientReceived(Minecraft minecraft, Player player) {
 

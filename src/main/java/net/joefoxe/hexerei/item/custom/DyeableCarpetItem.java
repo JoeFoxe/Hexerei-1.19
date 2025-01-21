@@ -46,26 +46,26 @@ public class DyeableCarpetItem extends BlockItem {
         BlockState blockState = pContext.getLevel().getBlockState(pContext.getClickedPos().below());
         Block block = blockState.getBlock();
 
-//        if(block instanceof SlabBlock && blockState.hasProperty(BlockStateProperties.SLAB_TYPE) && blockState.getValue(BlockStateProperties.SLAB_TYPE) == SlabType.BOTTOM) {
-//            if (ModBlocks.INFUSED_FABRIC_CARPET_SLAB.get().parentBlock == this.getBlock())
-//                return ModBlocks.INFUSED_FABRIC_CARPET_SLAB.get().getStateForPlacement(pContext);
-//            if (ModBlocks.WAXED_INFUSED_FABRIC_CARPET_SLAB.get().parentBlock == this.getBlock())
-//                return ModBlocks.WAXED_INFUSED_FABRIC_CARPET_SLAB.get().getStateForPlacement(pContext);
-//            if (ModBlocks.INFUSED_FABRIC_CARPET_ORNATE_SLAB.get().parentBlock == this.getBlock())
-//                return ModBlocks.INFUSED_FABRIC_CARPET_ORNATE_SLAB.get().getStateForPlacement(pContext);
-//            if (ModBlocks.WAXED_INFUSED_FABRIC_CARPET_ORNATE_SLAB.get().parentBlock == this.getBlock())
-//                return ModBlocks.WAXED_INFUSED_FABRIC_CARPET_ORNATE_SLAB.get().getStateForPlacement(pContext);
-//        }
-//        if(block instanceof StairBlock && blockState.hasProperty(BlockStateProperties.HALF) && blockState.getValue(BlockStateProperties.HALF) == Half.BOTTOM) {
-//            if (ModBlocks.INFUSED_FABRIC_CARPET_STAIRS.get().parentBlock == this.getBlock())
-//                return ModBlocks.INFUSED_FABRIC_CARPET_STAIRS.get().getStateForPlacement(pContext);
-//            if (ModBlocks.WAXED_INFUSED_FABRIC_CARPET_STAIRS.get().parentBlock == this.getBlock())
-//                return ModBlocks.WAXED_INFUSED_FABRIC_CARPET_STAIRS.get().getStateForPlacement(pContext);
-//            if (ModBlocks.INFUSED_FABRIC_CARPET_ORNATE_STAIRS.get().parentBlock == this.getBlock())
-//                return ModBlocks.INFUSED_FABRIC_CARPET_ORNATE_STAIRS.get().getStateForPlacement(pContext);
-//            if (ModBlocks.WAXED_INFUSED_FABRIC_CARPET_ORNATE_STAIRS.get().parentBlock == this.getBlock())
-//                return ModBlocks.WAXED_INFUSED_FABRIC_CARPET_ORNATE_STAIRS.get().getStateForPlacement(pContext);
-//        }
+        if(block instanceof SlabBlock && blockState.hasProperty(BlockStateProperties.SLAB_TYPE) && blockState.getValue(BlockStateProperties.SLAB_TYPE) == SlabType.BOTTOM) {
+            if (ModBlocks.INFUSED_FABRIC_CARPET_SLAB.get().parentBlock == this.getBlock())
+                return ModBlocks.INFUSED_FABRIC_CARPET_SLAB.get().getStateForPlacement(pContext);
+            if (ModBlocks.WAXED_INFUSED_FABRIC_CARPET_SLAB.get().parentBlock == this.getBlock())
+                return ModBlocks.WAXED_INFUSED_FABRIC_CARPET_SLAB.get().getStateForPlacement(pContext);
+            if (ModBlocks.INFUSED_FABRIC_CARPET_ORNATE_SLAB.get().parentBlock == this.getBlock())
+                return ModBlocks.INFUSED_FABRIC_CARPET_ORNATE_SLAB.get().getStateForPlacement(pContext);
+            if (ModBlocks.WAXED_INFUSED_FABRIC_CARPET_ORNATE_SLAB.get().parentBlock == this.getBlock())
+                return ModBlocks.WAXED_INFUSED_FABRIC_CARPET_ORNATE_SLAB.get().getStateForPlacement(pContext);
+        }
+        if(block instanceof StairBlock && blockState.hasProperty(BlockStateProperties.HALF) && blockState.getValue(BlockStateProperties.HALF) == Half.BOTTOM) {
+            if (ModBlocks.INFUSED_FABRIC_CARPET_STAIRS.get().parentBlock == this.getBlock())
+                return ModBlocks.INFUSED_FABRIC_CARPET_STAIRS.get().getStateForPlacement(pContext);
+            if (ModBlocks.WAXED_INFUSED_FABRIC_CARPET_STAIRS.get().parentBlock == this.getBlock())
+                return ModBlocks.WAXED_INFUSED_FABRIC_CARPET_STAIRS.get().getStateForPlacement(pContext);
+            if (ModBlocks.INFUSED_FABRIC_CARPET_ORNATE_STAIRS.get().parentBlock == this.getBlock())
+                return ModBlocks.INFUSED_FABRIC_CARPET_ORNATE_STAIRS.get().getStateForPlacement(pContext);
+            if (ModBlocks.WAXED_INFUSED_FABRIC_CARPET_ORNATE_STAIRS.get().parentBlock == this.getBlock())
+                return ModBlocks.WAXED_INFUSED_FABRIC_CARPET_ORNATE_STAIRS.get().getStateForPlacement(pContext);
+        }
         return super.getPlacementState(pContext);
     }
 
@@ -81,27 +81,6 @@ public class DyeableCarpetItem extends BlockItem {
             return super.getName(pStack);
         return Component.translatable("color.minecraft." + color.getName()).append(" ").append(super.getName(pStack));
     }
-
-    //TODO uncomment once fixed connecting textures
-//    @EventBusSubscriber(value = Dist.CLIENT, modid = "hexerei")
-//    static class ColorRegisterHandler
-//    {
-//        @SubscribeEvent(priority = EventPriority.HIGHEST)
-//        public static void registerCarpetColors(RegisterColorHandlersEvent.Item event)
-//        {
-//            ItemHandlerConsumer items = event.getItemColors()::register;
-//            // s = stack, t = tint-layer
-//            items.register((s, t) -> t == 0 ? ConnectingCarpetDyed.getColorValue(s) : -1,
-//
-//                    ModItems.INFUSED_FABRIC_CARPET.get(),
-//
-//                    ModItems.WAXED_INFUSED_FABRIC_CARPET.get(),
-//
-//                    ModItems.INFUSED_FABRIC_BLOCK.get(),
-//
-//                    ModItems.WAXED_INFUSED_FABRIC_BLOCK.get());
-//        }
-//    }
 
 
 }

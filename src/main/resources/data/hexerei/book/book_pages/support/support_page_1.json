@@ -29,7 +29,26 @@
       "imageWidth": 320,
       "imageHeight": 90,
       "scale": 0.25,
-      "texture": "hexerei:textures/book/pictures/hexerei_discord.png"
+      "texture": "hexerei:textures/book/pictures/hexerei_discord.png",
+      "hyperlink": {
+        "url": "https://discord.gg/X76dUuM4jb"
+      },
+      "tooltip":[
+        {
+          "color": 16777215,
+          "text": "book.hexerei.support_page_1.discord_link_tooltip_1"
+        },
+        {
+          "color_hex": "7289D9",
+          "text": "book.hexerei.support_page_1.discord_link_tooltip_2",
+          "type": "append"
+        },
+        {
+          "color_hex": "A5A5A5",
+          "text": "book.hexerei.support_page_1.discord_link_tooltip_3",
+          "type": "trail"
+        }
+      ]
     },{
       "x": 4.45,
       "y": 3.75,
@@ -56,33 +75,6 @@
             "effects": [
             ]
           }
-        }
-      ]
-    }
-  ],
-  "non_item_tooltips": [
-    {
-      "x": 2.5,
-      "y": 3.25,
-      "width": 0.1,
-      "height": 0.03,
-      "hyperlink": {
-        "url": "https://discord.gg/X76dUuM4jb"
-      },
-      "text_components":[
-        {
-          "color": 16777215,
-          "text": "book.hexerei.support_page_1.discord_link_tooltip_1"
-        },
-        {
-          "color_hex": "7289D9",
-          "text": "book.hexerei.support_page_1.discord_link_tooltip_2",
-          "type": "append"
-        },
-        {
-          "color_hex": "A5A5A5",
-          "text": "book.hexerei.support_page_1.discord_link_tooltip_3",
-          "type": "trail"
         }
       ]
     }

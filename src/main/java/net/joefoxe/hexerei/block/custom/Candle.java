@@ -21,6 +21,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.commands.arguments.ParticleArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
@@ -47,6 +48,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.DirectionalPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -200,9 +202,11 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
                 CandleData candleData = candleTile.candles.get(i);
                 if (candleData.hasCandle) {
                     ItemStack itemStack = new ItemStack(ModBlocks.CANDLE.get());
-                    CompoundTag tag = itemStack.getOrDefault(ModDataComponents.CANDLE_DATA, CustomData.EMPTY).copyTag();
-                    candleData.save(tag, level.registryAccess(), true);
-                    itemStack.set(ModDataComponents.CANDLE_DATA, CustomData.of(tag));
+                    CompoundTag tag = itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+                    candleData.save(tag, level.registryAccess(), true, false);
+                    itemStack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+                    if (candleData.dyeColor != Candle.BASE_COLOR)
+                        itemStack.set(DataComponents.DYED_COLOR, new DyedItemColor(candleData.dyeColor, true));
 
                     popResource(level, pos, itemStack);
                 }
@@ -222,10 +226,12 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
 
         tileEntityOptional.ifPresent(candleTile -> {
 
-            CompoundTag tag = item.getOrDefault(ModDataComponents.CANDLE_DATA, CustomData.EMPTY).copyTag();
+            CompoundTag tag = item.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
             CandleData candleData = candleTile.candles.get(0);
-            candleData.save(tag, level.registryAccess(), true);
-            item.set(ModDataComponents.CANDLE_DATA, CustomData.of(tag));
+            candleData.save(tag, level.registryAccess(), true, false);
+            item.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+            if (candleData.dyeColor != Candle.BASE_COLOR)
+                item.set(DataComponents.DYED_COLOR, new DyedItemColor(candleData.dyeColor, true));
 
         });
 
@@ -444,8 +450,10 @@ public class Candle extends AbstractCandleBlock implements ITileEntity<CandleTil
             for(int i = 0; i < 4; i++){
                 if (!te.candles.get(i).hasCandle) {
                     if (stack.getItem() instanceof CandleItem candleItem) {
-                        CompoundTag tag = stack.getOrDefault(ModDataComponents.CANDLE_DATA, CustomData.EMPTY).copyTag();
+                        CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
                         te.candles.get(i).load(tag, level.registryAccess(), true);
+                        if (stack.has(DataComponents.DYED_COLOR))
+                            te.candles.get(0).dyeColor = stack.get(DataComponents.DYED_COLOR).rgb();
 
                         te.setOffsetPos(true);
                         newCandlePos = i;

@@ -18,7 +18,7 @@
       "type": "item",
       "x": 3.5,
       "y": 2.75,
-      "name": "minecraft:crafting_table"
+      "id": "minecraft:crafting_table"
     },
 
 
@@ -26,33 +26,33 @@
       "type": "item",
       "x": 1,
       "y": 3,
-      "name": "minecraft:leather"
+      "id": "minecraft:leather"
     },
 
     {
       "type": "tag",
       "x": 0,
       "y": 4,
-      "name": "hexerei:tallow_meltable"
+      "id": "hexerei:tallow_meltable"
     },
     {
       "type": "item",
       "x": 1,
       "y": 4,
-      "name": "minecraft:book"
+      "id": "minecraft:book"
     },
     {
       "type": "item",
       "x": 2,
       "y": 4,
-      "name": "hexerei:sage_seed"
+      "id": "hexerei:sage_seed"
     },
 
     {
       "type": "item",
       "x": 1,
       "y": 5,
-      "name": "minecraft:leather"
+      "id": "minecraft:leather"
     },
 
 
@@ -61,7 +61,7 @@
       "type": "item",
       "x": 5,
       "y": 4,
-      "name": "hexerei:book_of_shadows"
+      "id": "hexerei:book_of_shadows"
     }
   ],
   "images": [

@@ -9,8 +9,6 @@ import net.joefoxe.hexerei.block.ModWoodType;
 import net.joefoxe.hexerei.client.renderer.CrowPerchRenderer;
 import net.joefoxe.hexerei.client.renderer.entity.BroomType;
 import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
-import net.joefoxe.hexerei.compat.CurioCompat;
-import net.joefoxe.hexerei.compat.GlassesCurioRender;
 import net.joefoxe.hexerei.config.HexConfig;
 import net.joefoxe.hexerei.container.ModContainers;
 import net.joefoxe.hexerei.data.books.BookManager;
@@ -18,11 +16,9 @@ import net.joefoxe.hexerei.data.books.PageDrawing;
 import net.joefoxe.hexerei.data.datagen.ModRecipeProvider;
 import net.joefoxe.hexerei.data.owl.OwlCourierDepotSavedData;
 import net.joefoxe.hexerei.data.recipes.ModRecipeTypes;
-import net.joefoxe.hexerei.data.tags.ModBiomeTagsProvider;
+import net.joefoxe.hexerei.data.recipes.WoodcutterRecipes;
 import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.event.ModLootModifiers;
-import net.joefoxe.hexerei.events.CrowFluteEvent;
-import net.joefoxe.hexerei.events.CrowWhitelistEvent;
 import net.joefoxe.hexerei.events.GlassesZoomKeyPressEvent;
 import net.joefoxe.hexerei.events.SageBurningPlateEvent;
 import net.joefoxe.hexerei.events.WitchArmorEvent;
@@ -47,16 +43,16 @@ import net.joefoxe.hexerei.world.gen.ModFeatures;
 import net.joefoxe.hexerei.world.processor.ModStructureProcessors;
 import net.joefoxe.hexerei.world.structure.ModStructures;
 import net.joefoxe.hexerei.world.terrablender.ModRegion;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -71,7 +67,6 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
@@ -79,20 +74,27 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
-import static net.joefoxe.hexerei.util.ClientProxy.MODEL_SWAPPER;
+//import static net.joefoxe.hexerei.util.ClientProxy.MODEL_SWAPPER;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Hexerei.MOD_ID)
@@ -116,24 +118,11 @@ public class Hexerei {
 //		}
 //	}
 
-	public static SidedProxy proxy = (FMLEnvironment.dist.isClient() ? new ClientProxy() : new ServerProxy());
+	public static SidedProxy proxy;
+	public static DynamicRegistries dynamicRegistries;
 
 	public static GlassesZoomKeyPressEvent glassesZoomKeyPressEvent;
 	public static boolean entityClicked = false;
-
-	public static Font font() {
-		if (ClientProxy.fontIndex == 0)
-			return Minecraft.getInstance().font;
-		else {
-			int index = ClientProxy.fontIndex % HexConfig.FONT_LIST.get().size();
-			Font toReturn = ClientProxy.fontList.get(HexConfig.FONT_LIST.get().get(index));
-			return toReturn == null ? Minecraft.getInstance().font : toReturn;
-		}
-//		if(clientTicks % 40 > 20)
-//			return fontList.values().stream().toList().get(0);
-//		return fontList.values().stream().toList().get(1);
-//		return font;
-	}
 
 //	public static Registrate registrate() {
 //		return REGISTRATE.get();
@@ -149,7 +138,19 @@ public class Hexerei {
 
 	public static LinkedList<BlockPos> sageBurningPlateTileList = new LinkedList<>();
 
+	public static class DynamicRegistries {
+		public static RegistryAccess get() {
+			return EffectiveSide.get().isClient() ? ClientDynamicRegistries.get() : ServerLifecycleHooks.getCurrentServer().registryAccess();
+		}
+
+		private static class ClientDynamicRegistries {
+			public static RegistryAccess get() { return Minecraft.getInstance().hasSingleplayerServer() ? Minecraft.getInstance().getSingleplayerServer().registryAccess() : Minecraft.getInstance().level.registryAccess(); }
+		}
+	}
+
 	public Hexerei(IEventBus eventBus, ModContainer modContainer, Dist dist){
+
+		proxy = (FMLEnvironment.dist.isClient() ? new ClientProxy() : new ServerProxy());
 
 //        eventBus.addListener(this::gatherData);
 
@@ -159,9 +160,11 @@ public class Hexerei {
 		modContainer.registerConfig(ModConfig.Type.COMMON, HexConfig.COMMON_CONFIG, "Hexerei-common.toml");
 
 		if (dist.isClient()) {
+			NeoForge.EVENT_BUS.addListener(ClientEvents::clientTickEvent);
 			NeoForge.EVENT_BUS.addListener(ClientEvents::renderWorldLastEvent);
 			eventBus.addListener(ClientEvents::registerMenu);
 			eventBus.addListener(ClientEvents::onRegisterClientExtensions);
+			ClientProxy.MODEL_SWAPPER.registerListeners(eventBus);
 		}
 
 		ModDataComponents.COMPONENTS.register(eventBus);
@@ -198,22 +201,22 @@ public class Hexerei {
 
 		eventBus.addListener(this::setup);
 		// Register the enqueueIMC method for modloading
-		eventBus.addListener(this::enqueueIMC);
+//		eventBus.addListener(this::enqueueIMC);
 		// Register the doClientStuff method for modloading
 		eventBus.addListener(this::doClientStuff);
 
 		ModItemGroup.ITEM_GROUP.register(eventBus);
 
 
-		if (dist.isClient())
-			MODEL_SWAPPER.registerListeners(eventBus);
+//		if (dist.isClient())
+//			MODEL_SWAPPER.registerListeners(eventBus);
 
 //        forgeEventBus.addListener(EventPriority.NORMAL, this::addDimensionalSpacing);
 //        forgeEventBus.addListener(EventPriority.NORMAL, WitchHutStructure::setupStructureSpawns);
 
 
 		// Register ourselves for server and other game events we are interested in
-		NeoForge.EVENT_BUS.register(this);
+//		NeoForge.EVENT_BUS.register(this);
 
 		NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, this::playerLogin);
 		eventBus.addListener(EventPriority.LOWEST, this::gatherData);
@@ -228,7 +231,7 @@ public class Hexerei {
 
 		gen.addProvider(true, new ModRecipeProvider(output, lookupProvider));
 //		gen.addProvider(event.includeServer(), new WorldGenProvider(output, event.getLookupProvider()));
-		gen.addProvider(event.includeServer(), new ModBiomeTagsProvider(output, lookupProvider, event.getExistingFileHelper()));
+//		gen.addProvider(event.includeServer(), new ModBiomeTagsProvider(output, lookupProvider, event.getExistingFileHelper()));
 //		gen.addProvider(event.includeServer(), new HexereiRecipeProvider(gen));
 	}
 
@@ -238,9 +241,10 @@ public class Hexerei {
 		ServerPlayer player = (ServerPlayer) event.getEntity();
 		ServerLevel serverWorld = player.serverLevel();
 		MinecraftServer server = player.getServer();
-		OwlCourierDepotSavedData.get().syncToClient();
-		BookManager.sendBookPagesToClient();
-		BookManager.sendBookEntriesToClient();
+		OwlCourierDepotSavedData.get().syncToClient(player);
+		BookManager.sendBookPagesToClient(player);
+		BookManager.sendBookEntriesToClient(player);
+		WoodcutterRecipes.sendToClient(player);
 	}
 	public void setupCrowPerchRenderer() {
 		NeoForge.EVENT_BUS.register(CrowPerchRenderer.class);
@@ -311,10 +315,22 @@ public class Hexerei {
 			ComposterBlock.COMPOSTABLES.put(ModItems.SAGE.get().asItem(), 0.3F);
 			ComposterBlock.COMPOSTABLES.put(ModItems.SAGE_SEED.get().asItem(), 0.3F);
 			ComposterBlock.COMPOSTABLES.put(ModItems.DRIED_SAGE.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.TALLOW_IMPURITY.get().asItem(), 0.3F);
 		});
 		if (ModList.get().isLoaded("terrablender") && HexConfig.WILLOW_SWAMP_RARITY.get() > 0) {
 			event.enqueueWork(ModRegion::init);
+		}
+	}
+	public static List<String> buildResourceLocations(String resourcePath) throws IOException {
+		ResourceLocation loc = ResourceLocation.parse(resourcePath);
+		String resourceDirectory = loc.getPath();
+		Path basePath = Paths.get("src/main/resources/assets", loc.getNamespace(), resourceDirectory).getParent();
+		try (Stream<Path> paths = Files.walk(basePath)) {
+			return paths .filter(Files::isRegularFile) .filter(path -> {
+				String fileName = path.getFileName().toString().toLowerCase();
+				return fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".jpeg");
+			}) .map(path -> {
+				String relativeImagePath = basePath.relativize(path).toString().replace("\\", "/"); return loc.getNamespace() + ":textures/" + relativeImagePath;
+			}).toList();
 		}
 	}
 
@@ -323,7 +339,18 @@ public class Hexerei {
 
 		setupCrowPerchRenderer();
 		event.enqueueWork(() -> {
-			Sheets.addWoodType(ModWoodType.MAHOGANY);
+
+            PageDrawing.pageLocs = new ArrayList<>(Minecraft.getInstance().getResourceManager().listResources("textures/book/pages", p_345740_ -> p_345740_.getPath().endsWith(".png")).keySet().stream().filter((loc) -> loc.getNamespace().equals(MOD_ID)).toList());
+            PageDrawing.overlayLocs = new ArrayList<>(Minecraft.getInstance().getResourceManager().listResources("textures/book/page_overlays", p_345740_ -> p_345740_.getPath().endsWith(".png")).keySet().stream().filter((loc) -> loc.getNamespace().equals(MOD_ID)).toList());
+			PageDrawing.overlayLocs.add(null);
+			PageDrawing.overlayLocs.add(null);
+			PageDrawing.overlayLocs.add(null);
+			PageDrawing.overlayLocs.add(null);
+			PageDrawing.overlayLocs.add(null);
+			PageDrawing.overlayLocs.add(null);
+//                List<String> resourceLocations = buildResourceLocations("hexerei:textures/book/pages/page_1.png");
+
+            Sheets.addWoodType(ModWoodType.MAHOGANY);
 			Sheets.addWoodType(ModWoodType.WILLOW);
 			Sheets.addWoodType(ModWoodType.WITCH_HAZEL);
 			Sheets.addWoodType(ModWoodType.POLISHED_MAHOGANY);
@@ -339,44 +366,8 @@ public class Hexerei {
 
 		});
 
-		if (curiosLoaded) GlassesCurioRender.register();
+//		if (curiosLoaded) GlassesCurioRender.register();
 
-	}
-
-	static float clientTicks = 0;
-	static DeltaTracker clientTicksPartial = DeltaTracker.ZERO;
-
-	@SubscribeEvent
-	public void onRenderLast(RenderLevelStageEvent event) {
-		clientTicksPartial = event.getPartialTick();
-	}
-
-	@SubscribeEvent
-	public void clientTickEvent(ClientTickEvent.Pre event) {
-		clientTicks += 1;
-//		if (ClientProxy.fontList.isEmpty()) {
-//			List<? extends String> fonts = HexConfig.FONT_LIST.get();
-//			for (String str : fonts) {
-//				if (!ClientProxy.fontList.containsKey(str))
-//					ClientProxy.fontList.put(str, new Font((p_95014_) -> {
-//						return Minecraft.getInstance().fontManager.fontSets.getOrDefault(new ResourceLocation(str), Minecraft.getInstance().fontManager.missingFontSet);
-//					}, false));
-//			}
-//		}
-	}
-
-
-	public static float getClientTicks() {
-		Minecraft mc = Minecraft.getInstance();
-		return clientTicks + mc.getFrameTimeNs();
-	}
-
-	public static float getClientTicksWithoutPartial() {
-		return clientTicks;
-	}
-
-	public static float getPartial() {
-		return clientTicksPartial.getGameTimeDeltaTicks();
 	}
 
 //    @SubscribeEvent
@@ -388,19 +379,18 @@ public class Hexerei {
 //        registry.register(obj.setRegistryName(HexereiUtil.getResource(name)));
 //    }
 
-	private void enqueueIMC(final InterModEnqueueEvent event) {
-		if (curiosLoaded) CurioCompat.sendIMC();
-	}
+//	private void enqueueIMC(final InterModEnqueueEvent event) {
+//		if (curiosLoaded) CurioCompat.sendIMC();
+//	}
 
 	private void loadComplete(final FMLLoadCompleteEvent event) {
 		NeoForge.EVENT_BUS.register(new SageBurningPlateEvent());
 		NeoForge.EVENT_BUS.register(new WitchArmorEvent());
 
-		glassesZoomKeyPressEvent = new GlassesZoomKeyPressEvent();
-		NeoForge.EVENT_BUS.register(glassesZoomKeyPressEvent);
 
 		if(FMLEnvironment.dist.isClient()) {
-			NeoForge.EVENT_BUS.register(new PageDrawing());
+			NeoForge.EVENT_BUS.register(new GlassesZoomKeyPressEvent());
+//			NeoForge.EVENT_BUS.register(new PageDrawing());
 			if (ModList.get().isLoaded("ars_nouveau")) net.joefoxe.hexerei.compat.LightManagerCompat.fallbackToArs();
 		}
 

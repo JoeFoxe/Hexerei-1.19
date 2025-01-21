@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "wooden_slab",
+  "pattern": [
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "hexerei:mahogany_planks"
+    }
+  },
+  "result": {
+    "id": "hexerei:mahogany_button",
+    "count": 1
+  }
+}

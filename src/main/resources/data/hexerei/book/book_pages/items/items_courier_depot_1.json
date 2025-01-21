@@ -31,19 +31,19 @@
       "type": "item",
       "x": 1.5,
       "y": 0.75,
-      "name": "hexerei:mahogany_courier_depot"
+      "id": "hexerei:mahogany_courier_depot"
     },
     {
       "type": "item",
       "x": 2.5,
       "y": 0.75,
-      "name": "hexerei:willow_courier_depot"
+      "id": "hexerei:willow_courier_depot"
     },
     {
       "type": "item",
       "x": 3.5,
       "y": 0.75,
-      "name": "hexerei:witch_hazel_courier_depot"
+      "id": "hexerei:witch_hazel_courier_depot"
     }
   ],
   "images": [

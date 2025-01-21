@@ -173,6 +173,7 @@ public class FluidStackRenderer {
         bufferBuilder.addVertex(matrix, xCoord + 16 - maskRight, yCoord + 16, zLevel).setUv(uMax, vMax);
         bufferBuilder.addVertex(matrix, xCoord + 16 - maskRight, yCoord + maskTop, zLevel).setUv(uMax, vMin);
         bufferBuilder.addVertex(matrix, xCoord, yCoord + maskTop, zLevel).setUv(uMin, vMin);
+        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
     }
 
     public List<Component> getTooltip(FluidStack fluidStack, TooltipFlag tooltipFlag) {

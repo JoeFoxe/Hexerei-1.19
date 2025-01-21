@@ -51,17 +51,17 @@ public class Altar extends ConnectingTableEntityBase implements ITileEntity<Book
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        BlockEntity tileEntity = level.getBlockEntity(pos);
-
-        if(tileEntity instanceof BookOfShadowsAltarTile bookOfShadowsAltarTile) {
-
-            int num = bookOfShadowsAltarTile.interactWithoutItem(player);
-
-            if(num == 1)
-                return InteractionResult.SUCCESS;
-            return InteractionResult.PASS;
-
-        }
+//        BlockEntity tileEntity = level.getBlockEntity(pos);
+//
+////        if(tileEntity instanceof BookOfShadowsAltarTile bookOfShadowsAltarTile) {
+////
+//////            int num = bookOfShadowsAltarTile.interactWithoutItem(player);
+//////
+//////            if(num == 1)
+//////                return InteractionResult.SUCCESS;
+////            return InteractionResult.PASS;
+////
+////        }
         return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
@@ -75,11 +75,7 @@ public class Altar extends ConnectingTableEntityBase implements ITileEntity<Book
                 stack.useOn(new UseOnContext(player, hand, hitResult));
                 return ItemInteractionResult.SUCCESS;
             }
-            int num = bookOfShadowsAltarTile.interactWithItem(player, hand);
-
-            if(num == 1)
-                return ItemInteractionResult.SUCCESS;
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return bookOfShadowsAltarTile.interact(player, hand, stack) ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);

@@ -35,34 +35,34 @@
       "type": "item",
       "x": 0.75,
       "y": 4.25,
-      "name": "hexerei:book_of_shadows"
+      "id": "hexerei:book_of_shadows"
     },
     {
       "type": "item",
       "x": 3.75,
       "y": 4.25,
-      "name": "hexerei:crow_flute",
+      "id": "hexerei:crow_flute",
       "tag": "{display:{Name:'{\"text\":\"jeb_\"}', color: 8670136}}"
     },
     {
       "type": "item",
       "x": 1.75,
       "y": 4.25,
-      "name": "hexerei:coffer",
+      "id": "hexerei:coffer",
       "tag": "{Inventory: {Size: 36, Items: [{Slot: 0, id: \"hexerei:broom_brush\", Count: 1b, tag: {Damage: 2}}, {Slot: 1, id: \"minecraft:dirt\", Count: 64b}, {Slot: 2, id: \"minecraft:dirt\", Count: 64b}, {Slot: 4, id: \"minecraft:dirt\", Count: 64b}, {Slot: 5, id: \"minecraft:dirt\", Count: 64b}, {Slot: 6, id: \"minecraft:dirt\", Count: 64b}, {Slot: 7, id: \"minecraft:dirt\", Count: 64b}, {Slot: 8, id: \"minecraft:dirt\", Count: 64b}, {Slot: 9, id: \"minecraft:dirt\", Count: 64b}, {Slot: 10, id: \"minecraft:dirt\", Count: 64b}, {Slot: 11, id: \"minecraft:dirt\", Count: 64b}, {Slot: 12, id: \"minecraft:dirt\", Count: 64b}, {Slot: 13, id: \"hexerei:mahogany_broom\", Count: 1b, tag: {floatMode: 0b, Inventory: {Size: 30, Items: [{Slot: 1, id: \"hexerei:small_satchel\", Count: 1b}, {Slot: 2, id: \"hexerei:broom_brush\", Count: 1b, tag: {Damage: 2}}]}, display: {Name: '{\"translate\":\"item.hexerei.mahogany_broom\"}'}}}, {Slot: 14, id: \"minecraft:dirt\", Count: 64b}, {Slot: 15, id: \"minecraft:dirt\", Count: 64b}, {Slot: 16, id: \"minecraft:dirt\", Count: 63b}, {Slot: 17, id: \"minecraft:dirt\", Count: 16b}, {Slot: 18, id: \"minecraft:dirt\", Count: 64b}, {Slot: 19, id: \"minecraft:dirt\", Count: 64b}, {Slot: 20, id: \"minecraft:dirt\", Count: 64b}, {Slot: 21, id: \"minecraft:dirt\", Count: 64b}, {Slot: 22, id: \"minecraft:dirt\", Count: 64b}, {Slot: 23, id: \"minecraft:dirt\", Count: 32b}, {Slot: 24, id: \"minecraft:dirt\", Count: 64b}, {Slot: 25, id: \"minecraft:dirt\", Count: 64b}, {Slot: 26, id: \"minecraft:dirt\", Count: 64b}, {Slot: 27, id: \"minecraft:dirt\", Count: 64b}, {Slot: 28, id: \"minecraft:dirt\", Count: 37b}, {Slot: 29, id: \"minecraft:dirt\", Count: 1b}, {Slot: 31, id: \"hexerei:candle_black\", Count: 1b}, {Slot: 32, id: \"minecraft:dirt\", Count: 64b}, {Slot: 33, id: \"minecraft:dirt\", Count: 64b}, {Slot: 34, id: \"hexerei:broom_brush\", Count: 1b, tag: {Damage: 2}}, {Slot: 35, id: \"minecraft:dirt\", Count: 64b}]}, display:{Name:'{\"text\":\"jeb_\"}'}}"
     },
     {
       "type": "item",
       "x": 2.75,
       "y": 4.25,
-      "name": "hexerei:mahogany_broom",
+      "id": "hexerei:mahogany_broom",
       "tag": "{Inventory:{Items:[{Count:1b,Slot:0,id:\"hexerei:broom_keychain\",tag:{Items:[{Count:1b,Slot:0b,id:\"hexerei:candle_yellow\"}]}},{Count:1b,Slot:1,id:\"hexerei:large_satchel\",tag:{RepairCost:0,display:{Name:'{\"text\":\"joe_\"}'}}},{Count:1b,Slot:2,id:\"hexerei:broom_brush\",tag:{Damage:0}}],Size:30},display:{Name:'{\"translate\":\"item.hexerei.mahogany_broom\"}'},floatMode:1b}"
     },
     {
       "type": "tag",
       "x": 4.75,
       "y": 4.25,
-      "name": "hexerei:herbs"
+      "id": "hexerei:herbs"
     }
   ],
   "entities": [
@@ -70,7 +70,7 @@
       "x": 3.5,
       "y": 3,
       "scale": 1.5,
-      "name": "hexerei:crow",
+      "id": "hexerei:crow",
       "tag": "{Age:0,CanUpdate:1b,Command:1,CustomName:'{\"text\":\"joe_\"}',DyeColor:15,OnGround:1b,PersistenceRequired:1b,Sitting:1b,id:\"hexerei:crow\",inv:{Items:[{Count:1b,Slot:0,id:\"hexerei:witch_helmet\",tag:{Damage:0,RepairCost:0,display:{Name:'{\"text\":\"joe_\"}',color:1481884}}}],Size:3}}"
     }
   ],

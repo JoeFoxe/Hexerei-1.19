@@ -1,0 +1,36 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 500
+  },
+  "ingredients": [
+    {
+      "item": "hexerei:small_satchel"
+    },
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "minecraft:leather"
+    }
+  ],
+  "output": {
+    "id": "hexerei:medium_satchel"
+  }
+}

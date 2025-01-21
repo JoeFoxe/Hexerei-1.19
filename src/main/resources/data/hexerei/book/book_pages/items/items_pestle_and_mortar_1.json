@@ -31,7 +31,7 @@
       "type": "item",
       "x": 2.5,
       "y": 0.75,
-      "name": "hexerei:pestle_and_mortar"
+      "id": "hexerei:pestle_and_mortar"
     }
   ],
   "images": [

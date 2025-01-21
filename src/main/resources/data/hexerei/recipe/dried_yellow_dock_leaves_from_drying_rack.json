@@ -1,0 +1,10 @@
+{
+  "type": "hexerei:drying_rack",
+  "input": {
+    "item": "hexerei:yellow_dock_leaves"
+  },
+  "output": {
+    "id": "hexerei:dried_yellow_dock_leaves"
+  },
+  "dryingTime": 2000
+}

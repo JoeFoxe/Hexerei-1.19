@@ -1,7 +1,0 @@
-{
-  "type": "hexerei:woodcutting",
-  "ingredient": {
-    "item": "hexerei:mahogany_slab"
-  },
-  "result": "hexerei:mahogany_button"
-}

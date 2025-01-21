@@ -69,7 +69,7 @@
 	},
 	"groups": [
 		{
-			"name": "pestle",
+			"id": "pestle",
 			"origin": [8, 5.5, 5.5],
 			"color": 0,
 			"children": [0, 1]

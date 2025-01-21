@@ -31,14 +31,14 @@
       "type": "item",
       "x": 2.5,
       "y": 0.75,
-      "name": "hexerei:willow_planks"
+      "id": "hexerei:willow_planks"
     },
 
     {
       "type": "item",
       "x": 2.5,
       "y": 5.5,
-      "name": "hexerei:willow_woodcutter",
+      "id": "hexerei:willow_woodcutter",
 
       "extra_tooltips":[
         {
@@ -51,25 +51,25 @@
       "type": "item",
       "x": 1,
       "y": 6.5,
-      "name": "hexerei:willow_connected"
+      "id": "hexerei:willow_connected"
     },
     {
       "type": "item",
       "x": 2,
       "y": 6.5,
-      "name": "hexerei:polished_willow_connected"
+      "id": "hexerei:polished_willow_connected"
     },
     {
       "type": "item",
       "x": 3,
       "y": 6.5,
-      "name": "hexerei:polished_willow_pillar"
+      "id": "hexerei:polished_willow_pillar"
     },
     {
       "type": "item",
       "x": 4,
       "y": 6.5,
-      "name": "hexerei:polished_willow_layered"
+      "id": "hexerei:polished_willow_layered"
     }
   ],
   "images": [

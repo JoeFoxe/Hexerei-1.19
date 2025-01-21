@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.gui.drawable.IDrawable;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.data.recipes.CrowFluteRecipe;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.item.custom.CrowFluteItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -77,7 +78,7 @@ public class ExtraFluteIcon implements IDrawable {
         }
 
 
-        float timer = (Hexerei.getClientTicks()) % 100 / 100f;
+        float timer = (ClientEvents.getClientTicks()) % 100 / 100f;
         if((timer <= 0.1 && findNewRecipe) || recipeShown == null){
             findNewRecipe = false;
             recipeShown = flute_recipe.get(new Random().nextInt(flute_recipe.size()));

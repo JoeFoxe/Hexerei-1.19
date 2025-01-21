@@ -1,7 +1,0 @@
-{
-  "type": "hexerei:woodcutting",
-  "ingredient": {
-    "item": "hexerei:mahogany_connected"
-  },
-  "result": "hexerei:mahogany_fence"
-}

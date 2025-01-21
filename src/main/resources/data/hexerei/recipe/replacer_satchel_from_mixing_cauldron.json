@@ -1,0 +1,44 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "fluid": {
+    "id": "hexerei:potion",
+    "amount": 1000,
+    "components": {
+      "hexerei:potion_bottle_type": {
+        "Bottle": "REGULAR"
+      },
+      "minecraft:potion_contents": {
+        "potion": "minecraft:thick"
+      }
+    }
+  },
+  "ingredients": [
+    {
+      "item": "hexerei:medium_satchel"
+    },
+    {
+      "item": "hexerei:dried_mugwort_flowers"
+    },
+    {
+      "item": "minecraft:ender_pearl"
+    },
+    {
+      "item": "hexerei:dried_belladonna_flowers"
+    },
+    {
+      "item": "hexerei:broom_brush"
+    },
+    {
+      "item": "hexerei:dried_mandrake_flowers"
+    },
+    {
+      "item": "minecraft:ender_pearl"
+    },
+    {
+      "item": "hexerei:dried_yellow_dock_flowers"
+    }
+  ],
+  "output": {
+    "id": "hexerei:replacer_satchel"
+  }
+}

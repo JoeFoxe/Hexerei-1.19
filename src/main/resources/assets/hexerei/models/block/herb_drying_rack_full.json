@@ -518,7 +518,7 @@
 	},
 	"groups": [
 		{
-			"name": "group",
+			"id": "group",
 			"origin": [8, 8, 8],
 			"color": 0,
 			"children": [
@@ -533,19 +533,19 @@
 				8,
 				9,
 				{
-					"name": "mushroom",
+					"id": "mushroom",
 					"origin": [0, 0, 0],
 					"color": 0,
 					"children": [10, 11, 12, 13, 14, 15]
 				},
 				{
-					"name": "mushroom",
+					"id": "mushroom",
 					"origin": [0, 0, 0],
 					"color": 0,
 					"children": [16, 17, 18, 19, 20, 21]
 				},
 				{
-					"name": "mushroom",
+					"id": "mushroom",
 					"origin": [0, 0, 0],
 					"color": 0,
 					"children": [22, 23, 24, 25, 26, 27]
@@ -553,13 +553,13 @@
 			]
 		},
 		{
-			"name": "herb",
+			"id": "herb",
 			"origin": [8, 8, 8],
 			"color": 0,
 			"children": [28, 29, 30, 31]
 		},
 		{
-			"name": "herb2",
+			"id": "herb2",
 			"origin": [1.5, 5.75, 7.25],
 			"color": 0,
 			"children": [32, 33, 34, 35]

@@ -38,10 +38,6 @@ public class ClientboundOwlCourierDepotDataPacket extends AbstractPacket {
         buffer.writeNbt(tag);
     }
 
-    public static ClientboundOwlCourierDepotDataPacket decode(FriendlyByteBuf buffer) {
-        return new ClientboundOwlCourierDepotDataPacket(buffer.readNbt());
-    }
-
     @Override
     public void onClientReceived(Minecraft minecraft, Player player) {
         ClientOwlCourierDepotData.update(this);

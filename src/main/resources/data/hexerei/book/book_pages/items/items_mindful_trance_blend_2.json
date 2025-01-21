@@ -18,7 +18,7 @@
       "type": "item",
       "x": 3.75,
       "y": 2.5,
-      "name": "hexerei:pestle_and_mortar"
+      "id": "hexerei:pestle_and_mortar"
     },
 
 
@@ -27,31 +27,31 @@
       "type": "item",
       "x": 0,
       "y": 3.5,
-      "name": "hexerei:belladonna_flowers"
+      "id": "hexerei:belladonna_flowers"
     },
     {
       "type": "item",
       "x": 0.25,
       "y": 4.5,
-      "name": "hexerei:belladonna_berries"
+      "id": "hexerei:belladonna_berries"
     },
     {
       "type": "item",
       "x": 1.25,
       "y": 4.75,
-      "name": "hexerei:belladonna_berries"
+      "id": "hexerei:belladonna_berries"
     },
     {
       "type": "item",
       "x": 2.25,
       "y": 4.5,
-      "name": "hexerei:belladonna_berries"
+      "id": "hexerei:belladonna_berries"
     },
     {
       "type": "item",
       "x": 2.5,
       "y": 3.5,
-      "name": "hexerei:sage"
+      "id": "hexerei:sage"
     },
 
 
@@ -60,7 +60,7 @@
       "type": "item",
       "x": 5,
       "y": 4,
-      "name": "hexerei:mindful_trance_blend"
+      "id": "hexerei:mindful_trance_blend"
     }
   ],
   "images": [

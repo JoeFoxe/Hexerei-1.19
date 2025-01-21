@@ -1,0 +1,10 @@
+{
+  "type": "hexerei:drying_rack",
+  "input": {
+    "item": "hexerei:wet_broom_brush"
+  },
+  "output": {
+    "id": "hexerei:broom_brush"
+  },
+  "dryingTime": 1000
+}

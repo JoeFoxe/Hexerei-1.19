@@ -10,6 +10,7 @@ import net.joefoxe.hexerei.client.renderer.entity.custom.ai.ITargetsDroppedItems
 import net.joefoxe.hexerei.client.renderer.entity.render.CrowVariant;
 import net.joefoxe.hexerei.config.HexConfig;
 import net.joefoxe.hexerei.container.CrowContainer;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.item.ModDataComponents;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.data_components.FluteData;
@@ -781,11 +782,11 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 
         // Wing animation
         if (this.getDeltaMovement().y < -0.0075) {
-            rightWingAngle = Mth.sin(Hexerei.getClientTicksWithoutPartial() / 5f) * 0.05f;
-            leftWingAngle = -Mth.sin(0.97f + Hexerei.getClientTicksWithoutPartial() / 5f) * 0.05f;
+            rightWingAngle = Mth.sin(ClientEvents.getClientTicksWithoutPartial() / 5f) * 0.05f;
+            leftWingAngle = -Mth.sin(0.97f + ClientEvents.getClientTicksWithoutPartial() / 5f) * 0.05f;
         } else {
-            rightWingAngle = (float) Math.sin(Hexerei.getClientTicksWithoutPartial() / 5f) * 0.8f;
-            leftWingAngle = -(float) Math.sin(Hexerei.getClientTicksWithoutPartial() / 5f) * 0.8f;
+            rightWingAngle = (float) Math.sin(ClientEvents.getClientTicksWithoutPartial() / 5f) * 0.8f;
+            leftWingAngle = -(float) Math.sin(ClientEvents.getClientTicksWithoutPartial() / 5f) * 0.8f;
         }
         this.rightWingAngleActual = moveTo(this.rightWingAngleActual, rightWingAngle, 0.1f);
         this.leftWingAngleActual = moveTo(this.leftWingAngleActual, leftWingAngle, 0.1f);
@@ -878,7 +879,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         {
             if(this.tailWag)
             {
-                this.tailWagTiltAngle = Mth.sin(Hexerei.getClientTicks()) * 100f;
+                this.tailWagTiltAngle = Mth.sin(ClientEvents.getClientTicks()) * 100f;
             }
 
             this.tailWagTiltAngleActual = moveTo(this.tailWagTiltAngleActual, tailWagTiltAngle, 30f);
@@ -913,7 +914,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         {
 //            if(this.tailFan)
 //            {
-//                this.tailFanTiltAngle = Mth.sin(Hexerei.getClientTicks()) * 100f;
+//                this.tailFanTiltAngle = Mth.sin(ClientEvents.getClientTicks()) * 100f;
 //            }
 
             this.tailFanTiltAngleActual = moveTo(this.tailFanTiltAngleActual, tailFanTiltAngle, 20f);
@@ -2219,6 +2220,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
         @Override
         public boolean canContinueToUse() {
 
+            if (CrowEntity.this.isPassenger())
+                return false;
             if(getCommand() == 0)
             {
                 if(CrowEntity.this.isInSittingPose()) {
@@ -2231,6 +2234,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 
         public boolean canUse() {
             if(CrowEntity.this.isBaby())
+                return false;
+            if (CrowEntity.this.isPassenger())
                 return false;
             ServerPlayer serverplayer = (ServerPlayer)this.entity.getOwner();
             boolean flag = serverplayer != null && !serverplayer.isSpectator() && !serverplayer.getAbilities().flying && !serverplayer.isInWater() && !serverplayer.isInPowderSnow;
@@ -3181,6 +3186,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
             LivingEntity livingentity = this.tamable.getOwner();
             if (livingentity == null) {
                 return false;
+            } else if (this.tamable.isPassenger()) {
+                return false;
             } else if (livingentity.isSpectator()) {
                 return false;
             } else if (this.tamable.isOrderedToSit() || CrowEntity.this.isInSittingPose()) {
@@ -3206,6 +3213,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
             if (this.navigation.isDone()) {
                 return false;
             } else if (this.tamable.isOrderedToSit() || CrowEntity.this.isInSittingPose()) {
+                return false;
+            } else if (this.tamable.isPassenger()) {
                 return false;
             } else {
                 if(getCommand() == 0)

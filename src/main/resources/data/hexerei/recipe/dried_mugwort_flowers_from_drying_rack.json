@@ -1,0 +1,10 @@
+{
+  "type": "hexerei:drying_rack",
+  "input": {
+    "item": "hexerei:mugwort_flowers"
+  },
+  "output": {
+    "id": "hexerei:dried_mugwort_flowers"
+  },
+  "dryingTime": 2000
+}

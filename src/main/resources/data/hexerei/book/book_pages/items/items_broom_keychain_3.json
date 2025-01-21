@@ -18,32 +18,34 @@
       "type": "item",
       "x": 1,
       "y": 2.5,
-      "name": "hexerei:broom_keychain"
+      "id": "hexerei:broom_keychain"
     },
     {
       "type": "item",
       "x": 2,
       "y": 2.5,
-      "name": "hexerei:coffer"
+      "id": "hexerei:coffer"
     },
     {
       "type": "item",
       "x": 1,
       "y": 3.5,
-      "name": "minecraft:air"
+      "id": "minecraft:air"
     },
     {
       "type": "item",
       "x": 2,
       "y": 3.5,
-      "name": "minecraft:air"
+      "id": "minecraft:air"
     },
     {
       "type": "item",
       "x": 4,
       "y": 3,
-      "name": "hexerei:broom_keychain",
-      "tag": "{Items: [{Slot: 0b, id: \"hexerei:coffer\", Count: 1b, tag: {}}]}"
+      "id": "hexerei:broom_keychain",
+      "components": {
+        "minecraft:custom_data": "{Items: [{Slot: 0b, id: \"hexerei:coffer\", Count: 1b, tag: {}}]}"
+      }
     },
 
 
@@ -52,8 +54,10 @@
       "type": "item",
       "x": 1,
       "y": 5,
-      "name": "hexerei:broom_keychain",
-      "tag": "{Items: [{Slot: 0b, id: \"hexerei:coffer\", Count: 1b, tag: {}}]}",
+      "id": "hexerei:broom_keychain",
+      "components": {
+        "minecraft:custom_data": "{Items: [{Slot: 0b, id: \"hexerei:coffer\", Count: 1b, tag: {}}]}"
+      },
       "extra_tooltips":[
         {
           "color_hex": 808080,
@@ -65,25 +69,25 @@
       "type": "item",
       "x": 2,
       "y": 5,
-      "name": "minecraft:air"
+      "id": "minecraft:air"
     },
     {
       "type": "item",
       "x": 1,
       "y": 6,
-      "name": "minecraft:air"
+      "id": "minecraft:air"
     },
     {
       "type": "item",
       "x": 2,
       "y": 6,
-      "name": "minecraft:air"
+      "id": "minecraft:air"
     },
     {
       "type": "item",
       "x": 4,
       "y": 5.5,
-      "name": "hexerei:coffer"
+      "id": "hexerei:coffer"
     }
   ],
   "images": [

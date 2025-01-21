@@ -19,7 +19,7 @@
       }
     }
   },
-  "loader": "forge:composite",
+  "loader": "neoforge:composite",
   "display": {
     "thirdperson_righthand": {
       "rotation": [ 75, 45, 0 ],

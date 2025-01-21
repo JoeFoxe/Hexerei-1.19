@@ -54,17 +54,16 @@ public class ModBlockColors {
                 ModBlocks.COFFER.get()
         );
 
-        //TODO dye colors for carpets when I figure out connecting texture stuff
-//        event.register((state, reader, pos, color) -> ConnectingCarpetDyed.getColorValue(state),
-//                ModBlocks.INFUSED_FABRIC_CARPET.get(),
-//                ModBlocks.WAXED_INFUSED_FABRIC_CARPET.get(),
-//                ModBlocks.INFUSED_FABRIC_BLOCK.get(),
-//                ModBlocks.WAXED_INFUSED_FABRIC_BLOCK.get(),
-//                ModBlocks.INFUSED_FABRIC_CARPET_STAIRS.get(),
-//                ModBlocks.WAXED_INFUSED_FABRIC_CARPET_STAIRS.get(),
-//                ModBlocks.INFUSED_FABRIC_CARPET_SLAB.get(),
-//                ModBlocks.WAXED_INFUSED_FABRIC_CARPET_SLAB.get()
-//        );
+        event.register((state, reader, pos, color) -> ConnectingCarpetDyed.getColorValue(state),
+                ModBlocks.INFUSED_FABRIC_CARPET.get(),
+                ModBlocks.WAXED_INFUSED_FABRIC_CARPET.get(),
+                ModBlocks.INFUSED_FABRIC_BLOCK.get(),
+                ModBlocks.WAXED_INFUSED_FABRIC_BLOCK.get(),
+                ModBlocks.INFUSED_FABRIC_CARPET_STAIRS.get(),
+                ModBlocks.WAXED_INFUSED_FABRIC_CARPET_STAIRS.get(),
+                ModBlocks.INFUSED_FABRIC_CARPET_SLAB.get(),
+                ModBlocks.WAXED_INFUSED_FABRIC_CARPET_SLAB.get()
+        );
 
         event.register((state, reader, pos, color) -> {
                     return reader != null && pos != null ? Coffer.getColorValue(state, pos, reader) : 0x442013;

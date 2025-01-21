@@ -16,6 +16,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.custom.PickableDoublePlant;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -59,6 +60,16 @@ public class PlantPickingRecipeCategory implements IRecipeCategory<PlantPickingR
     public PlantPickingRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 189, 59);
         this.icon = helper.createDrawableItemStack(new ItemStack(ModBlocks.MANDRAKE_PLANT.get()));
+    }
+
+    @Override
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
     }
 
     @Override
@@ -113,12 +124,12 @@ public class PlantPickingRecipeCategory implements IRecipeCategory<PlantPickingR
             @Override
             public void draw(GuiGraphics guiGraphics, int xOffset, int yOffset) {
 
-                background.draw(guiGraphics);
+//                background.draw(guiGraphics);
 
                 if (recipe.getInput().getItem() instanceof BlockItem blockItem){
 
 
-                    int ticks = (int)(Hexerei.getClientTicks() / 30f);
+                    int ticks = (int)(ClientEvents.getClientTicks() / 30f);
                     int max_age = 0;
 
                     BlockState blockState = blockItem.getBlock().defaultBlockState();
@@ -196,6 +207,8 @@ public class PlantPickingRecipeCategory implements IRecipeCategory<PlantPickingR
 
     @Override
     public void draw(PlantPickingRecipeJEI recipe, IRecipeSlotsView view, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+
+        background.draw(guiGraphics);
 
         Minecraft minecraft = Minecraft.getInstance();
         Component outputName = recipe.getInput().getHoverName();

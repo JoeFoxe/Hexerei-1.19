@@ -127,23 +127,23 @@
 	},
 	"groups": [
 		{
-			"name": "herb_drying_rack_full",
+			"id": "herb_drying_rack_full",
 			"origin": [8, 8, 8],
 			"color": 0,
 			"children": [
 				{
-					"name": "group",
+					"id": "group",
 					"origin": [8, 8, 8],
 					"color": 0,
 					"children": [
 						{
-							"name": "mushroom",
+							"id": "mushroom",
 							"origin": [0, 0, 0],
 							"color": 0,
 							"children": [0, 1, 2, 3, 4, 5]
 						},
 						{
-							"name": "mushroom",
+							"id": "mushroom",
 							"origin": [0, 0, 0],
 							"color": 0,
 							"children": []
@@ -151,13 +151,13 @@
 					]
 				},
 				{
-					"name": "herb",
+					"id": "herb",
 					"origin": [8, 8, 8],
 					"color": 0,
 					"children": []
 				},
 				{
-					"name": "herb2",
+					"id": "herb2",
 					"origin": [1.5, 5.75, 7.25],
 					"color": 0,
 					"children": []

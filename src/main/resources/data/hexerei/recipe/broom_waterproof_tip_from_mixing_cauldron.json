@@ -1,0 +1,36 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 1000
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:conduit"
+    },
+    {
+      "item": "minecraft:dark_prismarine"
+    },
+    {
+      "item": "minecraft:prismarine_shard"
+    },
+    {
+      "item": "minecraft:dark_prismarine"
+    },
+    {
+      "item": "minecraft:prismarine"
+    },
+    {
+      "item": "minecraft:dark_prismarine"
+    },
+    {
+      "item": "minecraft:prismarine_shard"
+    },
+    {
+      "item": "minecraft:dark_prismarine"
+    }
+  ],
+  "output": {
+    "id": "hexerei:broom_waterproof_tip"
+  }
+}

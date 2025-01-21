@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MGM",
+    "M  "
+
+  ],
+  "key": {
+    "M": {
+      "tag": "hexerei:mahogany_planks"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "result": {
+    "id": "hexerei:mahogany_courier_depot",
+    "count": 1
+  }
+}

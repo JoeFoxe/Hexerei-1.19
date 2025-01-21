@@ -96,7 +96,7 @@ public class WhistleItem extends Item {
                 if (tag.contains("broomUUID")) {
 
                     flag = true;
-                    tooltipComponents.add(Component.translatable("Bound to: %s", tag.getUUID("broomUUID")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x119911))));
+                    tooltipComponents.add(Component.translatable("Bound to: %s", tag.getUUID("broomUUID").toString()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x119911))));
 
                 }
             }

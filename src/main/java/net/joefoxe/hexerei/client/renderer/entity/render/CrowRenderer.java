@@ -9,6 +9,7 @@ import com.mojang.math.Axis;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.entity.custom.CrowEntity;
 import net.joefoxe.hexerei.client.renderer.entity.model.CrowModel;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.custom.BroomItem;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
@@ -56,6 +57,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.neoforged.neoforge.client.ClientHooks;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -293,7 +295,7 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
                         buffer = bufferSource.getBuffer(RenderType.entityTranslucentEmissive(ResourceLocation.parse("hexerei:textures/item/crow_active_amulet_trinket.png")));
 
                         poseStack.translate(0, 0, 0.002F);
-                        poseStack.mulPose(Axis.ZP.rotationDegrees(-(Hexerei.getClientTicks()) % 360f));
+                        poseStack.mulPose(Axis.ZP.rotationDegrees(-(ClientEvents.getClientTicks()) % 360f));
                         poseStack.last().normal().rotate(Axis.XP.rotationDegrees((float) 45));
                         normal = poseStack.last();
                         imageWidth = 32;
@@ -305,19 +307,19 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
                         v1 = (v + 0.0F) / (float) imageHeight;
                         v2 = (v + (float) height) / (float) imageHeight;
 
-                        buffer.addVertex(matrix, 0.055f / 16 * width, -0.055f / 16 * height, 0).setColor(1, 1, 1, Math.abs(Mth.cos(Hexerei.getClientTicks() / 100f))).setUv(u1, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLightIn).setNormal(normal, 1F, 0F, 0F);
-                        buffer.addVertex(matrix, 0.055f / 16 * width, 0.055f / 16 * height, 0).setColor(1, 1, 1, Math.abs(Mth.cos(Hexerei.getClientTicks() / 100f))).setUv(u1, v2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLightIn).setNormal(normal, 1F, 0F, 0F);
-                        buffer.addVertex(matrix, -0.055f / 16 * width, 0.055f / 16 * height, 0).setColor(1, 1, 1, Math.abs(Mth.cos(Hexerei.getClientTicks() / 100f))).setUv(u2, v2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLightIn).setNormal(normal, 1F, 0F, 0F);
-                        buffer.addVertex(matrix, -0.055f / 16 * width, -0.055f / 16 * height, 0).setColor(1, 1, 1, Math.abs(Mth.cos(Hexerei.getClientTicks() / 100f))).setUv(u2, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLightIn).setNormal(normal, 1F, 0F, 0F);
+                        buffer.addVertex(matrix, 0.055f / 16 * width, -0.055f / 16 * height, 0).setColor(1, 1, 1, Math.abs(Mth.cos(ClientEvents.getClientTicks() / 100f))).setUv(u1, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLightIn).setNormal(normal, 1F, 0F, 0F);
+                        buffer.addVertex(matrix, 0.055f / 16 * width, 0.055f / 16 * height, 0).setColor(1, 1, 1, Math.abs(Mth.cos(ClientEvents.getClientTicks() / 100f))).setUv(u1, v2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLightIn).setNormal(normal, 1F, 0F, 0F);
+                        buffer.addVertex(matrix, -0.055f / 16 * width, 0.055f / 16 * height, 0).setColor(1, 1, 1, Math.abs(Mth.cos(ClientEvents.getClientTicks() / 100f))).setUv(u2, v2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLightIn).setNormal(normal, 1F, 0F, 0F);
+                        buffer.addVertex(matrix, -0.055f / 16 * width, -0.055f / 16 * height, 0).setColor(1, 1, 1, Math.abs(Mth.cos(ClientEvents.getClientTicks() / 100f))).setUv(u2, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLightIn).setNormal(normal, 1F, 0F, 0F);
 
 
                         poseStack.scale(1.15f, 1.15f, 1.15f);
                         poseStack.translate(0, 0, -0.004F);
-                        poseStack.mulPose(Axis.ZP.rotationDegrees(1.5f * (Hexerei.getClientTicks()) % 360f));
-                        buffer.addVertex(matrix, 0.055f / 16 * width, -0.055f / 16 * height, 0).setColor(1, 1, 1, Math.abs(Mth.cos(Hexerei.getClientTicks() / 75f))).setUv(u1, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLightIn).setNormal(normal, 1F, 0F, 0F);
-                        buffer.addVertex(matrix, 0.055f / 16 * width, 0.055f / 16 * height, 0).setColor(1, 1, 1, Math.abs(Mth.cos(Hexerei.getClientTicks() / 75f))).setUv(u1, v2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLightIn).setNormal(normal, 1F, 0F, 0F);
-                        buffer.addVertex(matrix, -0.055f / 16 * width, 0.055f / 16 * height, 0).setColor(1, 1, 1, Math.abs(Mth.cos(Hexerei.getClientTicks() / 75f))).setUv(u2, v2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLightIn).setNormal(normal, 1F, 0F, 0F);
-                        buffer.addVertex(matrix, -0.055f / 16 * width, -0.055f / 16 * height, 0).setColor(1, 1, 1, Math.abs(Mth.cos(Hexerei.getClientTicks() / 75f))).setUv(u2, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLightIn).setNormal(normal, 1F, 0F, 0F);
+                        poseStack.mulPose(Axis.ZP.rotationDegrees(1.5f * (ClientEvents.getClientTicks()) % 360f));
+                        buffer.addVertex(matrix, 0.055f / 16 * width, -0.055f / 16 * height, 0).setColor(1, 1, 1, Math.abs(Mth.cos(ClientEvents.getClientTicks() / 75f))).setUv(u1, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLightIn).setNormal(normal, 1F, 0F, 0F);
+                        buffer.addVertex(matrix, 0.055f / 16 * width, 0.055f / 16 * height, 0).setColor(1, 1, 1, Math.abs(Mth.cos(ClientEvents.getClientTicks() / 75f))).setUv(u1, v2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLightIn).setNormal(normal, 1F, 0F, 0F);
+                        buffer.addVertex(matrix, -0.055f / 16 * width, 0.055f / 16 * height, 0).setColor(1, 1, 1, Math.abs(Mth.cos(ClientEvents.getClientTicks() / 75f))).setUv(u2, v2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLightIn).setNormal(normal, 1F, 0F, 0F);
+                        buffer.addVertex(matrix, -0.055f / 16 * width, -0.055f / 16 * height, 0).setColor(1, 1, 1, Math.abs(Mth.cos(ClientEvents.getClientTicks() / 75f))).setUv(u2, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLightIn).setNormal(normal, 1F, 0F, 0F);
 
                     }
                     packedLightIn = temp;
@@ -408,7 +410,7 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
         }
 
         @Override
-        public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, CrowEntity crow, float p_117353_, float p_117354_, float p_117355_, float p_117356_, float p_117357_, float p_117358_) {
+        public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, CrowEntity crow, float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
 
             poseStack.pushPose();
             ItemStack itemstack = crow.itemHandler.getStackInSlot(0);
@@ -418,17 +420,23 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
                 EquipmentSlot pSlot = armoritem.getEquipmentSlot();
                 HumanoidModel<?> a = defaultBipedModel;
                 a = getArmorModelHook(crow, itemstack, EquipmentSlot.HEAD, a);
+                a.setAllVisible(false);
                 a.hat.visible = true;
                 a.head.visible = true;
+                translateToHead(poseStack);
+                poseStack.scale(0.35F, 0.35F, 0.35F);
+                poseStack.translate(0f,  -0.1F, -0.25F);
 
-                Model model = ClientHooks.getArmorModel(Minecraft.getInstance().player, itemstack, pSlot, a);
-                var dyeColor = itemstack.get(DataComponents.DYED_COLOR);
-                int color = dyeColor != null ? FastColor.ABGR32.opaque(dyeColor.rgb()) : -1;
+                Model model = ClientHooks.getArmorModel(crow, itemstack, pSlot, a);
                 ArmorMaterial armormaterial = armoritem.getMaterial().value();
                 boolean flag1 = itemstack.hasFoil();
-                for (ArmorMaterial.Layer layer : armormaterial.layers()) {
-                    int j = layer.dyeable() ? color : -1;
-                    ResourceLocation texture = ClientHooks.getArmorTexture(Minecraft.getInstance().player, itemstack, layer, false, pSlot);
+                IClientItemExtensions extensions = IClientItemExtensions.of(itemstack);
+                extensions.setupModelAnimations(crow, itemstack, EquipmentSlot.HEAD, model, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch);
+
+                for (int layerIdx = 0; layerIdx < armormaterial.layers().size(); layerIdx++) {
+                    ArmorMaterial.Layer armormaterial$layer = armormaterial.layers().get(layerIdx);
+                    int j = extensions.getArmorLayerTintColor(itemstack, crow, armormaterial$layer, layerIdx, -1);
+                    ResourceLocation texture = ClientHooks.getArmorTexture(crow, itemstack, armormaterial$layer, false, pSlot);
                     renderHelmet(poseStack, bufferIn, packedLightIn, flag1, a, j, texture);
                 }
 
@@ -440,28 +448,6 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
                 if (itemstack.hasFoil()) {
                     this.renderGlint(poseStack, bufferIn, packedLightIn, model);
                 }
-
-//                HumanoidModel<?> a = defaultBipedModel;
-//                a = getArmorModelHook(crow, itemstack, EquipmentSlot.HEAD, a);
-//                boolean notAVanillaModel = a != defaultBipedModel;
-//                a.hat.visible = true;
-//                a.head.visible = true;
-//                this.setModelSlotVisible(a, EquipmentSlot.HEAD);
-//                translateToHead(poseStack);
-//
-//                poseStack.scale(0.35F, 0.35F, 0.35F);
-//                poseStack.translate(0f,  -0.1F, -0.25F);
-//                int clampedLight = packedLightIn;
-//                if (itemstack.has(DataComponents.DYED_COLOR)) { // Allow this for anything, not only cloth
-//                    int i = itemstack.get(DataComponents.DYED_COLOR).rgb();
-//                    float f = (float) (i >> 16 & 255) / 255.0F;
-//                    float f1 = (float) (i >> 8 & 255) / 255.0F;
-//                    float f2 = (float) (i & 255) / 255.0F;
-//                    renderHelmet(poseStack, bufferIn, clampedLight, flag1, a, f, f1, f2, getArmorResource(crow, itemstack, EquipmentSlot.HEAD, null));
-//                    renderHelmet(poseStack, bufferIn, clampedLight, flag1, a, 1.0F, 1.0F, 1.0F, getArmorResource(crow, itemstack, EquipmentSlot.HEAD, "overlay"));
-//                } else {
-//                    renderHelmet(poseStack, bufferIn, clampedLight, flag1, a, 1.0F, 1.0F, 1.0F, getArmorResource(crow, itemstack, EquipmentSlot.HEAD, null));
-//                }
             }
             else if((Block.byItem(itemstack.getItem())) instanceof AbstractSkullBlock)
             {
@@ -473,41 +459,12 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
             }
 
             poseStack.popPose();
-
-
-
-        }
-        private void renderBlock(PoseStack poseStack, MultiBufferSource bufferIn, int combinedLightIn, BlockState state) {
-            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, null);
-
         }
 
         private void renderItem(ItemStack stack, Level level, PoseStack poseStack, MultiBufferSource bufferIn,
                                 int combinedLightIn) {
             Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, combinedLightIn,
                     OverlayTexture.NO_OVERLAY, poseStack, bufferIn, level, 1);
-        }
-
-        private static final Map<String, ResourceLocation> ARMOR_TEXTURE_RES_MAP = Maps.newHashMap();
-
-        private void renderArmor(CrowEntity entity, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, boolean glintIn, HumanoidModel modelIn, float red, float green, float blue, ResourceLocation armorResource, boolean notAVanillaModel) {
-//            VertexConsumer vertexConsumer = ItemRenderer.getArmorFoilBuffer(bufferIn, RenderType.armorCutoutNoCull(armorResource), false, glintIn);
-            VertexConsumer vertexConsumer = ItemRenderer.getFoilBuffer(bufferIn, RenderType.entityCutoutNoCull(armorResource), false, glintIn);
-            if(notAVanillaModel){
-                renderer.getModel().copyPropertiesTo(modelIn);
-                modelIn.body.y = 0;
-                modelIn.head.setPos(0.0F, 1.0F, 0.0F);
-                modelIn.hat.y = 0;
-                modelIn.head.xRot = renderer.getModel().body.xRot;
-                modelIn.head.yRot = renderer.getModel().body.yRot;
-                modelIn.head.zRot = renderer.getModel().body.zRot;
-                modelIn.head.x = renderer.getModel().body.x;
-                modelIn.head.y = renderer.getModel().body.y;
-                modelIn.head.z = renderer.getModel().body.z;
-                modelIn.hat.copyFrom(modelIn.head);
-                modelIn.body.copyFrom(modelIn.head);
-            }
-            modelIn.renderToBuffer(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, HexereiUtil.getColorValueAlpha(red, green, blue, 1.0F));
         }
 
         private void translateToHead(PoseStack poseStack) {
@@ -538,33 +495,6 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
 
         }
 
-//        public static ResourceLocation getArmorResource(Entity entity, ItemStack stack, EquipmentSlot slot, @javax.annotation.Nullable String type) {
-//
-//            EquipmentSlot pSlot = armoritem.getEquipmentSlot();
-//            setPartVisibility(armorModel, pSlot);
-//
-//
-//            ArmorItem item = (ArmorItem)stack.getItem();
-//            String texture = item.getMaterial().value().getName();
-//            String domain = "minecraft";
-//            int idx = texture.indexOf(':');
-//            if (idx != -1) {
-//                domain = texture.substring(0, idx);
-//                texture = texture.substring(idx + 1);
-//            }
-//            String s1 = String.format("%s:textures/models/armor/%s_layer_%d%s.png", domain, texture, (1), type == null ? "" : String.format("_%s", type));
-//
-//            s1 = ClientHooks.getArmorTexture(entity, stack, item.getMaterial().value().layers(), slot, type);
-//            ResourceLocation resourcelocation = ARMOR_TEXTURE_RES_MAP.get(s1);
-//
-//            if (resourcelocation == null) {
-//                resourcelocation = ResourceLocation.parse(s1);
-//                ARMOR_TEXTURE_RES_MAP.put(s1, resourcelocation);
-//            }
-//
-//            return resourcelocation;
-//        }
-
 
         private void renderTrim(
                 Holder<ArmorMaterial> p_323506_, PoseStack p_289687_, MultiBufferSource p_289643_, int p_289683_, ArmorTrim p_289692_, net.minecraft.client.model.Model p_289663_, boolean p_289651_) {
@@ -576,32 +506,6 @@ public class CrowRenderer extends MobRenderer<CrowEntity, CrowModel<CrowEntity>>
 
         private void renderGlint(PoseStack p_289673_, MultiBufferSource p_289654_, int p_289649_, net.minecraft.client.model.Model p_289659_) {
             p_289659_.renderToBuffer(p_289673_, p_289654_.getBuffer(RenderType.armorEntityGlint()), p_289649_, OverlayTexture.NO_OVERLAY);
-        }
-
-        protected void setModelSlotVisible(HumanoidModel humanoidModel, EquipmentSlot slotIn) {
-            this.setModelVisible(humanoidModel);
-            switch (slotIn) {
-                case HEAD -> humanoidModel.head.visible = true;
-                case CHEST -> {
-                    humanoidModel.body.visible = true;
-                    humanoidModel.rightArm.visible = true;
-                    humanoidModel.leftArm.visible = true;
-                }
-                case LEGS -> {
-                    humanoidModel.body.visible = true;
-                    humanoidModel.rightLeg.visible = true;
-                    humanoidModel.leftLeg.visible = true;
-                }
-                case FEET -> {
-                    humanoidModel.rightLeg.visible = true;
-                    humanoidModel.leftLeg.visible = true;
-                }
-            }
-        }
-
-        protected void setModelVisible(HumanoidModel model) {
-            model.setAllVisible(false);
-
         }
 
         protected HumanoidModel<?> getArmorModelHook(LivingEntity entity, ItemStack itemStack, EquipmentSlot slot, HumanoidModel model) {

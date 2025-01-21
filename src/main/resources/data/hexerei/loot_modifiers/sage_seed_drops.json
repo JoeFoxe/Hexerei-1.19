@@ -1,0 +1,53 @@
+{
+  "type": "hexerei:sage_seed_drops",
+  "conditions": [
+    {
+      "condition": "minecraft:random_chance",
+      "chance": 0.1
+    },
+    {
+      "condition": "minecraft:any_of",
+      "terms": [
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "minecraft:short_grass"
+        },
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "minecraft:tall_grass"
+        }
+      ]
+    },
+    {
+      "condition": "minecraft:inverted",
+      "term": {
+        "condition": "minecraft:any_of",
+        "terms": [
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": "minecraft:shears"
+            }
+          },
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "predicates": {
+                "minecraft:enchantments": [
+                  {
+                    "enchantments": "minecraft:silk_touch",
+                    "levels": {
+                      "min": 1
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "addition": "hexerei:sage_seed",
+  "count": 1
+}

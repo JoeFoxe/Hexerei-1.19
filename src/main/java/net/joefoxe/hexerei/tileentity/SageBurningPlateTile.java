@@ -432,17 +432,17 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
                 Vec3 vec = new Vec3(Mth.sin((i / 360f) * (2 * Mth.PI)) * (rand.nextFloat() * HexConfig.SAGE_BURNING_PLATE_RANGE.get()), Mth.sin((rand.nextInt(360) / 360f) * (2 * Mth.PI)) * (rand.nextFloat() * HexConfig.SAGE_BURNING_PLATE_RANGE.get()), Mth.cos((i / 360f) * (2 * Mth.PI)) * (rand.nextFloat() * HexConfig.SAGE_BURNING_PLATE_RANGE.get()));
 
                 Vec3 vec2 = new Vec3(Mth.sin((i / 360f) * (2 * Mth.PI)) * (HexConfig.SAGE_BURNING_PLATE_RANGE.get()), 0, Mth.cos((i / 360f) * (2 * Mth.PI)) * (HexConfig.SAGE_BURNING_PLATE_RANGE.get()));
-                BlockPos pos2 = new BlockPos(worldPosition.getX() + (int) (0.5f + vec2.x()), worldPosition.getY() + (int) (0.25f + vec2.y()), worldPosition.getZ() + (int) (0.5f + vec2.z()));
+                BlockPos pos2 = BlockPos.containing(worldPosition.getX() + (int) (0.5f + vec2.x()), worldPosition.getY() + (int) (0.25f + vec2.y()), worldPosition.getZ() + (int) (0.5f + vec2.z()));
 
                 if (rand.nextInt(40) == 0 && (this.getBlockState().getValue(SageBurningPlate.MODE) == 0 || this.getBlockState().getValue(SageBurningPlate.MODE) == 1)) {
                     BlockPos pos = new BlockPos(worldPosition.getX() + (int) (0.5f + vec.x()), worldPosition.getY() + (int) (0.25f + vec.y()), worldPosition.getZ() + (int) (0.5f + vec.z()));
 
                     if ((!level.getBlockState(pos.below()).isAir() || !level.getBlockState(pos.below().below()).isAir()) && level.getBlockState(pos).isAir())
-                        level.addParticle(ModParticleTypes.FOG.get(), pos.getX(), pos.getY(), pos.getZ(), (rand.nextDouble() - 0.5d) / 15d, (rand.nextDouble() + 0.5d) * 0.015d, (rand.nextDouble() - 0.5d) / 15d);
+                        level.addParticle(ModParticleTypes.FOG.get(), true, pos.getX(), pos.getY(), pos.getZ(), (rand.nextDouble() - 0.5d) / 15d, (rand.nextDouble() + 0.5d) * 0.015d, (rand.nextDouble() - 0.5d) / 15d);
 
                 }
                 if (rand.nextInt(160) == 0 && (this.getBlockState().getValue(SageBurningPlate.MODE) == 1 || this.getBlockState().getValue(SageBurningPlate.MODE) == 2))
-                    level.addParticle(ModParticleTypes.FOG.get(), pos2.getX(), pos2.getY(), pos2.getZ(), (rand.nextDouble() - 0.5d) / 15d, (rand.nextDouble() + 0.5d) * 0.015d, (rand.nextDouble() - 0.5d) / 15d);
+                    level.addParticle(ModParticleTypes.FOG.get(), true, pos2.getX(), pos2.getY(), pos2.getZ(), (rand.nextDouble() - 0.5d) / 15d, (rand.nextDouble() + 0.5d) * 0.015d, (rand.nextDouble() - 0.5d) / 15d);
 
             }
         }
@@ -465,7 +465,11 @@ public class SageBurningPlateTile extends RandomizableContainerBlockEntity imple
 
             } else {
                 this.burnTime--;
+//                emitParticles();
+            }
+            if (level.isClientSide) {
                 emitParticles();
+//                level.addParticle(ModParticleTypes.FOG.get(), true, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), (new Random().nextDouble() - 0.5d) / 15d, (new Random().nextDouble() + 0.5d) * 0.015d, (new Random().nextDouble() - 0.5d) / 15d);
             }
         }
 

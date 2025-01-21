@@ -1,0 +1,17 @@
+{
+  "type": "hexerei:add_to_candle",
+  "input": {
+    "item": "hexerei:selenite_shard"
+  },
+  "output": {
+    "id": "hexerei:candle",
+    "components": {
+      "minecraft:custom_data": {
+        "base": {
+          "layer": "hexerei:textures/block/selenite_block.png",
+          "layerFromBlockLocation": false
+        }
+      }
+    }
+  }
+}

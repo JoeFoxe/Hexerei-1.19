@@ -31,7 +31,7 @@
       "type": "item",
       "x": 2.5,
       "y": 0.75,
-      "name": "hexerei:broom_netherite_tip"
+      "id": "hexerei:broom_netherite_tip"
     }
   ],
   "images": [

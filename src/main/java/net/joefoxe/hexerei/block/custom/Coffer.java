@@ -83,7 +83,7 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
         }
         int dyeCol = cofferTile.dyeColor;
 
-        DyeColor color = Coffer.getDyeColorNamed(cofferTile.customName.getString());
+        DyeColor color = Coffer.getDyeColorNamed(cofferTile.customName != null ? cofferTile.customName.getString() : "");
         if(color == null)
             return dyeCol;
         return color.getTextureDiffuseColor();

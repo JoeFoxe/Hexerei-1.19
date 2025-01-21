@@ -21,6 +21,10 @@ public class WoodcutterRecipe extends SingleItemRecipe {
         super(ModRecipeTypes.WOODCUTTING_TYPE.get(), ModRecipeTypes.WOODCUTTING_SERIALIZER.get(), pGroup, pIngredient, new ItemStack(BuiltInRegistries.ITEM.getOptional(ResourceLocation.parse(itemId)).orElse(Items.AIR), itemCount));
         this.ingredientCount = ingredientCount;
     }
+    public WoodcutterRecipe(String pGroup, Ingredient pIngredient, int ingredientCount, ItemStack output) {
+        super(ModRecipeTypes.WOODCUTTING_TYPE.get(), ModRecipeTypes.WOODCUTTING_SERIALIZER.get(), pGroup, pIngredient, output);
+        this.ingredientCount = ingredientCount;
+    }
 
     @Override
     public boolean isSpecial() {

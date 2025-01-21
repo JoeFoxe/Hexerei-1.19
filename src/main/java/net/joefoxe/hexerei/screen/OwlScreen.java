@@ -81,6 +81,11 @@ public class OwlScreen extends AbstractContainerScreen<OwlContainer> {
     }
 
     @Override
+    protected void containerTick() {
+        super.containerTick();
+    }
+
+    @Override
     public void render(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
         this.renderBackground(guiGraphics, x, y, partialTicks);
         super.render(guiGraphics, x, y, partialTicks);
@@ -150,8 +155,7 @@ public class OwlScreen extends AbstractContainerScreen<OwlContainer> {
 
         }
 
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, this.leftPos + 94 - 20, j - 9 - 20, this.leftPos + 94 + 20, j - 9 + 20, 20, 0.0625F, (float)(i + 51) - x, (float)(j + 75 - 50) - y, owlEntity);
-
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, this.leftPos + 94 - 20, j - 17 - 20, this.leftPos + 94 + 20, j - 17 + 20, 20, 0.0625F, x, y, owlEntity);
 
         this.renderTooltip(guiGraphics, x, y);
         this.renderButtonTooltip(guiGraphics, x, y);

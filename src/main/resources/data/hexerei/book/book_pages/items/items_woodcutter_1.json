@@ -31,19 +31,19 @@
       "type": "item",
       "x": 1.5,
       "y": 0.75,
-      "name": "hexerei:mahogany_woodcutter"
+      "id": "hexerei:mahogany_woodcutter"
     },
     {
       "type": "item",
       "x": 2.5,
       "y": 0.75,
-      "name": "hexerei:willow_woodcutter"
+      "id": "hexerei:willow_woodcutter"
     },
     {
       "type": "item",
       "x": 3.5,
       "y": 0.75,
-      "name": "hexerei:witch_hazel_woodcutter"
+      "id": "hexerei:witch_hazel_woodcutter"
     }
   ],
   "images": [

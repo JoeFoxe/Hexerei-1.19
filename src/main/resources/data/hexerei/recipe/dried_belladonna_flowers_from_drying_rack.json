@@ -1,0 +1,10 @@
+{
+  "type": "hexerei:drying_rack",
+  "input": {
+    "item": "hexerei:belladonna_flowers"
+  },
+  "output": {
+    "id": "hexerei:dried_belladonna_flowers"
+  },
+  "dryingTime": 2000
+}

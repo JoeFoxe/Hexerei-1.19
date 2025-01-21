@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "GGG"
+
+  ],
+  "key": {
+    "G": {
+      "item": "hexerei:stone_window"
+    }
+  },
+  "result": {
+    "id": "hexerei:stone_window_pane",
+    "count": 16
+  }
+}

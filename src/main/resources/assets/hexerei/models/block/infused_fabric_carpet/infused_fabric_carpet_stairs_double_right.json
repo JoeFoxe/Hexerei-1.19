@@ -402,7 +402,7 @@
 		4,
 		5,
 		{
-			"name": "corners",
+			"id": "corners",
 			"origin": [0, 0, 0],
 			"color": 0,
 			"children": [6, 7, 8, 9]

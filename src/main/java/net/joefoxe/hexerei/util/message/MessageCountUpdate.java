@@ -54,10 +54,9 @@ public class MessageCountUpdate extends AbstractPacket
     @Override
     public void onClientReceived(Minecraft minecraft, Player player) {
         if (!failed) {
-            Level world = Minecraft.getInstance().level;
-            if (world != null) {
+            if (minecraft.level != null) {
                 BlockPos pos = new BlockPos(x, y, z);
-                BlockEntity tileEntity = world.getBlockEntity(pos);
+                BlockEntity tileEntity = minecraft.level.getBlockEntity(pos);
                 if (tileEntity instanceof HerbJarTile) {
                     ((HerbJarTile) tileEntity).clientUpdateCount(slot, count);
                 }

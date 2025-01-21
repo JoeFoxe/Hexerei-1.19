@@ -1,6 +1,14 @@
 package net.joefoxe.hexerei.particle;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -21,6 +29,21 @@ public class FogParticle extends TextureSheetParticle {
 
     }
 
+    private static final ParticleRenderType renderType = new ParticleRenderType() {
+        @Override
+        public @Nullable BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
+            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
+
+            RenderSystem.enableCull();
+            RenderSystem.depthMask(false);
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+
+            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
+        }
+    };
+
+
     @Override
     public void tick() {
 
@@ -35,7 +58,7 @@ public class FogParticle extends TextureSheetParticle {
 
     @Override
     public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+        return renderType;
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -1,7 +1,0 @@
-{
-  "type": "hexerei:woodcutting",
-  "ingredient": {
-    "item": "hexerei:polished_willow_connected"
-  },
-  "result": "hexerei:polished_willow_layered"
-}

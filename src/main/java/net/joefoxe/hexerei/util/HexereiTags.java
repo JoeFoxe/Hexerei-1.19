@@ -1,14 +1,24 @@
 package net.joefoxe.hexerei.util;
 
-import net.joefoxe.hexerei.Hexerei;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 public class HexereiTags {
+
+	public static class Entity {
+
+		public static final TagKey<EntityType<?>> CAN_RIDE_BROOM = createTag("can_ride_broom");
+
+		private static TagKey<EntityType<?>> createTag(String name) {
+			return TagKey.create(Registries.ENTITY_TYPE, HexereiUtil.getResource(name));
+		}
+	}
 
 	public static class Blocks {
 
@@ -47,6 +57,7 @@ public class HexereiTags {
 		public static final TagKey<Item> INFUSED_FABRIC_BLOCK = createTag("infused_fabric_block");
 		public static final TagKey<Item> OWL_TAMING_FOOD = createTag("owl_taming_food");
 		public static final TagKey<Item> OWL_BREEDING_FOOD = createTag("owl_breeding_food");
+
 
 		private static TagKey<Item> createTag(String name) {
 			return ItemTags.create(HexereiUtil.getResource(name));

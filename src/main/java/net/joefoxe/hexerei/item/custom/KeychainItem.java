@@ -52,7 +52,7 @@ public class KeychainItem extends BroomAttachmentItem {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        RegistryAccess access = Hexerei.proxy.getLevel().registryAccess();
+        RegistryAccess access = Hexerei.DynamicRegistries.get();
         CompoundTag inv = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         ListTag tagList = inv.getList("Items", Tag.TAG_COMPOUND);
         CompoundTag compoundtag = tagList.getCompound(0);

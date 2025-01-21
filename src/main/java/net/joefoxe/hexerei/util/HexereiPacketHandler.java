@@ -1,5 +1,6 @@
 package net.joefoxe.hexerei.util;
 
+import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.util.message.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -10,26 +11,31 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.LogicalSide;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
+@EventBusSubscriber(modid = Hexerei.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class HexereiPacketHandler {
 
     public static final String PROTOCOL_VERSION = "1";
 
+    @SubscribeEvent
     public static void register(final RegisterPayloadHandlersEvent event) {
-        final PayloadRegistrar reg = event.registrar(PROTOCOL_VERSION);
-
+        PayloadRegistrar reg = event.registrar(PROTOCOL_VERSION);
+//        event.registrar(PROTOCOL_VERSION)
         reg.playToClient(MessageCountUpdate.TYPE, MessageCountUpdate.CODEC,  HexereiPacketHandler::handle);
         reg.playToClient(EmitParticlesPacket.TYPE, EmitParticlesPacket.CODEC,  HexereiPacketHandler::handle);
         reg.playToClient(TESyncPacket.TYPE, TESyncPacket.CODEC,  HexereiPacketHandler::handle);
         reg.playToClient(BroomSyncPacket.TYPE, BroomSyncPacket.CODEC,  HexereiPacketHandler::handle);
-        reg.playToServer(BroomSyncFloatModeToServer.TYPE, BroomSyncFloatModeToServer.CODEC,  HexereiPacketHandler::handle);
+        reg.playToServer(BroomSyncFloatModeToServer.TYPE, BroomSyncFloatModeToServer.CODEC,  HexereiPacketHandler::handle);;
         reg.playToServer(BroomAskForSyncPacket.TYPE, BroomAskForSyncPacket.CODEC,  HexereiPacketHandler::handle);
         reg.playToServer(BroomSyncRotationToServer.TYPE, BroomSyncRotationToServer.CODEC,  HexereiPacketHandler::handle);
+        reg.playToServer(BroomActivateToServer.TYPE, BroomActivateToServer.CODEC,  HexereiPacketHandler::handle);
         reg.playToServer(DrainCauldronToServer.TYPE, DrainCauldronToServer.CODEC,  HexereiPacketHandler::handle);
         reg.playToServer(BroomDamageBrushToServer.TYPE, BroomDamageBrushToServer.CODEC,  HexereiPacketHandler::handle);
         reg.playToClient(BroomSyncRotation.TYPE, BroomSyncRotation.CODEC,  HexereiPacketHandler::handle);
@@ -81,6 +87,8 @@ public class HexereiPacketHandler {
         reg.playToClient(BookEntriesPacket.TYPE, BookEntriesPacket.CODEC,  HexereiPacketHandler::handle);
         reg.playToServer(AskForEntriesAndPagesPacket.TYPE, AskForEntriesAndPagesPacket.CODEC,  HexereiPacketHandler::handle);
         reg.playToServer(BookTurnPageToServer.TYPE, BookTurnPageToServer.CODEC,  HexereiPacketHandler::handle);
+        reg.playToClient(ClientboundBookTurnPage.TYPE, ClientboundBookTurnPage.CODEC,  HexereiPacketHandler::handle);
+        reg.playToClient(ClientboundBookDataUpdate.TYPE, ClientboundBookDataUpdate.CODEC,  HexereiPacketHandler::handle);
         reg.playToServer(BookBookmarkPageToServer.TYPE, BookBookmarkPageToServer.CODEC,  HexereiPacketHandler::handle);
         reg.playToServer(BookBookmarkSwapToServer.TYPE, BookBookmarkSwapToServer.CODEC,  HexereiPacketHandler::handle);
         reg.playToServer(BookBookmarkDeleteToServer.TYPE, BookBookmarkDeleteToServer.CODEC,  HexereiPacketHandler::handle);
@@ -88,8 +96,8 @@ public class HexereiPacketHandler {
         reg.playToServer(AskForMapDataPacket.TYPE, AskForMapDataPacket.CODEC,  HexereiPacketHandler::handle);
         reg.playToClient(MapDataPacket.TYPE, MapDataPacket.CODEC,  HexereiPacketHandler::handle);
         reg.playToClient(ToggleDynamicLightPacket.TYPE, ToggleDynamicLightPacket.CODEC,  HexereiPacketHandler::handle);
-
-//        reg.playBidirectional(SetTerminalSettingsPacket.TYPE, SetTerminalSettingsPacket.CODEC, new DirectionalPayloadHandler<>((msg, ctx) -> HexereiPacketHandler.ClientMessageHandler.handleClient(msg, ctx), (msg, ctx) -> msg.onServerReceived(ctx.player().getServer(), (ServerPlayer) ctx.player())));
+        reg.playToClient(WoodcutterRecipesPacket.TYPE, WoodcutterRecipesPacket.CODEC,  HexereiPacketHandler::handle);
+        reg.playToClient(BookSyncDataPacket.TYPE, BookSyncDataPacket.CODEC,  HexereiPacketHandler::handle);
     }
 
     private static <T extends AbstractPacket> void handle(T message, IPayloadContext ctx) {

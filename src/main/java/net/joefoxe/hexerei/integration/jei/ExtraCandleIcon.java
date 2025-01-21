@@ -8,6 +8,7 @@ import com.mojang.math.Axis;
 import mezz.jei.api.gui.drawable.IDrawable;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.data.recipes.AddToCandleRecipe;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -89,7 +90,7 @@ public class ExtraCandleIcon implements IDrawable {
             extraStack = extraSupplier.get();
         }
 
-        float timer = (Hexerei.getClientTicks()) % 100 / 100f;
+        float timer = (ClientEvents.getClientTicks()) % 100 / 100f;
         if((timer <= 0.1 && findNewRecipe) || recipeShown == null){
             findNewRecipe = false;
             if(Minecraft.getInstance().level != null) {

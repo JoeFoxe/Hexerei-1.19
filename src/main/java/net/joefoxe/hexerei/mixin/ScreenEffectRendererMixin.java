@@ -36,6 +36,7 @@ public abstract class ScreenEffectRendererMixin {
                     if(!tile.renderedFluid.getFluid().isSame(Fluids.WATER))
                         IClientFluidTypeExtensions.of(tile.renderedFluid.getFluid()).renderOverlay(pMinecraft, pPoseStack);
                 }
+                ci.cancel();
             }
         }
     }

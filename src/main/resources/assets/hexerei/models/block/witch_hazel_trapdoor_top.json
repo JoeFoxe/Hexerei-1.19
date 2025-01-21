@@ -19,5 +19,5 @@
       }
     }
   },
-  "loader": "forge:composite"
+  "loader": "neoforge:composite"
 }

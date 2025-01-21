@@ -68,8 +68,7 @@ public class WhistleBindRecipe extends CustomRecipe {
             }
         }
 
-        CompoundTag tag = whistleItem.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-        return whistle == 1 && other == 0 && (broom == 1 || (tag.contains("UUID")));
+        return whistle == 1 && other == 0 && (broom == 1 || (whistleItem.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().contains("broomUUID")));
     }
 
     @Override

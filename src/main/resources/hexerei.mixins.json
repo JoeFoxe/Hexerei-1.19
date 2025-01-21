@@ -5,10 +5,12 @@
   "refmap": "hexerei.refmap.json",
   "client": [
     "AbstractCandleBlockMixin",
+    "ClientPacketListenerMixin",
     "FogRendererMixin",
     "HumanoidArmorLayerMixin",
     "ItemInHandMixin",
     "LivingEntityRendererMixin",
+    "LocalPlayerMixin",
     "MouseHandlerMixin",
     "PlayerItemInHandLayerMixin",
     "ScreenEffectRendererMixin",
@@ -19,7 +21,9 @@
     "light.HexereiLightEntityMixin"
   ],
   "mixins": [
-    "AbstractCandleBlockMixin"
+    "AbstractCandleBlockMixin",
+    "LivingEntityMixin",
+    "PlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

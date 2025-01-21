@@ -73,11 +73,11 @@ public class CrowAmuletItem extends Item {
         CompoundTag inv = pStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         ListTag tagList = inv.getList("Items", Tag.TAG_COMPOUND);
         CompoundTag compoundtag = tagList.getCompound(0);
-        ItemStack stack = ItemStack.parseOptional(Hexerei.proxy.getLevel().registryAccess(), compoundtag);
+        ItemStack stack = ItemStack.parseOptional(Hexerei.DynamicRegistries.get(), compoundtag);
         if(!stack.isEmpty()) {
             if(stack.has(DataComponents.CUSTOM_NAME))
                 return Component.translatable("").append(stack.getHoverName()).append(Component.translatable("item.hexerei.crow_filled_amulet"));
-            return Component.translatable(ItemStack.parseOptional(Hexerei.proxy.getLevel().registryAccess(), compoundtag).getDescriptionId()).append(Component.translatable("item.hexerei.crow_filled_amulet"));
+            return Component.translatable(ItemStack.parseOptional(Hexerei.DynamicRegistries.get(), compoundtag).getDescriptionId()).append(Component.translatable("item.hexerei.crow_filled_amulet"));
         }
 
         return super.getName(pStack);
@@ -90,12 +90,12 @@ public class CrowAmuletItem extends Item {
         CompoundTag compoundtag = tagList.getCompound(0);
         CompoundTag itemTags = tagList.getCompound(0);
 
-        MutableComponent itemText = Component.translatable(ItemStack.parseOptional(Hexerei.proxy.getLevel().registryAccess(), compoundtag).getDescriptionId()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x998800)));
+        MutableComponent itemText = Component.translatable(ItemStack.parseOptional(Hexerei.DynamicRegistries.get(), compoundtag).getDescriptionId()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x998800)));
 
         if(Screen.hasShiftDown()) {
             tooltipComponents.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
 
-            if(!ItemStack.parseOptional(Hexerei.proxy.getLevel().registryAccess(), itemTags).isEmpty())
+            if(!ItemStack.parseOptional(Hexerei.DynamicRegistries.get(), itemTags).isEmpty())
                 tooltipComponents.add(Component.translatable("tooltip.hexerei.keychain_with_item").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             else
                 tooltipComponents.add(Component.translatable("tooltip.hexerei.keychain_without_item").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
@@ -107,7 +107,7 @@ public class CrowAmuletItem extends Item {
         }
 
 
-        if(!ItemStack.parseOptional(Hexerei.proxy.getLevel().registryAccess(), itemTags).isEmpty()) {
+        if(!ItemStack.parseOptional(Hexerei.DynamicRegistries.get(), itemTags).isEmpty()) {
             tooltipComponents.add(Component.translatable("tooltip.hexerei.keychain_contains", itemText).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
         }
 

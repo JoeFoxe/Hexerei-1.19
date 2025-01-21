@@ -1,0 +1,10 @@
+{
+  "type": "hexerei:drying_rack",
+  "input": {
+    "item": "minecraft:wet_sponge"
+  },
+  "output": {
+    "id": "minecraft:sponge"
+  },
+  "dryingTime": 1000
+}

@@ -126,7 +126,6 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
     }
 
 
-    //TODO do capabilities
 //    @Override
 //    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
 ////        if (facing != null && capability == ForgeCapabilities.ITEM_HANDLER) {
@@ -211,7 +210,7 @@ public class PestleAndMortarTile extends RandomizableContainerBlockEntity implem
     }
 
     public void craft() {
-        CraftingContainer inv = makeContainer(5, 1, this.items);
+        CraftingContainer inv = makeContainer(5, 1, NonNullList.copyOf(this.items.stream().limit(5).toList()));
 
         Optional<RecipeHolder<PestleAndMortarRecipe>> recipe = level.getRecipeManager()
                 .getRecipeFor(ModRecipeTypes.PESTLE_AND_MORTAR_TYPE.get(), inv.asCraftInput(), level);

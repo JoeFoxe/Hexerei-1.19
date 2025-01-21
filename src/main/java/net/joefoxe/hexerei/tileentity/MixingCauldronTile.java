@@ -17,10 +17,7 @@ import net.joefoxe.hexerei.util.HexereiTags;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.joefoxe.hexerei.util.message.EmitParticlesPacket;
 import net.joefoxe.hexerei.util.message.TESyncPacket;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
+import net.minecraft.core.*;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -47,6 +44,7 @@ import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.Block;
@@ -320,7 +318,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
         super.loadAdditional(tag, registries);
 
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        this.fluidStack = FluidStack.parseOptional(registries, tag.getCompound("fluid"));
+        this.fluidStack = tag.contains("fluid") ? FluidStack.parseOptional(registries, tag.getCompound("fluid")) : FluidStack.EMPTY;
         if (tag.contains("CustomName", 8))
             this.customName = Component.Serializer.fromJson(tag.getString("CustomName"), registries);
 
@@ -339,7 +337,8 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
     public void saveAdditional(CompoundTag compound, HolderLookup.Provider registries) {
         super.saveAdditional(compound, registries);
         ContainerHelper.saveAllItems(compound, this.items, registries);
-        compound.put("fluid", this.fluidStack.save(registries));
+        if (!this.fluidStack.isEmpty())
+            compound.put("fluid", this.fluidStack.save(registries));
         compound.putInt("delay", this.craftDelay);
         compound.putInt("delayOld", this.craftDelayOld);
         compound.putInt("DyeColor", this.dyeColor);
@@ -497,28 +496,12 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
         return -1;
     }
 
-
-    private static CraftingContainer makeContainer(int width, int height, NonNullList<ItemStack> items) {
-        return new TransientCraftingContainer(new AbstractContainerMenu(null, -1) {
-
-            public @NotNull ItemStack quickMoveStack(@NotNull Player p_218264_, int p_218265_) {
-                return ItemStack.EMPTY;
-            }
-
-
-            public boolean stillValid(@NotNull Player p_29888_) {
-                return false;
-            }
-        }, width, height, items);
-    }
-
     public void craft(){
 
         this.crafting = false;
 
 
-
-        CraftingContainer inv = makeContainer(3, 3, this.items);
+        MixingCauldronRecipe.MixingCauldronRecipeInput inv = MixingCauldronRecipe.createInput(this.items.stream().limit(8).toList());
 
         if (PotionMixingRecipes.ALL == null || PotionMixingRecipes.ALL.isEmpty()) {
             PotionMixingRecipes.ALL = PotionMixingRecipes.createRecipes(this.level.potionBrewing());
@@ -526,14 +509,14 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
         }
 
         RecipeManager rm = level.getRecipeManager();
-        Optional<RecipeHolder<MixingCauldronRecipe>> recipe = rm.getRecipeFor(ModRecipeTypes.MIXING_CAULDRON_TYPE.get(), inv.asCraftInput(), level);
-        List<RecipeHolder<FluidMixingRecipe>> non_potion_mixing = rm.getAllRecipesFor(ModRecipeTypes.FLUID_MIXING_TYPE.get()).stream().filter((potionRecipe) -> potionRecipe.value().matches(inv.asCraftInput(), level)).toList();
+        Optional<RecipeHolder<MixingCauldronRecipe>> recipe = rm.getRecipeFor(ModRecipeTypes.MIXING_CAULDRON_TYPE.get(), inv, level);
+        List<RecipeHolder<FluidMixingRecipe>> non_potion_mixing = rm.getAllRecipesFor(ModRecipeTypes.FLUID_MIXING_TYPE.get()).stream().filter((potionRecipe) -> potionRecipe.value().matches(inv, level)).toList();
         List<FluidMixingRecipe> potion_mixing = PotionMixingRecipes.ALL.stream().filter((potionRecipe) -> {
             if (potionRecipe.getIngredients().isEmpty()) {
                 PotionMixingRecipes.ALL = null;
                 return false;
             }
-            return potionRecipe.matches(inv.asCraftInput(), level);
+            return potionRecipe.matches(inv, level);
 //            return inv.getItem(0).is(potionRecipe.getIngredients().get(0).getItems()[0].getItem());
 
         }).toList();
@@ -570,7 +553,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
 
 
         if (!matchesRecipe)
-            recipe2 = level.getRecipeManager().getRecipeFor(ModRecipeTypes.FLUID_MIXING_TYPE.get(), inv.asCraftInput(), level).stream().map(RecipeHolder::value).toList();
+            recipe2 = level.getRecipeManager().getRecipeFor(ModRecipeTypes.FLUID_MIXING_TYPE.get(), inv, level).stream().map(RecipeHolder::value).toList();
 
 
         AtomicBoolean firstRecipe = new AtomicBoolean(false);
@@ -581,7 +564,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
             FluidStack containerFluid = this.getFluidStack();
 
             boolean fluidEqual = FluidStack.isSameFluidSameComponents(recipeFluid, containerFluid);
-            boolean outputClear = (inv.getItem(8) == ItemStack.EMPTY || inv.getItem(8).getCount() == 0) || (ItemStack.isSameItem(output, inv.getItem(8)) && inv.getItem(8).getCount() + output.getCount() <= inv.getItem(8).getMaxStackSize());
+            boolean outputClear = (this.items.get(8) == ItemStack.EMPTY || this.items.get(8).getCount() == 0) || (ItemStack.isSameItem(output, this.items.get(8)) && this.items.get(8).getCount() + output.getCount() <= this.items.get(8).getMaxStackSize());
             boolean hasEnoughFluid = iRecipe.value().getFluidLevelsConsumed() <= this.getFluidStack().getAmount();
             boolean needsHeat = iRecipe.value().getHeatCondition() != FluidMixingRecipe.HeatCondition.NONE;
             boolean needsMoonPhase = iRecipe.value().getMoonCondition() != MoonPhases.MoonCondition.NONE;

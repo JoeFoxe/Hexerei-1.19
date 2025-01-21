@@ -29,36 +29,46 @@
       "type": "item",
       "x": 0.5,
       "y": 2.25,
-      "name": "hexerei:coffer",
-      "tag": "{display:{Name:'{\"text\":\"jeb_\"}'}}"
+      "id": "hexerei:coffer",
+      "components": {
+        "minecraft:custom_name": "joe_"
+      }
     },
     {
       "type": "item",
       "x": 1.5,
       "y": 2.25,
-      "name": "hexerei:coffer",
-      "tag": "{display:{Name:'{\"text\":\"bi_\"}'}}"
+      "id": "hexerei:coffer",
+      "components": {
+        "minecraft:custom_name": "bi_"
+      }
     },
     {
       "type": "item",
       "x": 2.5,
       "y": 2.25,
-      "name": "hexerei:coffer",
-      "tag": "{display:{Name:'{\"text\":\"les_\"}'}}"
+      "id": "hexerei:coffer",
+      "components": {
+        "minecraft:custom_name": "les_"
+      }
     },
     {
       "type": "item",
       "x": 3.5,
       "y": 2.25,
-      "name": "hexerei:coffer",
-      "tag": "{display:{Name:'{\"text\":\"trans_\"}'}}"
+      "id": "hexerei:coffer",
+      "components": {
+        "minecraft:custom_name": "trans_"
+      }
     },
     {
       "type": "item",
       "x": 4.5,
       "y": 2.25,
-      "name": "hexerei:coffer",
-      "tag": "{display:{Name:'{\"text\":\"joe_\"}'}}"
+      "id": "hexerei:coffer",
+      "components": {
+        "minecraft:custom_name": "joe_"
+      }
     },
 
 
@@ -66,32 +76,36 @@
       "type": "item",
       "x": 1,
       "y": 3.5,
-      "name": "hexerei:coffer"
+      "id": "hexerei:coffer"
     },
     {
       "type": "tag",
       "x": 2,
       "y": 3.5,
-      "name": "forge:dyes"
+      "id": "c:dyes"
     },
     {
       "type": "item",
       "x": 1,
       "y": 4.5,
-      "name": "minecraft:air"
+      "id": "minecraft:air"
     },
     {
       "type": "item",
       "x": 2,
       "y": 4.5,
-      "name": "minecraft:air"
+      "id": "minecraft:air"
     },
     {
       "type": "item",
       "x": 4,
       "y": 4,
-      "name": "hexerei:coffer",
-      "tag": "{display:{color: 8670136}}"
+      "id": "hexerei:coffer",
+      "components": {
+        "minecraft:dyed_color": {
+          "rgb": 8670136
+        }
+      }
     }
   ],
   "images": [

@@ -16,12 +16,13 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
 
 import java.util.Optional;
 
-public class HexereiAbstractTreeFeature extends Feature<TreeConfiguration> {
+public class HexereiAbstractTreeFeature extends Feature<NoneFeatureConfiguration> {
 
     private static final ResourceLocation WILLOW_TREE1 = ResourceLocation.parse("hexerei:willow_tree1");
     private static final ResourceLocation WILLOW_TREE2 = ResourceLocation.parse("hexerei:willow_tree2");
@@ -52,9 +53,9 @@ public class HexereiAbstractTreeFeature extends Feature<TreeConfiguration> {
     }
     //    (WorldGenLevel reader, ChunkGenerator generator, Random rand, BlockPos pos, TreeConfiguration config)
     @Override
-    public boolean place(FeaturePlaceContext<TreeConfiguration> context) {
+    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
         WorldGenLevel reader = context.level();
-        TreeConfiguration config = context.config();
+//        TreeConfiguration config = context.config();
         BlockPos pos = context.origin();
         RandomSource rand = context.random();
 
@@ -131,9 +132,9 @@ public class HexereiAbstractTreeFeature extends Feature<TreeConfiguration> {
         BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos().set(pos);
 
         StructurePlaceSettings placementsettings = (new StructurePlaceSettings()).setRotation(rotation).setRotationPivot(halfLengths).setIgnoreEntities(false);
-        Optional<StructureProcessorList> processor = reader.getLevel().getServer().registryAccess().registry(Registries.PROCESSOR_LIST).get().getOptional(
-                HexereiUtil.getResource("mangrove_tree/mangrove_tree_legs"));
-        processor.ifPresent(structureProcessorList -> structureProcessorList.list().forEach(placementsettings::addProcessor)); // add all processors
+//        Optional<StructureProcessorList> processor = reader.getLevel().getServer().registryAccess().registry(Registries.PROCESSOR_LIST).get().getOptional(
+//                HexereiUtil.getResource("mangrove_tree/mangrove_tree_legs"));
+//        processor.ifPresent(structureProcessorList -> structureProcessorList.list().forEach(placementsettings::addProcessor)); // add all processors
 
         BlockPos pos1 = mutable.set(pos).move(-halfLengths.getX(), 0, -halfLengths.getZ());
         template.placeInWorld(reader, pos1, pos1, placementsettings, rand, 2);

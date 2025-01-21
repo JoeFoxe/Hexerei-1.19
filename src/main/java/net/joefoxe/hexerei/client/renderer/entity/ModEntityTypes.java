@@ -26,7 +26,7 @@ public class ModEntityTypes {
     public static final DeferredHolder<EntityType<?>, EntityType<BroomEntity>> BROOM =
             ENTITY_TYPES.register("broom",
                     () -> EntityType.Builder.<BroomEntity>of(BroomEntity::new,
-                                    MobCategory.MISC).sized(1.175F, 0.3625F).setTrackingRange(10)
+                                    MobCategory.MISC).sized(1.175F, 0.3625F).setShouldReceiveVelocityUpdates(true).setTrackingRange(10).updateInterval(1)
                             .build(HexereiUtil.getResource("broom").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<ModBoatEntity>> HEXEREI_BOAT =

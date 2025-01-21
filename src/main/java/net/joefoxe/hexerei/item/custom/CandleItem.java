@@ -2,32 +2,21 @@ package net.joefoxe.hexerei.item.custom;
 
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.custom.Candle;
-import net.joefoxe.hexerei.item.ModItems;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.util.HexereiUtil;
-import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
 
 public class CandleItem extends BlockItem {
 
     public CandleItem(Block block, Properties properties) {
-        super(block, properties);
+        super(block, properties.component(DataComponents.CUSTOM_DATA, CustomData.EMPTY));
         DispenserBlock.registerBehavior(this, Candle.DISPENSE_ITEM_BEHAVIOR);
     }
 
@@ -64,13 +53,18 @@ public class CandleItem extends BlockItem {
 //            tag.putString("layer", layer);
 //    }
 //
-//    public static void setLayerFromBlock(ItemStack stack, String layer, String target) {
-//        CompoundTag tag = stack.getOrCreateTagElement(target);
-//        if(layer != null) {
-//            tag.putString("layer", layer);
-//            tag.putBoolean("layerFromBlockLocation", true);
-//        }
-//    }
+    public static void setLayerFromBlock(ItemStack stack, String layer, String target) {
+        CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+        if (!tag.contains(target))
+            tag.put(target, new CompoundTag());
+        CompoundTag innerTag = tag.getCompound(target);
+        if(layer != null) {
+
+            innerTag.putString("layer", layer);
+            innerTag.putBoolean("layerFromBlockLocation", true);
+        }
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+    }
 //
 //    public static void setEffectLocation(ItemStack stack, String effect) {
 //        CompoundTag tag = stack.getOrCreateTag();
@@ -162,7 +156,7 @@ public class CandleItem extends BlockItem {
     public static int getDyeColorNamed(String name) {
 
         if(HexereiUtil.getDyeColorNamed(name)!= null){
-            float f3 = (((Hexerei.getClientTicks()) / 10f * 4) % 16) / (float) 16;
+            float f3 = (((ClientEvents.getClientTicks()) / 10f * 4) % 16) / (float) 16;
 
             DyeColor col1 = HexereiUtil.getDyeColorNamed(name, 0);
             DyeColor col2 = HexereiUtil.getDyeColorNamed(name, 1);

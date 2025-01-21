@@ -9,7 +9,7 @@
 	},
 	"elements": [
 		{
-			"name": "page",
+			"id": "page",
 			"from": [0.1, 0, 0.5],
 			"to": [6.6, 0, 9.5],
 			"rotation": {"angle": 0, "axis": "z", "origin": [0, 1.5, 5]},
@@ -31,7 +31,7 @@
 	},
 	"groups": [
 		{
-			"name": "Book",
+			"id": "Book",
 			"origin": [8, 16.5, 11.5],
 			"color": 0,
 			"children": [0]

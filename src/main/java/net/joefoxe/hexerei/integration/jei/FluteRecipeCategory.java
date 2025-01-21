@@ -51,6 +51,16 @@ public class FluteRecipeCategory implements IRecipeCategory<CrowFluteRecipe> {
     }
 
     @Override
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
+    }
+
+    @Override
     public RecipeType<CrowFluteRecipe> getRecipeType() {
         return new RecipeType<>(HexereiUtil.getResource("crow_flute_dye"), CrowFluteRecipe.class);
     }
@@ -102,10 +112,6 @@ public class FluteRecipeCategory implements IRecipeCategory<CrowFluteRecipe> {
     public void draw(CrowFluteRecipe recipe, IRecipeSlotsView view, GuiGraphics guiGraphics, double mouseX, double mouseY) {
 
         background.draw(guiGraphics);
-
-        float newHeatSource = (Hexerei.getClientTicks()) % 200 / 200f;
-        float craftPercent = (Hexerei.getClientTicks()) % 100 / 100f;
-        boolean showOutput = (Hexerei.getClientTicks()) % 200 > 100;
 
         Minecraft minecraft = Minecraft.getInstance();
 

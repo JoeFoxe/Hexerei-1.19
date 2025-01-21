@@ -33,7 +33,7 @@
 	],
 	"groups": [
 		{
-			"name": "hinge",
+			"id": "hinge",
 			"origin": [11.7299, 2.47721, 5.475],
 			"color": 0,
 			"children": [0, 1]

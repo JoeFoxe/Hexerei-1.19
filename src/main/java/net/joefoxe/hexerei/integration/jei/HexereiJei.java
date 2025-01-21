@@ -65,8 +65,7 @@ public class HexereiJei implements IModPlugin {
     public <T> void registerFluidSubtypes(ISubtypeRegistration registration, IPlatformFluidHelper<T> platformFluidHelper) {
         PotionFluidSubtypeInterpreter interpreter = new PotionFluidSubtypeInterpreter();
         PotionFluid potionFluid = ModFluids.POTION.get();
-        registration.registerSubtypeInterpreter(NeoForgeTypes.FLUID_STACK, potionFluid.getSource(), interpreter);
-        registration.registerSubtypeInterpreter(NeoForgeTypes.FLUID_STACK, potionFluid.getFlowing(), interpreter);
+        registration.registerSubtypeInterpreter(NeoForgeTypes.FLUID_STACK, potionFluid, interpreter);
     }
 
     public static List<FluidStack> withImprovedVisibility(List<FluidStack> stacks) {
@@ -87,18 +86,17 @@ public class HexereiJei implements IModPlugin {
         if(PotionMixingRecipes.ALL == null || PotionMixingRecipes.ALL.isEmpty())
             PotionMixingRecipes.ALL = PotionMixingRecipes.createRecipes(Minecraft.getInstance().level.potionBrewing());
 
-//        ForgeRegistries.
         registration.addRecipeCategories(
-                new MixingCauldronRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new AddToCandleRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new FluteRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new BookOfShadowsRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
-                new KeychainApplyRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
+                new MixingCauldronRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new FluidMixingRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new FluidMixingRecipeCategory(registration.getJeiHelpers().getGuiHelper(), "Potion"),
                 new DipperRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new PestleAndMortarRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new WoodcutterRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
+                new KeychainApplyRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new BottlingRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new BloodSigilRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
                 new PlantPickingRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
@@ -198,44 +196,46 @@ public class HexereiJei implements IModPlugin {
     public void registerRecipes(IRecipeRegistration registration) {
         RecipeManager rm = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
         recipeManager = rm;
+
+        List<RecipeHolder<CraftingRecipe>> add_to_candle_recipes = rm.getAllRecipesFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING);//rm.getAllRecipesFor(AddToCandleRecipe.Type.INSTANCE);
+        List<RecipeHolder<CraftingRecipe>> flute_dye_recipes = new ArrayList<>(add_to_candle_recipes);
+        List<RecipeHolder<CraftingRecipe>> book_recipe = new ArrayList<>(add_to_candle_recipes);
+        List<RecipeHolder<CraftingRecipe>> keychainRecipe = new ArrayList<>(add_to_candle_recipes);
+        registration.addRecipes(new RecipeType<>(AddToCandleRecipeCategory.UID, AddToCandleRecipe.class), add_to_candle_recipes.stream().filter((craftingRecipe) -> {
+            return craftingRecipe.value() instanceof AddToCandleRecipe;
+        }).map(RecipeHolder::value).toList());
+
+        registration.addRecipes(new RecipeType<>(FluteRecipeCategory.UID, CrowFluteRecipe.class), flute_dye_recipes.stream().filter((craftingRecipe) -> {
+            return craftingRecipe.value() instanceof CrowFluteRecipe;
+        }).map(RecipeHolder::value).toList());
+
+        registration.addRecipes(RecipeTypes.CRAFTING, book_recipe.stream().filter((craftingRecipe) -> craftingRecipe.value() instanceof BookOfShadowsRecipe).toList());
+
         List<MixingCauldronRecipe> mixing_recipes = rm.getAllRecipesFor(MixingCauldronRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).toList();
-        registration.addRecipes(new RecipeType<>(MixingCauldronRecipeCategory.UID, MixingCauldronRecipe.class), mixing_recipes);
+        registration.addRecipes(RecipeType.create(MixingCauldronRecipeCategory.UID.getNamespace(), MixingCauldronRecipeCategory.UID.getPath(), MixingCauldronRecipe.class), mixing_recipes);
 
-
-        if(Minecraft.getInstance().level != null) {
-            List<RecipeHolder<CraftingRecipe>> add_to_candle_recipes = Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING);//rm.getAllRecipesFor(AddToCandleRecipe.Type.INSTANCE);
-            List<RecipeHolder<CraftingRecipe>> flute_dye_recipes = new ArrayList<>(add_to_candle_recipes);
-            List<RecipeHolder<CraftingRecipe>> book_recipe = new ArrayList<>(add_to_candle_recipes);
-            List<RecipeHolder<CraftingRecipe>> keychainRecipe = new ArrayList<>(add_to_candle_recipes);
-            registration.addRecipes(new RecipeType<>(AddToCandleRecipeCategory.UID, AddToCandleRecipe.class), add_to_candle_recipes.stream().filter((craftingRecipe) -> {
-                return craftingRecipe.value() instanceof AddToCandleRecipe;
-            }).map(RecipeHolder::value).toList());
-
-            registration.addRecipes(new RecipeType<>(FluteRecipeCategory.UID, CrowFluteRecipe.class), flute_dye_recipes.stream().filter((craftingRecipe) -> {
-                return craftingRecipe.value() instanceof CrowFluteRecipe;
-            }).map(RecipeHolder::value).toList());
-
-            registration.addRecipes(RecipeTypes.CRAFTING, book_recipe.stream().filter((craftingRecipe) -> craftingRecipe.value() instanceof BookOfShadowsRecipe).toList());
-
-            registration.addRecipes(new RecipeType<>(KeychainApplyRecipeCategory.UID, KeychainRecipe.class), keychainRecipe.stream().filter((craftingRecipe) -> {
-                return craftingRecipe.value() instanceof KeychainRecipe;
-            }).map(RecipeHolder::value).toList());
-        }
         registration.addRecipes(new RecipeType<>(FluidMixingRecipeCategory.UID, FluidMixingRecipe.class), rm.getAllRecipesFor(FluidMixingRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).toList());
 
         if(PotionMixingRecipes.ALL == null || PotionMixingRecipes.ALL.isEmpty())
             PotionMixingRecipes.ALL = PotionMixingRecipes.createRecipes(Minecraft.getInstance().level.potionBrewing());
         registration.addRecipes(new RecipeType<>(FluidMixingRecipeCategory.POTION_UID, FluidMixingRecipe.class), PotionMixingRecipes.ALL);
 
-        registration.addRecipes(new RecipeType<>(PestleAndMortarRecipeCategory.UID, PestleAndMortarRecipe.class), rm.getAllRecipesFor(PestleAndMortarRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).toList());
+        registration.addRecipes(new RecipeType<>(BottlingRecipeCategory.UID, CauldronEmptyingRecipe.class), BottlingRecipeJEI.getRecipeList(rm));
 
-        registration.addRecipes(new RecipeType<>(DipperRecipeCategory.UID, DipperRecipe.class), rm.getAllRecipesFor(DipperRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).toList());
+        List<DipperRecipe> recipes = rm.getAllRecipesFor(DipperRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).toList();
+        registration.addRecipes(new RecipeType<>(DipperRecipeCategory.UID, DipperRecipe.class), recipes);
+
+        registration.addRecipes(new RecipeType<>(PestleAndMortarRecipeCategory.UID, PestleAndMortarRecipe.class), rm.getAllRecipesFor(PestleAndMortarRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).toList());
 
         registration.addRecipes(new RecipeType<>(DryingRackRecipeCategory.UID, DryingRackRecipe.class), rm.getAllRecipesFor(DryingRackRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).toList());
 
-        registration.addRecipes(new RecipeType<>(WoodcutterRecipeCategory.UID, WoodcutterRecipe.class), rm.getAllRecipesFor(WoodcutterRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).toList());
+        List<WoodcutterRecipe> list = new ArrayList<>(rm.getAllRecipesFor(WoodcutterRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).toList());
+        list.addAll(WoodcutterRecipes.ALL);
+        registration.addRecipes(new RecipeType<>(WoodcutterRecipeCategory.UID, WoodcutterRecipe.class), list);
 
-        registration.addRecipes(new RecipeType<>(BottlingRecipeCategory.UID, CauldronEmptyingRecipe.class), BottlingRecipeJEI.getRecipeList(rm));
+        registration.addRecipes(new RecipeType<>(KeychainApplyRecipeCategory.UID, KeychainRecipe.class), keychainRecipe.stream().filter((craftingRecipe) -> {
+            return craftingRecipe.value() instanceof KeychainRecipe;
+        }).map(RecipeHolder::value).toList());
 
         registration.addRecipes(new RecipeType<>(BloodSigilRecipeCategory.UID, BloodSigilRecipeJEI.class), BloodSigilRecipeJEI.getRecipeList());
 

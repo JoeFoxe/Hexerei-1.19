@@ -10,7 +10,6 @@
 	},
 	"elements": [
 		{
-			"name": "binding",
 			"from": [-1, 0, 0.5],
 			"to": [1, 0.5, 9.5],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 16.5, 8]},
@@ -24,21 +23,6 @@
 			}
 		},
 		{
-			"name": "binding",
-			"from": [-1.005, 0.395, 0.495],
-			"to": [1.005, 0.605, 9.505],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 16.5, 8]},
-			"faces": {
-				"north": {"uv": [5.0625, 8.25, 5.5625, 8.375], "texture": "#0"},
-				"east": {"uv": [2.5, 8, 5, 8.125], "texture": "#1", "tintindex": 0},
-				"south": {"uv": [5.6875, 8.75, 6.1875, 8.875], "texture": "#0"},
-				"west": {"uv": [5.5, 8, 8, 8.125], "texture": "#1", "tintindex": 0},
-				"up": {"uv": [5.5, 11.0625, 5, 8.5625], "texture": "#0"},
-				"down": {"uv": [6, 5.5, 5.5, 8], "texture": "#0"}
-			}
-		},
-		{
-			"name": "binding",
 			"from": [-1, -0.5, 0],
 			"to": [1, 0, 10],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 16.5, 8]},
@@ -60,10 +44,10 @@
 	},
 	"groups": [
 		{
-			"name": "Book",
+			"name": "group",
 			"origin": [8, 16.5, 11.5],
 			"color": 0,
-			"children": [0, 1, 2]
+			"children": [0, 1]
 		}
 	]
 }

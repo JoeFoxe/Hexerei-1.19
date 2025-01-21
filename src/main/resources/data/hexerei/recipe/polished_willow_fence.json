@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#|#",
+    "#|#"
+  ],
+  "key": {
+    "#": {
+      "item": "hexerei:polished_willow_planks"
+    },
+    "|": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "hexerei:polished_willow_fence",
+    "count": 3
+  }
+}

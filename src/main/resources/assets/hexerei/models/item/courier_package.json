@@ -1,8 +1,8 @@
 {
 	"parent": "item/generated",
 	"overrides": [
-		{ "predicate": { "open": 0.0 }, "model": "hexerei:block/courier_package" },
-		{ "predicate": { "open": 0.5 }, "model": "hexerei:block/courier_package_not_sealed" },
-		{ "predicate": { "open": 1.0 }, "model": "hexerei:block/courier_package_open" }
+		{ "predicate": { "hexerei:open": 0.0 }, "model": "hexerei:block/courier_package" },
+		{ "predicate": { "hexerei:open": 0.5 }, "model": "hexerei:block/courier_package_not_sealed" },
+		{ "predicate": { "hexerei:open": 1.0 }, "model": "hexerei:block/courier_package_open" }
 	]
 }

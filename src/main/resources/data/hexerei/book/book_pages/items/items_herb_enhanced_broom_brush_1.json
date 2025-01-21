@@ -31,7 +31,7 @@
       "type": "item",
       "x": 2.5,
       "y": 0.75,
-      "name": "hexerei:herb_enhanced_broom_brush"
+      "id": "hexerei:herb_enhanced_broom_brush"
     }
   ],
   "images": [

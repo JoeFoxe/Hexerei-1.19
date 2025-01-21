@@ -272,30 +272,30 @@
 	},
 	"groups": [
 		{
-			"name": "lily_1",
+			"id": "lily_1",
 			"origin": [8, 16, 8],
 			"color": 0,
 			"children": [
 				{
-					"name": "group",
+					"id": "group",
 					"origin": [4, 11, 9.5],
 					"color": 0,
 					"children": [0, 1, 2, 3]
 				},
 				{
-					"name": "group",
+					"id": "group",
 					"origin": [7, 18.5, 7],
 					"color": 0,
 					"children": []
 				},
 				{
-					"name": "group",
+					"id": "group",
 					"origin": [7, 18.5, 7],
 					"color": 0,
 					"children": [4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 				},
 				{
-					"name": "group",
+					"id": "group",
 					"origin": [8, 8, 8],
 					"color": 0,
 					"children": [14, 15]

@@ -1,0 +1,28 @@
+{
+  "type": "hexerei:add_to_candle",
+  "input": {
+    "item": "hexerei:mindful_trance_blend"
+  },
+  "output": {
+    "id": "hexerei:candle",
+    "components": {
+      "minecraft:custom_data": {
+        "effect": "hexerei:growth_effect",
+        "effectParticle": {
+          "particle0": "hexerei:broom_particle_6",
+          "particle1": "hexerei:broom_particle_5",
+          "particle2": "hexerei:broom_particle_4",
+          "particle3": "minecraft:smoke"
+        },
+        "herb": {
+          "layer": "hexerei:textures/block/candle_herb_layer.png",
+          "meltingSpeedMultiplier": 1.0,
+          "radiusMultiplier": 1.0,
+          "effectAmplifierMultiplier": 1.0,
+          "effectCooldownMultiplier": 1.0,
+          "effectDurationMultiplier": 1.0
+        }
+      }
+    }
+  }
+}

@@ -18,7 +18,7 @@
       "type": "item",
       "x": 3.5,
       "y": 2.75,
-      "name": "minecraft:crafting_table"
+      "id": "minecraft:crafting_table"
     },
 
 
@@ -26,57 +26,57 @@
       "type": "item",
       "x": 0,
       "y": 3,
-      "name": "minecraft:torch"
+      "id": "minecraft:torch"
     },
     {
       "type": "item",
       "x": 1,
       "y": 3,
-      "name": "minecraft:air"
+      "id": "minecraft:air"
     },
     {
       "type": "item",
       "x": 2,
       "y": 3,
-      "name": "minecraft:torch"
+      "id": "minecraft:torch"
     },
 
     {
       "type": "item",
       "x": 0,
       "y": 4,
-      "name": "minecraft:iron_ingot"
+      "id": "minecraft:iron_ingot"
     },
     {
       "type": "item",
       "x": 1,
       "y": 4,
-      "name": "minecraft:cauldron"
+      "id": "minecraft:cauldron"
     },
     {
       "type": "item",
       "x": 2,
       "y": 4,
-      "name": "minecraft:iron_ingot"
+      "id": "minecraft:iron_ingot"
     },
 
     {
       "type": "item",
       "x": 0,
       "y": 5,
-      "name": "minecraft:iron_ingot"
+      "id": "minecraft:iron_ingot"
     },
     {
       "type": "item",
       "x": 1,
       "y": 5,
-      "name": "minecraft:iron_ingot"
+      "id": "minecraft:iron_ingot"
     },
     {
       "type": "item",
       "x": 2,
       "y": 5,
-      "name": "minecraft:iron_ingot"
+      "id": "minecraft:iron_ingot"
     },
 
 
@@ -85,7 +85,7 @@
       "type": "item",
       "x": 5,
       "y": 4,
-      "name": "hexerei:mixing_cauldron"
+      "id": "hexerei:mixing_cauldron"
     }
   ],
   "images": [

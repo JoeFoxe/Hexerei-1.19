@@ -41,7 +41,7 @@
       "type": "item",
       "x": 2.5,
       "y": 0.75,
-      "name": "hexerei:herb_jar"
+      "id": "hexerei:herb_jar"
     }
   ],
   "images": [

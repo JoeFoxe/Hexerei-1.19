@@ -1,0 +1,36 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 500
+  },
+  "ingredients": [
+    {
+      "item": "hexerei:small_satchel"
+    },
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "hexerei:infused_fabric_block"
+    },
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "hexerei:infused_fabric_block"
+    },
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "minecraft:string"
+    }
+  ],
+  "output": {
+    "id": "hexerei:broom_seat"
+  }
+}

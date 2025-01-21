@@ -9,7 +9,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 
-@EventBusSubscriber(modid = Hexerei.MOD_ID, bus = Bus.MOD)
+@EventBusSubscriber(modid = Hexerei.MOD_ID, value = Dist.CLIENT, bus = Bus.MOD)
 public class ModParticleUtil {
 
     /*
@@ -23,6 +23,7 @@ public class ModParticleUtil {
         event.registerSpriteSet(ModParticleTypes.CAULDRON.get(), CauldronParticle.Factory::new);
         event.registerSpriteSet(ModParticleTypes.BLOOD.get(), BloodParticle.Factory::new);
         event.registerSpriteSet(ModParticleTypes.BLOOD_BIT.get(), BloodBitParticle.Factory::new);
+        event.registerSpriteSet(ModParticleTypes.BOOK_TEST.get(), BookTestingParticle.Factory::new);
         event.registerSpriteSet(ModParticleTypes.BROOM.get(), BroomParticle.Factory::new);
         event.registerSpriteSet(ModParticleTypes.BROOM_2.get(), BroomParticle.Factory::new);
         event.registerSpriteSet(ModParticleTypes.BROOM_3.get(), BroomParticle.Factory::new);

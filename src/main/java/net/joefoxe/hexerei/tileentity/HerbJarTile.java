@@ -16,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -31,6 +32,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
@@ -62,13 +64,14 @@ public class HerbJarTile extends RandomizableContainerBlockEntity implements Cle
     private UUID lastClickUUID;
 
     public int buttonToggled;
-    public int dyeColor;
+    public DyedItemColor dyeColor;
 
 
 
     public HerbJarTile(BlockEntityType<?> tileEntityTypeIn, BlockPos blockPos, BlockState blockState) {
         super(tileEntityTypeIn, blockPos, blockState);
         this.itemHandler = createHandler();
+        this.dyeColor = HerbJar.DEFAULT_COLOR;
     }
 
     public HerbJarTile(BlockPos blockPos, BlockState blockState) {
@@ -83,6 +86,9 @@ public class HerbJarTile extends RandomizableContainerBlockEntity implements Cle
 
     }
 
+    public boolean hasDyeColor() {
+        return this.dyeColor != HerbJar.DEFAULT_COLOR;
+    }
 
     public int getButtonToggled() {
         return this.buttonToggled;
@@ -93,15 +99,11 @@ public class HerbJarTile extends RandomizableContainerBlockEntity implements Cle
         itemHandler.deserializeNBT(provider, compound);
     }
 
-    public void setDyeColor(int dyeColor){
-        this.dyeColor = dyeColor;
-    }
-
     public int getDyeColor(){
         DyeColor dye = HexereiUtil.getDyeColorNamed(this.getDisplayName().getString());
         if(dye != null)
             return HexereiUtil.getColorValue(dye);
-        return this.dyeColor;
+        return this.dyeColor != null ? this.dyeColor.rgb() : HerbJar.DEFAULT_COLOR.rgb();
     }
 
     @Override
@@ -130,27 +132,17 @@ public class HerbJarTile extends RandomizableContainerBlockEntity implements Cle
         return Component.translatable("container." + Hexerei.MOD_ID + ".herb_jar");
     }
 
-//    public HerbJarTile() {
-//        this(ModTileEntities.HERB_JAR_TILE.get());
-//    }
-//
-//    @Override
-//    public void load(CompoundTag nbt) {
-//        itemHandler.deserializeNBT(nbt.getCompound("inv"));
-//        this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-//        super.load(nbt);
-//        if (nbt.contains("CustomName", 8))
-//            this.customName = Component.Serializer.fromJson(nbt.getString("CustomName"));
-//    }
-
     @Override
     public void saveAdditional(CompoundTag compound, HolderLookup.Provider registries) {
+        super.saveAdditional(compound, registries);
         compound.put("inv", itemHandler.serializeNBT(registries));
         if (this.customName != null)
             compound.putString("CustomName", Component.Serializer.toJson(this.customName, registries));
         compound.putInt("ButtonToggled", this.buttonToggled);
-        if(this.dyeColor != 0x422F1E && this.dyeColor != 0)
-            compound.putInt("DyeColor", this.dyeColor);
+
+        if (this.dyeColor != HerbJar.DEFAULT_COLOR)
+            DyedItemColor.CODEC.optionalFieldOf("DyeColor", HerbJar.DEFAULT_COLOR).codec()
+                .encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this.dyeColor).resultOrPartial((string) -> {}).ifPresent((p_337994_) -> compound.merge((CompoundTag)p_337994_));
     }
 
     @Override
@@ -160,7 +152,7 @@ public class HerbJarTile extends RandomizableContainerBlockEntity implements Cle
         if(tag.contains("ButtonToggled"))
             this.buttonToggled = tag.getInt("ButtonToggled");
         if(tag.contains("DyeColor")) {
-            this.dyeColor = tag.getInt("DyeColor");
+            this.dyeColor = DyedItemColor.CODEC.decode(NbtOps.INSTANCE, tag.getCompound("DyeColor")).getOrThrow().getFirst();
         }
     }
 
@@ -305,16 +297,6 @@ public class HerbJarTile extends RandomizableContainerBlockEntity implements Cle
             this.itemHandler.setStackInSlot(0, newStack);
         }
     }
-
-//    protected void syncClientCount (int slot, int count) {
-//        if (getLevel() != null && getLevel().isClientSide)
-//            return;
-//
-//        PacketDistributor.TargetPoint point = new PacketDistributor.TargetPoint(
-//                getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), 500, getLevel().dimension());
-//        HexereiPacketHandler.instance.send(PacketDistributor.NEAR.with(() -> point), new MessageCountUpdate(getBlockPos(), slot, count));
-//    }
-
 
 
     public int interactPutItems (Player player) {

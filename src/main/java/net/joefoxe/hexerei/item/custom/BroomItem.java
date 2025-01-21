@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -27,6 +28,7 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -79,7 +81,7 @@ public class BroomItem extends BroomStickItem {
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
         ItemStackHandler handler = createHandler();
 
-        handler.deserializeNBT(Hexerei.proxy.getLevel().registryAccess(), stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getCompound("Inventory"));
+        handler.deserializeNBT(Hexerei.DynamicRegistries.get(), stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getCompound("Inventory"));
 
         return Optional.of(new BroomItem.BroomItemToolTip(handler, stack));
     }
@@ -117,18 +119,21 @@ public class BroomItem extends BroomStickItem {
     }
 
 
-    public BroomEntity getBroom(Level world, ItemStack stack) {
+    public BroomEntity getBroom(Level world, ItemStack stack, Vec3 pos) {
 
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-        BroomEntity broom = new BroomEntity(ModEntityTypes.BROOM.get(), world);
-        if(tag.contains("floatMode"))
+        BroomEntity broom = new BroomEntity(world, pos.x, pos.y, pos.z);
+        if(tag.contains("floatMode")) {
             broom.itemHandler.deserializeNBT(world.registryAccess(), tag.getCompound("Inventory"));
+            broom.floatMode = (tag.getBoolean("floatMode"));
+        }
         else
             broom.itemHandler.setStackInSlot(2, new ItemStack(ModItems.BROOM_BRUSH.get()));
         if(stack.getItem() instanceof BroomItem broomItem)
             broom.setBroomType(broomItem.type);
         broom.isItem = true;
         broom.selfItem = stack.copy();
+        broom.broomUUID = BroomItem.getUUID(stack);
 
         if (stack.get(DataComponents.CUSTOM_NAME) != null) {
             broom.setCustomName(stack.getHoverName());
@@ -137,9 +142,20 @@ public class BroomItem extends BroomStickItem {
         return broom;
     }
 
+    public void onActivate(BroomEntity broom, RandomSource random) {
+
+    }
+
 
     public BroomEntity getBroomFast(Level world, ItemStack stack) {
-        return cachedBroom.get(stack, () -> getBroom(world, stack));
+        return cachedBroom.get(stack, () -> getBroom(world, stack, new Vec3(0, 0, 0)));
+    }
+
+
+    public static BlockHitResult getPlayerPOVHitResult(Level level, Player player, ClipContext.Fluid fluidMode, float range) {
+        Vec3 vec3 = player.getEyePosition();
+        Vec3 vec31 = vec3.add(player.calculateViewVector(player.getXRot(), player.getYRot()).scale(range));
+        return level.clip(new ClipContext(vec3, vec31, net.minecraft.world.level.ClipContext.Block.OUTLINE, fluidMode, player));
     }
 
     /**
@@ -148,66 +164,50 @@ public class BroomItem extends BroomStickItem {
      */
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack itemstack = playerIn.getItemInHand(handIn);
-        HitResult raytraceresult = getPlayerPOVHitResult(worldIn, playerIn, ClipContext.Fluid.ANY);
-        if (raytraceresult.getType() == HitResult.Type.MISS) {
-            return InteractionResultHolder.pass(itemstack);
+        HitResult raytraceresult = getPlayerPOVHitResult(worldIn, playerIn, ClipContext.Fluid.ANY, (float) Math.min(3, playerIn.blockInteractionRange()));
+        Vec3 vector3d = playerIn.getLookAngle();
+        List<Entity> list = worldIn.getEntities(playerIn, playerIn.getBoundingBox().expandTowards(vector3d.scale(5.0D)).inflate(1.0D), field_219989_a);
+        if (!list.isEmpty()) {
+            Vec3 vector3d1 = playerIn.getEyePosition(1.0F);
+
+            for(Entity entity : list) {
+                AABB axisalignedbb = entity.getBoundingBox().inflate(entity.getPickRadius());
+                if (axisalignedbb.contains(vector3d1)) {
+                    return InteractionResultHolder.pass(itemstack);
+                }
+            }
+        }
+
+        BroomEntity broom = getBroom(worldIn, itemstack, raytraceresult.getLocation());
+
+        if (!worldIn.noCollision(broom, broom.getBoundingBox().inflate(-0.1D))) {
+            return InteractionResultHolder.fail(itemstack);
         } else {
-            Vec3 vector3d = playerIn.getLookAngle();
-            double d0 = 5.0D;
-            List<Entity> list = worldIn.getEntities(playerIn, playerIn.getBoundingBox().expandTowards(vector3d.scale(5.0D)).inflate(1.0D), field_219989_a);
-            if (!list.isEmpty()) {
-                Vec3 vector3d1 = playerIn.getEyePosition(1.0F);
+            if (!worldIn.isClientSide) {
 
-                for(Entity entity : list) {
-                    AABB axisalignedbb = entity.getBoundingBox().inflate(entity.getPickRadius());
-                    if (axisalignedbb.contains(vector3d1)) {
-                        return InteractionResultHolder.pass(itemstack);
-                    }
+                worldIn.addFreshEntity(broom);
+
+                broom.setRotation(playerIn.getYRot());
+                if (raytraceresult.getType() == HitResult.Type.MISS)
+                    broom.setFloatMode(true);
+
+                if (!playerIn.getAbilities().instabuild) {
+                    itemstack.shrink(1);
                 }
             }
 
-            if (raytraceresult.getType() == HitResult.Type.BLOCK) {
-                BroomEntity broom = new BroomEntity(worldIn, raytraceresult.getLocation().x, raytraceresult.getLocation().y, raytraceresult.getLocation().z);
-                if(itemstack.getItem() instanceof BroomItem broomItem)
-                    broom.setBroomType(broomItem.type);
-                broom.broomUUID = BroomItem.getUUID(itemstack);
-                broom.setYRot(playerIn.getYRot());
-                CompoundTag tag = itemstack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-                broom.itemHandler.deserializeNBT(worldIn.registryAccess(), tag.getCompound("Inventory"));
-                if(!tag.contains("floatMode")) {
-                    broom.itemHandler.setStackInSlot(2, new ItemStack(ModItems.BROOM_BRUSH.get()));
-                    broom.sync();
-                }
-                broom.floatMode = (tag.getBoolean("floatMode"));
-
-                broom.setCustomName(itemstack.getHoverName());
-
-                if (!worldIn.noCollision(broom, broom.getBoundingBox().inflate(-0.1D))) {
-                    return InteractionResultHolder.fail(itemstack);
-                } else {
-                    if (!worldIn.isClientSide) {
-
-                        worldIn.addFreshEntity(broom);
-                        if (!playerIn.getAbilities().instabuild) {
-                            itemstack.shrink(1);
-                        }
-                    }
-
-                    playerIn.awardStat(Stats.ITEM_USED.get(this));
-                    return InteractionResultHolder.sidedSuccess(itemstack, worldIn.isClientSide());
-                }
-            } else {
-                return InteractionResultHolder.pass(itemstack);
-            }
+            playerIn.awardStat(Stats.ITEM_USED.get(this));
+            return InteractionResultHolder.sidedSuccess(itemstack, worldIn.isClientSide());
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
 
         if(Screen.hasShiftDown()) {
 
-            tooltipComponents.add(Component.translatable("tooltip.hexerei.broom_shift_2", Component.translatable(ModKeyBindings.broomDescend.getKey().getName()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xCCCC00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+            tooltipComponents.add(Component.translatable("tooltip.hexerei.broom_shift_2", Component.translatable(ModKeyBindings.broomDown.getKey().getName()).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xCCCC00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             tooltipComponents.add(Component.translatable("tooltip.hexerei.broom_shift_3").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             tooltipComponents.add(Component.translatable("tooltip.hexerei.broom_shift_4").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
             if(stack.is(ModItems.MAHOGANY_BROOM.get())) {

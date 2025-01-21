@@ -302,7 +302,7 @@ public class CourierPackageItem extends BlockItem {
         private NonNullList<ItemStack> refreshItemList(CompoundTag rootTag) {
             NonNullList<ItemStack> itemStacks = NonNullList.withSize(getSlots(), ItemStack.EMPTY);
             if (rootTag != null && rootTag.contains("Items", CompoundTag.TAG_LIST)) {
-                ContainerHelper.loadAllItems(rootTag, itemStacks, Hexerei.proxy.getLevel().registryAccess());
+                ContainerHelper.loadAllItems(rootTag, itemStacks, Hexerei.DynamicRegistries.get());
             }
             cachedTag = rootTag;
             return itemStacks;
@@ -319,7 +319,7 @@ public class CourierPackageItem extends BlockItem {
             }
 
             CompoundTag existing = this.stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
-            CompoundTag rootTag = ContainerHelper.saveAllItems(existing, itemStacks, Hexerei.proxy.getLevel().registryAccess());
+            CompoundTag rootTag = ContainerHelper.saveAllItems(existing, itemStacks, Hexerei.DynamicRegistries.get());
 
             if (!isEmpty) {
                 BlockItem.setBlockEntityData(this.stack, ModTileEntities.COURIER_PACKAGE_TILE.get(), rootTag);
@@ -344,7 +344,8 @@ public class CourierPackageItem extends BlockItem {
                     return;
                 }
                 tag.putBoolean("Sealed", this.sealed);
-                this.stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(tag));
+//                this.stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(tag));
+                BlockItem.setBlockEntityData(stack, ModTileEntities.COURIER_PACKAGE_TILE.get(), tag);
 
                 cachedTag = tag;
             }

@@ -16,17 +16,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DipperRecipe implements Recipe<CraftingInput> {
 
-    private final Ingredient input;
+    private final ItemStack input;
     private final ItemStack output;
-    private final FluidStack liquid;
-    private final int fluidLevelsConsumed;
+    private final FluidStack fluid;
     private final int dippingTime;
     private final int dryingTime;
     private final int numberOfDips;
@@ -37,11 +32,10 @@ public class DipperRecipe implements Recipe<CraftingInput> {
     public boolean isSpecial() {
         return true;
     }
-    public DipperRecipe(Ingredient input, ItemStack output, FluidStack liquid, int fluidLevelsConsumed, int dippingTime, int dryingTime, int numberOfDips, boolean useInputItemAsOutput) {
+    public DipperRecipe(ItemStack input, ItemStack output, FluidStack fluid, int dippingTime, int dryingTime, int numberOfDips, boolean useInputItemAsOutput) {
         this.input = input;
         this.output = output;
-        this.liquid = liquid;
-        this.fluidLevelsConsumed = fluidLevelsConsumed;
+        this.fluid = fluid;
         this.dippingTime = dippingTime;
         this.dryingTime = dryingTime;
         this.numberOfDips = numberOfDips;
@@ -49,26 +43,18 @@ public class DipperRecipe implements Recipe<CraftingInput> {
 
     }
 
-
-    public List<FluidIngredient> getFluidIngredients(){
-        return new ArrayList<>(List.of(FluidIngredient.of(this.liquid)));
-    }
-    public FluidIngredient getFluidIngredient(){
-        return FluidIngredient.of(this.liquid);
+    public FluidStack getFluid() {
+        return this.fluid;
     }
 
     @Override
     public boolean matches(CraftingInput inv, Level level) {
-        return input.test(inv.getItem(0)) ||
-                input.test(inv.getItem(1)) ||
-                input.test(inv.getItem(2));
-
-
+        return inv.items().stream().anyMatch((stack -> stack.is(input.getItem())));
     }
 
     @Override
     public NonNullList<Ingredient> getIngredients() {
-        return NonNullList.of(input);
+        return NonNullList.withSize(1, Ingredient.of(input));
     }
 
     @Override
@@ -90,9 +76,13 @@ public class DipperRecipe implements Recipe<CraftingInput> {
         return output.copy();
     }
 
-    public FluidStack getLiquid() { return this.liquid; }
+    public ItemStack getInput() {
+        return input.copy();
+    }
 
-    public int getFluidLevelsConsumed() { return this.fluidLevelsConsumed; }
+    public FluidStack getLiquid() { return this.fluid; }
+
+    public int getFluidLevelsConsumed() { return this.fluid.getAmount(); }
 
     public int getDippingTime() { return this.dippingTime; }
 
@@ -130,18 +120,17 @@ public class DipperRecipe implements Recipe<CraftingInput> {
 
         private static final MapCodec<DipperRecipe> CODEC = RecordCodecBuilder.mapCodec(
                 instance -> instance.group(
-                                Ingredient.CODEC.fieldOf("input").forGetter(recipe -> recipe.input),
+                                ItemStack.CODEC.fieldOf("input").forGetter(recipe -> recipe.input),
                                 ItemStack.CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
-                                FluidStack.CODEC.fieldOf("fluid").forGetter(recipe -> recipe.liquid),
-                                Codec.INT.fieldOf("fluidLevelsConsumed").forGetter(recipe -> recipe.fluidLevelsConsumed),
+                                FluidStack.CODEC.fieldOf("fluid").forGetter(recipe -> recipe.fluid),
                                 Codec.INT.fieldOf("dippingTime").forGetter(recipe -> recipe.dippingTime),
                                 Codec.INT.fieldOf("dryingTime").forGetter(recipe -> recipe.dryingTime),
                                 Codec.INT.fieldOf("numberOfDips").forGetter(recipe -> recipe.numberOfDips),
-                                Codec.BOOL.fieldOf("useInputItemAsOutput").forGetter(recipe -> recipe.useInputItemAsOutput)
+                                Codec.BOOL.optionalFieldOf("useInputItemAsOutput", false).forGetter(recipe -> recipe.useInputItemAsOutput)
                         )
                         .apply(instance, DipperRecipe::new)
         );
-//        public DipperRecipe(NonNullList<Ingredient> inputs, ItemStack output, FluidStack liquid, int fluidLevelsConsumed, int dippingTime, int dryingTime, int numberOfDips, boolean useInputItemAsOutput) {
+//        public DipperRecipe(NonNullList<Ingredient> inputs, ItemStack output, FluidStack fluid, int fluidLevelsConsumed, int dippingTime, int dryingTime, int numberOfDips, boolean useInputItemAsOutput) {
         public static final StreamCodec<RegistryFriendlyByteBuf, DipperRecipe> STREAM_CODEC = StreamCodec.of(
                 DipperRecipe.Serializer::toNetwork, DipperRecipe.Serializer::fromNetwork
         );
@@ -162,22 +151,20 @@ public class DipperRecipe implements Recipe<CraftingInput> {
         }
 
         private static DipperRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
-            Ingredient input = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
+            ItemStack input = ItemStack.STREAM_CODEC.decode(buffer);
             ItemStack output = ItemStack.STREAM_CODEC.decode(buffer);
             FluidStack fluid = FluidStack.STREAM_CODEC.decode(buffer);
-            int fluidLevelsConsumed = ByteBufCodecs.INT.decode(buffer);
             int dippingTime = ByteBufCodecs.INT.decode(buffer);
             int dryingTime = ByteBufCodecs.INT.decode(buffer);
             int numberOfDips = ByteBufCodecs.INT.decode(buffer);
             boolean useInputItemAsOutput = ByteBufCodecs.BOOL.decode(buffer);
-            return new DipperRecipe(input, output, fluid, fluidLevelsConsumed, dippingTime, dryingTime, numberOfDips, useInputItemAsOutput);
+            return new DipperRecipe(input, output, fluid, dippingTime, dryingTime, numberOfDips, useInputItemAsOutput);
         }
 
         private static void toNetwork(RegistryFriendlyByteBuf buffer, DipperRecipe recipe) {
-            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.input);
+            ItemStack.STREAM_CODEC.encode(buffer, recipe.input);
             ItemStack.STREAM_CODEC.encode(buffer, recipe.output);
-            FluidStack.STREAM_CODEC.encode(buffer, recipe.liquid);
-            ByteBufCodecs.INT.encode(buffer, recipe.fluidLevelsConsumed);
+            FluidStack.STREAM_CODEC.encode(buffer, recipe.fluid);
             ByteBufCodecs.INT.encode(buffer, recipe.dippingTime);
             ByteBufCodecs.INT.encode(buffer, recipe.dryingTime);
             ByteBufCodecs.INT.encode(buffer, recipe.numberOfDips);

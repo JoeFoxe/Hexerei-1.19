@@ -1,0 +1,36 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "fluid": {
+    "id": "minecraft:water",
+    "amount": 500
+  },
+  "ingredients": [
+    {
+      "item": "hexerei:mandrake_root"
+    },
+    {
+      "item": "minecraft:wheat"
+    },
+    {
+      "item": "hexerei:mugwort_leaves"
+    },
+    {
+      "item": "minecraft:wheat"
+    },
+    {
+      "item": "hexerei:mandrake_root"
+    },
+    {
+      "item": "minecraft:wheat"
+    },
+    {
+      "item": "hexerei:yellow_dock_leaves"
+    },
+    {
+      "item": "minecraft:wheat"
+    }
+  ],
+  "output": {
+    "id": "hexerei:wet_broom_brush"
+  }
+}

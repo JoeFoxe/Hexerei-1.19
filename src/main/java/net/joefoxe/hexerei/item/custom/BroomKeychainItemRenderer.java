@@ -70,7 +70,7 @@ public class BroomKeychainItemRenderer extends CustomItemRenderer {
         CompoundTag tag2 = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         if(tag2.contains("Items")){
             ListTag list = tag2.getList("Items", 10);
-            ItemStack other = ItemStack.parseOptional(Hexerei.proxy.getLevel().registryAccess(), list.getCompound(0));
+            ItemStack other = ItemStack.parseOptional(Hexerei.DynamicRegistries.get(), list.getCompound(0));
             if (!other.isEmpty() && !list.isEmpty()) {
 
                 matrixStackIn.pushPose();

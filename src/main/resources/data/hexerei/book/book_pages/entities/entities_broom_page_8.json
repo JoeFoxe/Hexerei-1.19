@@ -24,41 +24,51 @@
       "type": "item",
       "x": 0.75,
       "y": 4,
-      "name": "hexerei:broom_brush",
+      "id": "hexerei:broom_brush",
       "show_slot": false,
-      "tag": "{Damage: 1}"
+      "components": {
+        "minecraft:damage": 1
+      }
     },
     {
       "type": "item",
       "x": 1.75,
       "y": 4,
-      "name": "hexerei:broom_brush",
+      "id": "hexerei:broom_brush",
       "show_slot": false,
-      "tag": "{Damage: 25}"
+      "components": {
+        "minecraft:damage": 25
+      }
     },
     {
       "type": "item",
       "x": 2.75,
       "y": 4,
-      "name": "hexerei:broom_brush",
+      "id": "hexerei:broom_brush",
       "show_slot": false,
-      "tag": "{Damage: 50}"
+      "components": {
+        "minecraft:damage": 50
+      }
     },
     {
       "type": "item",
       "x": 3.75,
       "y": 4,
-      "name": "hexerei:broom_brush",
+      "id": "hexerei:broom_brush",
       "show_slot": false,
-      "tag": "{Damage: 75}"
+      "components": {
+        "minecraft:damage": 75
+      }
     },
     {
       "type": "item",
       "x": 4.75,
       "y": 4,
-      "name": "hexerei:broom_brush",
+      "id": "hexerei:broom_brush",
       "show_slot": false,
-      "tag": "{Damage: 99}"
+      "components": {
+        "minecraft:damage": 99
+      }
     }
   ]
 }

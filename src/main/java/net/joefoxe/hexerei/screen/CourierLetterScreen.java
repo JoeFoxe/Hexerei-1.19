@@ -105,8 +105,6 @@ public class CourierLetterScreen extends Screen {
         this.slotIndex = slotIndex;
         this.hand = hand;
 
-
-
     }
 
     public boolean isEmpty() {
@@ -230,7 +228,7 @@ public class CourierLetterScreen extends Screen {
     @Override
     public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         Lighting.setupForFlatItems();
-        this.renderBackground(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
+        this.renderTransparentBackground(pGuiGraphics);
         pGuiGraphics.drawCenteredString(this.font, this.title, this.width / 2, this.top + 4, 0x333333);
 
         pGuiGraphics.blit(GUI, left, top, 0, 0, img_width, img_height);
@@ -363,7 +361,7 @@ public class CourierLetterScreen extends Screen {
             pGuiGraphics.renderTooltip(this.font, tooltipLines, Optional.empty(), pMouseX, pMouseY);
 
         Lighting.setupFor3DItems();
-        super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
+//        super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
     }
 
     void floatBlit(GuiGraphics guiGraphics, ResourceLocation pAtlasLocation, float pX1, float pX2, float pY1, float pY2, float pBlitOffset, float pMinU, float pMaxU, float pMinV, float pMaxV) {

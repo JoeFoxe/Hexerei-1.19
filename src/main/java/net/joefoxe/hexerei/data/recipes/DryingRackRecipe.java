@@ -1,31 +1,18 @@
 package net.joefoxe.hexerei.data.recipes;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
-import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.fluids.FluidStack;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DryingRackRecipe implements Recipe<CraftingInput> {
 
@@ -47,19 +34,12 @@ public class DryingRackRecipe implements Recipe<CraftingInput> {
 
     @Override
     public boolean matches(CraftingInput inv, Level worldIn) {
-        if(input.test(inv.getItem(0) )||
-                input.test(inv.getItem(1)) ||
-                        input.test(inv.getItem(2)))
-            return true;
-
-        return false;
-
-
+        return inv.items().stream().anyMatch((stack) -> input.test(stack));
     }
 
     @Override
     public NonNullList<Ingredient> getIngredients() {
-        return NonNullList.of(input);
+        return NonNullList.withSize(1, input);
     }
 
     @Override

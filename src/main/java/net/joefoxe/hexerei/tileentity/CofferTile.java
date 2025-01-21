@@ -160,7 +160,7 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Worl
 
             CompoundTag tag = this.self.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 
-            CompoundTag inv = this.itemStackHandler.serializeNBT(this.level.registryAccess());
+            CompoundTag inv = this.itemStackHandler.serializeNBT(Hexerei.DynamicRegistries.get());
 
 //            boolean flag = false;
 //            for(int i = 0; i < 36; i++)
@@ -267,6 +267,13 @@ public class CofferTile extends RandomizableContainerBlockEntity implements Worl
     public Packet<ClientGamePacketListener> getUpdatePacket() {
 
         return ClientboundBlockEntityDataPacket.create(this, (tag, registryAccess) -> this.getUpdateTag(registryAccess));
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = super.getUpdateTag(registries);
+        this.saveAdditional(tag, registries);
+        return tag;
     }
 
     public void sync() {

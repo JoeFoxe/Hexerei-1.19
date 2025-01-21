@@ -9,7 +9,8 @@ import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -19,6 +20,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
@@ -34,7 +36,6 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.ItemAbility;
 
 import javax.annotation.Nullable;
@@ -70,12 +71,13 @@ public class ConnectingCarpetDyed extends CarpetBlock implements Waxed, CTDyable
         if (!pState.hasProperty(COLOR))
             return drops;
         List<ItemStack> updated_drops = new ArrayList<>();
-        for (ItemStack stack : drops){
-//            if (stack.getItem() == ModBlocks.INFUSED_FABRIC_CARPET.get().asItem() || stack.getItem() == ModBlocks.WAXED_INFUSED_FABRIC_CARPET.get().asItem()){
-//                DyeColor color = pState.getValue(COLOR);
-//
-//                stack.get().getOrCreateTag().putString("color", color.getName());
-//            }
+        for (ItemStack stack : drops) {
+            if (stack.getItem() == ModBlocks.INFUSED_FABRIC_CARPET.get().asItem() || stack.getItem() == ModBlocks.WAXED_INFUSED_FABRIC_CARPET.get().asItem()){
+                DyeColor color = pState.getValue(COLOR);
+                CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+                tag.putString("color", color.getName());
+                stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+            }
             updated_drops.add(stack);
         }
         return updated_drops;
@@ -221,61 +223,59 @@ public class ConnectingCarpetDyed extends CarpetBlock implements Waxed, CTDyable
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-//        if(stack.getItem() instanceof DyeItem dyeItem) {
-//            DyeColor dyecolor = dyeItem.getDyeColor();
-//            if(this.getDyeColor(state) == dyecolor)
-//                return ItemInteractionResult.FAIL;
+        if(stack.getItem() instanceof DyeItem dyeItem) {
+            DyeColor dyecolor = dyeItem.getDyeColor();
+            if(this.getDyeColor(state) == dyecolor)
+                return ItemInteractionResult.FAIL;
+
+            if (player instanceof ServerPlayer) {
+                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer)player, pos, player.getItemInHand(hand));
+            }
+
+            BlockState newBlockstate = level.getBlockState(pos).setValue(COLOR, dyecolor);
 //
-//            if (player instanceof ServerPlayer) {
-//                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer)player, pos, player.getItemInHand(hand));
-//            }
-//
-//            BlockState newBlockstate = level.getBlockState(pos).setValue(COLOR, dyecolor);
-////
-//            if(state.getBlock() == ModBlocks.INFUSED_FABRIC_CARPET_ORNATE.get()) {
-//                Block.popResource(level, pos, new ItemStack(Items.GOLD_NUGGET));
-//                newBlockstate = ModBlocks.INFUSED_FABRIC_CARPET.get().defaultBlockState().setValue(COLOR, dyecolor);
-//            }
-//
-//            level.setBlockAndUpdate(pos, newBlockstate);
-//            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, newBlockstate));
-//            level.levelEvent(player, 3003, pos, 0);
-//            return ItemInteractionResult.sidedSuccess(level.isClientSide);
-//
-//        }
-//        else if(stack.getItem() == Items.GOLD_NUGGET) {
-//            if(state.getBlock() == ModBlocks.INFUSED_FABRIC_CARPET_ORNATE.get())
-//                return ItemInteractionResult.FAIL;
-//
-//            if (player instanceof ServerPlayer) {
-//                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer)player, pos, player.getItemInHand(hand));
-//            }
-//            BlockState newBlockstate = ModBlocks.INFUSED_FABRIC_CARPET_ORNATE.get().defaultBlockState();
-//            if(!player.isCreative())
-//                player.getItemInHand(hand).shrink(1);
-//
-//            level.setBlockAndUpdate(pos, newBlockstate);
-//            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, newBlockstate));
-//            level.levelEvent(player, 3004, pos, 0);
-//            level.playSound(player, pos, SoundEvents.SHEEP_SHEAR, SoundSource.BLOCKS, 1.0F, 1.0F);
-//            return ItemInteractionResult.sidedSuccess(level.isClientSide);
-//
-//        }
+            if(state.getBlock() == ModBlocks.INFUSED_FABRIC_CARPET_ORNATE.get()) {
+                Block.popResource(level, pos, new ItemStack(Items.GOLD_NUGGET));
+                newBlockstate = ModBlocks.INFUSED_FABRIC_CARPET.get().defaultBlockState().setValue(COLOR, dyecolor);
+            }
+
+            level.setBlockAndUpdate(pos, newBlockstate);
+            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, newBlockstate));
+            level.levelEvent(player, 3003, pos, 0);
+            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+
+        }
+        else if(stack.getItem() == Items.GOLD_NUGGET) {
+            if(state.getBlock() == ModBlocks.INFUSED_FABRIC_CARPET_ORNATE.get())
+                return ItemInteractionResult.FAIL;
+
+            if (player instanceof ServerPlayer) {
+                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer)player, pos, player.getItemInHand(hand));
+            }
+            BlockState newBlockstate = ModBlocks.INFUSED_FABRIC_CARPET_ORNATE.get().defaultBlockState();
+            if(!player.isCreative())
+                player.getItemInHand(hand).shrink(1);
+
+            level.setBlockAndUpdate(pos, newBlockstate);
+            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, newBlockstate));
+            level.levelEvent(player, 3004, pos, 0);
+            level.playSound(player, pos, SoundEvents.SHEEP_SHEAR, SoundSource.BLOCKS, 1.0F, 1.0F);
+            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+
+        }
 
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
-        return super.getCloneItemStack(state, target, level, pos, player);
-    }
-
-    @Override
-    public ItemStack getCloneItemStack(LevelReader pLevel, BlockPos pPos, BlockState pState) {
-        ItemStack stack = super.getCloneItemStack(pLevel, pPos, pState);
-//        DyeColor color = getDyeColor(pState);
-//        if (color != DyeColor.WHITE)
-//            stack.getOrCreateTag().putString("color", color.getName());
+        ItemStack stack = super.getCloneItemStack(state, target, level, pos, player);
+        DyeColor color = getDyeColor(state);
+        if (color != DyeColor.WHITE) {
+            CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+            tag.putString("color", color.getName());
+            stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+        }
         return stack;
     }
 
@@ -286,8 +286,9 @@ public class ConnectingCarpetDyed extends CarpetBlock implements Waxed, CTDyable
     }
 
     public static int getColorValue(ItemStack stack) {
-//        if (stack.hasTag() && stack.getTag() != null && stack.getTag().contains("color"))
-//            return getColorValue(DyeColor.byName(stack.getOrCreateTag().getString("color"), DyeColor.WHITE));
+        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
+        if (customData != null && customData.copyTag().contains("color"))
+            return getColorValue(DyeColor.byName(customData.copyTag().getString("color"), DyeColor.WHITE));
         return getColorValue(DyeColor.WHITE);
     }
 
@@ -397,8 +398,9 @@ public class ConnectingCarpetDyed extends CarpetBlock implements Waxed, CTDyable
         ItemStack stack = context.getItemInHand();
         BlockPos blockpos = context.getClickedPos();
 
-        if (stack.has(ModDataComponents.DYE_COLOR)) {
-            DyeColor color = stack.getOrDefault(ModDataComponents.DYE_COLOR, new DyeColorData(DyeColor.WHITE)).color();
+        CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+        if (tag.contains("color")) {
+            DyeColor color = DyeColor.byName(tag.getString("color"), DyeColor.WHITE); // Default to WHITE if the colorName is invalid
             return updateCorners(iblockreader, blockpos, super.getStateForPlacement(context)).setValue(COLOR, color);
         } else {
             return updateCorners(iblockreader, blockpos, super.getStateForPlacement(context));

@@ -15,10 +15,10 @@
   ],
   "non_item_tooltips": [
     {
-      "x": 2.5,
-      "y": 0,
-      "width": 0.08,
-      "height": 0.03,
+      "x": 0.5,
+      "y": -0.25,
+      "width": 4.838,
+      "height": 1.45,
       "hyperlink": {
         "url": "https://www.curseforge.com/minecraft/mc-mods/hexerei"
       },

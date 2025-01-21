@@ -22,5 +22,5 @@
       "render_type": "translucent"
     }
   },
-  "loader": "forge:composite"
+  "loader": "neoforge:composite"
 }

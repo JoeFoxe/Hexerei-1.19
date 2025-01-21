@@ -228,9 +228,9 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
         if(emptyingOptional.isPresent()) {
             CauldronEmptyingRecipe recipe = emptyingOptional.get().value();
             ItemStack output = recipe.getResultItem(level.registryAccess());
-            SizedFluidIngredient fluidIn = recipe.getFluid();
-            if(fluidIn.test(cauldronFluid)) {
-                return emptyToItem(cauldronTile, level, player, hand, player.getItemInHand(hand), new FluidStack(cauldronFluid.getFluid(), fluidIn.amount()), output);
+            FluidStack fluidIn = recipe.getFluid();
+            if(FluidStack.isSameFluidSameComponents(fluidIn, cauldronFluid) && cauldronFluid.getAmount() >= fluidIn.getAmount()) {
+                return emptyToItem(cauldronTile, level, player, hand, player.getItemInHand(hand), new FluidStack(cauldronFluid.getFluid(), fluidIn.getAmount()), output);
             }
         }
 
@@ -308,8 +308,7 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
             player.openMenu(containerProvider, cauldronTile.getBlockPos());
 
         }
-
-        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+        return ItemInteractionResult.SUCCESS;
     }
 
     private ItemInteractionResult fillFromItem(MixingCauldronTile mixingCauldron, Level level, Player player, InteractionHand hand, ItemStack stackIn, ItemStack stackOut, FluidStack fluid) {

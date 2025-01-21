@@ -42,9 +42,10 @@ public class ModItemProperties {
 
         });
 
-        ItemProperties.register(ModItems.COURIER_PACKAGE.get(), HexereiUtil.getResource("open"), (ClampedItemPropertyFunction) (itemStack, level, p_174667_, p_174668_) -> {
 
-            CustomData data = itemStack.get(DataComponents.BLOCK_ENTITY_DATA);
+        ItemProperties.register(ModItems.COURIER_PACKAGE.get(), HexereiUtil.getResource("open"), (ClampedItemPropertyFunction) (pStack, pLevel, pEntity, pSeed) -> {
+
+            CustomData data = pStack.get(DataComponents.BLOCK_ENTITY_DATA);
             if (data != null) {
 
                 CompoundTag tag = data.copyTag();
@@ -55,7 +56,6 @@ public class ModItemProperties {
                 }
             }
             return 1.0f;
-
         });
 
         ItemProperties.register(ModItems.COURIER_LETTER.get(), HexereiUtil.getResource("open"), (ClampedItemPropertyFunction) (itemStack, level, p_174667_, p_174668_) -> {

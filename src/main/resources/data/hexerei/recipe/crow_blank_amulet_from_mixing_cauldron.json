@@ -1,0 +1,37 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "fluid": {
+    "id": "minecraft:lava",
+    "amount": 250
+  },
+  "ingredients": [
+    {
+      "item": "hexerei:mandrake_root"
+    },
+    {
+      "item": "minecraft:gold_nugget"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "minecraft:gold_nugget"
+    },
+    {
+      "item": "minecraft:gold_nugget"
+    },
+    {
+      "item": "minecraft:gold_nugget"
+    },
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "item": "minecraft:gold_nugget"
+    }
+  ],
+  "output": {
+    "id": "hexerei:crow_blank_amulet"
+  },
+  "heatRequirement": "heated"
+}

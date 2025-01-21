@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.FormattedCharSequence;
@@ -90,7 +91,8 @@ public class HerbJarRenderer implements BlockEntityRenderer<HerbJarTile> {
             matrixStackIn.mulPose(Axis.YP.rotationDegrees(270));
         }
 //        renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.CRYSTAL_BALL_ORB.get().defaultBlockState(), RenderType.translucent(), tileEntityIn.getDyeColor());
-        renderBlock(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, ModBlocks.HERB_JAR.get().defaultBlockState().setValue(HerbJar.GUI_RENDER, true).setValue(HerbJar.DYED, tileEntityIn.dyeColor != 0x422F1E && tileEntityIn.dyeColor != 0), null, tileEntityIn.getDyeColor());
+        renderBlock(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn,
+                ModBlocks.HERB_JAR.get().defaultBlockState().setValue(HerbJar.GUI_RENDER, true).setValue(HerbJar.DYED, tileEntityIn.hasDyeColor()), null, tileEntityIn.getDyeColor());
         matrixStackIn.popPose();
 
         if(!tileEntityIn.itemHandler.isEmpty())
@@ -245,7 +247,7 @@ public class HerbJarRenderer implements BlockEntityRenderer<HerbJarTile> {
         if(component != null){
             List<FormattedCharSequence> list = Minecraft.getInstance().font.split(component, 70);
             float f3 = (float) (-Minecraft.getInstance().font.width(list.get(0)) / 2);
-            if(tileEntityIn.dyeColor != 0x422F1E && tileEntityIn.dyeColor != 0)
+            if(tileEntityIn.hasDyeColor())
                 matrixStackIn.translate(0, 5, 1);
             Minecraft.getInstance().font.drawInBatch(list.get(0), f3, 0, i1, false, matrixStackIn.last().pose(), bufferIn, Font.DisplayMode.NORMAL, 0, combinedLightIn);
 

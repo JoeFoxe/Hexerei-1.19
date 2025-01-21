@@ -1,0 +1,13 @@
+
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "hexerei:stripped_mahogany_log"
+    }
+  ],
+  "result": {
+    "id": "hexerei:mahogany_planks",
+    "count": 4
+  }
+}

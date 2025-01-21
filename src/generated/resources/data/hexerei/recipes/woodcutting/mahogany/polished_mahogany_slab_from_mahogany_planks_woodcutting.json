@@ -1,8 +1,0 @@
-{
-  "type": "hexerei:woodcutting",
-  "count": 2,
-  "ingredient": {
-    "item": "hexerei:mahogany_planks"
-  },
-  "result": "hexerei:polished_mahogany_slab"
-}

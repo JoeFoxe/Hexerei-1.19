@@ -18,37 +18,37 @@
       "type": "item",
       "x": 0,
       "y": 1,
-      "name": "hexerei:mindful_trance_blend"
+      "id": "hexerei:mindful_trance_blend"
     },
     {
       "type": "item",
       "x": 1,
       "y": 1,
-      "name": "hexerei:infused_fabric"
+      "id": "hexerei:infused_fabric"
     },
     {
       "type": "item",
       "x": 2,
       "y": 1,
-      "name": "hexerei:witch_helmet"
+      "id": "hexerei:witch_helmet"
     },
     {
       "type": "item",
       "x": 3,
       "y": 1,
-      "name": "hexerei:witch_chestplate"
+      "id": "hexerei:witch_chestplate"
     },
     {
       "type": "item",
       "x": 4,
       "y": 1,
-      "name": "hexerei:witch_boots"
+      "id": "hexerei:witch_boots"
     },
     {
       "type": "item",
       "x": 5,
       "y": 1,
-      "name": "hexerei:mushroom_witch_hat"
+      "id": "hexerei:mushroom_witch_hat"
     },
 
 
@@ -56,37 +56,37 @@
       "type": "item",
       "x": 0,
       "y": 2,
-      "name": "hexerei:mandrake_plant"
+      "id": "hexerei:mandrake_plant"
     },
     {
       "type": "item",
       "x": 1,
       "y": 2,
-      "name": "hexerei:belladonna_plant"
+      "id": "hexerei:belladonna_plant"
     },
     {
       "type": "item",
       "x": 2,
       "y": 2,
-      "name": "hexerei:mugwort_bush"
+      "id": "hexerei:mugwort_bush"
     },
     {
       "type": "item",
       "x": 3,
       "y": 2,
-      "name": "hexerei:yellow_dock_bush"
+      "id": "hexerei:yellow_dock_bush"
     },
     {
       "type": "item",
       "x": 4,
       "y": 2,
-      "name": "hexerei:willow_log"
+      "id": "hexerei:willow_log"
     },
     {
       "type": "item",
       "x": 5,
       "y": 2,
-      "name": "hexerei:willow_planks"
+      "id": "hexerei:willow_planks"
     },
 
 
@@ -94,37 +94,37 @@
       "type": "item",
       "x": 0,
       "y": 3,
-      "name": "hexerei:mandrake_flowers"
+      "id": "hexerei:mandrake_flowers"
     },
     {
       "type": "item",
       "x": 1,
       "y": 3,
-      "name": "hexerei:belladonna_flowers"
+      "id": "hexerei:belladonna_flowers"
     },
     {
       "type": "item",
       "x": 2,
       "y": 3,
-      "name": "hexerei:mugwort_flowers"
+      "id": "hexerei:mugwort_flowers"
     },
     {
       "type": "item",
       "x": 3,
       "y": 3,
-      "name": "hexerei:yellow_dock_flowers"
+      "id": "hexerei:yellow_dock_flowers"
     },
     {
       "type": "item",
       "x": 4,
       "y": 3,
-      "name": "hexerei:mahogany_log"
+      "id": "hexerei:mahogany_log"
     },
     {
       "type": "item",
       "x": 5,
       "y": 3,
-      "name": "hexerei:mahogany_planks"
+      "id": "hexerei:mahogany_planks"
     },
 
 
@@ -132,37 +132,37 @@
       "type": "item",
       "x": 0,
       "y": 4,
-      "name": "hexerei:mandrake_root"
+      "id": "hexerei:mandrake_root"
     },
     {
       "type": "item",
       "x": 1,
       "y": 4,
-      "name": "hexerei:belladonna_berries"
+      "id": "hexerei:belladonna_berries"
     },
     {
       "type": "item",
       "x": 2,
       "y": 4,
-      "name": "hexerei:mugwort_leaves"
+      "id": "hexerei:mugwort_leaves"
     },
     {
       "type": "item",
       "x": 3,
       "y": 4,
-      "name": "hexerei:yellow_dock_leaves"
+      "id": "hexerei:yellow_dock_leaves"
     },
     {
       "type": "item",
       "x": 4,
       "y": 4,
-      "name": "hexerei:witch_hazel_log"
+      "id": "hexerei:witch_hazel_log"
     },
     {
       "type": "item",
       "x": 5,
       "y": 4,
-      "name": "hexerei:witch_hazel_planks"
+      "id": "hexerei:witch_hazel_planks"
     },
 
 
@@ -170,37 +170,37 @@
       "type": "item",
       "x": 0,
       "y": 5,
-      "name": "hexerei:dried_mandrake_flowers"
+      "id": "hexerei:dried_mandrake_flowers"
     },
     {
       "type": "item",
       "x": 1,
       "y": 5,
-      "name": "hexerei:dried_belladonna_flowers"
+      "id": "hexerei:dried_belladonna_flowers"
     },
     {
       "type": "item",
       "x": 2,
       "y": 5,
-      "name": "hexerei:dried_mugwort_flowers"
+      "id": "hexerei:dried_mugwort_flowers"
     },
     {
       "type": "item",
       "x": 3,
       "y": 5,
-      "name": "hexerei:willow_sapling"
+      "id": "hexerei:willow_sapling"
     },
     {
       "type": "item",
       "x": 4,
       "y": 5,
-      "name": "hexerei:mahogany_sapling"
+      "id": "hexerei:mahogany_sapling"
     },
     {
       "type": "item",
       "x": 5,
       "y": 5,
-      "name": "hexerei:witch_hazel_sapling"
+      "id": "hexerei:witch_hazel_sapling"
     },
 
 
@@ -208,37 +208,37 @@
       "type": "item",
       "x": 0,
       "y": 6,
-      "name": "hexerei:dried_yellow_dock_flowers"
+      "id": "hexerei:dried_yellow_dock_flowers"
     },
     {
       "type": "item",
       "x": 1,
       "y": 6,
-      "name": "hexerei:dried_mugwort_leaves"
+      "id": "hexerei:dried_mugwort_leaves"
     },
     {
       "type": "item",
       "x": 2,
       "y": 6,
-      "name": "hexerei:dried_yellow_dock_leaves"
+      "id": "hexerei:dried_yellow_dock_leaves"
     },
     {
       "type": "item",
       "x": 3,
       "y": 6,
-      "name": "hexerei:moon_dust"
+      "id": "hexerei:moon_dust"
     },
     {
       "type": "item",
       "x": 4,
       "y": 6,
-      "name": "hexerei:moon_dust_brush"
+      "id": "hexerei:moon_dust_brush"
     },
     {
       "type": "item",
       "x": 5,
       "y": 6,
-      "name": "hexerei:wet_moon_dust_brush"
+      "id": "hexerei:wet_moon_dust_brush"
     }
   ]
 }

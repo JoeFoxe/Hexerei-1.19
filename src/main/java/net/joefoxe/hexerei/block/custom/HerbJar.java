@@ -11,6 +11,7 @@ import net.joefoxe.hexerei.tileentity.ModTileEntities;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -63,6 +64,7 @@ public class HerbJar extends Block implements ITileEntity<HerbJarTile>, EntityBl
     public static final BooleanProperty GUI_RENDER = BooleanProperty.create("gui_render");
     public static final BooleanProperty DYED = BooleanProperty.create("dyed");
 
+    public static final DyedItemColor DEFAULT_COLOR = new DyedItemColor(0xC9B199, false);
     @SuppressWarnings("deprecation")
     @Override
     public RenderShape getRenderShape(BlockState iBlockState) {
@@ -160,7 +162,7 @@ public class HerbJar extends Block implements ITileEntity<HerbJarTile>, EntityBl
         if (state.getBlock() != newState.getBlock()) {
             BlockEntity tileentity = level.getBlockEntity(pos);
             if (tileentity != null) {
-                ItemStack cloneItemStack = getCloneItemStack(level, pos, state);
+                ItemStack cloneItemStack = getCloneItemStack(state, new BlockHitResult(pos.getCenter(), Direction.UP, pos, true), level, pos, (Player)null);
                 if(!level.isClientSide())
                     popResource(level, pos, cloneItemStack);
             }
@@ -249,6 +251,11 @@ public class HerbJar extends Block implements ITileEntity<HerbJarTile>, EntityBl
 
 
     @Override
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+        return super.getCloneItemStack(level, pos, state);
+    }
+
+    @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
         ItemStack item = new ItemStack(this);
         Optional<HerbJarTile> tileEntityOptional = Optional.ofNullable(getBlockEntity(level, pos));
@@ -262,19 +269,22 @@ public class HerbJar extends Block implements ITileEntity<HerbJarTile>, EntityBl
         if(!empty.getStackInSlot(0).isEmpty())
             tag.put("Inventory", inv);
 
+        tileEntityOptional.ifPresent((herbJarTile -> {
+            if (herbJarTile.hasDyeColor()) {
+                item.set(DataComponents.DYED_COLOR, herbJarTile.dyeColor);
+            }
+        }));
 
-        int col = tileEntityOptional.map(herbJarTile -> herbJarTile.dyeColor).orElse(0x422F1E);
-        if(col != 0x422F1E && col != 0)
-            item.set(DataComponents.DYED_COLOR, new DyedItemColor(col, true));
 
         int toggled = tileEntityOptional.map(herbJarTile -> herbJarTile.buttonToggled).orElse(0);
         if(toggled == 1)
             tag.putInt("ButtonToggled", toggled);
 
-        item.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+        if (!tag.isEmpty())
+            item.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+
         Component customName = tileEntityOptional.map(HerbJarTile::getCustomName)
                 .orElse(null);
-
         if (customName != null)
             if(!customName.getString().isEmpty())
                 item.set(DataComponents.CUSTOM_NAME, customName);
@@ -296,13 +306,8 @@ public class HerbJar extends Block implements ITileEntity<HerbJarTile>, EntityBl
         withTileEntityDo(worldIn, pos, te -> {
             CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
             te.readInventory(worldIn.registryAccess(), tag.getCompound("Inventory"));
-            DyeColor col = HexereiUtil.getDyeColorNamed(stack.getHoverName().getString());
-            int intCol = -1;
-            if(col != null)
-                intCol = HexereiUtil.getColorValue(col);
-            if(intCol == -1)
-                intCol = HexereiUtil.getDyeColor(stack);
-            te.setDyeColor(intCol);
+            if (stack.has(DataComponents.DYED_COLOR))
+                te.dyeColor = stack.getOrDefault(DataComponents.DYED_COLOR, HerbJar.DEFAULT_COLOR);
 
             te.buttonToggled = tag.getInt("ButtonToggled");
         });

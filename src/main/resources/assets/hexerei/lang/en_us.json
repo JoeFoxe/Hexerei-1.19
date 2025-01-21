@@ -295,7 +295,9 @@
   "tooltip.hexerei.crow_flute_shift_5": "You can also set a perch position if you have crows selected on the flute.",
 
   "hexerei.key.category.broom": "Hexerei (Broom)",
-  "key.hexerei.broomDescend": "Descend",
+  "key.hexerei.broomDown": "Down",
+  "key.hexerei.broomDismount": "Dismount",
+  "key.hexerei.broomUp": "Up",
 
 
   "display.hexerei.dowsing_rod_swamp": "Now locating a swamp.",

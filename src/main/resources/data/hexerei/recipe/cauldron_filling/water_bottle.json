@@ -1,0 +1,21 @@
+{
+    "type": "hexerei:cauldron_filling",
+    "input": [
+        {
+            "item": "minecraft:potion",
+            "components": {
+                "minecraft:potion_contents": {
+                    "potion": "minecraft:water"
+                }
+            }
+        }
+    ],
+    "output": {
+        "id": "minecraft:glass_bottle",
+        "count": 1
+    },
+    "fluid": {
+        "id": "minecraft:water",
+        "amount": 250
+    }
+}

@@ -18,7 +18,7 @@
       "type": "item",
       "x": 3.75,
       "y": 2.5,
-      "name": "hexerei:mixing_cauldron"
+      "id": "hexerei:mixing_cauldron"
     },
 
 
@@ -26,26 +26,26 @@
       "type": "item",
       "x": 0.25,
       "y": 3,
-      "name": "hexerei:mahogany_planks"
+      "id": "hexerei:mahogany_planks"
     },
     {
       "type": "item",
       "x": 1.25,
       "y": 2.75,
-      "name": "hexerei:cloth"
+      "id": "hexerei:cloth"
     },
     {
       "type": "item",
       "x": 2.25,
       "y": 3,
-      "name": "hexerei:mahogany_planks"
+      "id": "hexerei:mahogany_planks"
     },
 
     {
       "type": "item",
       "x": 0,
       "y": 4,
-      "name": "minecraft:iron_ingot"
+      "id": "minecraft:iron_ingot"
     },
     {
       "type": "fluid",
@@ -58,32 +58,32 @@
       "fluid_height": 11,
       "fluid_offset_x": 0,
       "fluid_offset_y": -4,
-      "name": "minecraft:water"
+      "id": "minecraft:water"
     },
     {
       "type": "item",
       "x": 2.5,
       "y": 4,
-      "name": "minecraft:iron_ingot"
+      "id": "minecraft:iron_ingot"
     },
 
     {
       "type": "item",
       "x": 0.25,
       "y": 5,
-      "name": "hexerei:mahogany_planks"
+      "id": "hexerei:mahogany_planks"
     },
     {
       "type": "item",
       "x": 1.25,
       "y": 5.25,
-      "name": "minecraft:iron_ingot"
+      "id": "minecraft:iron_ingot"
     },
     {
       "type": "item",
       "x": 2.25,
       "y": 5,
-      "name": "hexerei:mahogany_planks"
+      "id": "hexerei:mahogany_planks"
     },
 
 
@@ -92,7 +92,7 @@
       "type": "item",
       "x": 5,
       "y": 4,
-      "name": "hexerei:waxing_kit"
+      "id": "hexerei:waxing_kit"
     }
   ],
   "images": [

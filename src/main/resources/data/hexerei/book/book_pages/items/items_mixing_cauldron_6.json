@@ -28,13 +28,13 @@
       "type": "item",
       "x": 3.5,
       "y": 4.5,
-      "name": "hexerei:blood_sigil"
+      "id": "hexerei:blood_sigil"
     },
     {
       "type": "item",
       "x": 4.5,
       "y": 4.5,
-      "name": "hexerei:candle_dipper"
+      "id": "hexerei:candle_dipper"
     }
   ]
 }

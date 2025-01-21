@@ -1,7 +1,0 @@
-{
-  "type": "hexerei:woodcutting",
-  "ingredient": {
-    "item": "minecraft:dark_oak_wood"
-  },
-  "result": "minecraft:stripped_dark_oak_wood"
-}

@@ -14,6 +14,7 @@ import net.joefoxe.hexerei.container.OwlContainer;
 import net.joefoxe.hexerei.data.owl.OwlCourierDepotData;
 import net.joefoxe.hexerei.data.owl.OwlCourierDepotSavedData;
 import net.joefoxe.hexerei.data.owl.OwlLoadedChunksSavedData;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.custom.CourierLetterItem;
 import net.joefoxe.hexerei.item.custom.CourierPackageItem;
@@ -222,6 +223,11 @@ public class OwlEntity extends TamableAnimal implements ContainerListener, Flyin
         this.leftWingFoldAngle = -(float)Math.toRadians(0);
         this.rightWingTipAngle = (float)Math.toRadians(60);
         this.leftWingTipAngle = -(float)Math.toRadians(60);
+        this.bodyYOffsetLast = this.bodyYOffset;
+        this.rightWingAngleLast = this.rightWingAngle;
+        this.leftWingAngleLast = this.leftWingAngle;
+        this.rightWingMiddleAngleLast = this.rightWingMiddleAngle;
+        this.leftWingMiddleAngleLast = this.leftWingMiddleAngle;
 
 
         this.interactionRange = 24;
@@ -603,6 +609,10 @@ public class OwlEntity extends TamableAnimal implements ContainerListener, Flyin
 
     private void setTypeVariant(int pTypeVariant) {
         this.entityData.set(DATA_ID_TYPE_VARIANT, pTypeVariant);
+    }
+
+    private void setFlying(boolean flying) {
+        this.entityData.set(DATA_FLYING, flying);
     }
 
     private int getTypeVariant() {
@@ -1438,7 +1448,8 @@ public class OwlEntity extends TamableAnimal implements ContainerListener, Flyin
             if (stage != null)
                 nbt.putInt("stage", stage.ordinal());
 
-            nbt.put("messageStack" ,messageStack.save(this.owl.registryAccess(), new CompoundTag()));
+            if (!messageStack.isEmpty())
+                nbt.put("messageStack", messageStack.save(this.owl.registryAccess(), new CompoundTag()));
 
         }
 
@@ -1460,6 +1471,8 @@ public class OwlEntity extends TamableAnimal implements ContainerListener, Flyin
 
             if (nbt.contains("messageStack"))
                 this.messageStack = ItemStack.parseOptional(this.owl.registryAccess(), nbt.getCompound("messageStack"));
+            else
+                this.messageStack = ItemStack.EMPTY.copy();
 
         }
 
@@ -1573,7 +1586,7 @@ public class OwlEntity extends TamableAnimal implements ContainerListener, Flyin
         float deltaDist = (float)Math.sqrt(this.getDeltaMovement().x * this.getDeltaMovement().x + this.getDeltaMovement().z * this.getDeltaMovement().z);
         float deltaYDist = (float)Math.sqrt(this.getDeltaMovement().y * this.getDeltaMovement().y);
         this.itemHeldSwingLast = this.itemHeldSwing;
-        this.itemHeldSwing = moveTo(this.itemHeldSwing, (float)Mth.clamp(deltaDist * 455f - deltaYDist * 300f,0, 65), 3 + 20 * Mth.abs(Mth.clamp(deltaDist * 455f - deltaYDist * -300f,0, 65) - this.itemHeldSwing) / 65);
+        this.itemHeldSwing = moveTo(this.itemHeldSwing, (float)Mth.clamp((deltaDist * 455f - deltaYDist * 300f) / 4,0, 40), 3 + 10 * Mth.abs(Mth.clamp((deltaDist * 455f - deltaYDist * 300f) / 4,0, 40) - this.itemHeldSwing) / 40);
 
         this.animationCounter++;
         this.rideCooldownCounter++;
@@ -1614,6 +1627,7 @@ public class OwlEntity extends TamableAnimal implements ContainerListener, Flyin
         rightWingMiddleAngleLast = rightWingMiddleAngle;
         leftWingMiddleAngleLast = leftWingMiddleAngle;
         bodyXRotLast = bodyXRot;
+//        System.out.println(Thread.currentThread().getName() + "  " + isFlying() + "  " + !onGround());
         if (isFlying() && !onGround()){
             if (this.getDeltaMovement().y < -0.0075) {
                 // flying but falling
@@ -1622,11 +1636,11 @@ public class OwlEntity extends TamableAnimal implements ContainerListener, Flyin
                 leftWingMiddleFoldAngle = (float) Mth.lerp(0.45, leftWingMiddleFoldAngle, (float)Math.toRadians(-15));
                 rightWingFoldAngle = (float) Mth.lerp(0.45, rightWingFoldAngle, (float)Math.toRadians(25));
                 leftWingFoldAngle = (float) Mth.lerp(0.45, leftWingFoldAngle, -(float)Math.toRadians(25));
-                bodyYOffset = (float) Mth.lerp(0.45, bodyYOffset, Math.sin((Hexerei.getClientTicksWithoutPartial() + 2) / 8f));
-                rightWingAngle = (float) Mth.lerp(0.75, rightWingAngle, Math.sin(Hexerei.getClientTicksWithoutPartial() / 8f) * 0.1f);
-                leftWingAngle = (float) Mth.lerp(0.75, leftWingAngle, -Math.sin(Hexerei.getClientTicksWithoutPartial() / 8f) * 0.1f);
-                rightWingMiddleAngle = (float) Mth.lerp(0.75, rightWingMiddleAngle, Mth.sin((Hexerei.getClientTicksWithoutPartial() - 8) / 8f) * 0.25f - 0.125);
-                leftWingMiddleAngle = (float) Mth.lerp(0.75, leftWingMiddleAngle, -Mth.sin((Hexerei.getClientTicksWithoutPartial() - 8) / 8f) * 0.25f + 0.125);
+                bodyYOffset = (float) Mth.lerp(0.45, bodyYOffset, Math.sin((ClientEvents.getClientTicksWithoutPartial() + 2) / 8f));
+                rightWingAngle = (float) Mth.lerp(0.75, rightWingAngle, Math.sin(ClientEvents.getClientTicksWithoutPartial() / 8f) * 0.1f);
+                leftWingAngle = (float) Mth.lerp(0.75, leftWingAngle, -Math.sin(ClientEvents.getClientTicksWithoutPartial() / 8f) * 0.1f);
+                rightWingMiddleAngle = (float) Mth.lerp(0.75, rightWingMiddleAngle, Mth.sin((ClientEvents.getClientTicksWithoutPartial() - 8) / 8f) * 0.25f - 0.125);
+                leftWingMiddleAngle = (float) Mth.lerp(0.75, leftWingMiddleAngle, -Mth.sin((ClientEvents.getClientTicksWithoutPartial() - 8) / 8f) * 0.25f + 0.125);
             } else {
                 // flying going up
                 bodyXRot = (float) Mth.lerp(0.15, bodyXRot, (float)Math.PI / 4);
@@ -1634,11 +1648,11 @@ public class OwlEntity extends TamableAnimal implements ContainerListener, Flyin
                 leftWingMiddleFoldAngle = (float) Mth.lerp(0.45, leftWingMiddleFoldAngle, (float)Math.toRadians(5));
                 rightWingFoldAngle = (float) Mth.lerp(0.45, rightWingFoldAngle, (float)Math.toRadians(0));
                 leftWingFoldAngle = (float) Mth.lerp(0.45, leftWingFoldAngle, -(float)Math.toRadians(0));
-                bodyYOffset = (float) Mth.lerp(0.45, bodyYOffset, Math.sin((Hexerei.getClientTicksWithoutPartial() + 1) / 4f));
-                rightWingAngle = (float) Mth.lerp(0.75, rightWingAngle, Math.sin(Hexerei.getClientTicksWithoutPartial() / 4f) * 1f);
-                leftWingAngle = (float) Mth.lerp(0.75, leftWingAngle, -Math.sin(Hexerei.getClientTicksWithoutPartial() / 4f) * 1f);
-                rightWingMiddleAngle = (float) Mth.lerp(0.75, rightWingMiddleAngle, Mth.sin((Hexerei.getClientTicksWithoutPartial() - 4) / 4f) * 0.5f - 0.25);
-                leftWingMiddleAngle = (float) Mth.lerp(0.75, leftWingMiddleAngle, -Mth.sin((Hexerei.getClientTicksWithoutPartial() - 4) / 4f) * 0.5f + 0.25);
+                bodyYOffset = (float) Mth.lerp(0.45, bodyYOffset, Math.sin((ClientEvents.getClientTicksWithoutPartial() + 1) / 4f));
+                rightWingAngle = (float) Mth.lerp(0.75, rightWingAngle, Math.sin(ClientEvents.getClientTicksWithoutPartial() / 4f) * 1f);
+                leftWingAngle = (float) Mth.lerp(0.75, leftWingAngle, -Math.sin(ClientEvents.getClientTicksWithoutPartial() / 4f) * 1f);
+                rightWingMiddleAngle = (float) Mth.lerp(0.75, rightWingMiddleAngle, Mth.sin((ClientEvents.getClientTicksWithoutPartial() - 4) / 4f) * 0.5f - 0.25);
+                leftWingMiddleAngle = (float) Mth.lerp(0.75, leftWingMiddleAngle, -Mth.sin((ClientEvents.getClientTicksWithoutPartial() - 4) / 4f) * 0.5f + 0.25);
             }
             rightWingTipAngle = (float) Mth.lerp(0.45, rightWingTipAngle, (float)Math.toRadians(15));
             leftWingTipAngle = (float) Mth.lerp(0.45, leftWingTipAngle, -(float)Math.toRadians(15));
@@ -1813,7 +1827,7 @@ public class OwlEntity extends TamableAnimal implements ContainerListener, Flyin
         if (compound.contains("IsFlyingNav"))
             switchNavigator(compound.getBoolean("IsFlyingNav"), true);
         if (compound.contains("IsFlying"))
-            this.entityData.set(DATA_FLYING, compound.getBoolean("IsFlying"));
+            this.setFlying(compound.getBoolean("IsFlying"));
         else
             this.entityData.set(DATA_FLYING, false);
         if(compound.contains("InteractionRange"))
@@ -2219,6 +2233,11 @@ public class OwlEntity extends TamableAnimal implements ContainerListener, Flyin
         if (!(entityIn instanceof Player)) {
             super.doPush(entityIn);
         }
+    }
+
+    @Override
+    public boolean onGround() {
+        return this.isPassenger() || super.onGround();
     }
 
     @Override
@@ -4716,9 +4735,6 @@ public class OwlEntity extends TamableAnimal implements ContainerListener, Flyin
             switchNavigator(true, true);
             this.setPos(x, y, z);
             this.moveTo((double) x + 0.5D, y, (double) z + 0.5D, this.getYRot(), this.getXRot());
-//            System.out.println("");
-//            System.out.println("tele to -");
-//            System.out.println(this.blockPosition());
 
             return true;
         }
@@ -4731,9 +4747,6 @@ public class OwlEntity extends TamableAnimal implements ContainerListener, Flyin
             switchNavigator(true, true);
             this.setPos(x, y, z);
             this.moveTo((double) x + 0.5D, y, (double) z + 0.5D, this.getYRot(), this.getXRot());
-//            System.out.println("");
-//            System.out.println("tele to -");
-//            System.out.println(this.blockPosition());
 
             return true;
         }

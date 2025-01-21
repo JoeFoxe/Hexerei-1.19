@@ -17,7 +17,7 @@
       "type": "tag",
       "x": 3.75,
       "y": 5.5,
-      "name": "hexerei:heat_sources",
+      "id": "hexerei:heat_sources",
       "show_slot": true,
 
       "extra_tooltips":[
@@ -50,7 +50,7 @@
       "type": "item",
       "x": 3.75,
       "y": 2.5,
-      "name": "hexerei:mixing_cauldron"
+      "id": "hexerei:mixing_cauldron"
     },
 
 
@@ -58,26 +58,26 @@
       "type": "item",
       "x": 0.25,
       "y": 3,
-      "name": "minecraft:gold_nugget"
+      "id": "minecraft:gold_nugget"
     },
     {
       "type": "item",
       "x": 1.25,
       "y": 2.75,
-      "name": "minecraft:gold_ingot"
+      "id": "minecraft:gold_ingot"
     },
     {
       "type": "item",
       "x": 2.25,
       "y": 3,
-      "name": "minecraft:gold_nugget"
+      "id": "minecraft:gold_nugget"
     },
 
     {
       "type": "item",
       "x": 0,
       "y": 4,
-      "name": "minecraft:gold_ingot"
+      "id": "minecraft:gold_ingot"
     },
     {
       "type": "fluid",
@@ -90,32 +90,32 @@
       "fluid_height": 11,
       "fluid_offset_x": 0,
       "fluid_offset_y": -4,
-      "name": "minecraft:lava"
+      "id": "minecraft:lava"
     },
     {
       "type": "item",
       "x": 2.5,
       "y": 4,
-      "name": "minecraft:gold_ingot"
+      "id": "minecraft:gold_ingot"
     },
 
     {
       "type": "item",
       "x": 0.25,
       "y": 5,
-      "name": "minecraft:gold_nugget"
+      "id": "minecraft:gold_nugget"
     },
     {
       "type": "item",
       "x": 1.25,
       "y": 5.25,
-      "name": "minecraft:chain"
+      "id": "minecraft:chain"
     },
     {
       "type": "item",
       "x": 2.25,
       "y": 5,
-      "name": "minecraft:gold_nugget"
+      "id": "minecraft:gold_nugget"
     },
 
 
@@ -124,7 +124,7 @@
       "type": "item",
       "x": 5,
       "y": 4,
-      "name": "hexerei:broom_keychain"
+      "id": "hexerei:broom_keychain"
     }
   ],
   "images": [

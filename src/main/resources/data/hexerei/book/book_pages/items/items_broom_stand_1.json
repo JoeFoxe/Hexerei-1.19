@@ -31,19 +31,19 @@
       "type": "item",
       "x": 1.5,
       "y": 0.75,
-      "name": "hexerei:mahogany_broom_stand"
+      "id": "hexerei:mahogany_broom_stand"
     },
     {
       "type": "item",
       "x": 2.5,
       "y": 0.75,
-      "name": "hexerei:willow_broom_stand"
+      "id": "hexerei:willow_broom_stand"
     },
     {
       "type": "item",
       "x": 3.5,
       "y": 0.75,
-      "name": "hexerei:witch_hazel_broom_stand"
+      "id": "hexerei:witch_hazel_broom_stand"
     }
   ],
   "images": [

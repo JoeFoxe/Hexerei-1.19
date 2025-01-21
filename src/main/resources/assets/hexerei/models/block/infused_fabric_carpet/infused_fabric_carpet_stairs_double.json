@@ -610,7 +610,7 @@
 	],
 	"groups": [
 		{
-			"name": "corners",
+			"id": "corners",
 			"origin": [0, 0, 0],
 			"color": 0,
 			"children": []

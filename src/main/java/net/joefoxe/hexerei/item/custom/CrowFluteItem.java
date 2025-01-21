@@ -652,9 +652,9 @@ public class CrowFluteItem extends Item implements IThirdPersonItemAnimation,
                 poseStack.translate((leftHand ? -1 : 1) * 4f / 16f, -6 / 16f, -12 / 16f);
                 poseStack.mulPose(Axis.YP.rotationDegrees(180+(head.yRot * ((float) Math.PI * 2F) * 10) + (leftHand ? -1 : 1) * 10));
                 poseStack.mulPose(Axis.ZP.rotationDegrees( (leftHand ? 1 : -1) * 23));
-//                poseStack.mulPose(Axis.ZP.rotationDegrees( (leftHand ? 1 : -1) * Hexerei.getClientTicks()));
-//                System.out.println(Hexerei.getClientTicks());
-//                poseStack.mulPose(Axis.XP.rotationDegrees(270 + (int)(Math.sin(Hexerei.getClientTicks()/ 10) * 25)));
+//                poseStack.mulPose(Axis.ZP.rotationDegrees( (leftHand ? 1 : -1) * ClientEvents.getClientTicks()));
+//                System.out.println(ClientEvents.getClientTicks());
+//                poseStack.mulPose(Axis.XP.rotationDegrees(270 + (int)(Math.sin(ClientEvents.getClientTicks()/ 10) * 25)));
 //                poseStack.translate( 0 / 16f, -8 / 16f, -2 / 16f);
                 poseStack.mulPose(Axis.XP.rotationDegrees((leftHand ? 1 : 0) * -90));
                 poseStack.translate(0, 7f / 16f, 8f / 16f);

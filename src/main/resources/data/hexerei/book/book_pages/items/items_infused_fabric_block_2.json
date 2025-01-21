@@ -18,7 +18,7 @@
       "type": "item",
       "x": 3.75,
       "y": 2.5,
-      "name": "hexerei:mixing_cauldron"
+      "id": "hexerei:mixing_cauldron"
     },
 
 
@@ -26,26 +26,26 @@
       "type": "tag",
       "x": 0.25,
       "y": 3,
-      "name": "minecraft:wool"
+      "id": "minecraft:wool"
     },
     {
       "type": "item",
       "x": 1.25,
       "y": 2.75,
-      "name": "hexerei:infused_fabric"
+      "id": "hexerei:infused_fabric"
     },
     {
       "type": "tag",
       "x": 2.25,
       "y": 3,
-      "name": "minecraft:wool"
+      "id": "minecraft:wool"
     },
 
     {
       "type": "tag",
       "x": 0,
       "y": 4,
-      "name": "minecraft:wool"
+      "id": "minecraft:wool"
     },
     {
       "type": "fluid",
@@ -58,32 +58,32 @@
       "fluid_height": 11,
       "fluid_offset_x": 0,
       "fluid_offset_y": -4,
-      "name": "minecraft:water"
+      "id": "minecraft:water"
     },
     {
       "type": "tag",
       "x": 2.5,
       "y": 4,
-      "name": "minecraft:wool"
+      "id": "minecraft:wool"
     },
 
     {
       "type": "tag",
       "x": 0.25,
       "y": 5,
-      "name": "minecraft:wool"
+      "id": "minecraft:wool"
     },
     {
       "type": "tag",
       "x": 1.25,
       "y": 5.25,
-      "name": "minecraft:wool"
+      "id": "minecraft:wool"
     },
     {
       "type": "tag",
       "x": 2.25,
       "y": 5,
-      "name": "minecraft:wool"
+      "id": "minecraft:wool"
     },
 
 
@@ -92,7 +92,7 @@
       "type": "item",
       "x": 5,
       "y": 4,
-      "name": "hexerei:infused_fabric_block",
+      "id": "hexerei:infused_fabric_block",
       "count": 8
     }
   ],

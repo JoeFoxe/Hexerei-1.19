@@ -1,8 +1,8 @@
 plugins {
-	id("idea")
 	id("java-library")
 	id("maven-publish")
 	id("net.neoforged.moddev") version "2.0.63-beta"
+	id("idea")
 }
 
 version = "${property("minecraft_version")}-${property("mod_version")}"
@@ -148,18 +148,19 @@ dependencies {
 	runtimeOnly("mezz.jei:jei-${property("minecraft_version")}-neoforge:${property("jei_version")}")
 
 	// Curios dependency
-	implementation(("top.theillusivec4.curios:curios-neoforge:${property("curios_version")}"))
-//	implementation(("com.tterrag.registrate:Registrate:${property("registrateVersion")}"))
+//	implementation ("curse.maven:curios-309927:${project.findProperty("curios_version")}")
 	implementation (("curse.maven:terrablender-940057:${project.findProperty("terraBlenderVersion")}"))
 //	implementation (("curse.maven:terrablender-940057:5685546"))
 //	implementation (("curse.maven:cyanide-541676:${project.findProperty("cyanideVersion")}"))
 
+	implementation (("com.tterrag.registrate:Registrate:${property("registrateVersion")}"))
 //	if (System.getProperty("idea.sync.active") != "true") {
 //		annotationProcessor("org.spongepowered:mixin:${property("mixinVersion")}:processor")
 //	}
 
 //	compileOnly (("mezz.jei:jei-1.21-neoforge-api:${property("jei_version")}"))
 //	implementation (("mezz.jei:jei-1.21-neoforge:${property("jei_version")}"))
+//	implementation ("top.theillusivec4.curios:curios-neoforge:${project.findProperty("curios_version")}")
 
 
 	compileOnly("com.hollingsworth.ars_nouveau:ars_nouveau-${property("minecraft_version")}:${property("arsNouveauVersion")}")

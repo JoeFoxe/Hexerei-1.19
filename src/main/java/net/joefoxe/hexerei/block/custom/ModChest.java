@@ -244,6 +244,22 @@ public class ModChest extends AbstractChestBlock<ModChestBlockEntity> implements
         }
     }
 
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (level.isClientSide) {
+            return InteractionResult.SUCCESS;
+        } else {
+            MenuProvider menuprovider = this.getMenuProvider(state, level, pos);
+            if (menuprovider != null) {
+                player.openMenu(menuprovider);
+                player.awardStat(this.getOpenChestStat());
+                PiglinAi.angerNearbyPiglins(player, true);
+            }
+
+            return InteractionResult.CONSUME;
+        }
+    }
+
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (pLevel.isClientSide) {
             return InteractionResult.SUCCESS;

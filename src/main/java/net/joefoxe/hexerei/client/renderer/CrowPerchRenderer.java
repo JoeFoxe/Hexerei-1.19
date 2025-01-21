@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.entity.custom.CrowEntity;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.events.CrowWhitelistEvent;
 import net.joefoxe.hexerei.item.ModDataComponents;
 import net.joefoxe.hexerei.item.custom.CrowFluteItem;
@@ -313,8 +314,8 @@ public class CrowPerchRenderer {
                 int b = color & 0xFF;
                 int alpha = 40;
 
-                matrixStack.translate(0.5f, Mth.sin(Hexerei.getClientTicks() / 25f) / 25f, 0.5f);
-                matrixStack.mulPose(Axis.YP.rotationDegrees(Hexerei.getClientTicks() * 0.5f));
+                matrixStack.translate(0.5f, Mth.sin(ClientEvents.getClientTicks() / 25f) / 25f, 0.5f);
+                matrixStack.mulPose(Axis.YP.rotationDegrees(ClientEvents.getClientTicks() * 0.5f));
                 matrixStack.translate(-0.5f, 0, -0.5f);
                 matrixStack.translate(BOX_START, BOX_START, BOX_START);
 
@@ -442,8 +443,8 @@ public class CrowPerchRenderer {
                 int b = color & 0xFF;
                 int alpha = 80;
 
-                matrixStack.translate(0, Mth.sin((Hexerei.getClientTicks() + (crowId * 20)) / 10f) / 10f, 0);
-                matrixStack.mulPose(Axis.YP.rotationDegrees(Hexerei.getClientTicks() + (crowId * 20)));
+                matrixStack.translate(0, Mth.sin((ClientEvents.getClientTicks() + (crowId * 20)) / 10f) / 10f, 0);
+                matrixStack.mulPose(Axis.YP.rotationDegrees(ClientEvents.getClientTicks() + (crowId * 20)));
                 matrixStack.translate(-0.5f, 0, -0.5f);
                 matrixStack.translate(BOX_START, BOX_START, BOX_START);
                 matrixStack.scale(0.35f, 0.35f, 0.35f);
@@ -509,8 +510,8 @@ public class CrowPerchRenderer {
         int b = color & 0xFF;
         int alpha = 80;
 
-        matrixStack.translate(0, Mth.sin((Hexerei.getClientTicks()) / 10f) / 10f, 0);
-        matrixStack.mulPose(Axis.YP.rotationDegrees(Hexerei.getClientTicks()));
+        matrixStack.translate(0, Mth.sin((ClientEvents.getClientTicks()) / 10f) / 10f, 0);
+        matrixStack.mulPose(Axis.YP.rotationDegrees(ClientEvents.getClientTicks()));
         matrixStack.translate(-0.5f, 0, -0.5f);
         matrixStack.translate(BOX_START, BOX_START, BOX_START);
         matrixStack.scale(0.35f, 0.35f, 0.35f);

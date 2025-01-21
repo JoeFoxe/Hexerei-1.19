@@ -1,8 +1,0 @@
-{
-  "type": "hexerei:woodcutting",
-  "count": 5,
-  "ingredient": {
-    "item": "minecraft:oak_log"
-  },
-  "result": "minecraft:oak_planks"
-}

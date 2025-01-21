@@ -31,7 +31,7 @@
       "type": "item",
       "x": 2.5,
       "y": 0.75,
-      "name": "hexerei:courier_letter"
+      "id": "hexerei:courier_letter"
     }
   ],
   "images": [

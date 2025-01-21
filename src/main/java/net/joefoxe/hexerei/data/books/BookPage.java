@@ -3,6 +3,7 @@ package net.joefoxe.hexerei.data.books;
 import net.joefoxe.hexerei.Hexerei;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +13,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,12 +57,13 @@ public class BookPage {
             compound.putInt("numberOfBoxes" + i, num);
             for(int k = 0; k < num; k++){
 
-                BookParagraphElements bookParagraphElements = ((BookParagraphElements) bookParagraph.paragraphElements.toArray()[k]);
+                BookParagraphElements bookParagraphElements = bookParagraph.paragraphElements.get(k);
                 CompoundTag compoundBoxes = new CompoundTag();
                 compoundBoxes.putFloat("box_x" + i + k, bookParagraphElements.x);
                 compoundBoxes.putFloat("box_y" + i + k, bookParagraphElements.y);
                 compoundBoxes.putFloat("box_height" + i + k, bookParagraphElements.height);
                 compoundBoxes.putFloat("box_width" + i + k, bookParagraphElements.width);
+                compoundBoxes.putString("box_verticalAlign" + i + k, bookParagraphElements.verticalAlign);
                 compound.put("paragraph_box" + i + k, compoundBoxes);
 
             }
@@ -78,7 +82,7 @@ public class BookPage {
                     //(x, y, fluidStack, amount, capacity, show_slot, fluid_height, fluid_width, fluid_offset_x, fluid_offset_y, textComponentsList)
                     compound.putFloat("item_x" + i, (((BookItemsAndFluids) (bookPage.itemList.toArray()[i])).x));
                     compound.putFloat("item_y" + i, (((BookItemsAndFluids) (bookPage.itemList.toArray()[i])).y));
-                    compound.put("item_fluid" + i, ((BookItemsAndFluids) (bookPage.itemList.toArray()[i])).fluid.save(Hexerei.proxy.getLevel().registryAccess(), new CompoundTag()));
+                    compound.put("item_fluid" + i, ((BookItemsAndFluids) (bookPage.itemList.toArray()[i])).fluid.save(Hexerei.DynamicRegistries.get(), new CompoundTag()));
                     compound.putFloat("item_capacity" + i, (((BookItemsAndFluids) (bookPage.itemList.toArray()[i])).capacity));
                     compound.putFloat("item_amount" + i, (((BookItemsAndFluids) (bookPage.itemList.toArray()[i])).amount));
                     compound.putFloat("item_fluid_height" + i, (((BookItemsAndFluids) (bookPage.itemList.toArray()[i])).fluid_height));
@@ -105,14 +109,19 @@ public class BookPage {
                 }
                 case "item" -> {
                     //(float x, float y, ItemStack item, boolean show_slot, List<Component> extra_tooltips)
-                    (((BookItemsAndFluids) bookPage.itemList.toArray()[i]).item).save(Hexerei.proxy.getLevel().registryAccess(), compound);
+                    if (!(bookPage.itemList.get(i).item).isEmpty()) {
+//                        CompoundTag tag1 = new CompoundTag();
+                        ItemStack stack = bookPage.itemList.get(i).item;
+                        CompoundTag tag1 = (CompoundTag) stack.save(Hexerei.DynamicRegistries.get(), new CompoundTag());
+                        compound.put("item" + i, tag1);
+                    }
 
-                    compound.putFloat("item_x" + i, (((BookItemsAndFluids) (bookPage.itemList.toArray()[i])).x));
-                    compound.putFloat("item_y" + i, (((BookItemsAndFluids) (bookPage.itemList.toArray()[i])).y));
-                    compound.putString("item_tag" + i, (((BookItemsAndFluids) (bookPage.itemList.toArray()[i])).tag));
-                    compound.putBoolean("item_show_slot" + i, (((BookItemsAndFluids) (bookPage.itemList.toArray()[i])).show_slot));
+                    compound.putFloat("item_x" + i, (bookPage.itemList.get(i).x));
+                    compound.putFloat("item_y" + i, (bookPage.itemList.get(i).y));
+                    compound.putString("item_tag" + i, (bookPage.itemList.get(i).tag));
+                    compound.putBoolean("item_show_slot" + i, (bookPage.itemList.get(i).show_slot));
 
-                    List<BookTooltipExtra> extra_tooltips_raw = (((BookItemsAndFluids) (bookPage.itemList.toArray()[i])).extra_tooltips_raw);
+                    List<BookTooltipExtra> extra_tooltips_raw = (bookPage.itemList.get(i).extra_tooltips_raw);
                     compound.putInt("item_number_of_extra_tooltips" + i, extra_tooltips_raw.size());
                     for (int k = 0; k < extra_tooltips_raw.size(); k++) {
                         compound.putInt("item_extra_tooltips_color" + i + k, extra_tooltips_raw.get(k).color);
@@ -125,7 +134,11 @@ public class BookPage {
                 }
                 case "tag" -> {
                     //(float x, float y, ItemStack item, boolean show_slot, List<Component> extra_tooltips)
-                    (((BookItemsAndFluids) bookPage.itemList.toArray()[i]).item).save(Hexerei.proxy.getLevel().registryAccess(), compound);
+                    if (!(((BookItemsAndFluids) bookPage.itemList.toArray()[i]).item).isEmpty()) {
+                        CompoundTag tag1 = new CompoundTag();
+                        (((BookItemsAndFluids) bookPage.itemList.toArray()[i]).item).save(Hexerei.DynamicRegistries.get(), tag1);
+                        compound.put("item" + i, tag1);
+                    }
 
                     compound.putFloat("item_x" + i, (((BookItemsAndFluids) (bookPage.itemList.toArray()[i])).x));
                     compound.putFloat("item_y" + i, (((BookItemsAndFluids) (bookPage.itemList.toArray()[i])).y));
@@ -308,10 +321,10 @@ public class BookPage {
             compound.putFloat("x", (bookEntity.x));
             compound.putFloat("y", (bookEntity.y));
             compound.putFloat("scale", (bookEntity.scale));
-            compound.putString("entityTags", bookEntity.entityTags);
+            compound.put("entityTags", bookEntity.entityTags);
             compound.putInt("entityTagsListSize", bookEntity.entityTagsList.size());
             for(int k = 0; k < bookEntity.entityTagsList.size(); k++)
-                compound.putString("entityTagsList" + k, bookEntity.entityTagsList.get(k));
+                compound.put("entityTagsList" + k, bookEntity.entityTagsList.get(k));
             tag.put("entities" + i, compound);
         }
 
@@ -339,9 +352,9 @@ public class BookPage {
                 float y = boxes.getFloat("box_y" + i + k);
                 float height = boxes.getFloat("box_height" + i + k);
                 float width = boxes.getFloat("box_width" + i + k);
-                String box_align = boxes.contains("align") ? boxes.getString("align") : "top";
+                String verticalAlign = boxes.getString("box_verticalAlign" + i + k);
 
-                BookParagraphElements bookParagraphElements = new BookParagraphElements(x, y, height, width, box_align);
+                BookParagraphElements bookParagraphElements = new BookParagraphElements(x, y, height, width, verticalAlign);
                 boxList.add(bookParagraphElements);
             }
 
@@ -392,7 +405,9 @@ public class BookPage {
                         }
 
                     }
-                    BookItemsAndFluids bookItemStackInSlot = new BookItemsAndFluids(x, y, ItemStack.parse(Hexerei.proxy.getLevel().registryAccess(), itemsAndFluids).orElse(ItemStack.EMPTY), show_slot, extra_tooltips, tooltipExtras);
+
+                    ItemStack stack = itemsAndFluids.contains("item" + i) ? ItemStack.parseOptional(Hexerei.DynamicRegistries.get(), itemsAndFluids.getCompound("item" + i)) : ItemStack.EMPTY.copy();
+                    BookItemsAndFluids bookItemStackInSlot = new BookItemsAndFluids(x, y, stack, show_slot, extra_tooltips, tooltipExtras);
                     itemList.add(bookItemStackInSlot);
                 }
                 case "fluid" -> {
@@ -409,7 +424,7 @@ public class BookPage {
                     boolean show_slot = itemsAndFluids.getBoolean("item_show_slot" + i);
                     int item_number_of_extra_tooltips = itemsAndFluids.getInt("item_number_of_extra_tooltips" + i);
                     CompoundTag compoundFluid = itemsAndFluids.getCompound("item_fluid" + i);
-                    FluidStack fluid = FluidStack.parseOptional(Hexerei.proxy.getLevel().registryAccess(), compoundFluid);
+                    FluidStack fluid = FluidStack.parseOptional(Hexerei.DynamicRegistries.get(), compoundFluid);
                     List<Component> extra_tooltips = new ArrayList<>();
 
                     Component component = Component.translatable("");
@@ -473,7 +488,7 @@ public class BookPage {
                         }
 
                         if (!(k + 1 < item_number_of_extra_tooltips)) {
-                            if (!component.getString().equals(""))
+                            if (!component.getString().isEmpty())
                                 extra_tooltips.add(component);
                         }
 
@@ -669,11 +684,11 @@ public class BookPage {
             float x = entity.getFloat("x");
             float y = entity.getFloat("y");
             float scale = entity.getFloat("scale");
-            String entityTags = entity.getString("entityTags");
+            CompoundTag entityTags = entity.getCompound("entityTags");
             int entityTagsListSize = entity.getInt("entityTagsListSize");
-            ArrayList<String> tagList = new ArrayList<>();
+            ArrayList<CompoundTag> tagList = new ArrayList<>();
             for(int k = 0; k < entityTagsListSize; k++)
-                tagList.add(entity.getString("entityTagsList" + k));
+                tagList.add(entity.getCompound("entityTagsList" + k));
 
             BookEntity bookEntity = new BookEntity(scale, x, y, stringEntity, null, entityTags, tagList, new BookHoverOffset(0,0,1));
             entityList.add(bookEntity);

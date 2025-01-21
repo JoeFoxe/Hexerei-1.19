@@ -17,6 +17,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.custom.MixingCauldron;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.tileentity.renderer.MixingCauldronRenderer;
 import net.joefoxe.hexerei.util.HexereiUtil;
@@ -63,7 +64,15 @@ public class BloodSigilRecipeCategory implements IRecipeCategory<BloodSigilRecip
         this.cauldronFG = helper.createDrawable(TEXTURE, 232, 48, 24, 16);
     }
 
-    // TODO do jei for plant picking as well, so people know where mandrake roots come from
+    @Override
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
+    }
 
 
     @Override
@@ -126,8 +135,6 @@ public class BloodSigilRecipeCategory implements IRecipeCategory<BloodSigilRecip
             @Override
             public void draw(GuiGraphics guiGraphics, int xOffset, int yOffset) {
 
-                background.draw(guiGraphics);
-
                 RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -135,7 +142,7 @@ public class BloodSigilRecipeCategory implements IRecipeCategory<BloodSigilRecip
 
                 guiGraphics.pose().pushPose();
                 guiGraphics.pose().translate(xOffset, yOffset, 0);
-                double val = Math.sin((Hexerei.getClientTicks()) / 5f);
+                double val = Math.sin((ClientEvents.getClientTicks()) / 5f);
                 if (Minecraft.getInstance().player != null)
                     renderEntityInInventoryFollowsAngle(guiGraphics, 9,  (Math.min(val, 0.25)) * 10 + 10, 9, 16, (float)Math.toRadians(-20), (float)Math.toRadians(-30), Minecraft.getInstance().player);
                 guiGraphics.pose().popPose();
@@ -175,6 +182,8 @@ public class BloodSigilRecipeCategory implements IRecipeCategory<BloodSigilRecip
 
         Minecraft minecraft = Minecraft.getInstance();
         Component outputName = recipe.getOutputFluid().getHoverName();
+
+        background.draw(guiGraphics);
 
         int width = minecraft.font.width(outputName);
         float lineHeight = minecraft.font.lineHeight / 2f;

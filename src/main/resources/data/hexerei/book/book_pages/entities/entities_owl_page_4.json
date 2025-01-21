@@ -28,14 +28,14 @@
       "type": "item",
       "x": 3.5,
       "y": 5.25,
-      "name": "hexerei:courier_letter",
+      "id": "hexerei:courier_letter",
       "show_slot": false
     },
     {
       "type": "item",
       "x": 4.5,
       "y": 5.25,
-      "name": "hexerei:courier_package",
+      "id": "hexerei:courier_package",
       "show_slot": false
     }
   ]

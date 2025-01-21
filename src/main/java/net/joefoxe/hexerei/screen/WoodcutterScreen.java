@@ -56,8 +56,9 @@ public class WoodcutterScreen extends AbstractContainerScreen<WoodcutterContaine
         this.renderTooltip(guiGraphics, pMouseX, pMouseY);
     }
 
-    protected void renderBg(GuiGraphics guiGraphics, float pPartialTick, int pX, int pY) {
-        this.renderBackground(guiGraphics, pX, pY, pPartialTick);
+
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         int i = this.leftPos;
@@ -69,7 +70,7 @@ public class WoodcutterScreen extends AbstractContainerScreen<WoodcutterContaine
         int l = this.leftPos + RECIPES_X;
         int i1 = this.topPos + RECIPES_Y;
         int j1 = this.startIndex + 12;
-        this.renderButtons(guiGraphics, pX, pY, l, i1, j1,false);
+        this.renderButtons(guiGraphics, mouseX, mouseY, l, i1, j1,false);
         this.renderRecipes(guiGraphics, l, i1, j1);
         RenderSystem.setShaderTexture(0, GUI);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -79,7 +80,7 @@ public class WoodcutterScreen extends AbstractContainerScreen<WoodcutterContaine
             guiGraphics.blit(GUI, i + 146, j + 46, 211, 0, 8, 11);
         }
 
-        this.renderButtons(guiGraphics, pX, pY, l, i1, j1,true);
+        this.renderButtons(guiGraphics, mouseX, mouseY, l, i1, j1,true);
         guiGraphics.blit(INVENTORY, i + 4, j + 97, 0, 0, 176, 100);
     }
 
@@ -109,6 +110,12 @@ public class WoodcutterScreen extends AbstractContainerScreen<WoodcutterContaine
 
 
     }
+
+    @Override
+    protected void renderBg(GuiGraphics guiGraphics, float v, int i, int i1) {
+
+    }
+
     public static boolean isHovering(double mouseX, double mouseY, double x, double y, double width, double height)
     {
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
@@ -226,10 +233,10 @@ public class WoodcutterScreen extends AbstractContainerScreen<WoodcutterContaine
         }
     }
 
-    public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (this.isScrollBarActive()) {
             int i = this.getOffscreenRows();
-            float f = (float)pDelta / (float)i;
+            float f = (float)scrollY / (float)i;
             this.scrollOffs = Mth.clamp(this.scrollOffs - f, 0.0F, 1.0F);
             this.startIndex = Math.max(0,((int)((double)(this.scrollOffs * (float)i) + 0.5D) * RECIPES_COLUMNS));
         }

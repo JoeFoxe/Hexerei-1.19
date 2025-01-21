@@ -15,6 +15,7 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.data.recipes.KeychainRecipe;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.custom.KeychainItem;
 import net.joefoxe.hexerei.util.HexereiUtil;
@@ -88,6 +89,16 @@ public class KeychainApplyRecipeCategory implements IRecipeCategory<KeychainReci
     }
 
     @Override
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
+    }
+
+    @Override
     public RecipeType<KeychainRecipe> getRecipeType() {
         return new RecipeType<>(HexereiUtil.getResource("keychain_apply"), KeychainRecipe.class);
     }
@@ -125,7 +136,7 @@ public class KeychainApplyRecipeCategory implements IRecipeCategory<KeychainReci
 
         background.draw(guiGraphics);
 
-        float newItem = (Hexerei.getClientTicks()) % 200 / 200f;
+        float newItem = (ClientEvents.getClientTicks()) % 200 / 200f;
         if ((newItem <= 0.05f && this.findNewItem) || this.itemShown == null) {
             this.findNewItem = false;
             if (Minecraft.getInstance().level != null) {
@@ -161,10 +172,7 @@ public class KeychainApplyRecipeCategory implements IRecipeCategory<KeychainReci
             ListTag listtag = new ListTag();
 
             if (!other.isEmpty()) {
-                CompoundTag compoundtag = new CompoundTag();
-                compoundtag.putByte("Slot", (byte)0);
-                other.save(Hexerei.proxy.getLevel().registryAccess(), compoundtag);
-                listtag.add(compoundtag);
+                listtag.add(other.save(Hexerei.DynamicRegistries.get()));
             }
 
             tag.put("Items", listtag);

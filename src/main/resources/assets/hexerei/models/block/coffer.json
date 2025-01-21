@@ -574,12 +574,12 @@
 	},
 	"groups": [
 		{
-			"name": "lid",
+			"id": "lid",
 			"origin": [0, 0, 0],
 			"color": 0,
 			"children": [
 				{
-					"name": "dyeable",
+					"id": "dyeable",
 					"origin": [8, 4, 12],
 					"color": 0,
 					"children": [0, 1, 2]
@@ -598,12 +598,12 @@
 			]
 		},
 		{
-			"name": "chest",
+			"id": "chest",
 			"origin": [8, 2.5, 8],
 			"color": 0,
 			"children": [
 				{
-					"name": "dyeable",
+					"id": "dyeable",
 					"origin": [8, 4, 12],
 					"color": 0,
 					"children": [14, 15]
@@ -619,25 +619,25 @@
 			]
 		},
 		{
-			"name": "right_container",
+			"id": "right_container",
 			"origin": [8, 8, 8],
 			"color": 0,
 			"children": [24, 25, 26, 27, 28]
 		},
 		{
-			"name": "right_hinges",
+			"id": "right_hinges",
 			"origin": [4.2701, 2.47721, 5.475],
 			"color": 0,
 			"children": [29, 30]
 		},
 		{
-			"name": "left_hinges",
+			"id": "left_hinges",
 			"origin": [11.7299, 2.47721, 5.475],
 			"color": 0,
 			"children": [31, 32]
 		},
 		{
-			"name": "left_container",
+			"id": "left_container",
 			"origin": [8, 8, 8],
 			"color": 0,
 			"children": [33, 34, 35, 36, 37]

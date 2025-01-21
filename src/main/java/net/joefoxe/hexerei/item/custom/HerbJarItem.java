@@ -84,7 +84,7 @@ public class HerbJarItem extends BlockItem {
         if (compoundtag == null) {
             return ItemStack.EMPTY;
         } else {
-            return ItemStack.parseOptional(Hexerei.proxy.getLevel().registryAccess(), compoundtag.copyTag().getCompound("Inventory").getList("Items", 10).getCompound(0));
+            return ItemStack.parseOptional(Hexerei.DynamicRegistries.get(), compoundtag.copyTag().getCompound("Inventory").getList("Items", 10).getCompound(0));
         }
     }
 

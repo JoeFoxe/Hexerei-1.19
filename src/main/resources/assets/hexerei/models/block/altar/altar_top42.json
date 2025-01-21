@@ -26,7 +26,7 @@
 	},
 	"groups": [
 		{
-			"name": "VoxelShapes",
+			"id": "VoxelShapes",
 			"origin": [10, -5, 0],
 			"color": 0,
 			"children": [0]

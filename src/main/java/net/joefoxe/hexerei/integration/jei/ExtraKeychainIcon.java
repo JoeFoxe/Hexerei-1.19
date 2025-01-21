@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mezz.jei.api.gui.drawable.IDrawable;
 import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.custom.KeychainItem;
 import net.minecraft.client.Minecraft;
@@ -21,6 +22,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -71,7 +73,7 @@ public class ExtraKeychainIcon implements IDrawable {
             extraStack = extraSupplier.get();
         }
 
-        float timer = (Hexerei.getClientTicks()) % 100 / 100f;
+        float timer = (ClientEvents.getClientTicks()) % 100 / 100f;
         if((timer <= 0.1 && findNewItem) || attachedItem == null){
             findNewItem = false;
             Collection<Item> col = BuiltInRegistries.ITEM.stream().toList();
@@ -125,10 +127,8 @@ public class ExtraKeychainIcon implements IDrawable {
             ListTag listtag = new ListTag();
 
             if (!other.isEmpty()) {
-                CompoundTag compoundtag = new CompoundTag();
-                compoundtag.putByte("Slot", (byte)0);
-                other.save(Hexerei.proxy.getLevel().registryAccess(), compoundtag);
-                listtag.add(compoundtag);
+                Tag tag1 = other.save(Hexerei.DynamicRegistries.get());
+                listtag.add(tag1);
             }
 
             tag.put("Items", listtag);

@@ -1,8 +1,0 @@
-// 1.20.1	2024-06-11T20:54:31.6311711	Tags for minecraft:worldgen/biome mod id hexerei
-26ecdd014eb57977ec0a5e7c436af88c51eca077 data/forge/tags/worldgen/biome/is_swamp.json
-26ecdd014eb57977ec0a5e7c436af88c51eca077 data/forge/tags/worldgen/biome/is_wet/overworld.json
-26ecdd014eb57977ec0a5e7c436af88c51eca077 data/minecraft/tags/worldgen/biome/allows_surface_slime_spawns.json
-26ecdd014eb57977ec0a5e7c436af88c51eca077 data/minecraft/tags/worldgen/biome/has_closer_water_fog.json
-26ecdd014eb57977ec0a5e7c436af88c51eca077 data/minecraft/tags/worldgen/biome/has_structure/swamp_hut.json
-26ecdd014eb57977ec0a5e7c436af88c51eca077 data/minecraft/tags/worldgen/biome/is_overworld.json
-26ecdd014eb57977ec0a5e7c436af88c51eca077 data/minecraft/tags/worldgen/biome/water_on_map_outlines.json

@@ -18,7 +18,7 @@
       "type": "item",
       "x": 3.75,
       "y": 2.5,
-      "name": "hexerei:pestle_and_mortar"
+      "id": "hexerei:pestle_and_mortar"
     },
 
 
@@ -27,31 +27,31 @@
       "type": "item",
       "x": 0,
       "y": 3.5,
-      "name": "minecraft:wheat_seeds"
+      "id": "minecraft:wheat_seeds"
     },
     {
       "type": "item",
       "x": 0.25,
       "y": 4.5,
-      "name": "minecraft:pumpkin_seeds"
+      "id": "minecraft:pumpkin_seeds"
     },
     {
       "type": "item",
       "x": 1.25,
       "y": 4.75,
-      "name": "minecraft:melon_seeds"
+      "id": "minecraft:melon_seeds"
     },
     {
       "type": "item",
       "x": 2.25,
       "y": 4.5,
-      "name": "minecraft:beetroot_seeds"
+      "id": "minecraft:beetroot_seeds"
     },
     {
       "type": "item",
       "x": 2.5,
       "y": 3.5,
-      "name": "hexerei:sage_seed"
+      "id": "hexerei:sage_seed"
     },
 
 
@@ -60,7 +60,7 @@
       "type": "item",
       "x": 5,
       "y": 4,
-      "name": "hexerei:seed_mixture"
+      "id": "hexerei:seed_mixture"
     }
   ],
   "images": [

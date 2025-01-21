@@ -37,7 +37,7 @@ public class ClientOwlCourierDepotData {
         Optional<GlobalPos> pos = GlobalPos.CODEC.parse(NbtOps.INSTANCE, pCompoundTag.get("Pos")).result();
 
         NonNullList<ItemStack> stacks = NonNullList.withSize(8, ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(pCompoundTag, stacks, Hexerei.proxy.getLevel().registryAccess());
+        ContainerHelper.loadAllItems(pCompoundTag, stacks, Hexerei.DynamicRegistries.get());
 
         pos.ifPresent(globalPos -> getDepots().get(globalPos).items = stacks);
     }
@@ -54,7 +54,7 @@ public class ClientOwlCourierDepotData {
                 Optional<GlobalPos> pos = GlobalPos.CODEC.parse(NbtOps.INSTANCE, depotTag.get("Pos")).result();
 
                 OwlCourierDepotData depotData = new OwlCourierDepotData(depotName);
-                ContainerHelper.loadAllItems(depotTag, depotData.items, Hexerei.proxy.getLevel().registryAccess());
+                ContainerHelper.loadAllItems(depotTag, depotData.items, Hexerei.DynamicRegistries.get());
 
                 pos.ifPresent(globalPos -> depots.put(globalPos, depotData));
             }

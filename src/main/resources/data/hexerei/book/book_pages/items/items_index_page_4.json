@@ -5,37 +5,37 @@
       "type": "item",
       "x": 0,
       "y": 1,
-      "name": "hexerei:ender_satchel"
+      "id": "hexerei:ender_satchel"
     },
     {
       "type": "item",
       "x": 1,
       "y": 1,
-      "name": "hexerei:replacer_satchel"
+      "id": "hexerei:replacer_satchel"
     },
     {
       "type": "item",
       "x": 2,
       "y": 1,
-      "name": "hexerei:broom_seat"
+      "id": "hexerei:broom_seat"
     },
     {
       "type": "item",
       "x": 3,
       "y": 1,
-      "name": "hexerei:wax_blend"
+      "id": "hexerei:wax_blend"
     },
     {
       "type": "item",
       "x": 4,
       "y": 1,
-      "name": "hexerei:cloth"
+      "id": "hexerei:cloth"
     },
     {
       "type": "item",
       "x": 5,
       "y": 1,
-      "name": "hexerei:waxing_kit"
+      "id": "hexerei:waxing_kit"
     },
 
 
@@ -43,37 +43,37 @@
       "type": "item",
       "x": 0,
       "y": 2,
-      "name": "hexerei:willow_connected"
+      "id": "hexerei:willow_connected"
     },
     {
       "type": "item",
       "x": 1,
       "y": 2,
-      "name": "hexerei:polished_willow_connected"
+      "id": "hexerei:polished_willow_connected"
     },
     {
       "type": "item",
       "x": 2,
       "y": 2,
-      "name": "hexerei:polished_willow_pillar"
+      "id": "hexerei:polished_willow_pillar"
     },
     {
       "type": "item",
       "x": 3,
       "y": 2,
-      "name": "hexerei:polished_willow_layered"
+      "id": "hexerei:polished_willow_layered"
     },
     {
       "type": "item",
       "x": 4,
       "y": 2,
-      "name": "hexerei:willow_window"
+      "id": "hexerei:willow_window"
     },
     {
       "type": "item",
       "x": 5,
       "y": 2,
-      "name": "hexerei:willow_window_pane"
+      "id": "hexerei:willow_window_pane"
     },
 
 
@@ -81,37 +81,37 @@
       "type": "item",
       "x": 0,
       "y": 3,
-      "name": "hexerei:mahogany_connected"
+      "id": "hexerei:mahogany_connected"
     },
     {
       "type": "item",
       "x": 1,
       "y": 3,
-      "name": "hexerei:polished_mahogany_connected"
+      "id": "hexerei:polished_mahogany_connected"
     },
     {
       "type": "item",
       "x": 2,
       "y": 3,
-      "name": "hexerei:polished_mahogany_pillar"
+      "id": "hexerei:polished_mahogany_pillar"
     },
     {
       "type": "item",
       "x": 3,
       "y": 3,
-      "name": "hexerei:polished_mahogany_layered"
+      "id": "hexerei:polished_mahogany_layered"
     },
     {
       "type": "item",
       "x": 4,
       "y": 3,
-      "name": "hexerei:mahogany_window"
+      "id": "hexerei:mahogany_window"
     },
     {
       "type": "item",
       "x": 5,
       "y": 3,
-      "name": "hexerei:mahogany_window_pane"
+      "id": "hexerei:mahogany_window_pane"
     },
 
 
@@ -119,37 +119,37 @@
       "type": "item",
       "x": 0,
       "y": 4,
-      "name": "hexerei:witch_hazel_connected"
+      "id": "hexerei:witch_hazel_connected"
     },
     {
       "type": "item",
       "x": 1,
       "y": 4,
-      "name": "hexerei:polished_witch_hazel_connected"
+      "id": "hexerei:polished_witch_hazel_connected"
     },
     {
       "type": "item",
       "x": 2,
       "y": 4,
-      "name": "hexerei:polished_witch_hazel_pillar"
+      "id": "hexerei:polished_witch_hazel_pillar"
     },
     {
       "type": "item",
       "x": 3,
       "y": 4,
-      "name": "hexerei:polished_witch_hazel_layered"
+      "id": "hexerei:polished_witch_hazel_layered"
     },
     {
       "type": "item",
       "x": 4,
       "y": 4,
-      "name": "hexerei:witch_hazel_window"
+      "id": "hexerei:witch_hazel_window"
     },
     {
       "type": "item",
       "x": 5,
       "y": 4,
-      "name": "hexerei:witch_hazel_window_pane"
+      "id": "hexerei:witch_hazel_window_pane"
     },
 
 
@@ -157,37 +157,37 @@
       "type": "item",
       "x": 0,
       "y": 5,
-      "name": "hexerei:infused_fabric_block"
+      "id": "hexerei:infused_fabric_block"
     },
     {
       "type": "item",
       "x": 1,
       "y": 5,
-      "name": "hexerei:infused_fabric_carpet"
+      "id": "hexerei:infused_fabric_carpet"
     },
     {
       "type": "item",
       "x": 2,
       "y": 5,
-      "name": "hexerei:mahogany_courier_depot"
+      "id": "hexerei:mahogany_courier_depot"
     },
     {
       "type": "item",
       "x": 3,
       "y": 5,
-      "name": "hexerei:courier_letter"
+      "id": "hexerei:courier_letter"
     },
     {
       "type": "item",
       "x": 4,
       "y": 5,
-      "name": "hexerei:courier_package"
+      "id": "hexerei:courier_package"
     },
     {
       "type": "item",
       "x": 5,
       "y": 5,
-      "name": "hexerei:packing_peanut"
+      "id": "hexerei:packing_peanut"
     },
 
 
@@ -195,25 +195,25 @@
       "type": "item",
       "x": 0,
       "y": 6,
-      "name": "hexerei:mahogany_broom_stand"
+      "id": "hexerei:mahogany_broom_stand"
     },
     {
       "type": "item",
       "x": 1,
       "y": 6,
-      "name": "hexerei:witch_hazel_broom"
+      "id": "hexerei:witch_hazel_broom"
     },
     {
       "type": "item",
       "x": 2,
       "y": 6,
-      "name": "hexerei:broom_whistle"
+      "id": "hexerei:broom_whistle"
     },
     {
       "type": "item",
       "x": 3,
       "y": 6,
-      "name": "hexerei:mahogany_woodcutter"
+      "id": "hexerei:mahogany_woodcutter"
     }
   ]
 }

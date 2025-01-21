@@ -1,0 +1,10 @@
+{
+  "type": "hexerei:drying_rack",
+  "input": {
+    "item": "hexerei:sage"
+  },
+  "output": {
+    "id": "hexerei:dried_sage"
+  },
+  "dryingTime": 2000
+}

@@ -18,7 +18,7 @@
       "type": "item",
       "x": 3.5,
       "y": 2.75,
-      "name": "minecraft:crafting_table"
+      "id": "minecraft:crafting_table"
     },
 
 
@@ -26,57 +26,57 @@
       "type": "item",
       "x": 0,
       "y": 3,
-      "name": "hexerei:sage"
+      "id": "hexerei:sage"
     },
     {
       "type": "item",
       "x": 1,
       "y": 3,
-      "name": "hexerei:sage"
+      "id": "hexerei:sage"
     },
     {
       "type": "item",
       "x": 2,
       "y": 3,
-      "name": "hexerei:sage"
+      "id": "hexerei:sage"
     },
 
     {
       "type": "item",
       "x": 0,
       "y": 4,
-      "name": "hexerei:sage"
+      "id": "hexerei:sage"
     },
     {
       "type": "item",
       "x": 1,
       "y": 4,
-      "name": "minecraft:string"
+      "id": "minecraft:string"
     },
     {
       "type": "item",
       "x": 2,
       "y": 4,
-      "name": "hexerei:sage"
+      "id": "hexerei:sage"
     },
 
     {
       "type": "item",
       "x": 0,
       "y": 5,
-      "name": "hexerei:sage"
+      "id": "hexerei:sage"
     },
     {
       "type": "item",
       "x": 1,
       "y": 5,
-      "name": "hexerei:sage"
+      "id": "hexerei:sage"
     },
     {
       "type": "item",
       "x": 2,
       "y": 5,
-      "name": "hexerei:sage"
+      "id": "hexerei:sage"
     },
 
 
@@ -85,7 +85,7 @@
       "type": "item",
       "x": 5,
       "y": 4,
-      "name": "hexerei:sage_bundle"
+      "id": "hexerei:sage_bundle"
     }
   ],
   "images": [

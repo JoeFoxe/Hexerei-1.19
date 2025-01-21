@@ -9,7 +9,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
 
@@ -17,10 +16,10 @@ import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
 public class CauldronEmptyingRecipe implements Recipe<CauldronEmptyingRecipe.Wrapper> {
 
     private final Ingredient input;
-    private final SizedFluidIngredient fluid;
+    private final FluidStack fluid;
     private final ItemStack output;
 
-    public CauldronEmptyingRecipe(Ingredient input, SizedFluidIngredient fluid, ItemStack output) {
+    public CauldronEmptyingRecipe(Ingredient input, FluidStack fluid, ItemStack output) {
         this.input = input;
         this.fluid = fluid;
         this.output = output;
@@ -33,7 +32,7 @@ public class CauldronEmptyingRecipe implements Recipe<CauldronEmptyingRecipe.Wra
 
     @Override
     public boolean matches(Wrapper pContainer, Level pLevel) {
-        return input.test(pContainer.getInput()) && fluid.test(pContainer.getFluid());
+        return input.test(pContainer.getInput()) && FluidStack.isSameFluidSameComponents(fluid, pContainer.getFluid()) && pContainer.getFluid().getAmount() >= fluid.getAmount();
     }
 
     @Override
@@ -50,7 +49,7 @@ public class CauldronEmptyingRecipe implements Recipe<CauldronEmptyingRecipe.Wra
         return input;
     }
 
-    public SizedFluidIngredient getFluid() {
+    public FluidStack getFluid() {
         return fluid;
     }
 
@@ -101,7 +100,7 @@ public class CauldronEmptyingRecipe implements Recipe<CauldronEmptyingRecipe.Wra
         private static final MapCodec<CauldronEmptyingRecipe> CODEC = RecordCodecBuilder.mapCodec(
                 instance -> instance.group(
                                 Ingredient.CODEC.fieldOf("input").forGetter(recipe -> recipe.input),
-                                SizedFluidIngredient.NESTED_CODEC.fieldOf("fluid").forGetter(recipe -> recipe.fluid),
+                                FluidStack.CODEC.fieldOf("fluid").forGetter(recipe -> recipe.fluid),
                                 ItemStack.CODEC.fieldOf("output").forGetter(recipe -> recipe.output)
                         )
                         .apply(instance, CauldronEmptyingRecipe::new)
@@ -123,14 +122,14 @@ public class CauldronEmptyingRecipe implements Recipe<CauldronEmptyingRecipe.Wra
         private static CauldronEmptyingRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
             Ingredient input = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
             ItemStack output = ItemStack.STREAM_CODEC.decode(buffer);
-            SizedFluidIngredient fluid = SizedFluidIngredient.STREAM_CODEC.decode(buffer);
+            FluidStack fluid = FluidStack.STREAM_CODEC.decode(buffer);
             return new CauldronEmptyingRecipe(input, fluid, output);
         }
 
         private static void toNetwork(RegistryFriendlyByteBuf buffer, CauldronEmptyingRecipe recipe) {
             Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.input);
             ItemStack.STREAM_CODEC.encode(buffer, recipe.output);
-            SizedFluidIngredient.STREAM_CODEC.encode(buffer, recipe.fluid);
+            FluidStack.STREAM_CODEC.encode(buffer, recipe.fluid);
         }
     }
 }

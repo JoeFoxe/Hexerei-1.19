@@ -1,6 +1,7 @@
 package net.joefoxe.hexerei.item.custom;
 
 import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
@@ -34,29 +35,30 @@ public class WitchArmorItem extends ArmorItem {
         DyeColor col = HexereiUtil.getDyeColorNamed(name, 0);
         if(col != null){
 
-            float f3 = (((Hexerei.getClientTicks()) / 10f * 4) % 16) / (float) 16;
+            float f3 = (((ClientEvents.getClientTicks()) / 10f * 4) % 16) / (float) 16;
 
             DyeColor col2 = HexereiUtil.getDyeColorNamed(name, 1);
 
-//            float[] afloat1 = col.getTextureDiffuseColors();
-//            float[] afloat2 = col2.getTextureDiffuseColors();
             float[] afloat1 = HexereiUtil.rgbIntToFloatArray(col.getTextureDiffuseColor());
             float[] afloat2 = HexereiUtil.rgbIntToFloatArray(col2.getTextureDiffuseColor());
             float f = afloat1[0] * (1.0F - f3) + afloat2[0] * f3;
             float f1 = afloat1[1] * (1.0F - f3) + afloat2[1] * f3;
             float f2 = afloat1[2] * (1.0F - f3) + afloat2[2] * f3;
-            return HexereiUtil.getColorValue(f, f1, f2);
-//            return HexereiUtil.getColorValue(col);
+            return HexereiUtil.getColorValueAlpha(f, f1, f2, 1);
 
         }
-        return stack.getOrDefault(DataComponents.DYED_COLOR, new DyedItemColor(1908001, true)).rgb();
+        return stack.getOrDefault(DataComponents.DYED_COLOR, new DyedItemColor(-1, true)).rgb();
     }
 
     @Override
     public @Nullable ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer, boolean innerModel) {
 
-        if(HexereiUtil.getDyeColor(stack) != 0x422F1E)
-            return ResourceLocation.fromNamespaceAndPath(Hexerei.MOD_ID, "textures/models/armor/witch_armor_layer1_dyed" + ((type == null) ? "" : "_" + type) + ".png");
+        if(HexereiUtil.getDyeColor(stack) != 0x422F1E) {
+            if (layer.dyeable())
+                return ResourceLocation.fromNamespaceAndPath(Hexerei.MOD_ID, "textures/models/armor/witch_armor_layer1_dyed.png");
+//            else
+//                return ResourceLocation.fromNamespaceAndPath(Hexerei.MOD_ID, "textures/models/armor/witch_armor_layer1_dyed_overlay.png");
+        }
         return ResourceLocation.fromNamespaceAndPath(Hexerei.MOD_ID, "textures/models/armor/witch_armor_layer1.png");
     }
 

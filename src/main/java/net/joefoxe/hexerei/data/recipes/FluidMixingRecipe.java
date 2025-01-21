@@ -18,11 +18,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class FluidMixingRecipe implements Recipe<CraftingInput> {
+public class FluidMixingRecipe implements Recipe<RecipeInput> {
 
     private final NonNullList<Ingredient> recipeItems;
-    private final FluidStack liquid;
-    private final FluidStack liquidOutput;
+    private final FluidStack fluid;
+    private final FluidStack fluidOutput;
     private final HeatCondition heatCondition;
 
 
@@ -31,19 +31,19 @@ public class FluidMixingRecipe implements Recipe<CraftingInput> {
         return true;
     }
 
-    public FluidMixingRecipe(NonNullList<Ingredient> recipeItems, FluidStack liquid, FluidStack liquidOutput) {
-        this(recipeItems, liquid, liquidOutput, HeatCondition.NONE);
+    public FluidMixingRecipe(NonNullList<Ingredient> recipeItems, FluidStack fluid, FluidStack fluidOutput) {
+        this(recipeItems, fluid, fluidOutput, HeatCondition.NONE);
     }
-    public FluidMixingRecipe(NonNullList<Ingredient> recipeItems, FluidStack liquid, FluidStack liquidOutput, HeatCondition heatCondition) {
+    public FluidMixingRecipe(NonNullList<Ingredient> recipeItems, FluidStack fluid, FluidStack fluidOutput, HeatCondition heatCondition) {
         this.recipeItems = recipeItems;
-        this.liquid = liquid;
-        this.liquidOutput = liquidOutput;
+        this.fluid = fluid;
+        this.fluidOutput = fluidOutput;
         this.heatCondition = heatCondition;
     }
 
 
     @Override
-    public boolean matches(CraftingInput input, Level worldIn) {
+    public boolean matches(RecipeInput input, Level worldIn) {
 
         List<Boolean> itemMatchesSlot = Stream.generate(() -> false).limit(8).collect(Collectors.toList());
 
@@ -103,7 +103,7 @@ public class FluidMixingRecipe implements Recipe<CraftingInput> {
 
 
     @Override
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
+    public ItemStack assemble(RecipeInput input, HolderLookup.Provider registries) {
         return ItemStack.EMPTY;
     }
 
@@ -119,9 +119,9 @@ public class FluidMixingRecipe implements Recipe<CraftingInput> {
     }
 
     public HeatCondition getHeatCondition() { return this.heatCondition; }
-    public FluidStack getLiquid() { return this.liquid; }
+    public FluidStack getLiquid() { return this.fluid; }
 
-    public FluidStack getLiquidOutput() { return this.liquidOutput; }
+    public FluidStack getLiquidOutput() { return this.fluidOutput; }
 
     public ItemStack getToastSymbol() {
         return new ItemStack(ModBlocks.MIXING_CAULDRON.get());
@@ -147,14 +147,14 @@ public class FluidMixingRecipe implements Recipe<CraftingInput> {
         public static final Serializer INSTANCE = new Serializer();
         private static final MapCodec<FluidMixingRecipe> CODEC = RecordCodecBuilder.mapCodec(
                 instance -> instance.group(
-                                NonNullList.codecOf(Ingredient.CODEC).fieldOf("input").forGetter(recipe -> recipe.recipeItems),
-                                FluidStack.CODEC.fieldOf("output").forGetter(recipe -> recipe.liquidOutput),
-                                FluidStack.CODEC.fieldOf("fluid").forGetter(recipe -> recipe.liquid),
+                                NonNullList.codecOf(Ingredient.CODEC).fieldOf("ingredients").forGetter(recipe -> recipe.recipeItems),
+                                FluidStack.CODEC.fieldOf("fluid").forGetter(recipe -> recipe.fluid),
+                                FluidStack.CODEC.fieldOf("output").forGetter(recipe -> recipe.fluidOutput),
                                 HeatCondition.CODEC.fieldOf("heatRequirement").forGetter(recipe -> recipe.heatCondition)
                         )
                         .apply(instance, FluidMixingRecipe::new)
         );
-        //        public FluidMixingRecipe(NonNullList<Ingredient> inputs, ItemStack output, FluidStack liquid, int fluidLevelsConsumed, int dippingTime, int dryingTime, int numberOfDips, boolean useInputItemAsOutput) {
+        //        public FluidMixingRecipe(NonNullList<Ingredient> inputs, ItemStack output, FluidStack fluid, int fluidLevelsConsumed, int dippingTime, int dryingTime, int numberOfDips, boolean useInputItemAsOutput) {
         public static final StreamCodec<RegistryFriendlyByteBuf, FluidMixingRecipe> STREAM_CODEC = StreamCodec.of(
                 FluidMixingRecipe.Serializer::toNetwork, FluidMixingRecipe.Serializer::fromNetwork
         );
@@ -183,8 +183,8 @@ public class FluidMixingRecipe implements Recipe<CraftingInput> {
             buffer.writeInt(recipe.recipeItems.size());
             for (Ingredient ingredient : recipe.recipeItems)
                 Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient);
-            FluidStack.STREAM_CODEC.encode(buffer, recipe.liquid);
-            FluidStack.STREAM_CODEC.encode(buffer, recipe.liquidOutput);
+            FluidStack.STREAM_CODEC.encode(buffer, recipe.fluid);
+            FluidStack.STREAM_CODEC.encode(buffer, recipe.fluidOutput);
             NeoForgeStreamCodecs.enumCodec(HeatCondition.class).encode(buffer, recipe.heatCondition);
         }
     }

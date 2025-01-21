@@ -10,13 +10,13 @@ public class BookImageEffect {
     public float speed;
     public float amount;
 
-    BookImageEffect(String type, float speed, float amount, BookImage hoverImage){
+    public BookImageEffect(String type, float speed, float amount, BookImage hoverImage){
         this.type = type;
         this.speed = speed;
         this.amount = amount;
         this.hoverImage = hoverImage;
     }
-    BookImageEffect(String type, float speed, float amount){
+    public BookImageEffect(String type, float speed, float amount){
         this.type = type;
         this.speed = speed;
         this.amount = amount;

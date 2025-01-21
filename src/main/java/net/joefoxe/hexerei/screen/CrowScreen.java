@@ -457,19 +457,12 @@ public class CrowScreen extends AbstractContainerScreen<CrowContainer> {
         RenderSystem.setShaderTexture(0, GUI);
         ItemRenderer itemRenderer = minecraft.getItemRenderer();
 
-        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, this.leftPos + 94 - 20, j - 10 - 20, this.leftPos + 94 + 20, j - 10 + 20, 25, 0.0625F, (float)(i + 51) - x, (float)(j + 75 - 50) - y, crowEntity);
+//        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, this.leftPos + 94 - 20, j - 10 - 20, this.leftPos + 94 + 20, j - 10 + 20, 25, 0.0625F, (float)(i + 51) - x, (float)(j + 75 - 50) - y, crowEntity);
+
+        InventoryScreen.renderEntityInInventoryFollowsMouse(guiGraphics, this.leftPos + 94 - 20, j - 17 - 20, this.leftPos + 94 + 20, j - 17 + 20, 25, 0.0625F, x, y, crowEntity);
 
         RenderSystem.disableDepthTest();
-//        if(crowEntity.getCrowType() == CrowEntity.Type.MAHOGANY)
-//            itemRenderer.renderGuiItem(new ItemStack(ModItems.MAHOGANY_BROOM.get().asItem()),
-//                    this.leftPos + 99,
-//                    this.topPos - 25);
-//        if(crowEntity.getCrowType() == CrowEntity.Type.WILLOW)
-//            itemRenderer.renderGuiItem(new ItemStack(ModItems.WILLOW_BROOM.get().asItem()),
-//                    this.leftPos + 99,
-//                    this.topPos - 25);
 
-//        matrixStack.translate(this.leftPos + 42*1.666f, this.topPos + 14*1.666f, 0f);
         MutableComponent hat = Component.translatable("entity.hexerei.crow_slot_0");
         MutableComponent misc1 = Component.translatable("entity.hexerei.crow_slot_1");
         MutableComponent misc2 = Component.translatable("entity.hexerei.crow_slot_2");

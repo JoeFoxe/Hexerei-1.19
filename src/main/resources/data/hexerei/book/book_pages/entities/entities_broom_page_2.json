@@ -18,7 +18,7 @@
       "type": "item",
       "x": 0.75,
       "y": 5.75,
-      "name": "hexerei:willow_broom",
+      "id": "hexerei:willow_broom",
       "show_slot": false
     }
   ],
@@ -27,7 +27,7 @@
       "x": 3.25,
       "y": 5.75,
       "scale": 1.5,
-      "name": "hexerei:broom",
+      "id": "hexerei:broom",
       "tag": "{inv: {Size: 30, Items: []}, Type: \"willow\", CustomName: '{\"translate\":\"item.hexerei.willow_broom\"}', floatMode: 0b}",
 
       "tag_array": [

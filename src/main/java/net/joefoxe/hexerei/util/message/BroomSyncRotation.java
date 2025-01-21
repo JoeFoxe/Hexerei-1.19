@@ -23,9 +23,9 @@ public class BroomSyncRotation extends AbstractPacket {
     int sourceId;
     float rotation;
 
-    public BroomSyncRotation(Entity entity, float tag) {
+    public BroomSyncRotation(Entity entity, float rot) {
         this.sourceId = entity.getId();
-        this.rotation = tag;
+        this.rotation = rot;
     }
     public BroomSyncRotation(RegistryFriendlyByteBuf buf) {
         this.sourceId = buf.readInt();

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "P P",
+    "PWP"
+
+  ],
+  "key": {
+    "W": {
+      "tag": "minecraft:wooden_slabs"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    }
+  },
+  "result": {
+    "id": "hexerei:courier_package",
+    "count": 1
+  }
+}

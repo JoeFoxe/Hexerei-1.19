@@ -1,7 +1,0 @@
-{
-  "type": "hexerei:woodcutting",
-  "ingredient": {
-    "item": "minecraft:jungle_slab"
-  },
-  "result": "minecraft:jungle_button"
-}

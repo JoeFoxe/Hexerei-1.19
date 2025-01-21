@@ -83,7 +83,7 @@ public class WaxingKitItem extends Item {
 //            return (int)((tag.getInt("waxCount") / 256f) * 13);
 //
 //        return 0;//super.getBarWidth(pStack);
-//        return (int) (Hexerei.getClientTicks()/20) % 13;//super.getBarWidth(pStack);
+//        return (int) (ClientEvents.getClientTicks()/20) % 13;//super.getBarWidth(pStack);
     }
 
     public InteractionResult useOn(UseOnContext pContext) {

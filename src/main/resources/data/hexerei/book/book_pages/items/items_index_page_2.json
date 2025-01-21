@@ -19,37 +19,37 @@
       "type": "item",
       "x": 0,
       "y": 1,
-      "name": "hexerei:reading_glasses"
+      "id": "hexerei:reading_glasses"
     },
     {
       "type": "item",
       "x": 1,
       "y": 1,
-      "name": "hexerei:book_of_shadows"
+      "id": "hexerei:book_of_shadows"
     },
     {
       "type": "item",
       "x": 2,
       "y": 1,
-      "name": "hexerei:book_of_shadows_altar"
+      "id": "hexerei:book_of_shadows_altar"
     },
     {
       "type": "item",
       "x": 3,
       "y": 1,
-      "name": "hexerei:mixing_cauldron"
+      "id": "hexerei:mixing_cauldron"
     },
     {
       "type": "item",
       "x": 4,
       "y": 1,
-      "name": "hexerei:coffer"
+      "id": "hexerei:coffer"
     },
     {
       "type": "item",
       "x": 5,
       "y": 1,
-      "name": "hexerei:herb_jar"
+      "id": "hexerei:herb_jar"
     },
 
 
@@ -57,37 +57,37 @@
       "type": "item",
       "x": 0,
       "y": 2,
-      "name": "hexerei:herb_drying_rack"
+      "id": "hexerei:herb_drying_rack"
     },
     {
       "type": "item",
       "x": 1,
       "y": 2,
-      "name": "hexerei:pestle_and_mortar"
+      "id": "hexerei:pestle_and_mortar"
     },
     {
       "type": "item",
       "x": 2,
       "y": 2,
-      "name": "hexerei:candle_dipper"
+      "id": "hexerei:candle_dipper"
     },
     {
       "type": "item",
       "x": 3,
       "y": 2,
-      "name": "hexerei:candle"
+      "id": "hexerei:candle"
     },
     {
       "type": "item",
       "x": 4,
       "y": 2,
-      "name": "hexerei:candelabra"
+      "id": "hexerei:candelabra"
     },
     {
       "type": "item",
       "x": 5,
       "y": 2,
-      "name": "hexerei:crystal_ball"
+      "id": "hexerei:crystal_ball"
     },
 
 
@@ -95,37 +95,37 @@
       "type": "item",
       "x": 0,
       "y": 3,
-      "name": "hexerei:dowsing_rod"
+      "id": "hexerei:dowsing_rod"
     },
     {
       "type": "item",
       "x": 1,
       "y": 3,
-      "name": "hexerei:blood_sigil"
+      "id": "hexerei:blood_sigil"
     },
     {
       "type": "item",
       "x": 2,
       "y": 3,
-      "name": "hexerei:blood_bottle"
+      "id": "hexerei:blood_bottle"
     },
     {
       "type": "item",
       "x": 3,
       "y": 3,
-      "name": "hexerei:willow_broom"
+      "id": "hexerei:willow_broom"
     },
     {
       "type": "item",
       "x": 4,
       "y": 3,
-      "name": "hexerei:mahogany_broom"
+      "id": "hexerei:mahogany_broom"
     },
     {
       "type": "item",
       "x": 5,
       "y": 3,
-      "name": "hexerei:gold_rings"
+      "id": "hexerei:gold_rings"
     },
 
 
@@ -133,37 +133,37 @@
       "type": "item",
       "x": 0,
       "y": 4,
-      "name": "hexerei:broom_keychain"
+      "id": "hexerei:broom_keychain"
     },
     {
       "type": "item",
       "x": 1,
       "y": 4,
-      "name": "hexerei:broom_netherite_tip"
+      "id": "hexerei:broom_netherite_tip"
     },
     {
       "type": "item",
       "x": 2,
       "y": 4,
-      "name": "hexerei:broom_waterproof_tip"
+      "id": "hexerei:broom_waterproof_tip"
     },
     {
       "type": "item",
       "x": 3,
       "y": 4,
-      "name": "hexerei:small_satchel"
+      "id": "hexerei:small_satchel"
     },
     {
       "type": "item",
       "x": 4,
       "y": 4,
-      "name": "hexerei:medium_satchel"
+      "id": "hexerei:medium_satchel"
     },
     {
       "type": "item",
       "x": 5,
       "y": 4,
-      "name": "hexerei:large_satchel"
+      "id": "hexerei:large_satchel"
     },
 
 
@@ -171,37 +171,37 @@
       "type": "item",
       "x": 0,
       "y": 5,
-      "name": "hexerei:broom_brush"
+      "id": "hexerei:broom_brush"
     },
     {
       "type": "item",
       "x": 1,
       "y": 5,
-      "name": "hexerei:wet_broom_brush"
+      "id": "hexerei:wet_broom_brush"
     },
     {
       "type": "item",
       "x": 2,
       "y": 5,
-      "name": "hexerei:herb_enhanced_broom_brush"
+      "id": "hexerei:herb_enhanced_broom_brush"
     },
     {
       "type": "item",
       "x": 3,
       "y": 5,
-      "name": "hexerei:wet_herb_enhanced_broom_brush"
+      "id": "hexerei:wet_herb_enhanced_broom_brush"
     },
     {
       "type": "item",
       "x": 4,
       "y": 5,
-      "name": "hexerei:crow_flute"
+      "id": "hexerei:crow_flute"
     },
     {
       "type": "item",
       "x": 5,
       "y": 5,
-      "name": "hexerei:seed_mixture"
+      "id": "hexerei:seed_mixture"
     },
 
 
@@ -209,37 +209,37 @@
       "type": "item",
       "x": 0,
       "y": 6,
-      "name": "hexerei:sage_burning_plate"
+      "id": "hexerei:sage_burning_plate"
     },
     {
       "type": "item",
       "x": 1,
       "y": 6,
-      "name": "hexerei:sage_seed"
+      "id": "hexerei:sage_seed"
     },
     {
       "type": "item",
       "x": 2,
       "y": 6,
-      "name": "hexerei:sage"
+      "id": "hexerei:sage"
     },
     {
       "type": "item",
       "x": 3,
       "y": 6,
-      "name": "hexerei:sage_bundle"
+      "id": "hexerei:sage_bundle"
     },
     {
       "type": "item",
       "x": 4,
       "y": 6,
-      "name": "hexerei:dried_sage_bundle"
+      "id": "hexerei:dried_sage_bundle"
     },
     {
       "type": "item",
       "x": 5,
       "y": 6,
-      "name": "hexerei:animal_fat"
+      "id": "hexerei:animal_fat"
     }
 
 

@@ -1,6 +1,7 @@
 package net.joefoxe.hexerei.client.renderer.color;
 
 import net.joefoxe.hexerei.block.ModBlocks;
+import net.joefoxe.hexerei.block.custom.ConnectingCarpetDyed;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.custom.BroomSeatItem;
 import net.joefoxe.hexerei.item.custom.CandleItem;
@@ -28,8 +29,13 @@ public class ModItemColors {
     @SubscribeEvent
     public static void initItemColors(RegisterColorHandlersEvent.Item event) {
         event.register((stack, color) -> {
-            DyeColor col = HexereiUtil.getDyeColorNamed(stack.getHoverName().getString());
-            return color == 0 ? -1 : ((WitchArmorItem)stack.getItem()).getColor(stack);
+            if (color == 0)
+                return -1;
+//            CandleItem.getColorValue(CandleItem.getDyeColorNamed(stack), stack)
+            int col = 255 << 24 | ((WitchArmorItem)stack.getItem()).getColor(stack);
+            return col == -1 ? 0 : col;
+//            return color == 0 ? -1 : (col == -1 ? -1 : col);
+//            return color == 0 ? -1 : ((WitchArmorItem)stack.getItem()).getColor(stack);
         }, ModItems.WITCH_HELMET.get(), ModItems.WITCH_CHESTPLATE.get(), ModItems.WITCH_BOOTS.get());
 
         event.register((stack, color) -> {
@@ -54,6 +60,12 @@ public class ModItemColors {
 
         items.register((s, t) -> t == 1 ? CandleItem.getColorValue(CandleItem.getDyeColorNamed(s), s) : -1, ModItems.CANDLE.get());
 
+
+        items.register((s, t) -> t == 0 ? ConnectingCarpetDyed.getColorValue(s) : -1,
+                ModItems.INFUSED_FABRIC_CARPET.get(),
+                ModItems.WAXED_INFUSED_FABRIC_CARPET.get(),
+                ModItems.INFUSED_FABRIC_BLOCK.get(),
+                ModItems.WAXED_INFUSED_FABRIC_BLOCK.get());
     }
 
 

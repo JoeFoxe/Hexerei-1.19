@@ -1,0 +1,42 @@
+{
+  "type": "hexerei:dipper",
+  "fluid": {
+    "id": "hexerei:potion",
+    "amount": 100,
+    "components": {
+      "hexerei:potion_bottle_type": {
+        "Bottle": "REGULAR"
+      },
+      "minecraft:potion_contents": {
+        "potion": "minecraft:strong_leaping"
+      }
+    }
+  },
+  "input": {
+    "id": "hexerei:candle"
+  },
+  "output": {
+    "id": "hexerei:candle",
+    "components": {
+      "minecraft:custom_data": {
+        "effect": "minecraft:jump_boost",
+        "effectParticle": {
+          "particle0": "minecraft:effect",
+          "particle1": "minecraft:smoke"
+        },
+        "glow": {
+          "layer": "hexerei:textures/block/potion_layer.png",
+          "meltingSpeedMultiplier": 1.0,
+          "radiusMultiplier": 1.0,
+          "effectAmplifierMultiplier": 2.0,
+          "effectCooldownMultiplier": 1.0,
+          "effectDurationMultiplier": 1.0
+        }
+      }
+    }
+  },
+  "useInputItemAsOutput": true,
+  "dippingTime": 150,
+  "dryingTime": 100,
+  "numberOfDips": 3
+}

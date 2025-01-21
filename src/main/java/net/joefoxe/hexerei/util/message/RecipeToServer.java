@@ -50,8 +50,9 @@ public class RecipeToServer extends AbstractPacket {
     }
 
     public void encode(RegistryFriendlyByteBuf buffer) {
-        buffer.writeInt(stacks.size());
-        for (ItemStack stack : stacks)
+        List<ItemStack> non_empty = stacks.stream().filter((stack -> !stack.isEmpty())).toList();
+        buffer.writeInt(non_empty.size());
+        for (ItemStack stack : non_empty)
             ItemStack.STREAM_CODEC.encode(buffer, stack);
         if (pos != null) {
             buffer.writeBoolean(true);

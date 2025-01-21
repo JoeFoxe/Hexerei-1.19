@@ -1,0 +1,14 @@
+{
+    "type": "hexerei:cauldron_emptying",
+    "input": {
+        "item": "minecraft:glass_bottle"
+    },
+    "fluid": {
+        "id": "minecraft:lava",
+        "amount": 250
+    },
+    "output": {
+        "id": "hexerei:lava_bottle",
+        "count": 1
+    }
+}

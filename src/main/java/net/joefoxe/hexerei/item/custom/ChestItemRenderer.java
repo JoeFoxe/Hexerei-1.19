@@ -3,6 +3,7 @@ package net.joefoxe.hexerei.item.custom;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.custom.ModChest;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.tileentity.ModChestBlockEntity;
 import net.joefoxe.hexerei.tileentity.renderer.ModChestRenderer;
 import net.minecraft.client.Minecraft;
@@ -52,7 +53,7 @@ public class ChestItemRenderer extends CustomItemRenderer {
         stack.pushPose();
         stack.translate(0.2, -0.1, -0.10);
         if(tileEntityIn != null)
-            renderer.render(tileEntityIn, Hexerei.getPartial(), stack, source, light, overlay);
+            renderer.render(tileEntityIn, ClientEvents.getPartial(), stack, source, light, overlay);
         stack.popPose();
 
     }

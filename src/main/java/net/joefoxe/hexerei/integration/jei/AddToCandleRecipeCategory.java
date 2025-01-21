@@ -50,6 +50,16 @@ public class AddToCandleRecipeCategory implements IRecipeCategory<AddToCandleRec
     }
 
     @Override
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
+    }
+
+    @Override
     public RecipeType<AddToCandleRecipe> getRecipeType() {
         return new RecipeType<>(HexereiUtil.getResource("add_to_candle"), AddToCandleRecipe.class);
     }
@@ -97,10 +107,6 @@ public class AddToCandleRecipeCategory implements IRecipeCategory<AddToCandleRec
 
     @Override
     public void draw(AddToCandleRecipe recipe, IRecipeSlotsView view, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-
-        float newHeatSource = (Hexerei.getClientTicks()) % 200 / 200f;
-        float craftPercent = (Hexerei.getClientTicks()) % 100 / 100f;
-        boolean showOutput = (Hexerei.getClientTicks()) % 200 > 100;
 
         Minecraft minecraft = Minecraft.getInstance();
 

@@ -121,18 +121,28 @@ public class HerbJarContainer extends AbstractContainerMenu {
                     ItemStack itemstack3 = this.getCarried().copy();
                     int j1 = this.getCarried().getCount();
 
+//                    for(Slot slot1 : this.quickcraftSlots) {
+//                        ItemStack itemstack1 = this.getCarried();
+//                        if (slot1 != null && canItemQuickReplace(slot1, itemstack1, true) && slot1.mayPlace(itemstack1) && (this.quickcraftType == 2 || itemstack1.getCount() >= this.quickcraftSlots.size()) && this.canDragTo(slot1)) {
+//                            ItemStack itemstack2 = itemstack3.copy();
+//                            int j = slot1.hasItem() ? slot1.getItem().getCount() : 0;
+//                            int k = Math.min(itemstack2.getMaxStackSize(), slot1.getMaxStackSize(itemstack2));
+//                            if (itemstack2.getCount() > k) {
+//                                itemstack2.setCount(k);
+//                            }
+//
+//                            j1 -= itemstack2.getCount() - j;
+//                            slot1.set(itemstack2);
+//                        }
+//                    }
                     for(Slot slot1 : this.quickcraftSlots) {
                         ItemStack itemstack1 = this.getCarried();
                         if (slot1 != null && canItemQuickReplace(slot1, itemstack1, true) && slot1.mayPlace(itemstack1) && (this.quickcraftType == 2 || itemstack1.getCount() >= this.quickcraftSlots.size()) && this.canDragTo(slot1)) {
-                            ItemStack itemstack2 = itemstack3.copy();
                             int j = slot1.hasItem() ? slot1.getItem().getCount() : 0;
-                            int k = Math.min(itemstack2.getMaxStackSize(), slot1.getMaxStackSize(itemstack2));
-                            if (itemstack2.getCount() > k) {
-                                itemstack2.setCount(k);
-                            }
-
-                            j1 -= itemstack2.getCount() - j;
-                            slot1.set(itemstack2);
+                            int k = Math.min(itemstack3.getMaxStackSize(), slot1.getMaxStackSize(itemstack3));
+                            int l = Math.min(getQuickCraftPlaceCount(this.quickcraftSlots, this.quickcraftType, itemstack3) + j, k);
+                            j1 -= l - j;
+                            slot1.setByPlayer(itemstack3.copyWithCount(l));
                         }
                     }
 

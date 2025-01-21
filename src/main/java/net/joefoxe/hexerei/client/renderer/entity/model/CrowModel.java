@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.entity.custom.CrowEntity;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.model.ColorableAgeableListModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -142,11 +143,11 @@ public class CrowModel<T extends CrowEntity> extends ColorableAgeableListModel<T
             }
             head.xRot = (float) Math.toRadians(headPitch);
             if (!entity.isPlayingDead()) {
-                head.xRot += Mth.sin(Hexerei.getClientTicks() / 25f) * 0.1f;
+                head.xRot += Mth.sin(ClientEvents.getClientTicks() / 25f) * 0.1f;
 
-                rightTail.xRot = Mth.sin(Hexerei.getClientTicks() / 25f) * 0.1f;
-                leftTail.xRot = Mth.sin(Hexerei.getClientTicks() / 25f) * 0.1f;
-                tailMid.xRot = Mth.sin(Hexerei.getClientTicks() / 25f) * 0.1f;
+                rightTail.xRot = Mth.sin(ClientEvents.getClientTicks() / 25f) * 0.1f;
+                leftTail.xRot = Mth.sin(ClientEvents.getClientTicks() / 25f) * 0.1f;
+                tailMid.xRot = Mth.sin(ClientEvents.getClientTicks() / 25f) * 0.1f;
             }
 
 
@@ -181,11 +182,11 @@ public class CrowModel<T extends CrowEntity> extends ColorableAgeableListModel<T
                 body.y = 25.5f;
                 head.xRot = (float) Math.toRadians(headPitch);
                 if (!entity.isPlayingDead()) {
-                    head.xRot += Mth.sin(Hexerei.getClientTicks() / 25f) * 0.1f;
+                    head.xRot += Mth.sin(ClientEvents.getClientTicks() / 25f) * 0.1f;
 
-                    rightTail.xRot = Mth.sin(Hexerei.getClientTicks() / 25f) * 0.1f;
-                    leftTail.xRot = Mth.sin(Hexerei.getClientTicks() / 25f) * 0.1f;
-                    tailMid.xRot = Mth.sin(Hexerei.getClientTicks() / 25f) * 0.1f;
+                    rightTail.xRot = Mth.sin(ClientEvents.getClientTicks() / 25f) * 0.1f;
+                    leftTail.xRot = Mth.sin(ClientEvents.getClientTicks() / 25f) * 0.1f;
+                    tailMid.xRot = Mth.sin(ClientEvents.getClientTicks() / 25f) * 0.1f;
                 }
 
 

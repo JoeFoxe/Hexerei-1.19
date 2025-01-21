@@ -11,21 +11,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class BookData {//TODO: make immutable! as datacomponents should be immutable
+public record BookData(int chapter, int page, boolean opened, Bookmarks bookmarks) {//TODO: make immutable! as datacomponents should be immutable
 
     public static final BookData EMPTY = new BookData(0, 0, false, new Bookmarks(IntStream.range(0, 20) .mapToObj(index -> new Bookmarks.Slot("", DyeColor.WHITE, index)).collect(Collectors.toList())));
 
-    int chapter;
-    int page;
-    boolean opened;
-    Bookmarks bookmarks;
-
-    public BookData(int chapter, int page, boolean opened, Bookmarks bookmarks) {
-        this.chapter = chapter;
-        this.page = page;
-        this.opened = opened;
-        this.bookmarks = bookmarks;
-    }
+//    int chapter;
+//    int page;
+//    boolean opened;
+//    Bookmarks bookmarks;
+//
+//    public BookData(int chapter, int page, boolean opened, Bookmarks bookmarks) {
+//        this.chapter = chapter;
+//        this.page = page;
+//        this.opened = opened;
+//        this.bookmarks = bookmarks;
+//    }
 
     public static final Codec<BookData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                             Codec.INT.fieldOf("chapter").forGetter(BookData::getChapter),
@@ -60,16 +60,20 @@ public class BookData {//TODO: make immutable! as datacomponents should be immut
         return bookmarks;
     }
 
-    public void setChapter(int chapter) {
-        this.chapter = chapter;
+    public BookData setBookmarks(Bookmarks bookmarks) {
+        return new BookData(this.chapter, this.page, this.opened, bookmarks);
     }
 
-    public void setPage(int page) {
-        this.page = page;
+    public BookData setChapter(int chapter) {
+        return new BookData(chapter, this.page, this.opened, this.bookmarks);
     }
 
-    public void setOpened(boolean opened) {
-        this.opened = opened;
+    public BookData setPage(int page) {
+        return new BookData(this.chapter, page, this.opened, this.bookmarks);
+    }
+
+    public BookData setOpened(boolean opened) {
+        return new BookData(this.chapter, this.page, opened, this.bookmarks);
     }
 
     public static class Bookmarks {
@@ -82,7 +86,7 @@ public class BookData {//TODO: make immutable! as datacomponents should be immut
                 .apply(ByteBufCodecs.list())
                 .map(Bookmarks::new, contents -> contents.slots);
 
-        Bookmarks(List<Slot> slots) {
+        public Bookmarks(List<Slot> slots) {
             this.slots = slots;
         }
 

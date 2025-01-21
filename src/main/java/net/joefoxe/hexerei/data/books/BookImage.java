@@ -31,6 +31,7 @@ public class BookImage {
     public ArrayList<BookImageEffect> effects;
     List<Component> extra_tooltips;
     List<BookTooltipExtra> extra_tooltips_raw;
+    public boolean hovered = false;
 
     BookImage(float x, float y, float z, float u, float v, float width, float height, float imageWidth, float imageHeight, float scale, String imageLoc, ArrayList<BookImageEffect> effects){
         this.x = x;

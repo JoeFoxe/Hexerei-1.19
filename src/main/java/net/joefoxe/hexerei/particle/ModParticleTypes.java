@@ -35,6 +35,7 @@ public class ModParticleTypes {
     });
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BLOOD = PARTICLES.register("blood_particle", () -> new SimpleParticleType(true));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BLOOD_BIT = PARTICLES.register("blood_bit_particle", () -> new SimpleParticleType(true));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BOOK_TEST = PARTICLES.register("book_test", () -> new SimpleParticleType(true));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BROOM = PARTICLES.register("broom_particle_1", () -> new SimpleParticleType(true));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BROOM_2 = PARTICLES.register("broom_particle_2", () -> new SimpleParticleType(true));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BROOM_3 = PARTICLES.register("broom_particle_3", () -> new SimpleParticleType(true));

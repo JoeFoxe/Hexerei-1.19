@@ -104,9 +104,10 @@ public class JarHandler extends ItemStackHandler {
         for (int i = 0; i < getContents().size(); i++) {
             if (!getContents().get(i).isEmpty()) {
                 int realCount = Math.min(stacklimit, getContents().get(i).getCount());
+                ItemStack stack = getContents().get(i).copyWithCount(1);
                 CompoundTag itemTag = new CompoundTag();
                 itemTag.putInt("Slot", i);
-                getContents().get(i).save(provider, itemTag);
+                itemTag = (CompoundTag) stack.save(provider, itemTag);
                 itemTag.putInt("ExtendedCount", realCount);
                 nbtTagList.add(itemTag);
             }
@@ -126,31 +127,11 @@ public class JarHandler extends ItemStackHandler {
             int slot = itemTags.getInt("Slot");
 
             if (slot >= 0 && slot < stacks.size()) {
-                if (itemTags.contains("StackList", Tag.TAG_LIST)) {
-                    ItemStack stack = ItemStack.EMPTY;
-                    ListTag stackTagList = itemTags.getList("StackList", Tag.TAG_COMPOUND);
-                    for (int j = 0; j < stackTagList.size(); j++) {
-                        CompoundTag itemTag = stackTagList.getCompound(j);
-                        ItemStack temp = ItemStack.parseOptional(provider, itemTag);
-                        if (!temp.isEmpty()) {
-                            if (stack.isEmpty()) stack = temp;
-                            else stack.grow(temp.getCount());
-                        }
-                    }
-                    if (!stack.isEmpty()) {
-                        int count = stack.getCount();
-                        count = Math.min(count, getStackLimit(slot, stack));
-                        stack.setCount(count);
-
-                        stacks.set(slot, stack);
-                    }
-                } else {
-                    ItemStack stack = ItemStack.parseOptional(provider, itemTags);
-                    if (itemTags.contains("ExtendedCount", Tag.TAG_INT)) {
-                        stack.setCount(itemTags.getInt("ExtendedCount"));
-                    }
-                    stacks.set(slot, stack);
+                ItemStack stack = ItemStack.parseOptional(provider, itemTags);
+                if (itemTags.contains("ExtendedCount", Tag.TAG_INT)) {
+                    stack.setCount(itemTags.getInt("ExtendedCount"));
                 }
+                stacks.set(slot, stack);
             }
         }
         onLoad();

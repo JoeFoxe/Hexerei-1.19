@@ -4,6 +4,7 @@ import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.IThirdPersonItemAnimation;
 import net.joefoxe.hexerei.client.renderer.TwoHandedItemAnimation;
 import net.joefoxe.hexerei.config.ModKeyBindings;
+import net.joefoxe.hexerei.events.GlassesZoomKeyPressEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.AnimationUtils;
@@ -34,7 +35,8 @@ public class GlassesItem extends Item implements IThirdPersonItemAnimation {
         super(builder);
     }
 
-    public int getUseDuration(ItemStack p_151222_) {
+    @Override
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 1200;
     }
 
@@ -46,9 +48,10 @@ public class GlassesItem extends Item implements IThirdPersonItemAnimation {
 //        p_151219_.playSound(SoundEvents.SPYGLASS_USE, 1.0F, 1.0F);
         p_151219_.playSound(SoundEvents.SPYGLASS_STOP_USING, 1.0F, 0.5F);
         p_151219_.awardStat(Stats.ITEM_USED.get(this));
-        Hexerei.glassesZoomKeyPressEvent.zoomWithItemToggled = true;
         if(level.isClientSide())
-            Hexerei.glassesZoomKeyPressEvent.zoomAmount = Minecraft.getInstance().gameRenderer.fov;
+            GlassesZoomKeyPressEvent.zoomWithItemToggled = true;
+        if(level.isClientSide())
+            GlassesZoomKeyPressEvent.zoomAmount = Minecraft.getInstance().gameRenderer.fov;
         return ItemUtils.startUsingInstantly(level, p_151219_, p_151220_);
     }
 
@@ -62,10 +65,12 @@ public class GlassesItem extends Item implements IThirdPersonItemAnimation {
     }
 
     private void stopUsing(LivingEntity p_151207_) {
-        Hexerei.glassesZoomKeyPressEvent.zoomWithItemToggled = false;
+        if(p_151207_.level().isClientSide())
+            GlassesZoomKeyPressEvent.zoomWithItemToggled = false;
         p_151207_.playSound(SoundEvents.SPYGLASS_STOP_USING, 1.0F, 1.0F);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
 

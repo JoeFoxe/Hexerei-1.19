@@ -29,17 +29,17 @@ public class PotionFluidHandler {
     public static FluidStack getFluidFromPotionItem(ItemStack stack) {
         PotionContents potion = stack.get(DataComponents.POTION_CONTENTS);
         PotionFluid.BottleType bottleTypeFromItem = bottleTypeFromItem(stack.getItem());
-        if (potion != null && potion == PotionContents.EMPTY && bottleTypeFromItem == PotionFluid.BottleType.REGULAR)
+        if (potion != null && (potion == PotionContents.EMPTY || potion.is(Potions.WATER)) && bottleTypeFromItem == PotionFluid.BottleType.REGULAR)
             return new FluidStack(Fluids.WATER, POTION_MB_AMOUNT);
         FluidStack fluid = PotionFluid.of(POTION_MB_AMOUNT, potion);
         fluid.set(ModDataComponents.POTION_BOTTLE_TYPE, new PotionBottleTypeData(bottleTypeFromItem));
         return fluid;
     }
 
-    public static FluidStack getFluidFromPotion(Potion potion, PotionFluid.BottleType bottleType, int amount) {
+    public static FluidStack getFluidFromPotion(Holder<Potion> potion, PotionFluid.BottleType bottleType, int amount) {
         if (potion == Potions.WATER && bottleType == PotionFluid.BottleType.REGULAR)
             return new FluidStack(Fluids.WATER, amount);
-        FluidStack fluid = PotionFluid.of(amount, new PotionContents(Holder.direct(potion)));
+        FluidStack fluid = PotionFluid.of(amount, new PotionContents(potion));
         fluid.set(ModDataComponents.POTION_BOTTLE_TYPE, new PotionBottleTypeData(bottleType));
         return fluid;
     }

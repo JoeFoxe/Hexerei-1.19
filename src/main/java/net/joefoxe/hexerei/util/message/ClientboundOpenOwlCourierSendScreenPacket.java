@@ -10,6 +10,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class ClientboundOpenOwlCourierSendScreenPacket extends AbstractPacket {
 
@@ -45,6 +47,7 @@ public class ClientboundOpenOwlCourierSendScreenPacket extends AbstractPacket {
         return new ClientboundOpenOwlCourierSendScreenPacket(buffer.readInt(), buffer.readBoolean() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, buffer.readInt());
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onClientReceived(Minecraft minecraft, Player player) {
 

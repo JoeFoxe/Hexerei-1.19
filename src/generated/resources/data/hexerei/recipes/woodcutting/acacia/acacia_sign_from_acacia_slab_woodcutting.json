@@ -1,8 +1,0 @@
-{
-  "type": "hexerei:woodcutting",
-  "ingredient": {
-    "item": "minecraft:acacia_slab"
-  },
-  "ingredient_count": 2,
-  "result": "minecraft:acacia_sign"
-}

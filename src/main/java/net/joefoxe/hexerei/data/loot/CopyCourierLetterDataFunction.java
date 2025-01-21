@@ -38,9 +38,9 @@ public class CopyCourierLetterDataFunction extends LootItemConditionalFunction {
     protected ItemStack run(ItemStack stack, LootContext context) {
         BlockEntity blockEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
         if (blockEntity instanceof CourierLetterTile courierLetterTile) {
-            CompoundTag tag = courierLetterTile.saveData(new CompoundTag(), Hexerei.proxy.getLevel().registryAccess());
+            CompoundTag tag = courierLetterTile.saveData(new CompoundTag(), Hexerei.DynamicRegistries.get());
             if (!tag.isEmpty())
-                BlockItem.setBlockEntityData(stack, courierLetterTile.getType(), courierLetterTile.save(new CompoundTag(), Hexerei.proxy.getLevel().registryAccess()));
+                BlockItem.setBlockEntityData(stack, courierLetterTile.getType(), courierLetterTile.save(new CompoundTag(), Hexerei.DynamicRegistries.get()));
             return stack;
         }
 

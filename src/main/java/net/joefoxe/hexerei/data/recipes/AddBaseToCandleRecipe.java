@@ -93,15 +93,16 @@ public class AddBaseToCandleRecipe extends CustomRecipe {
 
             CandleData data = new CandleData();
             data.load(itemstack2.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag(), registries);
-            ResourceLocation loc = BuiltInRegistries.BLOCK.getKey(block.getBlock());
 
-            if (loc != null) {
+            if (BuiltInRegistries.BLOCK.containsValue(block.getBlock())) {
                 CompoundTag tag = new CompoundTag();
                 tag.putBoolean("layerFromBlockLocation", true);
-                tag.putString("layer", loc.toString());
+                tag.putString("layer", BuiltInRegistries.BLOCK.getKey(block.getBlock()).toString());
                 data.base.load(tag);
             }
-            data.save(itemstack2.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag(), registries, true);
+            CompoundTag tag = itemstack2.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+            data.save(tag, registries, true);
+            itemstack2.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
 
             return itemstack2;
         } else {

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MGM",
+    "M  "
+
+  ],
+  "key": {
+    "M": {
+      "tag": "hexerei:witch_hazel_planks"
+    },
+    "G": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "hexerei:witch_hazel_courier_depot",
+    "count": 1
+  }
+}

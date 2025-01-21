@@ -3,6 +3,7 @@ package net.joefoxe.hexerei.mixin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.IThirdPersonItemRenderer;
+import net.joefoxe.hexerei.events.GlassesZoomKeyPressEvent;
 import net.joefoxe.hexerei.item.custom.GlassesItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ArmedModel;
@@ -45,7 +46,7 @@ public abstract class PlayerItemInHandLayerMixin<T extends Player, M extends Ent
             item.renderThirdPersonItem(this.getParentModel(), entity, stack, humanoidArm, poseStack, bufferSource, light);
             ci.cancel();
         }
-        if(stack.getItem() instanceof GlassesItem && Hexerei.glassesZoomKeyPressEvent.zoomWithItemToggled){
+        if(stack.getItem() instanceof GlassesItem && GlassesZoomKeyPressEvent.zoomWithItemToggled){
             renderArmWithGlasses(entity, stack, humanoidArm, poseStack, bufferSource, light);
             ci.cancel();
         }

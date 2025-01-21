@@ -1,5 +1,6 @@
 package net.joefoxe.hexerei.util;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 

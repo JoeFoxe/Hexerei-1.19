@@ -3,6 +3,7 @@ package net.joefoxe.hexerei.screen;
 
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import net.joefoxe.hexerei.client.renderer.entity.custom.OwlEntity;
 import net.joefoxe.hexerei.data.owl.ClientOwlCourierDepotData;
 import net.joefoxe.hexerei.data.owl.OwlCourierDepotData;
@@ -15,6 +16,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.*;
@@ -22,6 +27,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import org.joml.Matrix4f;
+
 import java.util.*;
 
 public class OwlCourierSendScreen extends Screen {
@@ -209,6 +216,8 @@ public class OwlCourierSendScreen extends Screen {
 
     @Override
     public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        pGuiGraphics.pose().pushPose();
+        pGuiGraphics.pose().translate(0, 0, 5);
         if (OwlCourierSendScreen.this.listButtons.size() > 6) {
             if (this.scrollClicked) {
                 this.scroll = Mth.clamp((float) (pMouseY - this.top - 21 - this.scrollClickedPos) / 101f, 0, 1);
@@ -221,7 +230,7 @@ public class OwlCourierSendScreen extends Screen {
         float scrollLerp = Mth.lerp(pPartialTick, this.scrollOld, this.scroll);
 
         Lighting.setupForFlatItems();
-        this.renderBackground(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
+//        this.renderBackground(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
         pGuiGraphics.drawCenteredString(this.font, this.title, this.width / 2, this.top + 4, 0x333333);
 
         for (ListButton button : listButtons)
@@ -254,7 +263,13 @@ public class OwlCourierSendScreen extends Screen {
 
 
         Lighting.setupFor3DItems();
+        pGuiGraphics.pose().popPose();
         super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.renderTransparentBackground(guiGraphics);
     }
 
     @Override
@@ -406,13 +421,17 @@ public class OwlCourierSendScreen extends Screen {
             float alpha = 1.0f;
             pGuiGraphics.pose().pushPose();
             pGuiGraphics.pose().translate(0, 0, 4.0F);
-            pGuiGraphics.enableScissor(scissorArea.x, scissorArea.y, scissorArea.x + scissorArea.width, scissorArea.y + scissorArea.height);
+            pGuiGraphics.enableScissor(scissorArea.x, scissorArea.y, scissorArea.x + scissorArea.width + 1, scissorArea.y + scissorArea.height);
             Minecraft minecraft = Minecraft.getInstance();
             pGuiGraphics.setColor(1.0f, isPlayerButton ? 0.75F : 1.0F, 1.0F, alpha);
             RenderSystem.enableBlend();
             RenderSystem.enableDepthTest();
-            // nine slice?
-            pGuiGraphics.blit(GUI, this.getX(), this.getY(pPartialTick), this.getWidth(), this.getHeight(), 3, 3, 74, button_height, 1, this.getTextureY());
+            int offset = getTextureOffset();
+            nineSlice(GUI, pGuiGraphics, this.getX(), this.getY(pPartialTick), 0, this.getWidth(), this.getHeight(), 4, 4, 4, 4, 256, 256, 139 + offset, 165, 9, 9, alpha);
+
+//            pGuiGraphics.blit(GUI, this.getX(), this.getY(pPartialTick), this.getWidth(), this.getHeight(), 3, 3, 74, button_height, 1, this.getTextureY());
+
+
             if (this.isDisabled())
                 pGuiGraphics.setColor( 0.5f, 0.5F, 0.5F, 0.5F);
             else
@@ -421,6 +440,10 @@ public class OwlCourierSendScreen extends Screen {
             this.renderString(pGuiGraphics, minecraft.font, i | Mth.ceil(alpha * 255.0F) << 24, pPartialTick);
             pGuiGraphics.setColor( 1.0f, 1.0F, 1.0F, 1.0F);
             pGuiGraphics.disableScissor();
+//            pGuiGraphics.enableScissor(scissorArea.x - 4, scissorArea.y, scissorArea.x + scissorArea.width + 9, scissorArea.y + scissorArea.height);
+            RenderSystem.enableBlend();
+            RenderSystem.enableDepthTest();
+//            pGuiGraphics.disableScissor();
             pGuiGraphics.pose().popPose();
 
         }
@@ -429,15 +452,15 @@ public class OwlCourierSendScreen extends Screen {
             this.renderScrollingString(pGuiGraphics, pFont, 4, pColor, partialTicks);
         }
 
-        private int getTextureY() {
-            int i = 165;
+        private int getTextureOffset() {
+            int i = 0;
 
             if (this.isSelected())
-                return i + 17 * 2;
+                return i + 10 * 2;
             if (this.isDisabled())
-                return i + 17;
+                return i + 10;
             if (this.isHovered())
-                return i + 17 * 3;
+                return i + 10 * 3;
 
             return i;
         }
@@ -507,5 +530,150 @@ public class OwlCourierSendScreen extends Screen {
             void onPress(ListButton pButton);
         }
     }
+
+
+    private static void bufferQuad(ResourceLocation atlasLocation, GuiGraphics guiGraphics, float x, float y, float z, float width, float height, float uOffset, float vOffset, int uWidth, int vHeight, int spriteWidth, int spriteHeight, float alpha) {
+        blit(guiGraphics, atlasLocation, x, x + width, y, y + height, z, uWidth, vHeight, uOffset, vOffset, spriteWidth, spriteHeight, alpha);
+    }
+
+    private static void blit(GuiGraphics guiGraphics, ResourceLocation atlasLocation, float x1, float x2, float y1, float y2, float blitOffset, int uWidth, int vHeight, float uOffset, float vOffset, int textureWidth, int textureHeight, float alpha) {
+        innerBlit(guiGraphics, atlasLocation, x1, x2, y1, y2, blitOffset, (uOffset + 0.0F) / (float)textureWidth, (uOffset + (float)uWidth) / (float)textureWidth, (vOffset + 0.0F) / (float)textureHeight, (vOffset + (float)vHeight) / (float)textureHeight, alpha);
+    }
+
+    private static void innerBlit(GuiGraphics guiGraphics, ResourceLocation atlasLocation, float x1, float x2, float y1, float y2, float blitOffset, float minU, float maxU, float minV, float maxV, float alpha) {
+
+        Matrix4f matrix4f = guiGraphics.pose().last().pose();
+        if (alpha == 1) {
+            RenderSystem.setShaderTexture(0, atlasLocation);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+            bufferbuilder.addVertex(matrix4f, x1, y1, blitOffset).setUv(minU, minV).setLight(LightTexture.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0).setColor(1, 1, 1, alpha);
+            bufferbuilder.addVertex(matrix4f, x1, y2, blitOffset).setUv(minU, maxV).setLight(LightTexture.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0).setColor(1, 1, 1, alpha);
+            bufferbuilder.addVertex(matrix4f, x2, y2, blitOffset).setUv(maxU, maxV).setLight(LightTexture.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0).setColor(1, 1, 1, alpha);
+            bufferbuilder.addVertex(matrix4f, x2, y1, blitOffset).setUv(maxU, minV).setLight(LightTexture.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0).setColor(1, 1, 1, alpha);
+            BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+        } else {
+            VertexConsumer vertexBuilder = guiGraphics.bufferSource().getBuffer(RenderType.entityTranslucentCull(atlasLocation));
+            vertexBuilder.addVertex(matrix4f, x1, y1, blitOffset).setUv(minU, minV).setLight(LightTexture.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0).setColor(1, 1, 1, alpha);
+            vertexBuilder.addVertex(matrix4f, x1, y2, blitOffset).setUv(minU, maxV).setLight(LightTexture.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0).setColor(1, 1, 1, alpha);
+            vertexBuilder.addVertex(matrix4f, x2, y2, blitOffset).setUv(maxU, maxV).setLight(LightTexture.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0).setColor(1, 1, 1, alpha);
+            vertexBuilder.addVertex(matrix4f, x2, y1, blitOffset).setUv(maxU, minV).setLight(LightTexture.FULL_BRIGHT).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0).setColor(1, 1, 1, alpha);
+        }
+    }
+
+
+    public static void nineSlice(
+            ResourceLocation atlasLocation, GuiGraphics guiGraphics,
+            float posX, float posY, float posZ, float width, float height,
+            int sliceLeftWidth, int sliceRightWidth, int sliceTopHeight, int sliceBottomHeight,
+            int spriteWidth, int spriteHeight,
+            float uOffset, float vOffset, int uWidth, int vHeight, float alpha
+    ) {
+        int middleTextureWidth = uWidth - sliceLeftWidth - sliceRightWidth;
+        int middleTextureHeight = vHeight - sliceBottomHeight - sliceTopHeight;
+
+        float topV1 = vOffset + sliceTopHeight;
+        float leftU1 = uOffset + sliceLeftWidth;
+        float rightU0 = uOffset + uWidth - (sliceRightWidth);
+        float bottomV0 = vOffset + vHeight - (sliceBottomHeight);
+
+        float middleU0 = leftU1 + 1;
+        float middleU1 = rightU0 + 1;
+
+        float middleV0 = vOffset + (sliceTopHeight + 1);
+        float middleV1 = vOffset + vHeight - (sliceBottomHeight + 1);
+
+        float leftX = posX + sliceLeftWidth;
+        float rightX = posX + width - sliceRightWidth;
+        float topY = posY + sliceTopHeight;
+        float bottomY = posY + height - sliceBottomHeight;
+
+        float middleWidth = rightX - leftX;
+        float middleHeight = bottomY - topY;
+
+        // top left corner
+        bufferQuad(atlasLocation, guiGraphics, posX, posY, posZ, sliceLeftWidth, sliceTopHeight, uOffset, vOffset, sliceLeftWidth, sliceTopHeight, spriteWidth, spriteHeight, alpha);
+
+//        // top right corner
+        bufferQuad(atlasLocation, guiGraphics, rightX, posY, posZ, sliceRightWidth, sliceTopHeight, rightU0, vOffset, sliceRightWidth, sliceTopHeight, spriteWidth, spriteHeight, alpha);
+
+//        // bottom left corner
+        bufferQuad(atlasLocation, guiGraphics, posX, bottomY, posZ, sliceLeftWidth, sliceBottomHeight, uOffset, bottomV0, sliceRightWidth, sliceTopHeight, spriteWidth, spriteHeight, alpha);
+//
+//        // bottom right corner
+        bufferQuad(atlasLocation, guiGraphics, rightX, bottomY, posZ, sliceRightWidth, sliceBottomHeight, rightU0, bottomV0, sliceRightWidth, sliceTopHeight, spriteWidth, spriteHeight, alpha);
+
+        // top
+        bufferQuad(atlasLocation, guiGraphics, leftX, posY, posZ, middleWidth, sliceTopHeight, middleU0, vOffset, middleTextureWidth, sliceTopHeight, spriteWidth, spriteHeight, alpha);
+
+//        // bottom
+        bufferQuad(atlasLocation, guiGraphics, leftX, bottomY, posZ, middleWidth, sliceBottomHeight, middleU0, bottomV0, middleTextureWidth, sliceTopHeight, spriteWidth, spriteHeight, alpha);
+//
+//        // left
+        bufferQuad(atlasLocation, guiGraphics, posX, topY, posZ, sliceLeftWidth, middleHeight, uOffset, middleV0, sliceLeftWidth, middleTextureHeight, spriteWidth, spriteHeight, alpha);
+//
+//        // right
+        bufferQuad(atlasLocation, guiGraphics, rightX, topY, posZ, sliceRightWidth, middleHeight, rightU0, middleV0, sliceLeftWidth, middleTextureHeight, spriteWidth, spriteHeight, alpha);
+//
+//        // middle
+        bufferQuad(atlasLocation, guiGraphics, leftX, topY, posZ, middleWidth, middleHeight, middleU0, middleV0 + 1, middleTextureWidth, middleTextureHeight, spriteWidth, spriteHeight, alpha);
+
+        guiGraphics.bufferSource().endBatch();
+//      if (tiled) {
+//
+//            int spriteMiddleWidth = spriteWidth - sliceLeftWidth - sliceRightWidth;
+//            int spriteMiddleHeight = spriteHeight - sliceTopHeight - sliceBottomHeight;
+//
+//            int cols = Mth.ceil(middleWidth / (float) spriteMiddleWidth);
+//            int rows = Mth.ceil(middleHeight / (float) spriteMiddleHeight);
+//
+//            for (int x = 0; x < cols; x++) {
+//                for (int y = 0; y < rows; y++) {
+//                    float mX = leftX + x * spriteMiddleWidth;
+//                    float mY = topY + y * spriteMiddleHeight;
+//                    bufferQuadBounded(vertexConsumer, poseStack, mX, mY, posZ, spriteMiddleWidth, spriteMiddleHeight, middleU0, middleU1, middleV0, middleV1, leftX, leftX + middleWidth, topY, topY + middleHeight);
+//                }
+//            }
+//
+//        } else {
+//            throw new UnsupportedOperationException("Unsupported nine-slice draw mode: " + drawMode.toString());
+//        }
+    }
+//
+//    private static void bufferQuadBounded(VertexConsumer vertexConsumer, PoseStack poseStack, float x, float y, float z, float width, float height, float minU, float maxU, float minV, float maxV, float xMin, float xMax, float yMin, float yMax) {
+//
+//        // Passing x as y and y as x is intentional
+//        //noinspection SuspiciousNameCombination
+//        if (Mth.equal(xMin, xMax) || Mth.equal(yMin, yMax)) {
+//            return;
+//        }
+//
+//        // Intersection test
+//        if (x > xMax
+//                || x + width < xMin
+//                || y > yMax
+//                || y + height < yMin) {
+//            return;
+//        }
+//
+//        final float du = maxU - minU;
+//        final float dv = maxV - minV;
+//
+//        final float x0 = Math.max(x, xMin);
+//        final float x1 = Math.min(x + width, xMax);
+//        final float y0 = Math.max(y, yMin);
+//        final float y1 = Math.min(y + height, yMax);
+//
+//        final float cminU = ((x0 - x) / width) * du + minU;
+//        final float cmaxU = cminU + ((x1 - x0) / width) * du;
+//        final float cminV = ((y0 - y) / height) * dv + minV;
+//        final float cmaxV = cminV + ((y1 - y0) / height) * dv;
+//
+//        Matrix4f matrix = poseStack.last().pose();
+//        vertexConsumer.vertex(matrix, x0, y1, z).uv(cminU, cmaxV).endVertex();
+//        vertexConsumer.vertex(matrix, x1, y1, z).uv(cmaxU, cmaxV).endVertex();
+//        vertexConsumer.vertex(matrix, x1, y0, z).uv(cmaxU, cminV).endVertex();
+//        vertexConsumer.vertex(matrix, x0, y0, z).uv(cminU, cminV).endVertex();
+//    }
 
 }

@@ -16,12 +16,13 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
 
 import java.util.Optional;
 
-public class HexereiWitchHazelTreeFeature extends Feature<TreeConfiguration> {
+public class HexereiWitchHazelTreeFeature extends Feature<NoneFeatureConfiguration> {
 
     private static final ResourceLocation WITCH_HAZEL_TREE1 = ResourceLocation.parse("hexerei:witch_hazel_tree1");
     private static final ResourceLocation WITCH_HAZEL_TREE2 = ResourceLocation.parse("hexerei:witch_hazel_tree2");
@@ -55,9 +56,8 @@ public class HexereiWitchHazelTreeFeature extends Feature<TreeConfiguration> {
     }
     //    (WorldGenLevel reader, ChunkGenerator generator, Random rand, BlockPos pos, TreeConfiguration config)
     @Override
-    public boolean place(FeaturePlaceContext<TreeConfiguration> context) {
+    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
         WorldGenLevel reader = context.level();
-        TreeConfiguration config = context.config();
         BlockPos pos = context.origin();
         RandomSource rand = context.random();
 

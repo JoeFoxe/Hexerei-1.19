@@ -153,59 +153,58 @@ public class NatureCovenStructure extends Structure {
         try {
 
             for (BlockPos blockPos : BlockPos.betweenClosed(pBoundingBox.minX(), pBoundingBox.minY(), pBoundingBox.minZ(), pBoundingBox.maxX(), pBoundingBox.maxY(), pBoundingBox.maxZ())) {
-                //TODO fix after fixing the connecting blocks
-//                if (pPieces.isInsidePiece(blockPos) && pLevel.isAreaLoaded(blockPos, 1) && pLevel.getBlockState(blockPos).is(Blocks.YELLOW_STAINED_GLASS_PANE)) {
-//                    if (pLevel instanceof ServerLevel serverLevel) {
-//                        // Always replace the glass itself with witch hazel pillar
-//                        serverLevel.setBlockAndUpdate(blockPos, ModBlocks.POLISHED_WITCH_HAZEL_PILLAR.get().defaultBlockState());
-//
-//                        // Generate vertical pillar down
-//                        BlockPos.MutableBlockPos mutable = blockPos.below().mutable();
-//                        BlockState currBlock = pLevel.getBlockState(mutable);
-//                        int itor = 0;
-//                        while (mutable.getY() > 0 && (canBeReplaced(currBlock))) {
-//                            if (itor != 1)
-//                                serverLevel.setBlockAndUpdate(mutable, ModBlocks.POLISHED_WITCH_HAZEL_PILLAR.get().defaultBlockState());
-//                            else
-//                                serverLevel.setBlockAndUpdate(mutable, ModBlocks.POLISHED_WITCH_HAZEL_LAYERED.get().defaultBlockState());
-//                            mutable.move(Direction.DOWN);
-//                            currBlock = serverLevel.getBlockState(mutable);
-//
-//                            if (!canBeReplaced(currBlock)) {
-//                                serverLevel.setBlockAndUpdate(mutable.above(), ModBlocks.POLISHED_WITCH_HAZEL_LAYERED.get().defaultBlockState());
-//                                break;
-//                            }
-//
-//                            itor++;
-//                        }
-//                    } else if (pLevel instanceof WorldGenRegion worldGenRegion) {
-//
-//                        // Always replace the glass itself with witch hazel pillar
-//                        worldGenRegion.setBlock(blockPos, ModBlocks.POLISHED_WITCH_HAZEL_PILLAR.get().defaultBlockState(), 3);
-//
-//                        // Generate vertical pillar down
-//                        BlockPos.MutableBlockPos mutable = blockPos.below().mutable();
-//                        BlockState currBlock = pLevel.getBlockState(mutable);
-//                        int itor = 0;
-//                        while (mutable.getY() > 0 && (currBlock.canBeReplaced() || currBlock.isAir() || currBlock.is(BlockTags.LEAVES) || currBlock.is(Blocks.WATER) || currBlock.is(Blocks.LAVA))) {
-//                            if (itor != 1)
-//                                worldGenRegion.setBlock(mutable, ModBlocks.POLISHED_WITCH_HAZEL_PILLAR.get().defaultBlockState(), 3);
-//                            else
-//                                worldGenRegion.setBlock(mutable, ModBlocks.POLISHED_WITCH_HAZEL_LAYERED.get().defaultBlockState(), 3);
-//                            mutable.move(Direction.DOWN);
-//                            currBlock = worldGenRegion.getBlockState(mutable);
-//
-//                            if (!(currBlock.canBeReplaced() || currBlock.isAir() || currBlock.is(BlockTags.LEAVES) || currBlock.is(Blocks.MUD_BRICK_SLAB) || currBlock.is(Blocks.MOSS_CARPET) || currBlock.is(ModBlocks.WITCH_HAZEL_FENCE.get()) || currBlock.is(ModBlocks.WITCH_HAZEL_SLAB.get()) || currBlock.is(ModBlocks.WITCH_HAZEL_STAIRS.get()) || currBlock.is(Blocks.WATER) || currBlock.is(Blocks.LAVA))) {
-//                                worldGenRegion.setBlock(mutable.above(), ModBlocks.POLISHED_WITCH_HAZEL_LAYERED.get().defaultBlockState(), 3);
-//                                break;
-//                            }
-//
-//                            itor++;
-//                        }
-//                    }
-//
-//
-//                }
+                if (pPieces.isInsidePiece(blockPos) && pLevel.isAreaLoaded(blockPos, 1) && pLevel.getBlockState(blockPos).is(Blocks.YELLOW_STAINED_GLASS_PANE)) {
+                    if (pLevel instanceof ServerLevel serverLevel) {
+                        // Always replace the glass itself with witch hazel pillar
+                        serverLevel.setBlockAndUpdate(blockPos, ModBlocks.POLISHED_WITCH_HAZEL_PILLAR.get().defaultBlockState());
+
+                        // Generate vertical pillar down
+                        BlockPos.MutableBlockPos mutable = blockPos.below().mutable();
+                        BlockState currBlock = pLevel.getBlockState(mutable);
+                        int itor = 0;
+                        while (mutable.getY() > 0 && (canBeReplaced(currBlock))) {
+                            if (itor != 1)
+                                serverLevel.setBlockAndUpdate(mutable, ModBlocks.POLISHED_WITCH_HAZEL_PILLAR.get().defaultBlockState());
+                            else
+                                serverLevel.setBlockAndUpdate(mutable, ModBlocks.POLISHED_WITCH_HAZEL_LAYERED.get().defaultBlockState());
+                            mutable.move(Direction.DOWN);
+                            currBlock = serverLevel.getBlockState(mutable);
+
+                            if (!canBeReplaced(currBlock)) {
+                                serverLevel.setBlockAndUpdate(mutable.above(), ModBlocks.POLISHED_WITCH_HAZEL_LAYERED.get().defaultBlockState());
+                                break;
+                            }
+
+                            itor++;
+                        }
+                    } else if (pLevel instanceof WorldGenRegion worldGenRegion) {
+
+                        // Always replace the glass itself with witch hazel pillar
+                        worldGenRegion.setBlock(blockPos, ModBlocks.POLISHED_WITCH_HAZEL_PILLAR.get().defaultBlockState(), 3);
+
+                        // Generate vertical pillar down
+                        BlockPos.MutableBlockPos mutable = blockPos.below().mutable();
+                        BlockState currBlock = pLevel.getBlockState(mutable);
+                        int itor = 0;
+                        while (mutable.getY() > 0 && (currBlock.canBeReplaced() || currBlock.isAir() || currBlock.is(BlockTags.LEAVES) || currBlock.is(Blocks.WATER) || currBlock.is(Blocks.LAVA))) {
+                            if (itor != 1)
+                                worldGenRegion.setBlock(mutable, ModBlocks.POLISHED_WITCH_HAZEL_PILLAR.get().defaultBlockState(), 3);
+                            else
+                                worldGenRegion.setBlock(mutable, ModBlocks.POLISHED_WITCH_HAZEL_LAYERED.get().defaultBlockState(), 3);
+                            mutable.move(Direction.DOWN);
+                            currBlock = worldGenRegion.getBlockState(mutable);
+
+                            if (!(currBlock.canBeReplaced() || currBlock.isAir() || currBlock.is(BlockTags.LEAVES) || currBlock.is(Blocks.MUD_BRICK_SLAB) || currBlock.is(Blocks.MOSS_CARPET) || currBlock.is(ModBlocks.WITCH_HAZEL_FENCE.get()) || currBlock.is(ModBlocks.WITCH_HAZEL_SLAB.get()) || currBlock.is(ModBlocks.WITCH_HAZEL_STAIRS.get()) || currBlock.is(Blocks.WATER) || currBlock.is(Blocks.LAVA))) {
+                                worldGenRegion.setBlock(mutable.above(), ModBlocks.POLISHED_WITCH_HAZEL_LAYERED.get().defaultBlockState(), 3);
+                                break;
+                            }
+
+                            itor++;
+                        }
+                    }
+
+
+                }
             }
 
         } catch (Exception err) {

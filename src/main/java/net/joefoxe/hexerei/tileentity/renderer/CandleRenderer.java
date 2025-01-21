@@ -8,6 +8,7 @@ import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.client.renderer.entity.model.CandleModel;
 import net.joefoxe.hexerei.data.candle.CandleData;
 import net.joefoxe.hexerei.data.candle.PotionCandleEffect;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.tileentity.CandleTile;
 import net.joefoxe.hexerei.util.DynamicTextureHandler;
 import net.joefoxe.hexerei.util.HexereiUtil;
@@ -272,7 +273,7 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
 
                         TextureAtlasSprite sprite = getFirstSprite(blockState);
                         if (sprite != null) {
-                            float offset = Hexerei.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTimeNs();
+                            float offset = ClientEvents.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTimeNs();
                             VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(ResourceLocation.parse(sprite.contents().name().getNamespace() + ":textures/" + sprite.contents().name().getPath() + ".png"), (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
                             if (candleData.height != 0 && candleData.height <= 7) {
                                 swirlLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, HexereiUtil.getColorValueAlpha(col[0], col[1], col[2], 0.75F));
@@ -281,7 +282,7 @@ public class CandleRenderer implements BlockEntityRenderer<CandleTile> {
                     }
                 } else {
 
-                    float offset = Hexerei.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTimeNs();
+                    float offset = ClientEvents.getClientTicksWithoutPartial() + Minecraft.getInstance().getFrameTimeNs();
                     VertexConsumer vertexConsumer2 = bufferIn.getBuffer(RenderType.energySwirl(candleData.swirl.layer, (offset * 0.01F) % 1.0F, offset * 0.01F % 1.0F));
                     if (candleData.height != 0 && candleData.height <= 7) {
                         swirlLayer.wax[candleData.height - 1].render(matrixStackIn, vertexConsumer2, combinedLightIn, OverlayTexture.NO_OVERLAY, HexereiUtil.getColorValueAlpha(col[0], col[1], col[2], 0.75F));

@@ -107,12 +107,13 @@ public class CourierPackage extends BaseEntityBlock implements ITileEntity<Couri
     @Override
     public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
 
-//        withTileEntityDo(worldIn, pos, te -> {
-//            if (stack.hasTag() && stack.getTag().contains("BlockEntityTag") && stack.getTag().getCompound("BlockEntityTag").contains("Items") && !stack.getTag().getCompound("BlockEntityTag").getList("Items", Tag.TAG_COMPOUND).isEmpty()) {
-//                te.readInventory(stack.getTag().getCompound("BlockEntityTag"));
-//            }
-//            te.sync();
-//        });
+        withTileEntityDo(worldIn, pos, te -> {
+            CustomData data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+            if (data != null && data.contains("Items") && !data.copyTag().getList("Items", Tag.TAG_COMPOUND).isEmpty()) {
+                te.loadFromTag(data.copyTag(), placer.level().registryAccess());
+            }
+            te.sync();
+        });
         super.setPlacedBy(worldIn, pos, state, placer, stack);
 
 //        if (stack.hasCustomHoverName()) {

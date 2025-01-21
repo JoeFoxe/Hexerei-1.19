@@ -350,9 +350,12 @@ public class DryingRackTile extends RandomizableContainerBlockEntity implements 
         compound.putInt("placedTime[1]", placedTime[1]);
         compound.putInt("placedTime[2]", placedTime[2]);
 
-        compound.put("output[0]", output[0].save(registries, new CompoundTag()));
-        compound.put("output[1]", output[1].save(registries, new CompoundTag()));
-        compound.put("output[2]", output[2].save(registries, new CompoundTag()));
+        if (!output[0].isEmpty())
+            compound.put("output[0]", output[0].save(registries, new CompoundTag()));
+        if (!output[1].isEmpty())
+            compound.put("output[1]", output[1].save(registries, new CompoundTag()));
+        if (!output[2].isEmpty())
+            compound.put("output[2]", output[2].save(registries, new CompoundTag()));
     }
 
 

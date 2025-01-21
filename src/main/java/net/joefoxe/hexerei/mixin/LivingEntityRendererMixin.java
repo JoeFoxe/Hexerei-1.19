@@ -31,36 +31,17 @@ public abstract class LivingEntityRendererMixin {
             if(broom.deltaMovementOld == null)
                 broom.deltaMovementOld = broom.getDeltaMovement();
             float deltaMovementY = Mth.lerp(partialTicks, (float)broom.deltaMovementOld.y(), (float)broom.getDeltaMovement().y());
-            float deltaRotation = Mth.lerp(partialTicks, (float)broom.deltaRotationOld, (float)broom.deltaRotation);
+            float deltaRotation = Mth.lerp(partialTicks, broom.deltaRotationOld, broom.deltaRotation);
+            float deltaRotY = Mth.lerp(partialTicks, broom.yRotO, broom.getYRot());
 
-            boolean hasSeat = broom.getModule(BroomEntity.BroomSlot.SATCHEL).is(ModItems.BROOM_SEAT.get());
+            matrixStack.translate(0f, entity.getBbHeight() / 2.5f, 0f);
+            matrixStack.mulPose(Axis.YP.rotationDegrees(-deltaRotation * 2));
+            float normalized = (deltaRotY % 360 / 360f);
+            float rot = (deltaRotY < 0 ? (1 + normalized) : normalized);
 
-            int i = -1;
-            if (broom.getPassengers().size() > 1) {
-                i = broom.getPassengers().indexOf(entity);
-            }
-            if(entity instanceof Animal){
-                i = 0;
-            }
-            if (i == 0) {
-                matrixStack.translate(0f, entity.getBbHeight() / 2.5f, 0f);
-                matrixStack.mulPose(Axis.YP.rotationDegrees(-deltaRotation * 2));
-                matrixStack.mulPose(Axis.ZP.rotationDegrees(deltaMovementY * 25f));
-                matrixStack.translate(0f, -entity.getBbHeight() / 2.5f, 0f);
-            } else if(i == 1) {
-                matrixStack.translate(0f, entity.getBbHeight() / 2.5f, 0f);
-                matrixStack.mulPose(Axis.YP.rotationDegrees(-deltaRotation * 2));
-                matrixStack.mulPose(Axis.XP.rotationDegrees(deltaMovementY * 25f));
-                matrixStack.translate(0f, -entity.getBbHeight() / 2.5f, 0f);
-            } else {
-                matrixStack.translate(0f, entity.getBbHeight() / 2.5f, 0f);
-                matrixStack.mulPose(Axis.YP.rotationDegrees(-deltaRotation * 2));
-                if(hasSeat)
-                    matrixStack.mulPose(Axis.XP.rotationDegrees(deltaMovementY * 25f));
-                else
-                    matrixStack.mulPose(Axis.ZP.rotationDegrees(deltaMovementY * 25f));
-                matrixStack.translate(0f, -entity.getBbHeight() / 2.5f, 0f);
-            }
+            matrixStack.mulPose(Axis.ZP.rotationDegrees(-Mth.cos(rot * 2 * Mth.PI) * deltaMovementY * 25f));
+            matrixStack.mulPose(Axis.XP.rotationDegrees(Mth.sin(rot * 2 * Mth.PI) * deltaMovementY * 25f));
+            matrixStack.translate(0f, -entity.getBbHeight() / 2.5f, 0f);
 
         }
     }

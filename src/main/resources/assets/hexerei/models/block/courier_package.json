@@ -122,7 +122,7 @@
 	},
 	"groups": [
 		{
-			"name": "VoxelShapes",
+			"id": "VoxelShapes",
 			"origin": [7, 0, 7],
 			"color": 0,
 			"children": [0]

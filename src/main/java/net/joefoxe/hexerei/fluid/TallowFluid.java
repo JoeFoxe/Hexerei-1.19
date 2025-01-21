@@ -48,16 +48,6 @@ public abstract class TallowFluid extends FlowingFluid {
 	}
 
 	@Override
-	protected int getSlopeFindDistance(LevelReader worldIn) {
-		return 3;
-	}
-
-	@Override
-	protected int getDropOff(LevelReader worldIn) {
-		return 2;
-	}
-
-	@Override
 	public Item getBucket() {
 		return ModItems.TALLOW_BUCKET.get();
 	}
@@ -65,11 +55,6 @@ public abstract class TallowFluid extends FlowingFluid {
 	@Override
 	protected boolean canBeReplacedWith(FluidState fluidState, BlockGetter blockReader, BlockPos pos, Fluid fluid, Direction direction) {
 		return direction == Direction.DOWN && !fluid.is(FluidTags.WATER);
-	}
-
-	@Override
-	public int getTickDelay(LevelReader p_205569_1_) {
-		return 5;
 	}
 
 	@Override
@@ -92,6 +77,22 @@ public abstract class TallowFluid extends FlowingFluid {
 		return 0;
 	}
 
+	public boolean isSame(Fluid fluid) {
+		return fluid == ModFluids.TALLOW_FLUID.get() || fluid == ModFluids.TALLOW_FLOWING.get();
+	}
+
+	public int getSlopeFindDistance(LevelReader level) {
+		return 3;
+	}
+
+	public int getDropOff(LevelReader level) {
+		return 2;
+	}
+
+	public int getTickDelay(LevelReader level) {
+		return 5;
+	}
+
 	public void animateTick(Level worldIn, BlockPos pos, FluidState state, RandomSource random) {
 		if (!state.isSource() && !state.getValue(FALLING)) {
 			if (random.nextInt(64) == 0) {
@@ -112,6 +113,10 @@ public abstract class TallowFluid extends FlowingFluid {
 		protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> builder) {
 			super.createFluidStateDefinition(builder);
 			builder.add(LEVEL);
+		}
+
+		public BlockState createLegacyBlock(FluidState state) {
+			return (BlockState) ModFluids.TALLOW_BLOCK.get().defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(state));
 		}
 
 		@Override

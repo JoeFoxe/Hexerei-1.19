@@ -48,6 +48,16 @@ public class DipperRecipeCategory implements IRecipeCategory<DipperRecipe> {
     }
 
     @Override
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
+    }
+
+    @Override
     public RecipeType<DipperRecipe> getRecipeType() {
         return new RecipeType<>(DipperRecipeCategory.UID, DipperRecipe.class);
     }
@@ -69,7 +79,7 @@ public class DipperRecipeCategory implements IRecipeCategory<DipperRecipe> {
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, DipperRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 15, 14).addIngredients(recipe.getIngredients().get(0));
+        builder.addSlot(RecipeIngredientRole.INPUT, 15, 14).addItemStack(recipe.getInput());
         builder.addSlot(RecipeIngredientRole.OUTPUT, 69, 23).addItemStack(recipe.getOutput());
 
         FluidStack input = recipe.getLiquid();
@@ -82,7 +92,7 @@ public class DipperRecipeCategory implements IRecipeCategory<DipperRecipe> {
             builder.addSlot(RecipeIngredientRole.INPUT, 17, 35)
                     .setFluidRenderer(input.getAmount(), false, 12, 10)
                     .setOverlay(this.liquid, 0, 0)
-                    .addIngredients(NeoForgeTypes.FLUID_STACK, Arrays.stream(recipe.getFluidIngredient().getStacks()).toList());
+                    .addFluidStack(recipe.getFluid().getFluid(), recipe.getFluid().getAmount(), recipe.getFluid().getComponentsPatch());
         }
     }
 

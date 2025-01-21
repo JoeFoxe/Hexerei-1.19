@@ -148,7 +148,8 @@ public class CrystalBallRenderer implements BlockEntityRenderer<CrystalBallTile>
         } else if (difference < -180.0f) {
             difference += 360.0f;
         }
-        return normalizeAngle(startAngle + alpha * difference); }
+        return normalizeAngle(startAngle + alpha * difference);
+    }
     private static float normalizeAngle(float angle) {
         while (angle > 180.0f) {
             angle -= 360.0f;

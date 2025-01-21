@@ -34,7 +34,7 @@
       "type": "item",
       "x": 2.5,
       "y": 0.75,
-      "name": "hexerei:crystal_ball"
+      "id": "hexerei:crystal_ball"
 
     }
   ],

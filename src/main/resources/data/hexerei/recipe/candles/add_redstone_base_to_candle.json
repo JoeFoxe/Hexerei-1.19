@@ -1,0 +1,17 @@
+{
+  "type": "hexerei:add_to_candle",
+  "input": {
+    "item": "minecraft:redstone_block"
+  },
+  "output": {
+    "id": "hexerei:candle",
+    "components": {
+      "minecraft:custom_data": {
+        "base": {
+          "layer": "minecraft:redstone_block",
+          "layerFromBlockLocation": true
+        }
+      }
+    }
+  }
+}

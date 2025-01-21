@@ -134,11 +134,24 @@ public class OwlCourierDepotNameScreen extends Screen {
     public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
 
         Lighting.setupForFlatItems();
-        this.renderBackground(pGuiGraphics, pMouseX, pMouseY ,pPartialTick);
+//        this.renderBackground(pGuiGraphics, pMouseX, pMouseY ,pPartialTick);
         pGuiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 40, 16777215);
         this.renderSign(pGuiGraphics);
         Lighting.setupFor3DItems();
         super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
+    }
+
+//    @Override
+//    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+//        guiGraphics.pose().pushPose();
+//        guiGraphics.pose().translate(0.0F, 0.0F, 40.0F);
+//        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+//        guiGraphics.pose().popPose();
+//    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.renderTransparentBackground(guiGraphics);
     }
 
     protected void offsetSign(GuiGraphics pGuiGraphics) {

@@ -18,7 +18,7 @@
       "type": "item",
       "x": 3.75,
       "y": 2.5,
-      "name": "hexerei:mixing_cauldron"
+      "id": "hexerei:mixing_cauldron"
     },
 
 
@@ -26,26 +26,26 @@
       "type": "item",
       "x": 0.25,
       "y": 3,
-      "name": "hexerei:yellow_dock_flowers"
+      "id": "hexerei:yellow_dock_flowers"
     },
     {
       "type": "item",
       "x": 1.25,
       "y": 2.75,
-      "name": "hexerei:broom_brush"
+      "id": "hexerei:broom_brush"
     },
     {
       "type": "item",
       "x": 2.25,
       "y": 3,
-      "name": "hexerei:belladonna_flowers"
+      "id": "hexerei:belladonna_flowers"
     },
 
     {
       "type": "item",
       "x": 0,
       "y": 4,
-      "name": "hexerei:mugwort_flowers"
+      "id": "hexerei:mugwort_flowers"
     },
     {
       "type": "fluid",
@@ -58,32 +58,32 @@
       "fluid_height": 11,
       "fluid_offset_x": 0,
       "fluid_offset_y": -4,
-      "name": "minecraft:water"
+      "id": "minecraft:water"
     },
     {
       "type": "item",
       "x": 2.5,
       "y": 4,
-      "name": "hexerei:belladonna_berries"
+      "id": "hexerei:belladonna_berries"
     },
 
     {
       "type": "item",
       "x": 0.25,
       "y": 5,
-      "name": "hexerei:mandrake_root"
+      "id": "hexerei:mandrake_root"
     },
     {
       "type": "item",
       "x": 1.25,
       "y": 5.25,
-      "name": "hexerei:mandrake_flowers"
+      "id": "hexerei:mandrake_flowers"
     },
     {
       "type": "item",
       "x": 2.25,
       "y": 5,
-      "name": "hexerei:mandrake_root"
+      "id": "hexerei:mandrake_root"
     },
 
 
@@ -92,7 +92,7 @@
       "type": "item",
       "x": 5,
       "y": 4,
-      "name": "hexerei:wet_herb_enhanced_broom_brush"
+      "id": "hexerei:wet_herb_enhanced_broom_brush"
     }
   ],
   "images": [

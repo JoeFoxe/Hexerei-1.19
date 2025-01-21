@@ -1,8 +1,0 @@
-{
-  "type": "hexerei:woodcutting",
-  "ingredient": {
-    "item": "minecraft:spruce_planks"
-  },
-  "ingredient_count": 6,
-  "result": "minecraft:chest"
-}

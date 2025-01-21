@@ -18,6 +18,7 @@ import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.custom.MixingCauldron;
 import net.joefoxe.hexerei.data.recipes.FluidMixingRecipe;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.tileentity.renderer.MixingCauldronRenderer;
 import net.joefoxe.hexerei.util.HexereiTags;
 import net.joefoxe.hexerei.util.HexereiUtil;
@@ -106,6 +107,16 @@ public class FluidMixingRecipeCategory implements IRecipeCategory<FluidMixingRec
     public boolean isHovering(double mouseX, double mouseY, double x, double y, double width, double height)
     {
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
+    }
+
+    @Override
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
     }
 
     public FluidMixingRecipeCategory(IGuiHelper helper) {
@@ -219,9 +230,9 @@ public class FluidMixingRecipeCategory implements IRecipeCategory<FluidMixingRec
             input.setAmount(2000);
             output.setAmount(2000);
 
-            float newHeatSource = (Hexerei.getClientTicks()) % 200 / 200f;
-            float craftPercent = (Hexerei.getClientTicks()) % 100 / 100f;
-            boolean showOutput = (Hexerei.getClientTicks()) % 200 > 100;
+            float newHeatSource = (ClientEvents.getClientTicks()) % 200 / 200f;
+            float craftPercent = (ClientEvents.getClientTicks()) % 100 / 100f;
+            boolean showOutput = (ClientEvents.getClientTicks()) % 200 > 100;
             if ((newHeatSource <= 0.05f && this.findNewHeatSource) || this.heatSource == null) {
                 this.findNewHeatSource = false;
                 if (Minecraft.getInstance().level != null) {
@@ -307,7 +318,7 @@ public class FluidMixingRecipeCategory implements IRecipeCategory<FluidMixingRec
                 for (int i = 0; i < recipe.getIngredients().size(); i++) {
                     ItemStack[] items = recipe.getIngredients().get(i).getItems();
                     if (items.length > 0) {
-                        if (!items[((int)Hexerei.getClientTicksWithoutPartial() / 40) % items.length].isEmpty()) {
+                        if (!items[((int)ClientEvents.getClientTicksWithoutPartial() / 40) % items.length].isEmpty()) {
                             guiGraphics.pose().pushPose();
                             guiGraphics.pose().translate(0.5D, height + 1f / 256f, 0.5D);
 
@@ -315,15 +326,15 @@ public class FluidMixingRecipeCategory implements IRecipeCategory<FluidMixingRec
                             double itemRotationOffset = 0.8 * i + (craftPercent * (20f * craftPercent));
                             guiGraphics.pose().translate(
                                     0D + Math.sin(itemRotationOffset) / (3.5f + ((craftPercent * craftPercent) * 10.0f)),
-                                    (Math.sin(Math.PI * (Hexerei.getClientTicks()) / 30 + (i * 20)) / 10) * 0.2D,
+                                    (Math.sin(Math.PI * (ClientEvents.getClientTicks()) / 30 + (i * 20)) / 10) * 0.2D,
                                     0D + Math.cos(itemRotationOffset) / (3.5f + ((craftPercent * craftPercent) * 10.0f)));
-                            guiGraphics.pose().mulPose(Axis.YP.rotationDegrees((float) ((45 * i) - 1f + (2 * Math.sin((Hexerei.getClientTicks() + i * 20) / 40)))));
-                            guiGraphics.pose().mulPose(Axis.XP.rotationDegrees((float) (82.5f + (5 * Math.cos((Hexerei.getClientTicks() + i * 22) / 40)))));
-                            guiGraphics.pose().mulPose(Axis.ZP.rotationDegrees((float) (-2.5f + (5 * Math.cos((Hexerei.getClientTicks() + i * 24) / 40)))));
+                            guiGraphics.pose().mulPose(Axis.YP.rotationDegrees((float) ((45 * i) - 1f + (2 * Math.sin((ClientEvents.getClientTicks() + i * 20) / 40)))));
+                            guiGraphics.pose().mulPose(Axis.XP.rotationDegrees((float) (82.5f + (5 * Math.cos((ClientEvents.getClientTicks() + i * 22) / 40)))));
+                            guiGraphics.pose().mulPose(Axis.ZP.rotationDegrees((float) (-2.5f + (5 * Math.cos((ClientEvents.getClientTicks() + i * 24) / 40)))));
                             guiGraphics.pose().scale(1 - (craftPercent * 0.5f), 1 - (craftPercent * 0.5f), 1 - (craftPercent * 0.5f));
 
                             guiGraphics.pose().scale(0.4f, 0.4f, 0.4f);
-                            renderItem(items[((int)Hexerei.getClientTicksWithoutPartial() / 40) % items.length], minecraft.level, guiGraphics.pose(), buffer, LightTexture.FULL_BRIGHT);
+                            renderItem(items[((int)ClientEvents.getClientTicksWithoutPartial() / 40) % items.length], minecraft.level, guiGraphics.pose(), buffer, LightTexture.FULL_BRIGHT);
                             guiGraphics.pose().popPose();
                         }
                     }
@@ -356,9 +367,9 @@ public class FluidMixingRecipeCategory implements IRecipeCategory<FluidMixingRec
             input.setAmount(2000);
             output.setAmount(2000);
 
-            float newHeatSource = (Hexerei.getClientTicks()) % 200 / 200f;
-            float craftPercent = (Hexerei.getClientTicks()) % 100 / 100f;
-            boolean showOutput = (Hexerei.getClientTicks()) % 200 > 100;
+            float newHeatSource = (ClientEvents.getClientTicks()) % 200 / 200f;
+            float craftPercent = (ClientEvents.getClientTicks()) % 100 / 100f;
+            boolean showOutput = (ClientEvents.getClientTicks()) % 200 > 100;
             if ((newHeatSource <= 0.05f && this.findNewHeatSource) || this.heatSource == null) {
                 this.findNewHeatSource = false;
                 if (Minecraft.getInstance().level != null) {
@@ -442,7 +453,7 @@ public class FluidMixingRecipeCategory implements IRecipeCategory<FluidMixingRec
                 for (int i = 0; i < recipe.getIngredients().size(); i++) {
                     ItemStack[] items = recipe.getIngredients().get(i).getItems();
                     if (items.length > 0) {
-                        if (!items[((int)Hexerei.getClientTicksWithoutPartial() / 40) % items.length].isEmpty()) {
+                        if (!items[((int)ClientEvents.getClientTicksWithoutPartial() / 40) % items.length].isEmpty()) {
                             guiGraphics.pose().pushPose();
                             guiGraphics.pose().translate(0.5D, height + 1f / 256f, 0.5D);
 
@@ -450,15 +461,15 @@ public class FluidMixingRecipeCategory implements IRecipeCategory<FluidMixingRec
                             double itemRotationOffset = 0.8 * i + (craftPercent * (20f * craftPercent));
                             guiGraphics.pose().translate(
                                     0D + Math.sin(itemRotationOffset) / (3.5f + ((craftPercent * craftPercent) * 10.0f)),
-                                    (Math.sin(Math.PI * (Hexerei.getClientTicks()) / 30 + (i * 20)) / 10) * 0.2D,
+                                    (Math.sin(Math.PI * (ClientEvents.getClientTicks()) / 30 + (i * 20)) / 10) * 0.2D,
                                     0D + Math.cos(itemRotationOffset) / (3.5f + ((craftPercent * craftPercent) * 10.0f)));
-                            guiGraphics.pose().mulPose(Axis.YP.rotationDegrees((float) ((45 * i) - 1f + (2 * Math.sin((Hexerei.getClientTicks() + i * 20) / 40)))));
-                            guiGraphics.pose().mulPose(Axis.XP.rotationDegrees((float) (82.5f + (5 * Math.cos((Hexerei.getClientTicks() + i * 22) / 40)))));
-                            guiGraphics.pose().mulPose(Axis.ZP.rotationDegrees((float) (-2.5f + (5 * Math.cos((Hexerei.getClientTicks() + i * 24) / 40)))));
+                            guiGraphics.pose().mulPose(Axis.YP.rotationDegrees((float) ((45 * i) - 1f + (2 * Math.sin((ClientEvents.getClientTicks() + i * 20) / 40)))));
+                            guiGraphics.pose().mulPose(Axis.XP.rotationDegrees((float) (82.5f + (5 * Math.cos((ClientEvents.getClientTicks() + i * 22) / 40)))));
+                            guiGraphics.pose().mulPose(Axis.ZP.rotationDegrees((float) (-2.5f + (5 * Math.cos((ClientEvents.getClientTicks() + i * 24) / 40)))));
                             guiGraphics.pose().scale(1 - (craftPercent * 0.5f), 1 - (craftPercent * 0.5f), 1 - (craftPercent * 0.5f));
 
                             guiGraphics.pose().scale(0.4f, 0.4f, 0.4f);
-                            renderItem(items[((int)Hexerei.getClientTicksWithoutPartial() / 40) % items.length], minecraft.level, guiGraphics.pose(), buffer, LightTexture.FULL_BRIGHT);
+                            renderItem(items[((int)ClientEvents.getClientTicksWithoutPartial() / 40) % items.length], minecraft.level, guiGraphics.pose(), buffer, LightTexture.FULL_BRIGHT);
                             guiGraphics.pose().popPose();
                         }
                     }

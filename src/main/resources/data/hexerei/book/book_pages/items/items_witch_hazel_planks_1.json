@@ -31,14 +31,14 @@
       "type": "item",
       "x": 2.5,
       "y": 0.75,
-      "name": "hexerei:witch_hazel_planks"
+      "id": "hexerei:witch_hazel_planks"
     },
 
     {
       "type": "item",
       "x": 2.5,
       "y": 5.5,
-      "name": "hexerei:mahogany_woodcutter",
+      "id": "hexerei:mahogany_woodcutter",
 
       "extra_tooltips":[
         {
@@ -51,25 +51,25 @@
       "type": "item",
       "x": 1,
       "y": 6.5,
-      "name": "hexerei:witch_hazel_connected"
+      "id": "hexerei:witch_hazel_connected"
     },
     {
       "type": "item",
       "x": 2,
       "y": 6.5,
-      "name": "hexerei:polished_witch_hazel_connected"
+      "id": "hexerei:polished_witch_hazel_connected"
     },
     {
       "type": "item",
       "x": 3,
       "y": 6.5,
-      "name": "hexerei:polished_witch_hazel_pillar"
+      "id": "hexerei:polished_witch_hazel_pillar"
     },
     {
       "type": "item",
       "x": 4,
       "y": 6.5,
-      "name": "hexerei:polished_witch_hazel_layered"
+      "id": "hexerei:polished_witch_hazel_layered"
     }
   ],
   "images": [

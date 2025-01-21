@@ -1,0 +1,38 @@
+{
+  "type": "hexerei:mixingcauldron",
+  "fluid": {
+    "id": "minecraft:lava",
+    "amount": 500
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:polished_blackstone"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:polished_blackstone"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:polished_blackstone"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:polished_blackstone"
+    }
+  ],
+  "output": {
+    "id": "hexerei:blood_sigil",
+    "count": 1
+  },
+  "heatRequirement": "heated"
+}

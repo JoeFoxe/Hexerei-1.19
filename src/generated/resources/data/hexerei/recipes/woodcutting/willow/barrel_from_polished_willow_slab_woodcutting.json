@@ -1,8 +1,0 @@
-{
-  "type": "hexerei:woodcutting",
-  "ingredient": {
-    "item": "hexerei:polished_willow_slab"
-  },
-  "ingredient_count": 6,
-  "result": "minecraft:barrel"
-}

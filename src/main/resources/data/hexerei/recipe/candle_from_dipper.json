@@ -1,0 +1,16 @@
+{
+  "type": "hexerei:dipper",
+  "fluid": {
+    "id": "hexerei:tallow_fluid",
+    "amount": 50
+  },
+  "input": {
+    "id": "minecraft:string"
+  },
+  "output": {
+    "id": "hexerei:candle"
+  },
+  "dippingTime": 200,
+  "dryingTime": 200,
+  "numberOfDips": 3
+}

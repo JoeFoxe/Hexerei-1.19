@@ -1,7 +1,7 @@
 {
 	"parent": "item/generated",
 	"overrides": [
-		{ "predicate": { "open": 0.0 }, "model": "hexerei:item/courier_letter_sealed" },
-		{ "predicate": { "open": 1.0 }, "model": "hexerei:item/courier_letter_opened" }
+		{ "predicate": { "hexerei:open": 0.0 }, "model": "hexerei:item/courier_letter_sealed" },
+		{ "predicate": { "hexerei:open": 1.0 }, "model": "hexerei:item/courier_letter_opened" }
 	]
 }

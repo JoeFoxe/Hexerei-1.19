@@ -73,7 +73,7 @@
 	},
 	"groups": [
 		{
-			"name": "group",
+			"id": "group",
 			"origin": [0, 7.79888, -2.375],
 			"color": 0,
 			"children": []

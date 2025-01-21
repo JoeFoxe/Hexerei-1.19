@@ -18,7 +18,7 @@
       "type": "item",
       "x": 2.5,
       "y": 2.75,
-      "name": "hexerei:mahogany_woodcutter"
+      "id": "hexerei:mahogany_woodcutter"
     },
 
 
@@ -26,7 +26,7 @@
       "type": "item",
       "x": 1,
       "y": 4,
-      "name": "hexerei:willow_planks"
+      "id": "hexerei:willow_planks"
     },
 
 
@@ -34,7 +34,7 @@
       "type": "item",
       "x": 4,
       "y": 4,
-      "name": "hexerei:polished_willow_layered"
+      "id": "hexerei:polished_willow_layered"
     }
   ],
   "images": [

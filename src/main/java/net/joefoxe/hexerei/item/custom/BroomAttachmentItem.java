@@ -9,6 +9,8 @@ import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -28,9 +30,11 @@ public class BroomAttachmentItem extends Item {
 
     public void onBrushDamage(BroomEntity broom, RandomSource random){}
 
-    public void onMount(BroomEntity broom, RandomSource random){}
+    public void onMount(BroomEntity broom, Entity passenger, RandomSource random){}
 
-    public void onDismount(BroomEntity broom, RandomSource random){}
+    public void onDismount(BroomEntity broom, Entity passenger, RandomSource random){}
+
+    public void onActivate(BroomEntity broom, RandomSource random){}
 
     @OnlyIn(Dist.CLIENT)
     public void renderParticles(BroomEntity broom, Level world, BroomEntity.Status status, RandomSource random){}

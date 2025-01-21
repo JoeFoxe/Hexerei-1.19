@@ -49,7 +49,7 @@ public class BonemealingCandleEffect extends AbstractCandleEffect{
             }
             try {
                 if (candleData.effectParticle != null && level.isClientSide() && candleData.effectParticle != null && !candleData.effectParticle.isEmpty())
-                    particle = ParticleArgument.readParticle(new StringReader(candleData.effectParticle.get(new Random().nextInt(candleData.effectParticle.size()))), Hexerei.proxy.getLevel().registryAccess());
+                    particle = ParticleArgument.readParticle(new StringReader(candleData.effectParticle.get(new Random().nextInt(candleData.effectParticle.size()))), Hexerei.DynamicRegistries.get());
             } catch (CommandSyntaxException e) {
                 // shrug
             }

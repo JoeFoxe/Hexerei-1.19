@@ -39,7 +39,7 @@
       "type": "item",
       "x": 2.5,
       "y": 0.75,
-      "name": "hexerei:herb_drying_rack"
+      "id": "hexerei:herb_drying_rack"
 
     }
   ],

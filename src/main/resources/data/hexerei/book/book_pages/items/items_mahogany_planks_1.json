@@ -31,14 +31,14 @@
       "type": "item",
       "x": 2.5,
       "y": 0.75,
-      "name": "hexerei:mahogany_planks"
+      "id": "hexerei:mahogany_planks"
     },
 
     {
       "type": "item",
       "x": 2.5,
       "y": 5.5,
-      "name": "hexerei:mahogany_woodcutter",
+      "id": "hexerei:mahogany_woodcutter",
 
       "extra_tooltips":[
         {
@@ -51,25 +51,25 @@
       "type": "item",
       "x": 1,
       "y": 6.5,
-      "name": "hexerei:mahogany_connected"
+      "id": "hexerei:mahogany_connected"
     },
     {
       "type": "item",
       "x": 2,
       "y": 6.5,
-      "name": "hexerei:polished_mahogany_connected"
+      "id": "hexerei:polished_mahogany_connected"
     },
     {
       "type": "item",
       "x": 3,
       "y": 6.5,
-      "name": "hexerei:polished_mahogany_pillar"
+      "id": "hexerei:polished_mahogany_pillar"
     },
     {
       "type": "item",
       "x": 4,
       "y": 6.5,
-      "name": "hexerei:polished_mahogany_layered"
+      "id": "hexerei:polished_mahogany_layered"
     }
   ],
   "images": [

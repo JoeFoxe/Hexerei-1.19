@@ -1,5 +1,6 @@
 package net.joefoxe.hexerei.data.recipes;
 
+import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.item.custom.CrowAmuletItem;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
@@ -79,10 +80,7 @@ public class CrowAmuletRecipe extends CustomRecipe {
             ListTag listtag = new ListTag();
 
             if (!other.isEmpty()) {
-                CompoundTag compoundtag = new CompoundTag();
-                compoundtag.putByte("Slot", (byte)0);
-                other.save(registryAccess, compoundtag);
-                listtag.add(compoundtag);
+                listtag.add(other.save(registryAccess));
 
             }
 
