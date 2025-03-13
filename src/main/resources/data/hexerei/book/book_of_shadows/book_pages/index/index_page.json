@@ -1,0 +1,199 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 7,
+          "y": 0,
+          "height": 4,
+          "width": 50
+        }
+      ],
+      "passage_text": "book.hexerei.index_page_1.passage_1",
+      "align": "middle"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 1,
+          "y": 3,
+          "height": 4,
+          "width": 50,
+          "align": "middle"
+        }
+      ],
+      "passage_text": "book.hexerei.index_page_1.passage_2"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 1,
+          "y": 5,
+          "height": 4,
+          "width": 50,
+          "align": "middle"
+        }
+      ],
+      "passage_text": "book.hexerei.index_page_1.passage_4"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 1,
+          "y": 7,
+          "height": 4,
+          "width": 50,
+          "align": "middle"
+        }
+      ],
+      "passage_text": "book.hexerei.index_page_1.passage_5"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 1,
+          "y": 9,
+          "height": 4,
+          "width": 50,
+          "align": "middle"
+        }
+      ],
+      "passage_text": "book.hexerei.index_page_1.passage_6"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 1,
+          "y": 11,
+          "height": 4,
+          "width": 50,
+          "align": "middle"
+        }
+      ],
+      "passage_text": "book.hexerei.index_page_1.passage_3"
+    }
+  ],
+  "non_item_tooltips": [
+    {
+      "x": 0.7,
+      "y": 1,
+      "width": 2.74,
+      "height": 0.564,
+      "hyperlink":
+      {
+        "id": "hexerei:book_of_shadows/book_pages/intro/intro_page_1"
+      },
+      "tooltip":[
+        {
+          "color_hex": "808080",
+          "text": "book.hexerei.index_page_1.tooltip_intro_1"
+        },
+        {
+          "color": 16777215,
+          "text": "book.hexerei.index_page_1.tooltip_right_click",
+          "type": "append"
+        }
+      ]
+
+    },{
+      "x": 0.7,
+      "y": 1.8,
+      "width": 2.74,
+      "height": 0.564,
+      "hyperlink":
+      {
+        "id": "hexerei:book_of_shadows/book_pages/items/items_index_page_1"
+      },
+      "tooltip":[
+        {
+          "color_hex": "808080",
+          "text": "book.hexerei.index_page_1.tooltip_items_1"
+        },
+        {
+          "color": 16777215,
+          "text": "book.hexerei.index_page_1.tooltip_right_click",
+          "type": "append"
+        }
+      ]
+
+    },{
+      "x": 0.7,
+      "y": 2.6,
+      "width": 2.74,
+      "height": 0.564,
+      "hyperlink":
+      {
+        "id": "hexerei:book_of_shadows/book_pages/entities/entities_index_page_1"
+      },
+      "tooltip":[
+        {
+          "color_hex": "808080",
+          "text": "book.hexerei.index_page_1.tooltip_entities_1"
+        },
+        {
+          "color": 16777215,
+          "text": "book.hexerei.index_page_1.tooltip_right_click",
+          "type": "append"
+        }
+      ]
+
+    },{
+      "x": 0.7,
+      "y": 3.4,
+      "width": 2.74,
+      "height": 0.564,
+      "hyperlink":
+      {
+        "id": "hexerei:book_of_shadows/book_pages/structures/structures_index_page_1"
+      },
+      "tooltip":[
+        {
+          "color_hex": "808080",
+          "text": "book.hexerei.index_page_1.tooltip_structures_1"
+        },
+        {
+          "color": 16777215,
+          "text": "book.hexerei.index_page_1.tooltip_right_click",
+          "type": "append"
+        }
+      ]
+
+    },{
+      "x": 0.7,
+      "y": 4.2,
+      "width": 2.74,
+      "height": 0.564,
+      "hyperlink":
+      {
+        "id": "hexerei:book_of_shadows/book_pages/support/support_page_1"
+      },
+      "tooltip":[
+        {
+          "color_hex": "808080",
+          "text": "book.hexerei.index_page_1.tooltip_support_1"
+        },
+        {
+          "color": 16777215,
+          "text": "book.hexerei.index_page_1.tooltip_right_click",
+          "type": "append"
+        }
+      ]
+
+    }
+  ],
+  "images": [
+    {
+      "x": 2.5,
+      "y": -0.3,
+      "z": -4,
+      "u": 0,
+      "v": 0,
+      "width": 380,
+      "height": 74,
+      "imageWidth": 380,
+      "imageHeight": 74,
+      "scale": 0.3,
+      "texture": "hexerei:textures/book/chapter_header.png"
+    }
+  ]
+}

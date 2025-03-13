@@ -34,6 +34,7 @@ import net.neoforged.neoforge.client.RenderTypeHelper;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Random;
 
@@ -90,7 +91,6 @@ public class HerbJarRenderer implements BlockEntityRenderer<HerbJarTile> {
             matrixStackIn.translate(1D, 0D / 16D, 0D);
             matrixStackIn.mulPose(Axis.YP.rotationDegrees(270));
         }
-//        renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.CRYSTAL_BALL_ORB.get().defaultBlockState(), RenderType.translucent(), tileEntityIn.getDyeColor());
         renderBlock(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn,
                 ModBlocks.HERB_JAR.get().defaultBlockState().setValue(HerbJar.GUI_RENDER, true).setValue(HerbJar.DYED, tileEntityIn.hasDyeColor()), null, tileEntityIn.getDyeColor());
         matrixStackIn.popPose();
@@ -126,10 +126,9 @@ public class HerbJarRenderer implements BlockEntityRenderer<HerbJarTile> {
 
 
             boolean is3dModel = itemModel.isGui3d();
-            for(int a = 0; a < ((float)tileEntityIn.itemHandler.getContents().get(0).getCount() / 1024f) * 20f; a++){
+            for(int a = 0; a < ((float)tileEntityIn.itemHandler.getContents().getFirst().getCount() / 1024f) * 20f; a++){
                 matrixStackIn.pushPose();
 
-//                boolean is3dModel = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(Registry.ITEM.getKey(item), "inventory")).isGui3d();
                 if(is3dModel) {
                     matrixStackIn.translate(0, 1.5D / 16D, 0);
                 }
@@ -210,11 +209,16 @@ public class HerbJarRenderer implements BlockEntityRenderer<HerbJarTile> {
         }
 
 
+        matrixStackIn.pushPose();
         int i = 0x464F56;
-        int j = (int)((double) FastColor.ARGB32.red(i) * 0.4D);
-        int k = (int)((double) FastColor.ARGB32.green(i) * 0.4D);
-        int l = (int)((double) FastColor.ARGB32.blue(i) * 0.4D);
-        int i1 = FastColor.ARGB32.color( 0, j, k, l);
+        int j1 = (int)((double) FastColor.ARGB32.red(i) * 0.4D);
+        int k1 = (int)((double) FastColor.ARGB32.green(i) * 0.4D);
+        int l1 = (int)((double) FastColor.ARGB32.blue(i) * 0.4D);
+        int i1 = FastColor.ARGB32.color( 0, j1, k1, l1);
+        int j2 = (int)((double) FastColor.ARGB32.red(i) * 0.2D);
+        int k2 = (int)((double) FastColor.ARGB32.green(i) * 0.2D);
+        int l2 = (int)((double) FastColor.ARGB32.blue(i) * 0.2D);
+        int i2 = FastColor.ARGB32.color( 0, j2, k2, l2);
 
         if (tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).getValue(HorizontalDirectionalBlock.FACING) == Direction.NORTH) {
             matrixStackIn.translate(8D / 16D, 8D / 16D, 12.05D / 16D);
@@ -244,30 +248,38 @@ public class HerbJarRenderer implements BlockEntityRenderer<HerbJarTile> {
             }
         }
 
+
         if(component != null){
             List<FormattedCharSequence> list = Minecraft.getInstance().font.split(component, 70);
-            float f3 = (float) (-Minecraft.getInstance().font.width(list.get(0)) / 2);
+            float f3 = (float) (-Minecraft.getInstance().font.width(list.getFirst()) / 2);
+            matrixStackIn.translate(0, 0, 1);
             if(tileEntityIn.hasDyeColor())
-                matrixStackIn.translate(0, 5, 1);
-            Minecraft.getInstance().font.drawInBatch(list.get(0), f3, 0, i1, false, matrixStackIn.last().pose(), bufferIn, Font.DisplayMode.NORMAL, 0, combinedLightIn);
+                matrixStackIn.translate(0, 5, 0);
+            Minecraft.getInstance().font.drawInBatch(list.getFirst(), f3, 0, i1, false, matrixStackIn.last().pose(), bufferIn, Font.DisplayMode.NORMAL, 0, combinedLightIn);
+            for (int y = 0; y < 9; y++) {
+                if (y % 2 == 0)
+                    continue;
+                matrixStackIn.pushPose();
+                matrixStackIn.translate(((y % 3) - 1) * 0.25f, ((y / 3) - 1) * 0.25f, -0.05f);
+                Minecraft.getInstance().font.drawInBatch(list.getFirst(), f3, 0, i2, false, matrixStackIn.last().pose(), bufferIn, Font.DisplayMode.NORMAL, 0, combinedLightIn);
+                matrixStackIn.popPose();
+            }
 
             if (list.size() > 1) {
                 matrixStackIn.translate(0, 10, 0);
                 f3 = (float) (-Minecraft.getInstance().font.width(list.get(1)) / 2);
                 Minecraft.getInstance().font.drawInBatch(list.get(1), f3, 0, i1, false, matrixStackIn.last().pose(), bufferIn, Font.DisplayMode.NORMAL, 0, combinedLightIn);
+                for (int y = 0; y < 9; y++) {
+                    if (y % 2 == 0)
+                        continue;
+                    matrixStackIn.pushPose();
+                    matrixStackIn.translate(((y % 3) - 1) * 0.25f, ((y / 3) - 1) * 0.25f, -0.05f);
+                    Minecraft.getInstance().font.drawInBatch(list.get(1), f3, 0, i2, false, matrixStackIn.last().pose(), bufferIn, Font.DisplayMode.NORMAL, 0, combinedLightIn);
+                    matrixStackIn.popPose();
+                }
             }
         }
-
-
-
-//        FormattedCharSequence ireorderingprocessor = tileEntityIn.reorderText(0, (p_243502_1_) -> {
-//            List<FormattedCharSequence> list = font.split(p_243502_1_, 90);
-//            return list.isEmpty() ? FormattedCharSequence.EMPTY : list.get(0);
-//        });
-//        if (ireorderingprocessor != null) {
-//            float f3 = (float)(-font.width(ireorderingprocessor) / 2);
-//            font.drawInBatch(ireorderingprocessor, f3, 0, i1, false, matrixStackIn.last().pose(), bufferIn, false, 0, combinedLightIn);
-//        }
+        matrixStackIn.popPose();
 
     }
 
@@ -310,7 +322,7 @@ public class HerbJarRenderer implements BlockEntityRenderer<HerbJarTile> {
         matrixStackIn.scale(0.30f, 0.30f, 0.30f);
 
 //        matrixStackIn.mulPose(Axis.YP.rotationDegrees(180));
-            renderItem(new ItemStack(tileEntityIn.itemHandler.getContents().get(0).getItem(), 1), tileEntityIn.getLevel(), matrixStackIn, bufferIn, combinedLightIn);
+            renderItem(new ItemStack(tileEntityIn.itemHandler.getContents().getFirst().getItem(), 1), tileEntityIn.getLevel(), matrixStackIn, bufferIn, combinedLightIn);
         matrixStackIn.popPose();
 
 
@@ -326,7 +338,7 @@ public class HerbJarRenderer implements BlockEntityRenderer<HerbJarTile> {
         matrixStackIn.scale(0.30f, 0.30f, 0.30f);
 
         matrixStackIn.mulPose(Axis.YP.rotationDegrees(180));
-        renderItem(new ItemStack(tileEntityIn.itemHandler.getContents().get(0).getItem(), 1), tileEntityIn.getLevel(), matrixStackIn, bufferIn, combinedLightIn);
+        renderItem(new ItemStack(tileEntityIn.itemHandler.getContents().getFirst().getItem(), 1), tileEntityIn.getLevel(), matrixStackIn, bufferIn, combinedLightIn);
         matrixStackIn.popPose();
     }
 

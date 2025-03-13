@@ -1,0 +1,103 @@
+{
+  "name": "block.hexerei.willow_planks",
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 7,
+          "y": -0.5,
+          "height": 2,
+          "width": 32,
+          "verticalAlign": "middle"
+        }
+      ],
+      "passage_text": "book.hexerei.items_willow_planks_1.passage_1",
+      "align": "middle"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 5,
+          "height": 14,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.items_willow_planks_1.passage_2"
+    }
+  ],
+  "item_hyperlink": "hexerei:willow_planks",
+  "items_and_fluids": [
+    {
+      "type": "item",
+      "x": 2.5,
+      "y": 0.75,
+      "item": {
+        "id": "hexerei:willow_planks"
+      }
+    },
+
+    {
+      "type": "item",
+      "x": 2.5,
+      "y": 5.5,
+      "item": {
+        "id": "hexerei:willow_woodcutter"
+      },
+
+      "extra_tooltips":[
+        {
+          "color_hex": "FFFFFF",
+          "text": "book.hexerei.items_woodcutter_planks"
+        }
+      ]
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 6.5,
+      "item": {
+        "id": "hexerei:willow_connected"
+      }
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 6.5,
+      "item": {
+        "id": "hexerei:polished_willow_connected"
+      }
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 6.5,
+      "item": {
+        "id": "hexerei:polished_willow_pillar"
+      }
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 6.5,
+      "item": {
+        "id": "hexerei:polished_willow_layered"
+      }
+    }
+  ],
+  "images": [
+    {
+      "x": 2.5,
+      "y": -0.3,
+      "z": -4,
+      "u": 0,
+      "v": 0,
+      "width": 380,
+      "height": 74,
+      "imageWidth": 380,
+      "imageHeight": 74,
+      "scale": 0.3,
+      "texture": "hexerei:textures/book/chapter_header.png"
+    }
+  ]
+}

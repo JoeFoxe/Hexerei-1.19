@@ -3,6 +3,7 @@ package net.joefoxe.hexerei.data.recipes;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.joefoxe.hexerei.data.books.HexereiBookItem;
+import net.joefoxe.hexerei.item.ModItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -40,6 +41,7 @@ public class BookOfShadowsRecipe extends ShapedRecipe {
     public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
         DyeColor color1 = null;
         DyeColor color2 = null;
+        ItemStack book = null;
 
         for (int i = 0; i < input.size(); i++) {
             ItemStack stack = input.getItem(i);
@@ -50,9 +52,11 @@ public class BookOfShadowsRecipe extends ShapedRecipe {
                     color1 = dye.getDyeColor();
                 else
                     color2 = dye.getDyeColor();
-            }
+            } else if (item instanceof HexereiBookItem)
+                book = stack;
         }
-        return HexereiBookItem.withColors(color1 == null ? 0 : color1.getTextureDiffuseColor(), color2 == null ? 0 : color2.getTextureDiffuseColor());
+        ItemStack stack = new ItemStack(ModItems.BOOK_OF_SHADOWS.get());
+        return HexereiBookItem.withColors(book == null ? stack : book, color1 == null ? 0 : color1.getTextureDiffuseColor(), color2 == null ? 0 : color2.getTextureDiffuseColor());
     }
 
     public ItemStack getOutput() {

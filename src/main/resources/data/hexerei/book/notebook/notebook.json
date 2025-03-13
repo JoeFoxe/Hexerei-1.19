@@ -1,0 +1,69 @@
+{
+  "chapters": [
+    {
+      "name": "Index",
+      "pages": [
+        {
+          "page_location": "hexerei:notebook/page1"
+        },
+        {
+          "page_location": "hexerei:notebook/page2"
+        },
+        {
+          "page_location": "hexerei:notebook/page3"
+        },
+        {
+          "page_location": "hexerei:notebook/page4"
+        },
+        {
+          "page_location": "hexerei:notebook/page5"
+        },
+        {
+          "page_location": "hexerei:notebook/page6"
+        },
+        {
+          "page_location": "hexerei:notebook/page7"
+        },
+        {
+          "page_location": "hexerei:notebook/page8"
+        },
+        {
+          "page_location": "hexerei:notebook/page9"
+        },
+        {
+          "page_location": "hexerei:notebook/page10"
+        },
+        {
+          "page_location": "hexerei:notebook/page11"
+        },
+        {
+          "page_location": "hexerei:notebook/page12"
+        },
+        {
+          "page_location": "hexerei:notebook/page13"
+        },
+        {
+          "page_location": "hexerei:notebook/page14"
+        },
+        {
+          "page_location": "hexerei:notebook/page15"
+        },
+        {
+          "page_location": "hexerei:notebook/page16"
+        },
+        {
+          "page_location": "hexerei:notebook/page17"
+        },
+        {
+          "page_location": "hexerei:notebook/page18"
+        },
+        {
+          "page_location": "hexerei:notebook/page19"
+        },
+        {
+          "page_location": "hexerei:notebook/page20"
+        }
+      ]
+    }
+  ]
+}

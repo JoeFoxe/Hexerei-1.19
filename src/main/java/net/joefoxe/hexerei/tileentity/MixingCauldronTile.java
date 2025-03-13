@@ -45,6 +45,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.Block;
@@ -89,6 +90,9 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
     public static final int craftDelayMax = 100;
     private long tickedGameTime;
     public int dyeColor = 0x422F1E;
+    public boolean hasHeatSource = false;
+    public boolean usingRecipeNeedsHeat = false;
+    public MoonPhases.MoonCondition usingRecipeNeedsMoonPhase = MoonPhases.MoonCondition.NONE;
 
     public Component customName;
     public NonNullList<ItemStack> items = NonNullList.withSize(10, ItemStack.EMPTY);
@@ -322,12 +326,18 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
         if (tag.contains("CustomName", 8))
             this.customName = Component.Serializer.fromJson(tag.getString("CustomName"), registries);
 
+        if(tag.contains("hasHeatSource"))
+            this.hasHeatSource = tag.getBoolean("hasHeatSource");
         if(tag.contains("DyeColor"))
             this.dyeColor = tag.getInt("DyeColor");
         if(tag.contains("delay"))
             this.craftDelay = tag.getInt("delay");
         if(tag.contains("delayOld"))
             this.craftDelayOld = tag.getInt("delayOld");
+        if(tag.contains("usingRecipeNeedsHeat"))
+            this.usingRecipeNeedsHeat = tag.getBoolean("usingRecipeNeedsHeat");
+        if(tag.contains("usingRecipeNeedsMoonPhase"))
+            this.usingRecipeNeedsMoonPhase = MoonPhases.MoonCondition.getMoonCondition(tag.getString("usingRecipeNeedsMoonPhase"));
         if (!this.tryLoadLootTable(tag)) {
             ContainerHelper.loadAllItems(tag, this.items, registries);
         }
@@ -342,6 +352,9 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
         compound.putInt("delay", this.craftDelay);
         compound.putInt("delayOld", this.craftDelayOld);
         compound.putInt("DyeColor", this.dyeColor);
+        compound.putBoolean("hasHeatSource", this.hasHeatSource);
+        compound.putBoolean("usingRecipeNeedsHeat", this.usingRecipeNeedsHeat);
+        compound.putString("usingRecipeNeedsMoonPhase", this.usingRecipeNeedsMoonPhase.getSerializedName());
         if (this.customName != null)
             compound.putString("CustomName", Component.Serializer.toJson(this.customName, registries));
     }
@@ -469,7 +482,6 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
     }
 
     public boolean captureItem(ItemEntity itemEntity) {
-        boolean flag = false;
         ItemStack itemstack = itemEntity.getItem().copy();
 
         //check if there is a slot open  getFirstOpenSlot
@@ -478,9 +490,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
             ItemStack temp = itemstack.copy();
             temp.setCount(1);
             this.setItem(getFirstOpenSlot(), temp);
-//            this.itemHandler.insertItem(getFirstOpenSlot(), itemstack, false);
             itemEntity.getItem().shrink(1);
-            //((MixingCauldron)this.getBlockState().getBlock()).emitCraftCompletedParticles();
             return true;
         }
         return false;
@@ -500,6 +510,10 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
 
         this.crafting = false;
 
+        boolean usingRecipeNeedsHeatOld = usingRecipeNeedsHeat;
+        usingRecipeNeedsHeat = false;
+        MoonPhases.MoonCondition usingRecipeNeedsMoonPhaseOld = usingRecipeNeedsMoonPhase;
+        usingRecipeNeedsMoonPhase = MoonPhases.MoonCondition.NONE;
 
         MixingCauldronRecipe.MixingCauldronRecipeInput inv = MixingCauldronRecipe.createInput(this.items.stream().limit(8).toList());
 
@@ -532,13 +546,6 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
 
         for (FluidMixingRecipe fluidMixingRecipe : recipe2) {
             boolean fluidEqual = FluidStack.isSameFluidSameComponents(fluidMixingRecipe.getLiquid(), this.fluidStack);
-//            ResourceLocation fl1 = BuiltInRegistries.FLUID.getKey(fluidMixingRecipe.getLiquid().getFluid());
-//            if (!fluidEqual && fl1 != null && fl2 != null && fl1.getPath().equals(fl2.getPath())) {
-//                boolean flag = NbtUtils.compareNbt(fluidMixingRecipe.getLiquid().copy().getOrCreateTag(), tag, true);
-//                if (flag) {
-//                    fluidEqual = true;
-//                }
-//            }
 
             if (fluidEqual) {
                 matchesRecipe = true;
@@ -546,18 +553,13 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
             }
         }
 
-//        List<FluidMixingRecipe> list = PotionMixingRecipes.BY_ITEM.get(inv.getItem(0).getItem());
-//        Optional<FluidMixingRecipe> recipe2 = list != null ?list.stream().findFirst().filter((fluidMixingRecipe -> {
-//            return fluidMixingRecipe.matches(inv, level);
-//        })) : Optional.empty();
-
-
         if (!matchesRecipe)
             recipe2 = level.getRecipeManager().getRecipeFor(ModRecipeTypes.FLUID_MIXING_TYPE.get(), inv, level).stream().map(RecipeHolder::value).toList();
 
 
         AtomicBoolean firstRecipe = new AtomicBoolean(false);
-        recipe.ifPresent(iRecipe -> {
+        if (recipe.isPresent()) {
+            RecipeHolder<MixingCauldronRecipe> iRecipe = recipe.get();
             ItemStack output = iRecipe.value().getResultItem(this.level.registryAccess());
             //ask for delay
             FluidStack recipeFluid = iRecipe.value().getLiquid();
@@ -568,25 +570,27 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
             boolean hasEnoughFluid = iRecipe.value().getFluidLevelsConsumed() <= this.getFluidStack().getAmount();
             boolean needsHeat = iRecipe.value().getHeatCondition() != FluidMixingRecipe.HeatCondition.NONE;
             boolean needsMoonPhase = iRecipe.value().getMoonCondition() != MoonPhases.MoonCondition.NONE;
+            BlockState heatSource = level.getBlockState(getPos().below());
+            usingRecipeNeedsHeat = needsHeat;
+            usingRecipeNeedsMoonPhase = iRecipe.value().getMoonCondition();
             if (!needsMoonPhase || MoonPhases.MoonCondition.getMoonPhase(this.level) == iRecipe.value().getMoonCondition()) {
                 if (fluidEqual && !this.crafted && hasEnoughFluid && outputClear) {
-                    BlockState heatSource = level.getBlockState(getPos().below());
-                    if (!needsHeat || heatSource.is(HexereiTags.Blocks.HEAT_SOURCES)) {
-                        if (!heatSource.hasProperty(LIT) || heatSource.getValue(LIT)) {
-                            firstRecipe.set(true);
-                            this.crafting = true;
-                            if (this.craftDelay >= craftDelayMax) {
-                                craftTheItem(output);
-                                int temp = this.getFluidStack().getAmount();
-                                this.getFluidStack().shrink(this.getTankCapacity(0));
-                                this.fill(new FluidStack(iRecipe.value().getLiquidOutput().getFluid(), temp), FluidAction.EXECUTE);
 
-                                //for setting a cooldown on crafting so the animations can take place
-                                this.crafted = true;
-                                HexereiPacketHandler.sendToNearbyClient(this.level, worldPosition, new EmitParticlesPacket(worldPosition, 10, true));
-                                normalizeTank();
-                                setChanged();
-                            }
+                    firstRecipe.set(true);
+                    if (!needsHeat || (heatSource.is(HexereiTags.Blocks.HEAT_SOURCES) && (!heatSource.hasProperty(LIT) || heatSource.getValue(LIT)))) {
+
+                        this.crafting = true;
+                        if (this.craftDelay >= craftDelayMax) {
+                            craftTheItem(output);
+                            int temp = this.getFluidStack().getAmount();
+                            this.getFluidStack().shrink(this.getTankCapacity(0));
+                            this.fill(new FluidStack(iRecipe.value().getLiquidOutput().getFluid(), temp), FluidAction.EXECUTE);
+
+                            //for setting a cooldown on crafting so the animations can take place
+                            this.crafted = true;
+                            HexereiPacketHandler.sendToNearbyClient(this.level, worldPosition, new EmitParticlesPacket(worldPosition, 10, true));
+                            normalizeTank();
+                            setChanged();
                         }
                     }
                 }
@@ -595,13 +599,14 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
             }
 
 
-        });
+        }
+
 
 
         if (!firstRecipe.get() && !recipe2.isEmpty()) {
             for (FluidMixingRecipe fluidMixingRecipe : recipe2) {
                 ItemStack output = fluidMixingRecipe.getResultItem(this.level.registryAccess());
-                //ask for delay
+
                 FluidStack recipeFluid = fluidMixingRecipe.getLiquid();
                 FluidStack containerFluid = this.getFluidStack();
 
@@ -621,14 +626,18 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
                 boolean needsHeat = fluidMixingRecipe.getHeatCondition() != FluidMixingRecipe.HeatCondition.NONE;
                 if (fluidEqual && !this.crafted && hasEnoughFluid) {
                     BlockState heatSource = level.getBlockState(getPos().below());
+                    usingRecipeNeedsHeat = needsHeat;
+                    usingRecipeNeedsMoonPhase = MoonPhases.MoonCondition.NONE;
+
                     if (!needsHeat || heatSource.is(HexereiTags.Blocks.HEAT_SOURCES)) {
                         if (!heatSource.hasProperty(LIT) || heatSource.getValue(LIT)) {
                             this.crafting = true;
                             if (this.craftDelay >= craftDelayMax) {
                                 craftTheItem(output);
-                                int temp = this.getFluidStack().getAmount();
+                                FluidStack stack = fluidMixingRecipe.getLiquidOutput().copy();
+                                stack.setAmount(this.getFluidStack().getAmount());
                                 this.getFluidStack().shrink(this.getTankCapacity(0));
-                                this.fill(new FluidStack(fluidMixingRecipe.getLiquidOutput().getFluid(), temp), FluidAction.EXECUTE);
+                                this.fill(stack, FluidAction.EXECUTE);
 
                                 //for setting a cooldown on crafting so the animations can take place
                                 this.crafted = true;
@@ -641,17 +650,12 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
                 }
             }
         }
+
+        if (usingRecipeNeedsHeatOld != usingRecipeNeedsHeat || usingRecipeNeedsMoonPhaseOld != usingRecipeNeedsMoonPhase)
+            setChanged();
     }
 
     private void craftTheItem(ItemStack output) {
-//        itemHandler.extractItem(0, 1, false);
-//        itemHandler.extractItem(1, 1, false);
-//        itemHandler.extractItem(2, 1, false);
-//        itemHandler.extractItem(3, 1, false);
-//        itemHandler.extractItem(4, 1, false);
-//        itemHandler.extractItem(5, 1, false);
-//        itemHandler.extractItem(6, 1, false);
-//        itemHandler.extractItem(7, 1, false);
 
         if(output.getItem() == ModItems.TALLOW_IMPURITY.get())
         {
@@ -671,17 +675,6 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
             this.getItem(8).setCount(this.getItem(8).getCount() + output.getCount());
         } else
             this.setItem(8, output);
-//        itemHandler.setStackInSlot(0, ItemStack.EMPTY);
-//        itemHandler.setStackInSlot(1, ItemStack.EMPTY);
-//        itemHandler.setStackInSlot(2, ItemStack.EMPTY);
-//        itemHandler.setStackInSlot(3, ItemStack.EMPTY);
-//        itemHandler.setStackInSlot(4, ItemStack.EMPTY);
-//        itemHandler.setStackInSlot(5, ItemStack.EMPTY);
-//        itemHandler.setStackInSlot(6, ItemStack.EMPTY);
-//        itemHandler.setStackInSlot(7, ItemStack.EMPTY);
-//        itemHandler.setStackInSlot(8, output);
-
-
     }
 
 
@@ -693,7 +686,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
 
         this.craftDelayOld = this.craftDelay;
         if(level.isClientSide) {
-            float dist = Math.abs(fluidRenderLevel - fluidStack.getAmount()) / 1000f;
+//            float dist = Math.abs(fluidRenderLevel - fluidStack.getAmount()) / 1000f;
             if(!fluidStack.isEmpty())
                 renderedFluid = fluidStack.copy();
             if(renderedFluid != null)

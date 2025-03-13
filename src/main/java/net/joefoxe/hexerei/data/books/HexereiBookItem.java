@@ -5,24 +5,62 @@ import net.joefoxe.hexerei.item.ModDataComponents;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.data_components.BookColorData;
 import net.joefoxe.hexerei.item.data_components.BookData;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.Level;
+import net.neoforged.fml.util.thread.EffectiveSide;
 
 import java.util.List;
+import java.util.UUID;
 
 public class HexereiBookItem extends Item {
 
 
 
     public HexereiBookItem(Properties properties) {
-        super(properties.component(ModDataComponents.BOOK, BookData.EMPTY).component(ModDataComponents.BOOK_COLORS, BookColorData.EMPTY));
+        super(properties);
     }
 
-    public static ItemStack withColors(int color1, int color2) {
-        ItemStack stack = new ItemStack(ModItems.BOOK_OF_SHADOWS.get());
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+        if (EffectiveSide.get().isClient())
+            ClientHelper.setScreen(player, usedHand);
+        return super.use(level, player, usedHand);
+    }
+
+    @Override
+    public void onCraftedPostProcess(ItemStack stack, Level level) {
+        super.onCraftedPostProcess(stack, level);
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        BookData bookData = stack.get(ModDataComponents.BOOK);
+        if (bookData != null) {
+            if (bookData.getUUID() == BookData.EMPTY_UUID){
+                bookData = bookData.setUUID(UUID.randomUUID());
+                stack.set(ModDataComponents.BOOK, bookData);
+            }
+        }
+        super.inventoryTick(stack, level, entity, slotId, isSelected);
+    }
+
+    static class ClientHelper {
+        public static void setScreen(Player player, InteractionHand usedHand) {
+            Minecraft.getInstance().setScreen(new net.joefoxe.hexerei.screen.BookOfShadowsScreen(player, usedHand));
+        }
+    }
+
+    public static ItemStack withColors(ItemStack stack, int color1, int color2) {
         stack.set(ModDataComponents.BOOK_COLORS, new BookColorData(color1, color2));
 
         return stack;

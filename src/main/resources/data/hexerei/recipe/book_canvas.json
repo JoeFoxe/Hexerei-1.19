@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    "SPS",
+    " S "
+  ],
+  "key": {
+    "S": {
+      "item": "hexerei:dried_sage"
+    },
+    "P": {
+      "item": "minecraft:painting"
+    }
+  },
+  "result": {
+    "id": "hexerei:book_canvas"
+  }
+}

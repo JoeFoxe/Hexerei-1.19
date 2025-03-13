@@ -2,68 +2,107 @@ package net.joefoxe.hexerei.data.books;
 
 import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.JsonOps;
 import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.util.HexereiPacketHandler;
+import net.joefoxe.hexerei.util.message.AskForEntriesAndPagesPacket;
+import net.joefoxe.hexerei.util.message.AskForPaintDataToServer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class BookReloadListener extends SimpleJsonResourceReloadListener {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
+    public static boolean askForUpdate = false;
+
     public BookReloadListener() {
         super(GSON, "book");
     }
 
-//    public static BookPage deserialize(JsonObject object) {
-////        Ingredient input = object.has("ingredient_list") ? Ingredient.fromJson(object.get("ingredient_list")) : Ingredient.fromJson(object);
-//        int count = GsonHelper.getAsString(object, "passage_text");
-//        return new BookPage("Hexerei", count);
-//    }
-
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> jsons, ResourceManager manager, ProfilerFiller profile) {
 
-        BookManager.clearBookPages();
+        List<ResourceLocation> books = new ArrayList<>();
 
         jsons.forEach((key, input) -> {
             if (input != null) {
                 try {
+                    ResourceLocation bookLoc = ResourceLocation.parse(key.toString().split("/")[0]);
+                    if (!books.contains(bookLoc)) {
+                        BookManager.clearBookPages(bookLoc);
+                        books.add(bookLoc);
+                    }
                     String keyString = key.getPath();
-                    if(!keyString.equals("book_entries")){
-                        addBookPage(key, input);
+                    if(keyString.equals(bookLoc.getPath() + "/" + bookLoc.getPath())){
+                        addBookEntries(bookLoc, input);
                     }else{
-                        addBookEntries(key, input);
+                        addBookPage(bookLoc, key, input);
                     }
 
                 } catch (Exception e) {
-                    Hexerei.LOGGER.error("Failed to parse JSON object for book page " + key);
+                    e.printStackTrace();
+                    Hexerei.LOGGER.error("Failed to parse JSON object for book page {}", key);
                 }
             }
         });
 
         if (!FMLEnvironment.dist.isClient()) {
-            BookManager.sendBookEntriesToClient();
-            BookManager.sendBookPagesToClient();
+            BookManager.sendBookEntriesToClient(books);
+            BookManager.sendBookPagesToClient(books);
+
+            PaintSystemSavedData.sendToClients();
+        } else {
+            askForUpdate = true;
         }
     }
 
-    private static void addBookPage(ResourceLocation key, JsonElement input) throws CommandSyntaxException {
+    private static void addBookPage(ResourceLocation bookLoc, ResourceLocation key, JsonElement input) {
         JsonObject jsonObject = input.getAsJsonObject();
-        String title = GsonHelper.getAsString(jsonObject, "showTitle", "none");
+        String name = GsonHelper.getAsString(jsonObject, "name", "");
 
         ArrayList<BookParagraph> paragraphsList = new ArrayList<>();
         if (jsonObject.has("paragraphs")) {
             JsonArray paragraphs = GsonHelper.getAsJsonArray(jsonObject, "paragraphs");
             for (int i = 0; i < paragraphs.size(); i++) {
                 JsonObject obj = paragraphs.get(i).getAsJsonObject();
-                paragraphsList.add(BookParagraph.deserialize(obj));
+                paragraphsList.add(BookParagraph.CODEC.decode(JsonOps.INSTANCE, obj).getOrThrow().getFirst());
+
+            }
+        }
+
+        ArrayList<BookWritableTextBox> writableTextBoxes = new ArrayList<>();
+        if (jsonObject.has("writable_text_box")) {
+            JsonArray paragraphs = GsonHelper.getAsJsonArray(jsonObject, "writable_text_box");
+            for (int i = 0; i < paragraphs.size(); i++) {
+                JsonObject obj = paragraphs.get(i).getAsJsonObject();
+                BookWritableTextBox box = BookWritableTextBox.CODEC.decode(JsonOps.INSTANCE, obj).getOrThrow().getFirst();
+                box.parentLocation = key;
+                writableTextBoxes.add(box);
+
+            }
+        }
+
+        ArrayList<BookPaintElement> paintElements = new ArrayList<>();
+        if (jsonObject.has("paint_element")) {
+            JsonArray paragraphs = GsonHelper.getAsJsonArray(jsonObject, "paint_element");
+            for (int i = 0; i < paragraphs.size(); i++) {
+                JsonObject obj = paragraphs.get(i).getAsJsonObject();
+                BookPaintElement paint = BookPaintElement.CODEC.decode(JsonOps.INSTANCE, obj).getOrThrow().getFirst();
+                paint.parentLocation = key;
+                paintElements.add(paint);
+
             }
         }
 
@@ -73,7 +112,8 @@ public class BookReloadListener extends SimpleJsonResourceReloadListener {
             for (int i = 0; i < itemsAndFluids.size(); i++) {
                 JsonObject obj = itemsAndFluids.get(i).getAsJsonObject();
 
-                itemsInSlotsList.add(BookItemsAndFluids.deserialize(obj));
+                Optional<Pair<BookItemsAndFluids, JsonElement>> optional = BookItemsAndFluids.CODEC.decode(JsonOps.INSTANCE, obj).result();
+                optional.ifPresent(bookItemsAndFluidsJsonElementPair -> itemsInSlotsList.add(bookItemsAndFluidsJsonElementPair.getFirst()));
             }
         }
 
@@ -83,7 +123,9 @@ public class BookReloadListener extends SimpleJsonResourceReloadListener {
             for (int i = 0; i < blocks.size(); i++) {
                 JsonObject obj = blocks.get(i).getAsJsonObject();
 
-                blocksList.add(BookBlocks.deserialize(obj));
+                Optional<Pair<BookBlocks, JsonElement>> optional = BookBlocks.CODEC.decode(JsonOps.INSTANCE, obj).result();
+                optional.ifPresent(bookBlocksPair -> blocksList.add(bookBlocksPair.getFirst()));
+
             }
         }
 
@@ -93,7 +135,9 @@ public class BookReloadListener extends SimpleJsonResourceReloadListener {
             for (int i = 0; i < entity.size(); i++) {
                 JsonObject obj = entity.get(i).getAsJsonObject();
 
-                entityList.add(BookEntity.deserialize(obj));
+                Optional<Pair<BookEntity, JsonElement>> optional = BookEntity.CODEC.decode(JsonOps.INSTANCE, obj).result();
+                optional.ifPresent(bookEntityPair -> entityList.add(bookEntityPair.getFirst()));
+
             }
         }
 
@@ -103,7 +147,9 @@ public class BookReloadListener extends SimpleJsonResourceReloadListener {
             for (int i = 0; i < images.size(); i++) {
                 JsonObject obj = images.get(i).getAsJsonObject();
 
-                imagesList.add(BookImage.deserialize(obj));
+                Optional<Pair<BookImage, JsonElement>> optional = BookImage.CODEC.decode(JsonOps.INSTANCE, obj).result();
+                optional.ifPresent(bookImagePair -> imagesList.add(bookImagePair.getFirst()));
+
             }
         }
 
@@ -113,20 +159,23 @@ public class BookReloadListener extends SimpleJsonResourceReloadListener {
             for (int i = 0; i < non_item_tooltips.size(); i++) {
                 JsonObject obj = non_item_tooltips.get(i).getAsJsonObject();
 
-                nonItemTooltipsList.add(BookNonItemTooltip.deserialize(obj));
+                Optional<Pair<BookNonItemTooltip, JsonElement>> optional = BookNonItemTooltip.CODEC.decode(JsonOps.INSTANCE, obj).result();
+                optional.ifPresent(bookNonItemTooltip -> nonItemTooltipsList.add(bookNonItemTooltip.getFirst()));
+
             }
         }
 
         String itemHyperlink = GsonHelper.getAsString(jsonObject, "item_hyperlink", "none");
-//        if(!itemHyperlink.equals("none"))
-//            BookManager.addBookItemHyperlink(itemHyperlink, )
 
-        BookManager.addBookPage(key, new BookPage(title, paragraphsList, itemsInSlotsList, blocksList, entityList, imagesList, nonItemTooltipsList, itemHyperlink));
+        BookPage page = new BookPage(name, itemHyperlink, paragraphsList, itemsInSlotsList, blocksList, entityList, imagesList, nonItemTooltipsList, writableTextBoxes, paintElements);
+
+        page.location = key;
+        BookManager.addBookPage(bookLoc, key, page);
     }
 
 
 
-    private static void addBookEntries(ResourceLocation key, JsonElement input) {
+    private static void addBookEntries(ResourceLocation bookLoc, JsonElement input) {
         JsonObject jsonObject = input.getAsJsonObject();
         int numberOfPages = 0;
 
@@ -141,6 +190,6 @@ public class BookReloadListener extends SimpleJsonResourceReloadListener {
             }
         }
 
-        BookManager.addBookEntries(new BookEntries(chaptersList, numberOfPages));
+        BookManager.addBookEntries(new BookEntries(bookLoc, chaptersList, numberOfPages));
     }
 }

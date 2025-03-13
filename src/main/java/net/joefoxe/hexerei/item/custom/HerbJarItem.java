@@ -1,7 +1,9 @@
 package net.joefoxe.hexerei.item.custom;
 
 import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.block.custom.HerbJar;
 import net.joefoxe.hexerei.items.JarHandler;
+import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -50,6 +52,14 @@ public class HerbJarItem extends BlockItem {
             }
 
         }
+    }
+
+
+    public static int getColorValue(DyeColor color, ItemStack stack) {
+        int dyeCol = HexereiUtil.getDyeColor(stack, HerbJar.DEFAULT_COLOR.rgb());
+        if(color == null && dyeCol != -1)
+            return dyeCol;
+        return color.getTextureDiffuseColor();
     }
 
     @Override

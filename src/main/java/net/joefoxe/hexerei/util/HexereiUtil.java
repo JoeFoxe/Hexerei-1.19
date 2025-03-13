@@ -219,6 +219,21 @@ public class HexereiUtil {
         return diff < -180 ? diff + 360 : diff;
     }
 
+    public static float easeInOutCubic(float x) {
+        double c1 = 1.70158;
+        double c2 = c1 * 1.525;
+
+        return (float)(x < 0.5
+                ? (Math.pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
+                : (Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2);
+    }
+
+//    public static float easeInOutCubic(float x) {
+//        return (float)(x < 0.5
+//                ? (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2
+//                : (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2);
+//    }
+
     public static float moveTo(float input, float movedTo, float speed) {
         float distance = movedTo - input;
 
@@ -495,6 +510,16 @@ public class HexereiUtil {
         int b = rgbInt >> 0 & 255;
 
         return new float[]{r / 255F, g / 255F, b / 255F};
+    }
+
+
+    public static float[] rgbaIntToFloatArray(int rgbInt) {
+        int a = rgbInt >> 24 & 255;
+        int r = rgbInt >> 16 & 255;
+        int g = rgbInt >> 8 & 255;
+        int b = rgbInt >> 0 & 255;
+
+        return new float[]{r / 255F, g / 255F, b / 255F, a / 255F};
     }
 
     public static int[] rgbIntToIntArray(int rgbInt) {

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DLD",
+    "VBA",
+    "DLD"
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "A": {
+      "tag": "hexerei:tallow_meltable"
+    },
+    "B": {
+      "item": "minecraft:book"
+    },
+    "V": {
+      "item": "hexerei:belladonna_berries"
+    },
+    "D": {
+      "tag": "c:dyes"
+    }
+  },
+  "result": {
+    "id": "hexerei:book_of_colors"
+  }
+}

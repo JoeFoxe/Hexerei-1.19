@@ -1,0 +1,42 @@
+{
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 4,
+          "height": 16,
+          "width": 33.5
+        }
+      ],
+      "passage_text": "book.hexerei.intro_page_1.passage_1"
+    }
+  ],
+  "images": [
+    {
+      "x": 2.45,
+      "y": 0,
+      "u": 0,
+      "v": 0,
+      "width": 100,
+      "height": 32,
+      "imageWidth": 100,
+      "imageHeight": 32,
+      "scale": 1,
+      "texture": "hexerei:textures/book/hexerei.png",
+      "hyperlink": {
+        "url": "https://www.curseforge.com/minecraft/mc-mods/hexerei"
+      },
+      "tooltip":[
+        {
+          "color": 16777215,
+          "text": "book.hexerei.intro_page_1.curseforge_link_tooltip"
+        }
+      ]
+    }
+  ]
+
+
+
+}
+

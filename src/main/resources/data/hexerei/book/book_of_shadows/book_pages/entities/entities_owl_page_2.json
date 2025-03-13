@@ -1,0 +1,91 @@
+{
+  "name": "entity.hexerei.owl",
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 6,
+          "width": 19.5
+        }
+      ],
+      "passage_text": "book.hexerei.entities_owl_page_2.passage_1"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 7.25,
+          "height": 4,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_owl_page_2.passage_2"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 10.25,
+          "height": 4,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_owl_page_2.passage_3"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 14,
+          "height": 5,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_owl_page_2.passage_4"
+    }
+  ],
+  "images": [
+    {
+      "x": 4.4,
+      "y": 0.55,
+      "u": 0,
+      "v": 0,
+      "width": 165,
+      "height": 165,
+      "imageWidth": 165,
+      "imageHeight": 165,
+      "scale": 0.25,
+      "texture": "hexerei:textures/book/pictures/owl_tame.png"
+    },
+    {
+      "x": 2.4,
+      "y": 4.5,
+      "u": 0,
+      "v": 0,
+      "width": 387,
+      "height": 11,
+      "imageWidth": 387,
+      "imageHeight": 11,
+      "scale": 0.25,
+      "texture": "hexerei:textures/book/pictures/spacer.png"
+    }
+  ],
+  "items_and_fluids": [
+    {
+      "type": "tag",
+      "x": 3.5,
+      "y": 2.5,
+      "tag": "hexerei:owl_taming_food",
+      "show_slot": false
+    },
+    {
+      "type": "tag",
+      "x": 3.5,
+      "y": 3.75,
+      "tag": "hexerei:owl_breeding_food",
+      "show_slot": false
+    }
+  ]
+}

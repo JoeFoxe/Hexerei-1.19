@@ -1,0 +1,47 @@
+{
+  "name": "entity.hexerei.owl",
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 18,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_owl_page_4.passage_1"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 14.25,
+          "height": 18,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_owl_page_4.passage_2"
+    }
+  ],
+  "items_and_fluids": [
+    {
+      "type": "item",
+      "x": 3.5,
+      "y": 5.25,
+      "item": {
+        "id": "hexerei:courier_letter"
+      },
+      "show_slot": false
+    },
+    {
+      "type": "item",
+      "x": 4.5,
+      "y": 5.25,
+      "item": {
+        "id": "hexerei:courier_package"
+      },
+      "show_slot": false
+    }
+  ]
+}

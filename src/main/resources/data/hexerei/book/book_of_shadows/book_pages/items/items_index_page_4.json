@@ -1,0 +1,302 @@
+{
+  "name": "book.hexerei.index_name",
+  "items_and_fluids": [
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 1,
+      "item": {
+        "id": "hexerei:ender_satchel"
+      }
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 1,
+      "item": {
+        "id": "hexerei:replacer_satchel"
+      }
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 1,
+      "item": {
+        "id": "hexerei:broom_seat"
+      }
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 1,
+      "item": {
+        "id": "hexerei:wax_blend"
+      }
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 1,
+      "item": {
+        "id": "hexerei:cloth"
+      }
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 1,
+      "item": {
+        "id": "hexerei:waxing_kit"
+      }
+    },
+
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 2,
+      "item": {
+        "id": "hexerei:willow_connected"
+      }
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 2,
+      "item": {
+        "id": "hexerei:polished_willow_connected"
+      }
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 2,
+      "item": {
+        "id": "hexerei:polished_willow_pillar"
+      }
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 2,
+      "item": {
+        "id": "hexerei:polished_willow_layered"
+      }
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 2,
+      "item": {
+        "id": "hexerei:willow_window"
+      }
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 2,
+      "item": {
+        "id": "hexerei:willow_window_pane"
+      }
+    },
+
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 3,
+      "item": {
+        "id": "hexerei:mahogany_connected"
+      }
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 3,
+      "item": {
+        "id": "hexerei:polished_mahogany_connected"
+      }
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 3,
+      "item": {
+        "id": "hexerei:polished_mahogany_pillar"
+      }
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 3,
+      "item": {
+        "id": "hexerei:polished_mahogany_layered"
+      }
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 3,
+      "item": {
+        "id": "hexerei:mahogany_window"
+      }
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 3,
+      "item": {
+        "id": "hexerei:mahogany_window_pane"
+      }
+    },
+
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 4,
+      "item": {
+        "id": "hexerei:witch_hazel_connected"
+      }
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 4,
+      "item": {
+        "id": "hexerei:polished_witch_hazel_connected"
+      }
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 4,
+      "item": {
+        "id": "hexerei:polished_witch_hazel_pillar"
+      }
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 4,
+      "item": {
+        "id": "hexerei:polished_witch_hazel_layered"
+      }
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 4,
+      "item": {
+        "id": "hexerei:witch_hazel_window"
+      }
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 4,
+      "item": {
+        "id": "hexerei:witch_hazel_window_pane"
+      }
+    },
+
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 5,
+      "item": {
+        "id": "hexerei:infused_fabric_block"
+      }
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 5,
+      "item": {
+        "id": "hexerei:infused_fabric_carpet"
+      }
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 5,
+      "item": {
+        "id": "hexerei:mahogany_courier_depot"
+      }
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 5,
+      "item": {
+        "id": "hexerei:courier_letter"
+      }
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 5,
+      "item": {
+        "id": "hexerei:courier_package"
+      }
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 5,
+      "item": {
+        "id": "hexerei:mahogany_broom_stand"
+      }
+    },
+    {
+      "type": "item",
+      "x": 0,
+      "y": 6,
+      "item": {
+        "id": "hexerei:witch_hazel_broom"
+      }
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 6,
+      "item": {
+        "id": "hexerei:broom_whistle"
+      }
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 6,
+      "item": {
+        "id": "hexerei:mahogany_woodcutter"
+      }
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 6,
+      "item": {
+        "id": "hexerei:notebook"
+      }
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 6,
+      "item": {
+        "id": "hexerei:book_of_colors"
+      }
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 6,
+      "item": {
+        "id": "hexerei:book_canvas"
+      }
+    }
+  ]
+}

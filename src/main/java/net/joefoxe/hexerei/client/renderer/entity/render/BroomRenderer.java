@@ -62,16 +62,18 @@ public class BroomRenderer extends EntityRenderer<BroomEntity>
             entityIn.deltaMovementOld = entityIn.getDeltaMovement();
         if(entityIn.deltaRotationOld == 0)
             entityIn.deltaRotationOld = entityIn.deltaRotation;
-        float deltaRotation = Mth.lerp(partialTicks, (float)entityIn.deltaRotationOld, (float)entityIn.deltaRotation);
+        float deltaRotation = Math.clamp(Mth.lerp(partialTicks, entityIn.deltaRotationOld, entityIn.deltaRotation), -13 + entityIn.deltaRotation / 22.5f, 13 + entityIn.deltaRotation / 22.5f);
         float floatingOffset = Mth.lerp(partialTicks, entityIn.floatingOffsetOld, entityIn.floatingOffset);
         float deltaMovementX = Mth.lerp(partialTicks, (float)entityIn.deltaMovementOld.x(), (float)entityIn.getDeltaMovement().x());
         float deltaMovementY = Mth.lerp(partialTicks, (float)entityIn.deltaMovementOld.y(), (float)entityIn.getDeltaMovement().y());
         float deltaMovementZ = Mth.lerp(partialTicks, (float)entityIn.deltaMovementOld.z(), (float)entityIn.getDeltaMovement().z());
         Vec3 deltaLerp = new Vec3(deltaMovementX, deltaMovementY, deltaMovementZ);
 
+
         matrixStackIn.translate(0.0D, 0.375D + floatingOffset, 0.0D);
-        matrixStackIn.mulPose(Axis.YP.rotationDegrees(180.0F - entityYaw - (deltaRotation * 2)));
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees(180.0F - HexereiUtil.lerpAngle(entityIn.yRotO, entityIn.getYRot(), partialTicks) - (deltaRotation * 2)));
         matrixStackIn.mulPose(Axis.ZP.rotationDegrees(deltaMovementY * 25f));
+        matrixStackIn.mulPose(Axis.XP.rotationDegrees(deltaRotation * 3f));
         float f = (float)entityIn.getTimeSinceHit() - partialTicks;
         float f1 = entityIn.getDamageTaken() - partialTicks;
         if (f1 < 0.0F) {

@@ -1,0 +1,10 @@
+{
+  "type": "hexerei:entities",
+  "biomes": "minecraft:dark_forest",
+  "entity": {
+    "type": "hexerei:owl",
+    "weight": 20,
+    "minCount": 2,
+    "maxCount": 5
+  }
+}

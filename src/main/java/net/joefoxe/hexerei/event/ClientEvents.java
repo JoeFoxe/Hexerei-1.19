@@ -2,26 +2,28 @@ package net.joefoxe.hexerei.event;
 
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.client.renderer.entity.model.ArmorModels;
+import net.joefoxe.hexerei.config.HexConfig;
 import net.joefoxe.hexerei.container.ModContainers;
-import net.joefoxe.hexerei.data.books.BookChapter;
-import net.joefoxe.hexerei.data.books.BookEntries;
-import net.joefoxe.hexerei.data.books.BookManager;
 import net.joefoxe.hexerei.fluid.PotionFluidType;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.custom.*;
 import net.joefoxe.hexerei.light.LightManager;
 import net.joefoxe.hexerei.screen.*;
+import net.joefoxe.hexerei.tileentity.renderer.CrystalBallRenderer;
+import net.joefoxe.hexerei.util.ClientProxy;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.Camera;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -30,13 +32,9 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.FluidState;
-import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -44,11 +42,15 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
+import java.util.List;
+
 import static net.joefoxe.hexerei.fluid.ModFluidTypes.*;
 
 public class ClientEvents {
 
-
+    public static ShaderInstance hueSliderShader;
+    public static ShaderInstance sliderShader;
+    public static ShaderInstance bookTranslucentShader;
 
     static float clientTicks = 0;
     static float clientTicksPartial = 0;
@@ -56,15 +58,15 @@ public class ClientEvents {
     @SubscribeEvent
     public static void clientTickEvent(ClientTickEvent.Pre event) {
         clientTicks += 1;
-//		if (ClientProxy.fontList.isEmpty()) {
-//			List<? extends String> fonts = HexConfig.FONT_LIST.get();
-//			for (String str : fonts) {
-//				if (!ClientProxy.fontList.containsKey(str))
-//					ClientProxy.fontList.put(str, new Font((p_95014_) -> {
-//						return Minecraft.getInstance().fontManager.fontSets.getOrDefault(new ResourceLocation(str), Minecraft.getInstance().fontManager.missingFontSet);
-//					}, false));
-//			}
-//		}
+		if (ClientProxy.fontList.isEmpty()) {
+			List<? extends String> fonts = HexConfig.FONT_LIST.get();
+			for (String str : fonts) {
+				if (!ClientProxy.fontList.containsKey(str))
+					ClientProxy.fontList.put(str, new Font((p_95014_) -> {
+						return Minecraft.getInstance().fontManager.fontSets.getOrDefault(ResourceLocation.parse(str), Minecraft.getInstance().fontManager.missingFontSet);
+					}, false));
+			}
+		}
     }
 
 
@@ -109,6 +111,25 @@ public class ClientEvents {
         event.register(ModContainers.WOODCUTTER_CONTAINER.get(), WoodcutterScreen::new);
     }
 
+    @SubscribeEvent
+    public static void onRegisterShaders(RegisterShadersEvent event) {
+        try {
+            event.registerShader(new ShaderInstance(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(Hexerei.MOD_ID, "hue_slider"), DefaultVertexFormat.NEW_ENTITY), (shaderInstance) -> hueSliderShader = shaderInstance);
+            event.registerShader(new ShaderInstance(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(Hexerei.MOD_ID, "slider"), DefaultVertexFormat.NEW_ENTITY), (shaderInstance) -> sliderShader = shaderInstance);
+            event.registerShader(new ShaderInstance(event.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(Hexerei.MOD_ID, "book_translucent"), DefaultVertexFormat.NEW_ENTITY), (shaderInstance) -> bookTranslucentShader = shaderInstance);
+        } catch (Exception e) {
+            System.out.println("shader failed");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void onRegisterAdditionalModels(ModelEvent.RegisterAdditional event) {
+        event.register(BookCanvasItemRenderer.CANVAS);
+        event.register(HerbJarItemRenderer.JAR);
+        event.register(CrystalBallRenderer.ORB);
+        event.register(CrystalBallRenderer.ORB2);
+    }
+
 
     @SubscribeEvent
     public static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
@@ -125,6 +146,14 @@ public class ClientEvents {
                 return broomRenderer.getRenderer();
             }
         }, ModItems.WILLOW_BROOM.get(), ModItems.MAHOGANY_BROOM.get(), ModItems.WITCH_HAZEL_BROOM.get());
+
+        BookCanvasItemRenderer bookCanvasItemRenderer = new BookCanvasItemRenderer();
+        event.registerItem(new IClientItemExtensions() {
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return bookCanvasItemRenderer.getRenderer();
+            }
+        }, ModItems.BOOK_CANVAS.get());
 
         CandleItemRenderer candleItemRenderer = new CandleItemRenderer();
         event.registerItem(new IClientItemExtensions() {
@@ -180,7 +209,7 @@ public class ClientEvents {
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 return renderer.getRenderer();
             }
-        }, ModItems.BOOK_OF_SHADOWS.get());
+        }, ModItems.BOOK_OF_SHADOWS.get(), ModItems.NOTEBOOK.get(), ModItems.BOOK_OF_COLORS.get());
 
         event.registerItem(new IClientItemExtensions() {
 

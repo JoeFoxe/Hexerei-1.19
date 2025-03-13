@@ -1018,6 +1018,10 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
     // 1 - sit,
     // 2 - wander,
     // 3 - collect items
+    public void setCommandLoad(int command) {
+        this.entityData.set(COMMAND, command);
+        this.setOrderedToSit(command == 1);
+    }
     public void setCommand(int command) {
         this.entityData.set(COMMAND, command);
 
@@ -1036,6 +1040,10 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
 //                }
 //            }
         }
+    }
+
+    public void setHelpCommandLoad(int command) {
+        this.entityData.set(HELP_COMMAND, command);
     }
 
     public void setHelpCommand(int command) {
@@ -1146,8 +1154,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.setCommand(compound.getInt("Command"));
-        this.setHelpCommand(compound.getInt("HelpCommand"));
+        this.setCommandLoad(compound.getInt("Command"));
+        this.setHelpCommandLoad(compound.getInt("HelpCommand"));
         this.pickpocketTimer = compound.getInt("PickpocketTimer");
         this.setTypeVariant(compound.getInt("Variant"));
         this.playingDead = (compound.getInt("PlayingDeadTimer"));
@@ -1180,8 +1188,8 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
     }
 
     public void readAdditionalSaveDataNoSuper(CompoundTag compound) {
-        this.setCommand(compound.getInt("Command"));
-        this.setHelpCommand(compound.getInt("HelpCommand"));
+        this.setCommandLoad(compound.getInt("Command"));
+        this.setHelpCommandLoad(compound.getInt("HelpCommand"));
         this.pickpocketTimer = compound.getInt("PickpocketTimer");
         this.setTypeVariant(compound.getInt("Variant"));
         this.playingDead = compound.getInt("PlayingDeadTimer");
@@ -1459,7 +1467,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                     ItemStack stack = player.getItemInHand(hand).copy();
                     FluteData fluteData = stack.getOrDefault(ModDataComponents.FLUTE, FluteData.empty());
                     if (fluteData.commandMode() == 1) {
-                        List<FluteData.CrowIds> crowList = fluteData.crowList();
+                        List<FluteData.CrowIds> crowList = new ArrayList<>(fluteData.crowList());
                         boolean flag = false;
                         for (int i = 0; i < crowList.size(); i++) {
                             UUID thisuuid = this.getUUID();
@@ -1471,6 +1479,9 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                                 player.displayClientMessage(Component.translatable("entity.hexerei.crow_flute_deselect_message", this.getName()), true);
                                 this.playSound(ModSounds.CROW_FLUTE_DESELECT.get(), 1f, 0.75f);
                                 crowList.remove(i);
+                                FluteData newFluteData = new FluteData(fluteData.commandSelected(), fluteData.helpCommandSelected(), fluteData.commandMode(), crowList, fluteData.dyeColor1(), fluteData.dyeColor2());
+                                stack.set(ModDataComponents.FLUTE, newFluteData);
+                                player.setItemInHand(hand, stack);
                                 break;
                             }
                         }
@@ -1480,7 +1491,9 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                                 crowList.add(new FluteData.CrowIds(this.getUUID(), this.getId()));
                                 player.displayClientMessage(Component.translatable("entity.hexerei.crow_flute_selected_message", this.getName()), true);
                                 this.playSound(ModSounds.CROW_FLUTE_SELECT.get(), 1f, 0.75f);
-                                stack.set(ModDataComponents.FLUTE, new FluteData(fluteData.commandSelected(), fluteData.helpCommandSelected(), fluteData.commandMode(), crowList, fluteData.dyeColor1(), fluteData.dyeColor2()));
+                                FluteData newFluteData = new FluteData(fluteData.commandSelected(), fluteData.helpCommandSelected(), fluteData.commandMode(), crowList, fluteData.dyeColor1(), fluteData.dyeColor2());
+                                stack.set(ModDataComponents.FLUTE, newFluteData);
+                                player.setItemInHand(hand, stack);
                             }
                             else
                             {
@@ -2429,9 +2442,9 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                         int k = 0;
                         if (((PickablePlant) blockstate.getBlock()).secondOutput != null)
                             k = Math.max(1, random.nextInt(secondOutput.getCount()));
-                        ((PickablePlant) blockstate.getBlock()).popResource(level(), this.blockPos, new ItemStack(firstOutput.getItem(), Math.max(1, (int) Math.floor(j))));
+                        PickablePlant.popResource(level(), this.blockPos, new ItemStack(firstOutput.getItem(), Math.max(1, (int) Math.floor(j))));
                         if (random.nextInt(2) == 0 && ((PickablePlant) blockstate.getBlock()).secondOutput != null)
-                            ((PickablePlant) blockstate.getBlock()).popResource(level(), this.blockPos, new ItemStack(secondOutput.getItem(), Math.max(1, (int) Math.floor(k))));
+                            PickablePlant.popResource(level(), this.blockPos, new ItemStack(secondOutput.getItem(), Math.max(1, (int) Math.floor(k))));
 
                         CrowEntity.this.level().setBlock(this.blockPos, blockstate.setValue(BlockStateProperties.AGE_3, 0), 2);
 
@@ -2440,7 +2453,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                         HexereiPacketHandler.sendToNearbyClient(CrowEntity.this.level(), CrowEntity.this, new PeckPacket(CrowEntity.this));
 
                     } else if (!CrowEntity.this.level().isClientSide) {
-                        List<ItemStack> drops = blockstate.getBlock().getDrops(blockstate, (ServerLevel) CrowEntity.this.level(), this.blockPos, CrowEntity.this.level().getBlockEntity(this.blockPos));
+                        List<ItemStack> drops = Block.getDrops(blockstate, (ServerLevel) CrowEntity.this.level(), this.blockPos, CrowEntity.this.level().getBlockEntity(this.blockPos));
                         for (ItemStack drop : drops) {
 
                             if (blockstate.hasProperty(BlockStateProperties.AGE_3)) {

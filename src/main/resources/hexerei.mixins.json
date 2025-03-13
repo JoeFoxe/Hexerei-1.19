@@ -9,6 +9,7 @@
     "FogRendererMixin",
     "HumanoidArmorLayerMixin",
     "ItemInHandMixin",
+    "KeyboardHandlerMixin",
     "LivingEntityRendererMixin",
     "LocalPlayerMixin",
     "MouseHandlerMixin",

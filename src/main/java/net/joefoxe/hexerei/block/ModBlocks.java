@@ -916,6 +916,24 @@ public class ModBlocks {
 	public static final DeferredHolder<Block, Block> BOOK_OF_SHADOWS_PAGE = registerBlockNoItem("book_of_shadows_page_blank",
 					() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(0).explosionResistance(2f)));
 
+	public static final DeferredHolder<Block, Block> BOOK_COVER = registerBlockNoItem("book_cover",
+					() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(0).explosionResistance(2f)));
+
+	public static final DeferredHolder<Block, Block> BOOK_COVER_CORNERS = registerBlockNoItem("book_cover_corners",
+					() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(0).explosionResistance(2f)));
+
+	public static final DeferredHolder<Block, Block> BOOK_BACK = registerBlockNoItem("book_back",
+					() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(0).explosionResistance(2f)));
+
+	public static final DeferredHolder<Block, Block> BOOK_BACK_CORNERS = registerBlockNoItem("book_back_corners",
+					() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(0).explosionResistance(2f)));
+
+	public static final DeferredHolder<Block, Block> BOOK_BINDING = registerBlockNoItem("book_binding",
+					() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(0).explosionResistance(2f)));
+
+	public static final DeferredHolder<Block, Block> BOOK_PAGE = registerBlockNoItem("book_page_blank",
+					() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(0).explosionResistance(2f)));
+
 	public static final DeferredHolder<Block, Block> COFFER_CHEST = registerBlockNoItem("coffer_chest",
 					() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3).requiresCorrectToolForDrops()));
 

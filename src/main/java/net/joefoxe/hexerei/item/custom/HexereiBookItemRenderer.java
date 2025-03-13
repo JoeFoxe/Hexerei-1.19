@@ -69,6 +69,7 @@ public class HexereiBookItemRenderer extends CustomItemRenderer {
         if(altarTile.itemHandler.getStackInSlot(0).getItem() instanceof HexereiBookItem) {
 
             BookData bookData = stack.getOrDefault(ModDataComponents.BOOK, BookData.EMPTY);
+            boolean isBookOfShadows = bookData.book().equals(HexereiUtil.getResource("book_of_shadows"));
 
             yPos = 0;
             xPos = 0;
@@ -148,8 +149,13 @@ public class HexereiBookItemRenderer extends CustomItemRenderer {
             matrixStackIn.mulPose(Axis.ZP.rotationDegrees(altarTile.degreesOpenedRender - 90));
             matrixStackIn.translate(1f / 32f * (altarTile.degreesOpenedRender / 90f), 1f / 32f * (1 - (altarTile.degreesOpenedRender / 90f)), 0);
             DyeColor col = HexereiUtil.getDyeColorNamed(stack.getHoverName().getString());
-            renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_COVER.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
-            renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_COVER_CORNERS.get().defaultBlockState(), col == null ? HexereiBookItem.getColor1(stack) : HexereiUtil.getColorValue(col));
+            if (isBookOfShadows) {
+                renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_COVER.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
+                renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_COVER_CORNERS.get().defaultBlockState(), col == null ? HexereiBookItem.getColor1(stack) : HexereiUtil.getColorValue(col));
+            } else {
+                renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_COVER.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
+                renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_COVER_CORNERS.get().defaultBlockState(), col == null ? HexereiBookItem.getColor1(stack) : HexereiUtil.getColorValue(col));
+            }
             matrixStackIn.popPose();
 
             matrixStackIn.pushPose();
@@ -163,8 +169,13 @@ public class HexereiBookItemRenderer extends CustomItemRenderer {
             matrixStackIn.translate(0, 0, -(altarTile.degreesFloppedRender / 10f) / 32);
             matrixStackIn.mulPose(Axis.ZP.rotationDegrees(-(altarTile.degreesOpenedRender - 90)));
             matrixStackIn.translate(-1f / 32f * (altarTile.degreesOpenedRender / 90f), 1f / 32f * (1 - (altarTile.degreesOpenedRender / 90f)), 0);
-            renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_BACK.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
-            renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_BACK_CORNERS.get().defaultBlockState(), col == null ? HexereiBookItem.getColor1(stack) : HexereiUtil.getColorValue(col));
+            if (isBookOfShadows) {
+                renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_BACK.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
+                renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_BACK_CORNERS.get().defaultBlockState(), col == null ? HexereiBookItem.getColor1(stack) : HexereiUtil.getColorValue(col));
+            } else {
+                renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_BACK.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
+                renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_BACK_CORNERS.get().defaultBlockState(), col == null ? HexereiBookItem.getColor1(stack) : HexereiUtil.getColorValue(col));
+            }
             matrixStackIn.popPose();
 
             matrixStackIn.pushPose();
@@ -176,7 +187,11 @@ public class HexereiBookItemRenderer extends CustomItemRenderer {
             matrixStackIn.mulPose(Axis.XP.rotationDegrees(degreesOpened2));
             matrixStackIn.mulPose(Axis.YP.rotationDegrees(-altarTile.degreesFloppedRender));
             matrixStackIn.translate(0, 0, -(altarTile.degreesFloppedRender / 10f) / 32);
-            renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_BINDING.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
+            if (isBookOfShadows) {
+                renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_BINDING.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
+            } else {
+                renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.BOOK_BINDING.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
+            }
             matrixStackIn.popPose();
 
             if(altarTile.degreesFloppedRender != 90){

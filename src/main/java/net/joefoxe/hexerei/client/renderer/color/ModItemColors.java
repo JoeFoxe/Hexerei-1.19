@@ -2,13 +2,9 @@ package net.joefoxe.hexerei.client.renderer.color;
 
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.custom.ConnectingCarpetDyed;
+import net.joefoxe.hexerei.block.custom.HerbJar;
 import net.joefoxe.hexerei.item.ModItems;
-import net.joefoxe.hexerei.item.custom.BroomSeatItem;
-import net.joefoxe.hexerei.item.custom.CandleItem;
-import net.joefoxe.hexerei.item.custom.CofferItem;
-import net.joefoxe.hexerei.item.custom.MixingCauldronItem;
-import net.joefoxe.hexerei.item.custom.SatchelItem;
-import net.joefoxe.hexerei.item.custom.WitchArmorItem;
+import net.joefoxe.hexerei.item.custom.*;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.GrassColor;
@@ -50,6 +46,8 @@ public class ModItemColors {
         items.register((s, t) -> t == 1 ? CofferItem.getColorValue(CofferItem.getDyeColorNamed(s), s) : -1, ModItems.COFFER.get());
 
         items.register((s, t) -> t == 0 ? MixingCauldronItem.getColorValue(MixingCauldronItem.getDyeColorNamed(s), s) : -1, ModItems.MIXING_CAULDRON.get());
+
+        items.register((s, t) -> t == 0 ? HerbJarItem.getColorValue(HexereiUtil.getDyeColorNamed(s.getHoverName().getString()), s) : -1, ModItems.HERB_JAR.get());
 
         items.register((s, t) -> t == 0 ? BroomSeatItem.getColorValue(SatchelItem.getDyeColorNamed(s), s) : -1, ModItems.BROOM_SEAT.get());
 

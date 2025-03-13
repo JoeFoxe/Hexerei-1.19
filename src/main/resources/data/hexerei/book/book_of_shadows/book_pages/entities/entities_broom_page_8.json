@@ -1,0 +1,83 @@
+{
+  "name": "entity.hexerei.broom",
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 10,
+          "width": 32
+        },
+        {
+          "x": 0,
+          "y": 13,
+          "height": 6,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_broom_page_8.passage_1"
+    }
+  ],
+
+  "items_and_fluids": [
+    {
+      "type": "item",
+      "x": 0.75,
+      "y": 4,
+      "id": "hexerei:broom_brush",
+      "show_slot": false,
+      "components": {
+        "minecraft:damage": 1
+      }
+    },
+    {
+      "type": "item",
+      "x": 1.75,
+      "y": 4,
+      "show_slot": false,
+      "item": {
+        "id": "hexerei:broom_brush",
+        "components": {
+          "minecraft:damage": 25
+        }
+      }
+    },
+    {
+      "type": "item",
+      "x": 2.75,
+      "y": 4,
+      "show_slot": false,
+      "item": {
+        "id": "hexerei:broom_brush",
+        "components": {
+          "minecraft:damage": 50
+        }
+      }
+    },
+    {
+      "type": "item",
+      "x": 3.75,
+      "y": 4,
+      "show_slot": false,
+      "item": {
+        "id": "hexerei:broom_brush",
+        "components": {
+          "minecraft:damage": 75
+        }
+      }
+    },
+    {
+      "type": "item",
+      "x": 4.75,
+      "y": 4,
+      "show_slot": false,
+      "item": {
+        "id": "hexerei:broom_brush",
+        "components": {
+          "minecraft:damage": 99
+        }
+      }
+    }
+  ]
+}

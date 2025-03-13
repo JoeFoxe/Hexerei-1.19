@@ -1,0 +1,88 @@
+{
+  "values": {
+    "hexerei:willow_vines": {
+      "chance": 0.5
+    },
+    "hexerei:willow_leaves": {
+      "chance": 0.3
+    },
+    "hexerei:mahogany_leaves": {
+      "chance": 0.3
+    },
+    "hexerei:witch_hazel_leaves": {
+      "chance": 0.3
+    },
+    "hexerei:willow_sapling": {
+      "chance": 0.3
+    },
+    "hexerei:mahogany_sapling": {
+      "chance": 0.3
+    },
+    "hexerei:mandrake_plant": {
+      "chance": 1
+    },
+    "hexerei:belladonna_plant": {
+      "chance": 1
+    },
+    "hexerei:mugwort_bush": {
+      "chance": 1
+    },
+    "hexerei:yellow_dock_bush": {
+      "chance": 1
+    },
+    "hexerei:flowering_lily_pad": {
+      "chance": 1
+    },
+    "hexerei:belladonna_berries": {
+      "chance": 0.3
+    },
+    "hexerei:belladonna_flowers": {
+      "chance": 0.3
+    },
+    "hexerei:mandrake_flowers": {
+      "chance": 0.3
+    },
+    "hexerei:mandrake_root": {
+      "chance": 0.3
+    },
+    "hexerei:mugwort_flowers": {
+      "chance": 0.3
+    },
+    "hexerei:mugwort_leaves": {
+      "chance": 0.3
+    },
+    "hexerei:yellow_dock_flowers": {
+      "chance": 0.3
+    },
+    "hexerei:yellow_dock_leaves": {
+      "chance": 0.3
+    },
+    "hexerei:dried_belladonna_flowers": {
+      "chance": 0.3
+    },
+    "hexerei:dried_mandrake_flowers": {
+      "chance": 0.3
+    },
+    "hexerei:dried_mugwort_flowers": {
+      "chance": 0.3
+    },
+    "hexerei:dried_mugwort_leaves": {
+      "chance": 0.3
+    },
+    "hexerei:dried_yellow_dock_flowers": {
+      "chance": 0.3
+    },
+    "hexerei:dried_yellow_dock_leaves": {
+      "chance": 0.3
+    },
+    "hexerei:sage": {
+      "chance": 0.3
+    },
+    "hexerei:sage_seed": {
+      "chance": 0.3
+    },
+    "hexerei:dried_sage": {
+      "chance": 0.3
+    }
+  }
+}

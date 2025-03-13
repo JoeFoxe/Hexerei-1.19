@@ -1,0 +1,336 @@
+{
+  "name": "book.hexerei.index_name",
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 7,
+          "y": -0.5,
+          "height": 2,
+          "width": 32,
+          "verticalAlign": "middle"
+        }
+      ],
+      "passage_text": "book.hexerei.items_index_page_2.passage_1",
+      "align": "middle"
+    }
+  ],
+  "items_and_fluids": [
+    {
+      "type": "item",
+      "x": 0,
+      "y": 1,
+      "item": {
+        "id": "hexerei:reading_glasses"
+      }
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 1,
+      "item": {
+      "id": "hexerei:book_of_shadows"
+        }
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 1,
+      "item": {
+        "id": "hexerei:book_of_shadows_altar"
+      }
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 1,
+      "item": {
+        "id": "hexerei:mixing_cauldron"
+      }
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 1,
+      "item": {
+        "id": "hexerei:coffer"
+      }
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 1,
+      "item": {
+        "id": "hexerei:herb_jar"
+      }
+    },
+
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 2,
+      "item": {
+        "id": "hexerei:herb_drying_rack"
+      }
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 2,
+      "item": {
+        "id": "hexerei:pestle_and_mortar"
+      }
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 2,
+      "item": {
+        "id": "hexerei:candle_dipper"
+      }
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 2,
+      "item": {
+        "id": "hexerei:candle"
+      }
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 2,
+      "item": {
+        "id": "hexerei:candelabra"
+      }
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 2,
+      "item": {
+        "id": "hexerei:crystal_ball"
+      }
+    },
+
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 3,
+      "item": {
+        "id": "hexerei:dowsing_rod"
+      }
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 3,
+      "item": {
+        "id": "hexerei:blood_sigil"
+      }
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 3,
+      "item": {
+        "id": "hexerei:blood_bottle"
+      }
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 3,
+      "item": {
+        "id": "hexerei:willow_broom"
+      }
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 3,
+      "item": {
+        "id": "hexerei:mahogany_broom"
+      }
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 3,
+      "item": {
+        "id": "hexerei:gold_rings"
+      }
+    },
+
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 4,
+      "item": {
+        "id": "hexerei:broom_keychain"
+      }
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 4,
+      "item": {
+        "id": "hexerei:broom_netherite_tip"
+      }
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 4,
+      "item": {
+        "id": "hexerei:broom_waterproof_tip"
+      }
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 4,
+      "item": {
+        "id": "hexerei:small_satchel"
+      }
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 4,
+      "item": {
+        "id": "hexerei:medium_satchel"
+      }
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 4,
+      "item": {
+        "id": "hexerei:large_satchel"
+      }
+    },
+
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 5,
+      "item": {
+        "id": "hexerei:broom_brush"
+      }
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 5,
+      "item": {
+        "id": "hexerei:wet_broom_brush"
+      }
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 5,
+      "item": {
+        "id": "hexerei:herb_enhanced_broom_brush"
+      }
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 5,
+      "item": {
+        "id": "hexerei:wet_herb_enhanced_broom_brush"
+      }
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 5,
+      "item": {
+        "id": "hexerei:crow_flute"
+      }
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 5,
+      "item": {
+        "id": "hexerei:seed_mixture"
+      }
+    },
+
+
+    {
+      "type": "item",
+      "x": 0,
+      "y": 6,
+      "item": {
+        "id": "hexerei:sage_burning_plate"
+      }
+    },
+    {
+      "type": "item",
+      "x": 1,
+      "y": 6,
+      "item": {
+        "id": "hexerei:selenite_shard"
+      }
+    },
+    {
+      "type": "item",
+      "x": 2,
+      "y": 6,
+      "item": {
+        "id": "hexerei:sage"
+      }
+    },
+    {
+      "type": "item",
+      "x": 3,
+      "y": 6,
+      "item": {
+        "id": "hexerei:sage_bundle"
+      }
+    },
+    {
+      "type": "item",
+      "x": 4,
+      "y": 6,
+      "item": {
+        "id": "hexerei:dried_sage_bundle"
+      }
+    },
+    {
+      "type": "item",
+      "x": 5,
+      "y": 6,
+      "item": {
+        "id": "hexerei:animal_fat"
+      }
+    }
+
+
+
+  ],
+  "images": [
+    {
+      "x": 2.5,
+      "y": -0.3,
+      "z": -4,
+      "u": 0,
+      "v": 0,
+      "width": 380,
+      "height": 74,
+      "imageWidth": 380,
+      "imageHeight": 74,
+      "scale": 0.3,
+      "texture": "hexerei:textures/book/chapter_header.png"
+    }
+  ]
+}

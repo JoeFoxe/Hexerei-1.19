@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " L ",
+    "VBA",
+    " L "
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "A": {
+      "tag": "minecraft:feather"
+    },
+    "B": {
+      "item": "minecraft:book"
+    },
+    "V": {
+      "item": "hexerei:belladonna_berries"
+    }
+  },
+  "result": {
+    "id": "hexerei:notebook"
+  }
+}

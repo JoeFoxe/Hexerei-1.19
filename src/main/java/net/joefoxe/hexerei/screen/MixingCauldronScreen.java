@@ -3,6 +3,10 @@ package net.joefoxe.hexerei.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.container.MixingCauldronContainer;
+import net.joefoxe.hexerei.data.recipes.FluidMixingRecipe;
+import net.joefoxe.hexerei.data.recipes.MixingCauldronRecipe;
+import net.joefoxe.hexerei.data.recipes.MoonPhases;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.integration.HexereiModNameTooltipCompat;
 import net.joefoxe.hexerei.screen.renderer.FluidStackRenderer;
 import net.joefoxe.hexerei.tileentity.MixingCauldronTile;
@@ -34,6 +38,8 @@ public class MixingCauldronScreen extends AbstractContainerScreen<MixingCauldron
             "textures/gui/mixing_cauldron_gui.png");
     private final ResourceLocation INVENTORY = HexereiUtil.getResource(
             "textures/gui/inventory.png");
+    public final static ResourceLocation MOON_PHASES =
+            HexereiUtil.getResource("textures/gui/moon_phases.png");
 
     private final FluidStackRenderer renderer;
 
@@ -113,6 +119,44 @@ public class MixingCauldronScreen extends AbstractContainerScreen<MixingCauldron
         guiGraphics.blit(GUI, i, j, FRONT_BLIT_LAYER, 0, 0, 207, 127, 256, 256);
         guiGraphics.blit(GUI, i + 150, j + 52, FRONT_BLIT_LAYER, 220, 0, (int)(22 * this.menu.getCraftPercent()), 8, 256, 256);
         guiGraphics.blit(GUI, i + 109, j + 46, FRONT_BLIT_LAYER, 242, 0, 8, (int)(22 * this.menu.getCraftPercent()), 256, 256);
+
+        if (mixingCauldron.usingRecipeNeedsHeat && !mixingCauldron.hasHeatSource) {
+            if (ClientEvents.getClientTicksWithoutPartial() % 20 < 10)
+                guiGraphics.blit(GUI, i + 102, j + 62, FRONT_BLIT_LAYER, 233, 94, 22, 14, 256, 256);
+        } else {
+            if (mixingCauldron.hasHeatSource) {
+                guiGraphics.blit(GUI, i + 102, j + 62, FRONT_BLIT_LAYER, 233, 94, 22, 14, 256, 256);
+            }
+        }
+
+
+        if (mixingCauldron.usingRecipeNeedsMoonPhase != MoonPhases.MoonCondition.NONE) {
+            if ((ClientEvents.getClientTicksWithoutPartial() % 20 >= 10 && MoonPhases.MoonCondition.getMoonPhase(mixingCauldron.getLevel()) != mixingCauldron.usingRecipeNeedsMoonPhase) ||
+                    MoonPhases.MoonCondition.getMoonPhase(mixingCauldron.getLevel()) == mixingCauldron.usingRecipeNeedsMoonPhase) {
+                guiGraphics.pose().pushPose();
+                float scale = 1.5f;
+                guiGraphics.pose().scale(scale, scale, scale);
+                guiGraphics.pose().translate((i + 107) / scale, (j + 35) / scale, 10);
+                if(mixingCauldron.usingRecipeNeedsMoonPhase == MoonPhases.MoonCondition.FULL_MOON)
+                    guiGraphics.blit(MOON_PHASES, 0, 0, FRONT_BLIT_LAYER, 12, 12, 8, 8, 256, 256);
+                if(mixingCauldron.usingRecipeNeedsMoonPhase == MoonPhases.MoonCondition.WANING_GIBBOUS)
+                    guiGraphics.blit(MOON_PHASES, 0, 0, FRONT_BLIT_LAYER, 44, 12, 8, 8, 256, 256);
+                if(mixingCauldron.usingRecipeNeedsMoonPhase == MoonPhases.MoonCondition.LAST_QUARTER)
+                    guiGraphics.blit(MOON_PHASES, 0, 0, FRONT_BLIT_LAYER, 76, 12, 8, 8, 256, 256);
+                if(mixingCauldron.usingRecipeNeedsMoonPhase == MoonPhases.MoonCondition.WANING_CRESCENT)
+                    guiGraphics.blit(MOON_PHASES, 0, 0, FRONT_BLIT_LAYER, 108, 12, 8, 8, 256, 256);
+                if(mixingCauldron.usingRecipeNeedsMoonPhase == MoonPhases.MoonCondition.NEW_MOON)
+                    guiGraphics.blit(MOON_PHASES, 0, 0, FRONT_BLIT_LAYER, 12, 44, 8, 8, 256, 256);
+                if(mixingCauldron.usingRecipeNeedsMoonPhase == MoonPhases.MoonCondition.WAXING_CRESCENT)
+                    guiGraphics.blit(MOON_PHASES, 0, 0, FRONT_BLIT_LAYER, 44, 44, 8, 8, 256, 256);
+                if(mixingCauldron.usingRecipeNeedsMoonPhase == MoonPhases.MoonCondition.FIRST_QUARTER)
+                    guiGraphics.blit(MOON_PHASES, 0, 0, FRONT_BLIT_LAYER, 76, 44, 8, 8, 256, 256);
+                if(mixingCauldron.usingRecipeNeedsMoonPhase == MoonPhases.MoonCondition.WAXING_GIBBOUS)
+                    guiGraphics.blit(MOON_PHASES, 0, 0, FRONT_BLIT_LAYER, 108, 44, 8, 8, 256, 256);
+                guiGraphics.pose().popPose();
+            }
+        }
+
 
 
 

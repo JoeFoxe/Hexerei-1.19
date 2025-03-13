@@ -117,9 +117,8 @@ public class CrowFluteItem extends Item implements IThirdPersonItemAnimation,
         Player player = ctx.getPlayer();
         ItemStack itemstack = ctx.getItemInHand();
         FluteData fluteData = itemstack.get(ModDataComponents.FLUTE);
-        if(!player.isShiftKeyDown()) {
-            if (fluteData != null && fluteData.commandSelected() == 2) {
-//                player.displayClientMessage(player.level.getBlockState(ctx.getClickedPos()).getBlock().getName(), true);
+        if(player != null && !player.isShiftKeyDown()) {
+            if (fluteData != null && fluteData.commandMode() == 2) {
 
                 List<CrowEntity> crows = new ArrayList<>();
                 List<FluteData.CrowIds> ids = fluteData.crowList();

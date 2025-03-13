@@ -13,6 +13,7 @@ import net.joefoxe.hexerei.config.HexConfig;
 import net.joefoxe.hexerei.container.ModContainers;
 import net.joefoxe.hexerei.data.books.BookManager;
 import net.joefoxe.hexerei.data.books.PageDrawing;
+import net.joefoxe.hexerei.data.books.PaintSystemSavedData;
 import net.joefoxe.hexerei.data.datagen.ModRecipeProvider;
 import net.joefoxe.hexerei.data.owl.OwlCourierDepotSavedData;
 import net.joefoxe.hexerei.data.recipes.ModRecipeTypes;
@@ -56,14 +57,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.FlowerPotBlock;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
@@ -78,8 +81,8 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -101,36 +104,12 @@ import java.util.stream.Stream;
 public class Hexerei {
 
 	public static final String MOD_ID = "hexerei";
-//	private static final Lazy<Registrate> REGISTRATE = Lazy.of(() -> new HexRegistrate(MOD_ID));
 	public static boolean curiosLoaded = false;
 
-//	static class HexRegistrate extends Registrate {
-//		protected HexRegistrate(String modid) {
-//			super(modid);
-//			this.registerEventListeners(FMLJavaModLoadingContext.get().getModEventBus());
-//		}
-//
-//		//prevent blockstate and lang datagen
-//		@Override
-//		public <T extends RegistrateProvider> Registrate addDataGenerator(ProviderType<? extends T> type, NonNullConsumer<? extends T> cons) {
-//			if (type == ProviderType.LANG || type == ProviderType.BLOCKSTATE) return self();
-//			return super.addDataGenerator(type, cons);
-//		}
-//	}
 
 	public static SidedProxy proxy;
-	public static DynamicRegistries dynamicRegistries;
 
-	public static GlassesZoomKeyPressEvent glassesZoomKeyPressEvent;
 	public static boolean entityClicked = false;
-
-//	public static Registrate registrate() {
-//		return REGISTRATE.get();
-//	}
-
-	public static final Gson GSON = new GsonBuilder().setPrettyPrinting()
-			.disableHtmlEscaping()
-			.create();
 
 	// Directly reference a log4j logger.
 	public static final Logger LOGGER = LogManager.getLogger();
@@ -163,7 +142,9 @@ public class Hexerei {
 			NeoForge.EVENT_BUS.addListener(ClientEvents::clientTickEvent);
 			NeoForge.EVENT_BUS.addListener(ClientEvents::renderWorldLastEvent);
 			eventBus.addListener(ClientEvents::registerMenu);
+			eventBus.addListener(ClientEvents::onRegisterShaders);
 			eventBus.addListener(ClientEvents::onRegisterClientExtensions);
+			eventBus.addListener(ClientEvents::onRegisterAdditionalModels);
 			ClientProxy.MODEL_SWAPPER.registerListeners(eventBus);
 		}
 
@@ -200,23 +181,13 @@ public class Hexerei {
 		eventBus.addListener(this::loadComplete);
 
 		eventBus.addListener(this::setup);
+		eventBus.addListener(this::registerSpawnPlacementsEvent);
 		// Register the enqueueIMC method for modloading
 //		eventBus.addListener(this::enqueueIMC);
 		// Register the doClientStuff method for modloading
 		eventBus.addListener(this::doClientStuff);
 
 		ModItemGroup.ITEM_GROUP.register(eventBus);
-
-
-//		if (dist.isClient())
-//			MODEL_SWAPPER.registerListeners(eventBus);
-
-//        forgeEventBus.addListener(EventPriority.NORMAL, this::addDimensionalSpacing);
-//        forgeEventBus.addListener(EventPriority.NORMAL, WitchHutStructure::setupStructureSpawns);
-
-
-		// Register ourselves for server and other game events we are interested in
-//		NeoForge.EVENT_BUS.register(this);
 
 		NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, this::playerLogin);
 		eventBus.addListener(EventPriority.LOWEST, this::gatherData);
@@ -239,15 +210,21 @@ public class Hexerei {
 
 	public void playerLogin(PlayerEvent.PlayerLoggedInEvent event){
 		ServerPlayer player = (ServerPlayer) event.getEntity();
-		ServerLevel serverWorld = player.serverLevel();
-		MinecraftServer server = player.getServer();
 		OwlCourierDepotSavedData.get().syncToClient(player);
 		BookManager.sendBookPagesToClient(player);
 		BookManager.sendBookEntriesToClient(player);
+		PaintSystemSavedData.sendToClients();
 		WoodcutterRecipes.sendToClient(player);
 	}
 	public void setupCrowPerchRenderer() {
 		NeoForge.EVENT_BUS.register(CrowPerchRenderer.class);
+	}
+
+	private void registerSpawnPlacementsEvent(RegisterSpawnPlacementsEvent event) {
+		event.register(ModEntityTypes.CROW.get(), SpawnPlacementTypes.ON_GROUND,
+				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
+		event.register(ModEntityTypes.OWL.get(), SpawnPlacementTypes.ON_GROUND,
+				Heightmap.Types.MOTION_BLOCKING, Animal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
@@ -276,10 +253,6 @@ public class Hexerei {
 			BroomType.create("willow", ModItems.WILLOW_BROOM.get(), 0.4f);
 			BroomType.create("witch_hazel", ModItems.WITCH_HAZEL_BROOM.get(), 0.6f);
 
-//			SpawnPlacements.register(ModEntityTypes.CROW.get(), SpawnPlacements.Type.ON_GROUND,
-//					Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
-//			SpawnPlacements.register(ModEntityTypes.OWL.get(), SpawnPlacements.Type.ON_GROUND,
-//					Heightmap.Types.MOTION_BLOCKING, Animal::checkAnimalSpawnRules);
 
 			LightManager.init();
 
@@ -287,34 +260,6 @@ public class Hexerei {
 			((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.BELLADONNA_PLANT.getId(), ModBlocks.POTTED_BELLADONNA_PLANT);
 			((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.YELLOW_DOCK_BUSH.getId(), ModBlocks.POTTED_YELLOW_DOCK_BUSH);
 			((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ModBlocks.MUGWORT_BUSH.getId(), ModBlocks.POTTED_MUGWORT_BUSH);
-
-			ComposterBlock.COMPOSTABLES.put(ModBlocks.WILLOW_VINES.get().asItem(), 0.5F);
-			ComposterBlock.COMPOSTABLES.put(ModBlocks.WILLOW_LEAVES.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModBlocks.MAHOGANY_LEAVES.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModBlocks.WILLOW_SAPLING.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModBlocks.MAHOGANY_SAPLING.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModBlocks.MANDRAKE_PLANT.get().asItem(), 1F);
-			ComposterBlock.COMPOSTABLES.put(ModBlocks.BELLADONNA_PLANT.get().asItem(), 1F);
-			ComposterBlock.COMPOSTABLES.put(ModBlocks.MUGWORT_BUSH.get().asItem(), 1F);
-			ComposterBlock.COMPOSTABLES.put(ModBlocks.YELLOW_DOCK_BUSH.get().asItem(), 1F);
-			ComposterBlock.COMPOSTABLES.put(ModBlocks.LILY_PAD_BLOCK.get().asItem(), 1F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.BELLADONNA_BERRIES.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.BELLADONNA_FLOWERS.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.MANDRAKE_FLOWERS.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.MANDRAKE_ROOT.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.MUGWORT_FLOWERS.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.MUGWORT_LEAVES.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.YELLOW_DOCK_FLOWERS.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.YELLOW_DOCK_LEAVES.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.DRIED_BELLADONNA_FLOWERS.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.DRIED_MANDRAKE_FLOWERS.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.DRIED_MUGWORT_FLOWERS.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.DRIED_MUGWORT_LEAVES.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.DRIED_YELLOW_DOCK_FLOWERS.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.DRIED_YELLOW_DOCK_LEAVES.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.SAGE.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.SAGE_SEED.get().asItem(), 0.3F);
-			ComposterBlock.COMPOSTABLES.put(ModItems.DRIED_SAGE.get().asItem(), 0.3F);
 		});
 		if (ModList.get().isLoaded("terrablender") && HexConfig.WILLOW_SWAMP_RARITY.get() > 0) {
 			event.enqueueWork(ModRegion::init);
@@ -340,14 +285,14 @@ public class Hexerei {
 		setupCrowPerchRenderer();
 		event.enqueueWork(() -> {
 
-            PageDrawing.pageLocs = new ArrayList<>(Minecraft.getInstance().getResourceManager().listResources("textures/book/pages", p_345740_ -> p_345740_.getPath().endsWith(".png")).keySet().stream().filter((loc) -> loc.getNamespace().equals(MOD_ID)).toList());
-            PageDrawing.overlayLocs = new ArrayList<>(Minecraft.getInstance().getResourceManager().listResources("textures/book/page_overlays", p_345740_ -> p_345740_.getPath().endsWith(".png")).keySet().stream().filter((loc) -> loc.getNamespace().equals(MOD_ID)).toList());
-			PageDrawing.overlayLocs.add(null);
-			PageDrawing.overlayLocs.add(null);
-			PageDrawing.overlayLocs.add(null);
-			PageDrawing.overlayLocs.add(null);
-			PageDrawing.overlayLocs.add(null);
-			PageDrawing.overlayLocs.add(null);
+            PageDrawing.pageTextureLocs = new ArrayList<>(Minecraft.getInstance().getResourceManager().listResources("textures/book/pages", p_345740_ -> p_345740_.getPath().endsWith(".png")).keySet().stream().filter((loc) -> loc.getNamespace().equals(MOD_ID)).toList());
+            PageDrawing.overlayTextureLocs = new ArrayList<>(Minecraft.getInstance().getResourceManager().listResources("textures/book/page_overlays", p_345740_ -> p_345740_.getPath().endsWith(".png")).keySet().stream().filter((loc) -> loc.getNamespace().equals(MOD_ID)).toList());
+			PageDrawing.overlayTextureLocs.add(null);
+			PageDrawing.overlayTextureLocs.add(null);
+			PageDrawing.overlayTextureLocs.add(null);
+			PageDrawing.overlayTextureLocs.add(null);
+			PageDrawing.overlayTextureLocs.add(null);
+			PageDrawing.overlayTextureLocs.add(null);
 //                List<String> resourceLocations = buildResourceLocations("hexerei:textures/book/pages/page_1.png");
 
             Sheets.addWoodType(ModWoodType.MAHOGANY);

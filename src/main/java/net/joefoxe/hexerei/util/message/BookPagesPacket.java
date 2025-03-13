@@ -25,20 +25,34 @@ public class BookPagesPacket extends AbstractPacket {
         return TYPE;
     }
 
-    protected final Map<ResourceLocation, BookPage> bookPages;
+    protected final Map<ResourceLocation, Map<ResourceLocation, BookPage>> bookPages;
 
-    public BookPagesPacket(final Map<ResourceLocation, BookPage> bookPages) {
+    public BookPagesPacket(final Map<ResourceLocation, Map<ResourceLocation, BookPage>> bookPages) {
         this.bookPages = bookPages;
     }
     public BookPagesPacket(RegistryFriendlyByteBuf buf) {
         int size = buf.readInt();
         this.bookPages = new HashMap<>();
         for (int i = 0; i < size; i++) {
-            ResourceLocation name = buf.readResourceLocation();
-            CompoundTag tag = buf.readNbt();
-            if (tag != null) {
-                BookPage bookPage = BookPage.loadFromTag(tag);
-                bookPages.put(name, bookPage);
+//            ResourceLocation name = buf.readResourceLocation();
+//            CompoundTag tag = buf.readNbt();
+//            if (tag != null) {
+//                BookPage bookPage = BookPage.loadFromTag(tag);
+//                bookPages.put(name, bookPage);
+//            }
+
+            ResourceLocation book = buf.readResourceLocation();
+            int size2 = buf.readInt();
+            for (int j = 0; j < size2; j++) {
+                ResourceLocation name = buf.readResourceLocation();
+                CompoundTag tag = buf.readNbt();
+                if (tag != null) {
+                    BookPage bookPage = BookPage.loadFromTag(tag);
+                    if (!bookPages.containsKey(book))
+                        bookPages.put(book, new HashMap<>());
+                    bookPages.get(book).put(name, bookPage);
+//                    bookPages.put(name, bookPage);
+                }
             }
         }
     }
@@ -47,16 +61,27 @@ public class BookPagesPacket extends AbstractPacket {
         buffer.writeInt(bookPages.size());
         for (var entry : bookPages.entrySet()) {
             buffer.writeResourceLocation(entry.getKey());
-            buffer.writeNbt(BookPage.saveToTag(entry.getValue()));
+            buffer.writeInt(entry.getValue().size());
+            for (var entry2 : entry.getValue().entrySet()) {
+                buffer.writeResourceLocation(entry2.getKey());
+                buffer.writeNbt(BookPage.saveToTag(entry2.getValue()));
+            }
         }
     }
 
     @Override
     public void onClientReceived(Minecraft minecraft, Player player) {
-        BookManager.clearBookPages();
-        bookPages.keySet().forEach(k -> {
-            BookPage bookPage = bookPages.get(k);
-            BookManager.addBookPage(k, bookPage);
+        bookPages.keySet().forEach(book -> {
+            BookManager.clearBookPages(book);
+            bookPages.get(book).forEach((loc, map) -> {
+
+                BookPage bookPage = bookPages.get(book).get(loc);
+                bookPage.location = loc;
+                BookManager.addBookPage(book, loc, bookPage);
+            });
+
+//            BookPage bookPage = bookPages.get(k);
+//            BookManager.addBookPage(k, bookPage);
         });
     }
 }

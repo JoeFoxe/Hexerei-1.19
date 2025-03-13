@@ -1,17 +1,19 @@
 package net.joefoxe.hexerei.data.books;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.math.Axis;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.custom.MixingCauldron;
-import net.joefoxe.hexerei.client.renderer.entity.custom.CrowEntity;
+import net.joefoxe.hexerei.client.renderer.ModRenderTypes;
 import net.joefoxe.hexerei.event.ClientEvents;
-import net.joefoxe.hexerei.item.ModDataComponents;
+import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.data_components.BookData;
 import net.joefoxe.hexerei.particle.ModParticleTypes;
 import net.joefoxe.hexerei.screen.BookOfShadowsScreen;
+import net.joefoxe.hexerei.screen.CanvasPaintingCropScreen;
 import net.joefoxe.hexerei.screen.tooltip.HexereiBookTooltip;
 import net.joefoxe.hexerei.tileentity.BookOfShadowsAltarTile;
 import net.joefoxe.hexerei.util.ClientProxy;
@@ -20,10 +22,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
@@ -45,6 +47,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
@@ -68,14 +71,16 @@ import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
+import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import java.awt.image.BufferedImage;
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
@@ -102,8 +107,10 @@ public class PageDrawing {
     public ArrayList<Integer> bookmarkHovered = new ArrayList<>();
     public static boolean isClicked;
     public static boolean isClickedOld;
-    public static ArrayList<ResourceLocation> pageLocs = new ArrayList<>();
-    public static ArrayList<ResourceLocation> overlayLocs = new ArrayList<>();
+    public static ArrayList<ResourceLocation> pageTextureLocs = new ArrayList<>();
+    public static ArrayList<ResourceLocation> overlayTextureLocs = new ArrayList<>();
+    public static Triple<BookOfShadowsAltarTile, ResourceLocation, BookWritableTextBox> focusedWritableTextBox = null;
+    public static Triple<BookOfShadowsAltarTile, ResourceLocation, BookWritableTextBox> focusedWritableTextBoxLast = null;
 
     public static ItemRenderer itemRenderer;
 
@@ -131,6 +138,44 @@ public class PageDrawing {
         this.slotOverlayPageOn = PageOn.LEFT_PAGE;
         itemRenderer = Hexerei.proxy.getLevel() == null ? null : Hexerei.proxy.getLevel().isClientSide ? Minecraft.getInstance().getItemRenderer() : null;
         this.altarTile = altarTile;
+    }
+
+    public static void clearFocusedWritableTextBox() {
+        if (PageDrawing.focusedWritableTextBox != null) {
+            PageDrawing.focusedWritableTextBox.getRight().client.clicked = false;
+            PageDrawing.focusedWritableTextBox.getRight().client.pageEdit.setCursorPos(PageDrawing.focusedWritableTextBox.getRight().client.pageEdit.getCursorPos(), false);
+            PageDrawing.focusedWritableTextBox.getRight().client.clearDisplayCache(PageDrawing.focusedWritableTextBox.getLeft().currentBook.getUUID());
+        }
+        setFocusedWritableTextBoxNull();
+    }
+
+    public static void setFocusedWritableTextBoxNull() {
+        setFocusedWritableTextBox(null, null, null);
+    }
+    public static void setFocusedWritableTextBox(BookOfShadowsAltarTile altarTile, ResourceLocation pageLoc, BookWritableTextBox bookWritableTextBox) {
+        if (altarTile == null || bookWritableTextBox == null || pageLoc == null) {
+            PageDrawing.focusedWritableTextBoxLast = PageDrawing.focusedWritableTextBox;
+            PageDrawing.focusedWritableTextBox = null;
+        } else {
+
+            PageDrawing.focusedWritableTextBoxLast = PageDrawing.focusedWritableTextBox;
+            PageDrawing.focusedWritableTextBox = new Triple<>() {
+                @Override
+                public BookOfShadowsAltarTile getLeft() {
+                    return altarTile;
+                }
+
+                @Override
+                public ResourceLocation getMiddle() {
+                    return pageLoc;
+                }
+
+                @Override
+                public BookWritableTextBox getRight() {
+                    return bookWritableTextBox;
+                }
+            };
+        }
     }
 
     public enum DrawingType {
@@ -190,7 +235,7 @@ public class PageDrawing {
         ItemStack itemStack = itemStackElement.item;
 
         if (itemStackElement.type.equals("tag")) {
-            int mod = ((int) ClientEvents.getClientTicks()) % 60;
+            int mod = ((int) ClientEvents.getClientTicks()) % 20;
 
             if (itemStackElement.item.isEmpty()) {
                 itemStack = getTagStack(itemStackElement.key);
@@ -198,7 +243,7 @@ public class PageDrawing {
                 itemStackElement.refreshTag = false;
             }
 
-            if ((mod == 59 || mod == 58) && itemStackElement.refreshTag) {
+            if ((mod == 19 || mod == 18) && itemStackElement.refreshTag) {
                 itemStack = getTagStack(itemStackElement.key);
                 if (itemStack.is(itemStackElement.item.getItem()))
                     itemStack = getTagStack(itemStackElement.key);
@@ -426,6 +471,7 @@ public class PageDrawing {
             poseStack.pushPose();
             int i = itemStack.getBarWidth();
             int j = itemStack.getBarColor();
+            poseStack.translate(0, 0, -4.15f);
             fillRect(poseStack, bufferSource, xIn + 2.75f, yIn + 13.75f, 0, 13, 1.5f, 0, 0, 0, 255, overlay, light);
             fillRect(poseStack, bufferSource, xIn + 2.75f, yIn + 13.75f, -0.5f, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255, overlay, light);
             poseStack.popPose();
@@ -486,11 +532,44 @@ public class PageDrawing {
     }
 
 
+//    @OnlyIn(Dist.CLIENT)
+//    private static void fill(RenderType renderType, PoseStack poseStack, MultiBufferSource bufferSource, float xIn, float yIn, float zIn, float widthIn, float heightIn, int p_115158_, int p_115159_, int p_115160_, int p_115161_, int overlay, int light) {
+//        fill(renderType, poseStack, bufferSource, xIn, yIn, widthIn, heightIn, 1, 1, )
+//    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static void fill(RenderType renderType, PoseStack poseStack, MultiBufferSource bufferSource, float xIn, float yIn, float zIn, float widthIn, float heightIn, int p_115158_, int p_115159_, int p_115160_, int p_115161_, int overlay, int light) {
+
+        poseStack.pushPose();
+        PoseStack.Pose normal = poseStack.last();
+        Matrix4f matrix4f = poseStack.last().pose();
+
+
+        int u = 0;
+        int v = 0;
+        int imageWidth = 1;
+        int imageHeight = 1;
+        int width = 1;
+        int height = 1;
+        float u1 = (u + 0.0F) / (float) imageWidth;
+        float u2 = (u + (float) width) / (float) imageWidth;
+        float v1 = (v + 0.0F) / (float) imageHeight;
+        float v2 = (v + (float) height) / (float) imageHeight;
+
+
+        VertexConsumer buffer = bufferSource.getBuffer(renderType);
+        buffer.addVertex(matrix4f, (xIn + 0), (yIn + 0), zIn).setColor(p_115158_, p_115159_, p_115160_, p_115161_).setUv(u1, v1).setOverlay(overlay).setLight(light).setNormal(normal, -1F, -1F, 0F);
+        buffer.addVertex(matrix4f, (xIn + 0), (yIn + heightIn), zIn).setColor(p_115158_, p_115159_, p_115160_, p_115161_).setUv(u1, v2).setOverlay(overlay).setLight(light).setNormal(normal, -1F, -1F, 0F);
+        buffer.addVertex(matrix4f, (xIn + widthIn), (yIn + heightIn), zIn).setColor(p_115158_, p_115159_, p_115160_, p_115161_).setUv(u2, v2).setOverlay(overlay).setLight(light).setNormal(normal, -1F, -1F, 0F);
+        buffer.addVertex(matrix4f, (xIn + widthIn), (yIn + 0), zIn).setColor(p_115158_, p_115159_, p_115160_, p_115161_).setUv(u2, v1).setOverlay(overlay).setLight(light).setNormal(normal, -1F, -1F, 0F);
+        poseStack.popPose();
+    }
+
+
     @OnlyIn(Dist.CLIENT)
     private static void fillRect(PoseStack poseStack, MultiBufferSource p_115153_, float xIn, float yIn, float zIn, float widthIn, float heightIn, int p_115158_, int p_115159_, int p_115160_, int p_115161_, int overlay, int light) {
 
         poseStack.pushPose();
-        poseStack.translate(0, 0, -4.15f);
         PoseStack.Pose normal = poseStack.last();
         Matrix4f matrix4f = poseStack.last().pose();
 
@@ -966,8 +1045,14 @@ public class PageDrawing {
 //        drawImage(new BookImage(-0.5f - (left ? 0.45f : 0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, left ? 13 : -13, 18, 10.2f, pageLoc, new ArrayList<>()),
 //                altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
 
-        BookEntries bookEntries = BookManager.getBookEntries();
+        BookEntries bookEntries = BookManager.getBookEntries(altarTile.currentBook.getBook());
         if (page != null && bookEntries != null) {
+
+            for (BookPaintElement paintElement : page.paintElements)
+                drawPaintElement(paintElement, altarTile, pageOn == PageOn.LEFT_PAGE ? leftCursorX : rightCursorX, pageOn == PageOn.LEFT_PAGE ? leftCursorY : rightCursorY, poseStack, bufferIn, -0.25f, combinedLightIn, combinedOverlayIn, pageOn, -1, drawingType, transformType, partial);
+
+            for (BookWritableTextBox writableTextBox : page.writableTextBoxes)
+                drawString(writableTextBox, altarTile, poseStack, bufferIn, pageOn == PageOn.LEFT_PAGE ? leftCursorX : rightCursorX, pageOn == PageOn.LEFT_PAGE ? leftCursorY : rightCursorY, 0, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
 
             for (BookParagraph bookParagraph : page.paragraph)
                 drawString(bookParagraph, altarTile, poseStack, bufferIn, 0, 0, 0, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
@@ -1060,7 +1145,7 @@ public class PageDrawing {
 
                     if (bookEntity.hoverTickRender > 0) {
                         BookImage bookImage = new BookImage(bookEntity.x, bookEntity.y + 0.5f, 0, 0, 0, 64, 32, 64, 32, 0.75f * bookEntity.hoverTickRender, "hexerei:textures/book/rotate_entity.png", new ArrayList<>());
-                        drawImage(bookImage, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
+                        drawImage(bookImage, altarTile, pageOn == PageOn.LEFT_PAGE ? leftCursorX : rightCursorX, pageOn == PageOn.LEFT_PAGE ? leftCursorY : rightCursorY, poseStack, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
 
                         float lerpRotate = Mth.lerp(ClientEvents.getPartial(), bookEntity.toRotateO, bookEntity.toRotate);
                         BookImage bookImage2;
@@ -1071,7 +1156,7 @@ public class PageDrawing {
                         } else {
                             bookImage2 = new BookImage(bookEntity.x - v, bookEntity.y + 0.85f - v1, 1, 0, 0, 32, 48, 32, 48, 0.45f * bookEntity.hoverTickRender, "hexerei:textures/book/right_click_icon.png", new ArrayList<>());
                         }
-                        drawImage(bookImage2, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
+                        drawImage(bookImage2, altarTile, pageOn == PageOn.LEFT_PAGE ? leftCursorX : rightCursorX, pageOn == PageOn.LEFT_PAGE ? leftCursorY : rightCursorY, poseStack, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
                     }
 
 //                    if (pageOn == PageOn.LEFT_PAGE) {
@@ -1098,15 +1183,15 @@ public class PageDrawing {
 //                        if (bookEntity.hoverTickRender > 0) {
 //
 //                            BookImage bookImage = new BookImage(bookEntity.x, bookEntity.y + 0.5f, 0, 0, 0, 64, 32, 64, 32, 0.75f * bookEntity.hoverTickRender, "hexerei:textures/book/rotate_entity.png", new ArrayList<>());
-//                            drawImage(bookImage, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
+//                            drawImage(bookImage, altarTile, pageOn == PageOn.LEFT_PAGE ? leftCursorX : rightCursorX, pageOn == PageOn.LEFT_PAGE ? leftCursorY : rightCursorY, poseStack, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
 //
 //                            if (handler.isRightPressed()) {
 //                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - (Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32, 48, 32, 48, 0.45f * bookEntity.hoverTickRender, "hexerei:textures/book/right_click_icon_hover.png", new ArrayList<>());
-//                                drawImage(bookImage2, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
+//                                drawImage(bookImage2, altarTile, pageOn == PageOn.LEFT_PAGE ? leftCursorX : rightCursorX, pageOn == PageOn.LEFT_PAGE ? leftCursorY : rightCursorY, poseStack, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
 //
 //                            } else {
 //                                BookImage bookImage2 = new BookImage(bookEntity.x - (bookEntity.toRotate > 0 ? Math.min(bookEntity.toRotate / 2000f, 0.8f) : Math.max(bookEntity.toRotate / 2000f, -0.8f)), bookEntity.y + 0.85f - (Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f) * Math.min(Math.abs(bookEntity.toRotate) / 4000f, 0.4f)) * 2.25f, 1, 0, 0, 32, 48, 32, 48, 0.45f * bookEntity.hoverTickRender, "hexerei:textures/book/right_click_icon.png", new ArrayList<>());
-//                                drawImage(bookImage2, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
+//                                drawImage(bookImage2, altarTile, pageOn == PageOn.LEFT_PAGE ? leftCursorX : rightCursorX, pageOn == PageOn.LEFT_PAGE ? leftCursorY : rightCursorY, poseStack, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
 //
 //                            }
 //                        }
@@ -1120,18 +1205,41 @@ public class PageDrawing {
 
                     if (canInteract(leftCursorX, leftCursorY, bookNonItemTooltip.x, bookNonItemTooltip.y, bookNonItemTooltip.width, bookNonItemTooltip.height, altarTile, drawingType)) {
 
-                        this.tooltipText = bookNonItemTooltip.textComponentsList;
+                        this.tooltipText = bookNonItemTooltip.tooltip;
                         this.tooltipStack = ItemStack.EMPTY;
                         this.drawTooltipText = true;
                     }
                     if (this.drawTooltipText)
                         break;
                 }
+                for (BookWritableTextBox bookWritableTextBox : page.writableTextBoxes) {
+
+                    float xCursor = pageOn == PageOn.LEFT_PAGE ? leftCursorX : rightCursorX;
+                    float yCursor = pageOn == PageOn.LEFT_PAGE ? leftCursorY : rightCursorY;
+                    if (canInteract(xCursor, yCursor, bookWritableTextBox.paragraphElement.x + 0.45f, bookWritableTextBox.paragraphElement.y, bookWritableTextBox.paragraphElement.width / 6.15f, bookWritableTextBox.paragraphElement.height / 2.57f, altarTile, drawingType)) {
+                        if (focusedWritableTextBox != null && focusedWritableTextBox.getLeft() == altarTile) {
+                            if (focusedWritableTextBox.getRight() == bookWritableTextBox) {
+
+                                if (focusedWritableTextBox.getRight().client.clicked) {
+                                    BookWritableTextBox.Client.DisplayCache bookeditscreen$displaycache = focusedWritableTextBox.getRight().client.getDisplayCache(focusedWritableTextBox.getLeft().currentBook);
+                                    BookWritableTextBox.Client.Pos2i pos2i = new BookWritableTextBox.Client.Pos2i((int) ((xCursor - bookWritableTextBox.paragraphElement.x - 0.45f) / 5 * 115f), (int) ((yCursor - bookWritableTextBox.paragraphElement.y) / 7.1f * 162f));
+                                    if (pos2i.x != focusedWritableTextBox.getRight().client.clickedPos.x || pos2i.y != focusedWritableTextBox.getRight().client.clickedPos.y) {
+                                        int i = bookeditscreen$displaycache.getIndexAtPosition(
+                                                ClientProxy.font(), pos2i
+                                        );
+                                        focusedWritableTextBox.getRight().client.pageEdit.setCursorPos(i, true);
+                                        focusedWritableTextBox.getRight().client.clearDisplayCache(PageDrawing.focusedWritableTextBox.getLeft().currentBook.getUUID());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
 
             }
             for (BookImage bookImage : page.imageList) {
-                drawImage(bookImage, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
+                drawImage(bookImage, altarTile, pageOn == PageOn.LEFT_PAGE ? leftCursorX : rightCursorX, pageOn == PageOn.LEFT_PAGE ? leftCursorY : rightCursorY, poseStack, bufferIn, 0, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
 
                 if (bookImage.extra_tooltips == null || bookImage.extra_tooltips.isEmpty())
                     continue;
@@ -1152,11 +1260,7 @@ public class PageDrawing {
 
             //drawing slot overlay
             if (this.drawSlotOverlay)
-                drawImage(this.slotOverlay, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferIn, 0, combinedLightIn, combinedOverlayIn, this.slotOverlayPageOn, drawingType);
-
-            //change this to be an image in json
-            if (page.showTitle.equals("Hexerei"))
-                drawTitle(altarTile, poseStack, bufferIn, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
+                drawImage(this.slotOverlay, altarTile, pageOn == PageOn.LEFT_PAGE ? leftCursorX : rightCursorX, pageOn == PageOn.LEFT_PAGE ? leftCursorY : rightCursorY, poseStack, bufferIn, 0, combinedLightIn, combinedOverlayIn, this.slotOverlayPageOn, drawingType);
 
             for (BookEntity bookEntity : page.entityList) {
                 bookEntity.markedForUpdate = true;
@@ -1164,9 +1268,9 @@ public class PageDrawing {
                     if (tamable.isOrderedToSit() && !tamable.isInSittingPose())
                         tamable.setInSittingPose(true);
                 if (bookEntity.entity instanceof LivingEntity livingEntity) {
-                    drawLivingEntity(altarTile, poseStack, bufferIn, bookEntity.scale, bookEntity.x, bookEntity.y, bookEntity.getRot(partial), 20, (float) (107), (float) (88 - 30), livingEntity, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
+                    drawLivingEntity(altarTile, poseStack, bufferIn, bookEntity.scale, bookEntity.x, bookEntity.y, bookEntity.getRot(partial) + Mth.PI, 20, (float) (107), (float) (88 - 30), livingEntity, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
                 } else if (bookEntity.entity != null) {
-                    drawEntity(altarTile, poseStack, bufferIn, bookEntity.scale, bookEntity.x, bookEntity.y, bookEntity.getRot(partial), 20, (float) (107), (float) (88 - 30), bookEntity.entity, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
+                    drawEntity(altarTile, poseStack, bufferIn, bookEntity.scale, bookEntity.x, bookEntity.y, bookEntity.getRot(partial) + Mth.PI, 20, (float) (107), (float) (88 - 30), bookEntity.entity, combinedLightIn, combinedOverlayIn, pageOn, drawingType);
                 }
             }
         }
@@ -1294,504 +1398,20 @@ public class PageDrawing {
 
         if (this.drawTooltipScale > 0) {
             if (this.drawTooltipStackFlag)
-                drawTooltipImage(this.tooltipStack, altarTile, poseStack, bufferSource, 0, light, overlay);
+                drawTooltipImage(this.tooltipStack, altarTile, poseStack, bufferSource, 0, light, overlay, partialTicks);
             else
-                drawTooltipText(altarTile, poseStack, bufferSource, 0, light, overlay);
+                drawTooltipText(altarTile, poseStack, bufferSource, 0, light, overlay, partialTicks);
         }
+    }
+
+
+    public int getBookPageSeed(String location, UUID bookuuid) {
+        return location.hashCode() * 31959 * bookuuid.hashCode();
     }
 
     @OnlyIn(Dist.CLIENT)
     public void drawPages(BookOfShadowsAltarTile altarTile, float leftCursorX, float leftCursorY, float rightCursorX, float rightCursorY, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, float partialTicks, DrawingType drawingType) {
         drawPages(altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType, ItemDisplayContext.NONE, partialTicks);
-    }
-    public void drawPages2(BookOfShadowsAltarTile altarTile, float leftCursorX, float leftCursorY, float rightCursorX, float rightCursorY, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, DrawingType drawingType, ItemDisplayContext transformType, float partialTicks) {
-
-        if (ClientProxy.keys == null)
-            ClientProxy.keys = Minecraft.getInstance().options.keyMappings;
-
-        this.drawSlotOverlay = false;
-        this.drawTooltipStack = false;
-        this.drawTooltipText = false;
-
-        BookEntries bookEntries = BookManager.getBookEntries();
-
-        if (bookEntries == null) {
-            return;
-        }
-
-        BookData bookData = altarTile.currentBook;
-
-        String leftPage = "";
-        String rightPage = "";
-        String leftPagePrev = "";
-        String leftPageUnder = "";
-        String leftPageUnderUnder = "";
-        String leftPageUnderUnderUnder = "";
-        String rightPageUnder = "";
-        String rightPagePrev = "";
-        String rightPagePrevPrev = "";
-        int location1P = 0;
-        int location2P = 0;
-        int location1BackP = 0;
-        int location2BackP = 0;
-        int location1NextP = 0;
-        int location2NextP = 0;
-        int chapter = 0;
-        int page = 0;
-
-        if (bookData != null) {
-            chapter = bookData.getChapter();
-            page = bookData.getPage();
-            if (page % 2 == 1) {
-                page--;
-            }
-
-            leftPage = getPageLocation(bookEntries, chapter, page);
-            location1P = getPageNum(bookEntries, chapter, page);
-
-            rightPage = getPageLocation(bookEntries, chapter, page + 1);
-            location2P = getPageNum(bookEntries, chapter, page + 1);
-
-            // Calculate next and previous pages
-            int[] nextPageInfo = getNextPageInfo(bookEntries, chapter, page);
-            int nextPageChapter = nextPageInfo[0];
-            int nextPagePage = nextPageInfo[1];
-
-            int[] backPageInfo = getBackPageInfo(bookEntries, chapter, page);
-            int backPageChapter = backPageInfo[0];
-            int backPagePage = backPageInfo[1];
-
-            rightPageUnder = getPageLocation(bookEntries, nextPageChapter, nextPagePage);
-            location1NextP = getPageNum(bookEntries, nextPageChapter, nextPagePage);
-
-            rightPagePrev = getPageLocation(bookEntries, nextPageChapter, nextPagePage + 1);
-            location2NextP = getPageNum(bookEntries, nextPageChapter, nextPagePage + 1);
-
-            List<BookPageEntry> entries = bookEntries.chapterList.stream().flatMap(ch -> ch.pages.stream()).toList();
-            if (location2NextP + 2 < entries.size()) {
-                rightPagePrevPrev = entries.get(location2NextP + 2).location;
-            }
-
-            leftPagePrev = getPageLocation(bookEntries, backPageChapter, backPagePage);
-            location1BackP = getPageNum(bookEntries, backPageChapter, backPagePage);
-
-            leftPageUnder = getPageLocation(bookEntries, backPageChapter, backPagePage + 1);
-            location2BackP = getPageNum(bookEntries, backPageChapter, backPagePage + 1);
-
-            if (location2BackP > 2) {
-                leftPageUnderUnder = entries.get(location2BackP - 2).location;
-            }
-            if (location2BackP > 4) {
-                leftPageUnderUnderUnder = entries.get(location2BackP - 4).location;
-            }
-        }
-
-        // Extract page details
-        PageDetails currentPage = extractPageDetails(bookEntries, chapter, page);
-        PageDetails nextPage = extractPageDetails(bookEntries, currentPage.nextChapter, currentPage.nextPage);
-        PageDetails backPage = extractPageDetails(bookEntries, currentPage.backChapter, currentPage.backPage);
-
-        if (drawingType == DrawingType.SCREEN) {
-            if (altarTile.pageOneRotationRender < 65 + 90 && altarTile.pageTwoRotationRender < 65 + 90) {
-                drawPageSegment(currentPage.leftPageUnder, PageOn.LEFT_PAGE, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType, ItemDisplayContext.NONE);
-                drawPageSegment(currentPage.rightPage, PageOn.RIGHT_PAGE, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType, ItemDisplayContext.NONE);
-                drawPageOverlay(currentPage.rightPage, PageOn.RIGHT_PAGE, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType);
-                drawPageOverlay(currentPage.leftPage, PageOn.LEFT_PAGE, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType);
-
-                drawActualPage(currentPage.leftPage, PageOn.LEFT_PAGE, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType, transformType, currentPage.leftPageNum, partialTicks);
-                drawActualPage(currentPage.rightPage, PageOn.RIGHT_PAGE, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType, transformType, currentPage.rightPageNum, partialTicks);
-            }
-            if (altarTile.pageOneRotationRender > 15) {
-                drawPageSegment(currentPage.rightPage, PageOn.RIGHT_PAGE_UNDER, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType, ItemDisplayContext.NONE);
-                drawPageSegment(currentPage.rightPagePrev, PageOn.RIGHT_PAGE_PREV, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType, ItemDisplayContext.NONE);
-                drawPageOverlay(currentPage.rightPagePrev, PageOn.RIGHT_PAGE_PREV, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType);
-                drawPageOverlay(currentPage.rightPageUnder, PageOn.RIGHT_PAGE_UNDER, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType);
-
-                drawActualPage(nextPage.rightPageUnder, PageOn.RIGHT_PAGE_UNDER, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType, transformType, nextPage.leftPageNum, partialTicks);
-                drawActualPage(nextPage.rightPagePrev, PageOn.RIGHT_PAGE_PREV, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType, transformType, nextPage.rightPageNum, partialTicks);
-            }
-            if (altarTile.pageTwoRotationRender > 15) {
-                drawPageSegment(backPage.leftPageUnderUnder, PageOn.LEFT_PAGE_PREV, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType, ItemDisplayContext.NONE);
-                drawPageSegment(backPage.leftPageUnder, PageOn.LEFT_PAGE_UNDER, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType, ItemDisplayContext.NONE);
-                drawPageOverlay(backPage.leftPageUnder, PageOn.LEFT_PAGE_UNDER, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType);
-                drawPageOverlay(backPage.leftPagePrev, PageOn.LEFT_PAGE_PREV, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType);
-
-                drawActualPage(backPage.leftPageUnder, PageOn.LEFT_PAGE_UNDER, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType, transformType, backPage.rightPageNum, partialTicks);
-                drawActualPage(backPage.leftPagePrev, PageOn.LEFT_PAGE_PREV, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, drawingType, transformType, backPage.leftPageNum, partialTicks);
-            }
-        }
-
-//
-        if (transformType != ItemDisplayContext.GUI) {
-
-            if (drawingType == DrawingType.SCREEN) {
-                if (altarTile.pageOneRotationRender < 65 + 90 && altarTile.pageTwoRotationRender < 65 + 90) {
-
-                    int seed = leftPageUnder.hashCode();
-                    Random random = new Random(seed);
-                    String pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
-                    drawBasePage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, 13, 18, 10.2f, pageLoc, new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, -1, drawingType, ItemDisplayContext.NONE);
-
-                    seed = rightPage.hashCode();
-                    random = new Random(seed);
-                    pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
-                    drawBasePage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, -13, 18, 10.2f, pageLoc, new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE, -1, drawingType, ItemDisplayContext.NONE);
-
-                    seed = rightPage.hashCode();
-                    random = new Random(seed);
-                    ResourceLocation loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
-                    if (loc != null && seed != 0)
-                        drawImage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, -13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                                altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-                    seed = leftPage.hashCode();
-                    random = new Random(seed);
-                    loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
-                    if (loc != null && seed != 0)
-                        drawBasePage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, 13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                                altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-
-                    BookPage page1 = BookManager.getBookPages(ResourceLocation.parse(leftPage));
-                    BookPage page2 = BookManager.getBookPages(ResourceLocation.parse(rightPage));
-                    drawPage(page1, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.LEFT_PAGE, drawingType, transformType, location1P, partialTicks);
-                    drawPage(page2, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.RIGHT_PAGE, drawingType, transformType, location2P, partialTicks);
-                }
-                if (altarTile.pageOneRotationRender > 15) {
-
-                    int seed = rightPage.hashCode();
-                    Random random = new Random(seed);
-                    String pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
-                    drawBasePage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, 13, 18, 10.2f, pageLoc, new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_UNDER, -1, drawingType, ItemDisplayContext.NONE);
-
-                    seed = rightPagePrev.hashCode();
-                    random = new Random(seed);
-                    pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
-                    drawBasePage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, -13, 18, 10.2f, pageLoc, new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_PREV, -1, drawingType, ItemDisplayContext.NONE);
-
-                    seed = rightPagePrev.hashCode();
-                    random = new Random(seed);
-                    ResourceLocation loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
-                    if (loc != null && seed != 0)
-                        drawImage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, -13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                                altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_PREV, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-
-                    seed = rightPageUnder.hashCode();
-                    random = new Random(seed);
-                    loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
-                    if (loc != null && seed != 0)
-                        drawImage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, 13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                                altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_UNDER, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-
-
-                    BookPage page2Under = BookManager.getBookPages(ResourceLocation.parse(rightPageUnder));
-                    BookPage page2Prev = BookManager.getBookPages(ResourceLocation.parse(rightPagePrev));
-                    drawPage(page2Under, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.RIGHT_PAGE_UNDER, drawingType, transformType, location1NextP, partialTicks);
-                    drawPage(page2Prev, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.RIGHT_PAGE_PREV, drawingType, transformType, location2NextP, partialTicks);
-                }
-                if (altarTile.pageTwoRotationRender > 15) {
-
-                    Random random = new Random(leftPageUnderUnder.hashCode());
-                    String pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
-                    drawBasePage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, 13, 18, 10.2f, pageLoc, new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_PREV, -1, drawingType, ItemDisplayContext.NONE);
-
-                    random = new Random(leftPageUnder.hashCode());
-                    pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
-                    drawBasePage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, -13, 18, 10.2f, pageLoc, new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_UNDER, -1, drawingType, ItemDisplayContext.NONE);
-
-                    int seed = leftPageUnder.hashCode();
-                    random = new Random(seed);
-                    ResourceLocation loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
-                    if (loc != null && seed != 0)
-                        drawBasePage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, -13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                                altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_UNDER, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-                    seed = leftPagePrev.hashCode();
-                    random = new Random(seed);
-                    loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
-                    if (loc != null && seed != 0)
-                        drawBasePage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, 13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                                altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_PREV, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-
-
-                    BookPage page1Under = BookManager.getBookPages(ResourceLocation.parse(leftPageUnder));
-                    BookPage page1Prev = BookManager.getBookPages(ResourceLocation.parse(leftPagePrev));
-                    drawPage(page1Under, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.LEFT_PAGE_UNDER, drawingType, transformType, location2BackP, partialTicks);
-                    drawPage(page1Prev, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.LEFT_PAGE_PREV, drawingType, transformType, location1BackP, partialTicks);
-
-                }
-
-            } else {
-
-                Random random = new Random(leftPageUnderUnder.hashCode());
-                String pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
-                drawBasePage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, 13, 18, 10.2f, pageLoc, new ArrayList<>()),
-                        altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_PREV, -1, drawingType, transformType);
-
-                random = new Random(leftPageUnder.hashCode());
-                pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
-                drawBasePage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, -13, 18, 10.2f, pageLoc, new ArrayList<>()),
-                        altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_UNDER, -1, drawingType, transformType);
-                drawBasePage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, 13, 18, 10.2f, pageLoc, new ArrayList<>()),
-                        altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, -1, drawingType, transformType);
-
-                random = new Random(rightPage.hashCode());
-                pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
-                drawBasePage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, -13, 18, 10.2f, pageLoc, new ArrayList<>()),
-                        altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE, -1, drawingType, transformType);
-                drawBasePage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, 13, 18, 10.2f, pageLoc, new ArrayList<>()),
-                        altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_UNDER, -1, drawingType, transformType);
-
-                random = new Random(rightPagePrev.hashCode());
-                pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
-                drawBasePage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, -13, 18, 10.2f, pageLoc, new ArrayList<>()),
-                        altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_PREV, -1, drawingType, transformType);
-
-
-                int seed = leftPagePrev.hashCode();
-                random = new Random(seed);
-                ResourceLocation loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
-                if (loc != null && seed != 0)
-                    drawImage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, 13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_PREV, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-                seed = rightPage.hashCode();
-                random = new Random(seed);
-                loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
-                if (loc != null && seed != 0)
-                    drawImage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, -13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-                seed = rightPageUnder.hashCode();
-                random = new Random(seed);
-                loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
-                if (loc != null && seed != 0)
-                    drawImage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, 13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_UNDER, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-                seed = leftPageUnder.hashCode();
-                random = new Random(seed);
-                loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
-                if (loc != null && seed != 0)
-                    drawImage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, -13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_UNDER, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-                seed = leftPage.hashCode();
-                random = new Random(seed);
-                loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
-                if (loc != null && seed != 0)
-                    drawImage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, 13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-                seed = rightPagePrev.hashCode();
-                random = new Random(seed);
-                loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
-                if (loc != null && seed != 0)
-                    drawImage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, -13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_PREV, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-
-
-
-                if (altarTile.openedPercent < 0.6f) {
-                    seed = leftPageUnderUnderUnder.hashCode();
-                    random = new Random(seed);
-                    pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
-                    drawImage(new BookImage(-0.5f - (0.5f - (altarTile.pageTwoRotationRender / 180f) * 0.05f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.3f + (-altarTile.pageOneRotationRender / 180f) / 64f, 0, 0, 13, 18, 13, 18, 10.2f, pageLoc, new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_PREV_PREV, drawingType);
-                    seed = leftPageUnderUnderUnder.hashCode();
-                    random = new Random(seed);
-                    loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
-                    if (loc != null && seed != 0)
-                        drawImage(new BookImage(-0.5f - (0.5f - (altarTile.pageTwoRotationRender / 180f) * 0.05f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.29f, 0, 0, 13, 18, 13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                                altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_PREV_PREV, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-
-                    seed = rightPagePrevPrev.hashCode();
-                    random = new Random(seed);
-                    pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
-                    drawImage(new BookImage(-0.5f - (0.05f + (altarTile.pageOneRotationRender / 180f) * 0.05f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.3f + (-altarTile.pageOneRotationRender / 180f) / 64f, 0, 0, 13, 18, -13, 18, 10.2f, pageLoc, new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_PREV_PREV, drawingType);
-                    seed = rightPagePrevPrev.hashCode();
-                    random = new Random(seed);
-                    loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
-                    if (loc != null && seed != 0)
-                        drawImage(new BookImage(-0.5f - (0.05f + (altarTile.pageOneRotationRender / 180f) * 0.05f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.29f, 0, 0, 13, 18, -13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                                altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_PREV_PREV, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-                }
-
-
-                BookPage page1 = BookManager.getBookPages(ResourceLocation.parse(leftPage));
-                BookPage page2 = BookManager.getBookPages(ResourceLocation.parse(rightPage));
-                drawPage(page1, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.LEFT_PAGE, drawingType, transformType, location1P, partialTicks);
-                drawPage(page2, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.RIGHT_PAGE, drawingType, transformType, location2P, partialTicks);
-                if (altarTile.pageTwoRotationRender < 87.5f) {
-                    BookPage page2Under = BookManager.getBookPages(ResourceLocation.parse(rightPageUnder));
-                    BookPage page2Prev = BookManager.getBookPages(ResourceLocation.parse(rightPagePrev));
-                    drawPage(page2Under, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.RIGHT_PAGE_UNDER, drawingType, transformType, location1NextP, partialTicks);
-                    drawPage(page2Prev, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.RIGHT_PAGE_PREV, drawingType, transformType, location2NextP, partialTicks);
-                }
-                if (altarTile.pageOneRotationRender < 87.5f) {
-                    BookPage page1Under = BookManager.getBookPages(ResourceLocation.parse(leftPageUnder));
-                    BookPage page1Prev = BookManager.getBookPages(ResourceLocation.parse(leftPagePrev));
-                    drawPage(page1Under, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.LEFT_PAGE_UNDER, drawingType, transformType, location2BackP, partialTicks);
-                    drawPage(page1Prev, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.LEFT_PAGE_PREV, drawingType, transformType, location1BackP, partialTicks);
-                }
-            }
-        } else {
-
-            BookPage page1 = BookManager.getBookPages(ResourceLocation.parse("hexerei:book/book_pages/gui_page_1"));
-            BookPage page2 = BookManager.getBookPages(ResourceLocation.parse("hexerei:book/book_pages/gui_page_1"));
-            drawPage(page1, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.LEFT_PAGE, drawingType, transformType, location1P, partialTicks);
-            drawPage(page2, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.RIGHT_PAGE, drawingType, transformType, location2P, partialTicks);
-        }
-
-        drawBaseButtons(altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, !rightPageUnder.isEmpty(), !leftPagePrev.isEmpty(), chapter, page, drawingType, partialTicks);
-
-
-
-
-    }
-
-    private void drawPageSegmentWithRandomOverlay(String page, PageOn pageOn, BookOfShadowsAltarTile altarTile, float leftCursorX, float leftCursorY, float rightCursorX, float rightCursorY, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, DrawingType drawingType, ItemDisplayContext transformType) {
-        int seed = page.hashCode();
-        Random random = new Random(seed);
-        String pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
-        drawBasePage(new BookImage(-0.5f - (pageOn == PageOn.LEFT_PAGE ? 0.45f : 0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, pageOn == PageOn.LEFT_PAGE ? 13 : -13, 18, 10.2f, pageLoc, new ArrayList<>()), altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, pageOn, -1, drawingType, transformType);
-    }
-    private void drawPageOverlayWithRandom(String page, PageOn pageOn, BookOfShadowsAltarTile altarTile, float leftCursorX, float leftCursorY, float rightCursorX, float rightCursorY, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, DrawingType drawingType) {
-        int seed = page.hashCode();
-        Random random = new Random(seed);
-        ResourceLocation loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
-        if (loc != null && seed != 0) {
-            drawImage(new BookImage(-0.5f - (pageOn == PageOn.LEFT_PAGE ? 0.45f : 0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, pageOn == PageOn.LEFT_PAGE ? 13 : -13, 18, 10.2f, loc.toString(), new ArrayList<>()), altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, pageOn, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-        }
-    }
-
-    // Helper methods for drawing and extracting page details
-    private PageDetails extractPageDetails(BookEntries bookEntries, int chapter, int page) {
-        PageDetails details = new PageDetails();
-        details.leftPage = getPageLocation(bookEntries, chapter, page);
-        details.leftPageNum = getPageNum(bookEntries, chapter, page);
-        details.rightPage = getPageLocation(bookEntries, chapter, page + 1);
-        details.rightPageNum = getPageNum(bookEntries, chapter, page + 1);
-
-        int[] nextPageInfo = getNextPageInfo(bookEntries, chapter, page);
-        details.nextChapter = nextPageInfo[0];
-        details.nextPage = nextPageInfo[1];
-
-        int[] backPageInfo = getBackPageInfo(bookEntries, chapter, page);
-        details.backChapter = backPageInfo[0];
-        details.backPage = backPageInfo[1];
-
-        details.rightPageUnder = getPageLocation(bookEntries, details.nextChapter, details.nextPage);
-        details.rightPagePrev = getPageLocation(bookEntries, details.nextChapter, details.nextPage + 1);
-
-        details.leftPagePrev = getPageLocation(bookEntries, details.backChapter, details.backPage);
-        details.leftPageUnder = getPageLocation(bookEntries, details.backChapter, details.backPage + 1);
-
-        List<BookPageEntry> entries = bookEntries.chapterList.stream().flatMap(ch -> ch.pages.stream()).toList();
-        if (details.rightPageNum + 2 < entries.size()) {
-            details.rightPagePrevPrev = entries.get(details.rightPageNum + 2).location;
-        }
-        if (details.leftPageNum > 2) {
-            details.leftPageUnderUnder = entries.get(details.leftPageNum - 2).location;
-        }
-        if (details.leftPageNum > 4) {
-            details.leftPageUnderUnderUnder = entries.get(details.leftPageNum - 4).location;
-        }
-
-        return details;
-    }
-
-    private void drawPageSegment(String page, PageOn pageOn, BookOfShadowsAltarTile altarTile, float leftCursorX, float leftCursorY, float rightCursorX, float rightCursorY, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, DrawingType drawingType, ItemDisplayContext transformType) {
-        int seed = page.hashCode();
-        Random random = new Random(seed);
-        String pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
-        drawBasePage(new BookImage(-0.5f - (pageOn == PageOn.LEFT_PAGE ? 0.45f : 0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, pageOn == PageOn.LEFT_PAGE ? 13 : -13, 18, 10.2f, pageLoc, new ArrayList<>()),
-                altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, pageOn, -1, drawingType, transformType);
-    }
-
-
-    private void drawPageOverlay(String page, PageOn pageOn, BookOfShadowsAltarTile altarTile, float leftCursorX, float leftCursorY, float rightCursorX, float rightCursorY, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, DrawingType drawingType) {
-        int seed = page.hashCode();
-        Random random = new Random(seed);
-        ResourceLocation loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
-        if (loc != null && seed != 0) {
-            drawImage(new BookImage(-0.5f - (pageOn == PageOn.LEFT_PAGE ? 0.45f : 0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, pageOn == PageOn.LEFT_PAGE ? 13 : -13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                    altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, pageOn, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-        }
-    }
-
-    private void drawActualPage(String page, PageOn pageOn, BookOfShadowsAltarTile altarTile, float leftCursorX, float leftCursorY, float rightCursorX, float rightCursorY, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, DrawingType drawingType, ItemDisplayContext transformType, int pageNum, float partialTicks) {
-        BookPage bookPage = BookManager.getBookPages(ResourceLocation.parse(page));
-        drawPage(bookPage, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, pageOn, drawingType, transformType, pageNum, partialTicks);
-    }
-
-    static class PageDetails {
-        String leftPage = "";
-        int leftPageNum = 0;
-        String rightPage = "";
-        int rightPageNum = 0;
-        int nextChapter = -1;
-        int nextPage = 0;
-        int backChapter = -1;
-        int backPage = 0;
-        String rightPageUnder = "";
-        String rightPagePrev = "";
-        String rightPagePrevPrev = "";
-        String leftPagePrev = "";
-        String leftPageUnder = "";
-        String leftPageUnderUnder = "";
-        String leftPageUnderUnderUnder = "";
-    }
-
-
-    private String getPageLocation(BookEntries bookEntries, int chapter, int page) {
-        if (chapter < 0 || chapter >= bookEntries.chapterList.size()) {
-            return "";
-        }
-        if (page < 0 || page >= bookEntries.chapterList.get(chapter).pages.size()) {
-            return "";
-        }
-        return bookEntries.chapterList.get(chapter).pages.get(page).location;
-    }
-
-    private int getPageNum(BookEntries bookEntries, int chapter, int page) {
-        if (chapter < 0 || chapter >= bookEntries.chapterList.size()) {
-            return 0;
-        }
-        if (page < 0 || page >= bookEntries.chapterList.get(chapter).pages.size()) {
-            return 0;
-        }
-        return bookEntries.chapterList.get(chapter).pages.get(page).pageNum;
-    }
-
-    private int[] getNextPageInfo(BookEntries bookEntries, int chapter, int page) {
-        int nextPageChapter = chapter;
-        int nextPagePage = page;
-        if (nextPagePage < bookEntries.chapterList.get(chapter).pages.size() - 2) {
-            nextPagePage += 2;
-        } else if (chapter < bookEntries.chapterList.size() - 1) {
-            nextPageChapter++;
-            nextPagePage = 0;
-        } else {
-            nextPageChapter = -1;
-        }
-        return new int[]{nextPageChapter, nextPagePage};
-    }
-
-    private int[] getBackPageInfo(BookEntries bookEntries, int chapter, int page) {
-        int backPageChapter = chapter;
-        int backPagePage = page;
-        if (backPagePage - 2 >= 0) {
-            backPagePage -= 2;
-        } else if (backPageChapter > 0) {
-            backPageChapter--;
-            backPagePage = bookEntries.chapterList.get(backPageChapter).pages.size() - 1;
-            if (backPagePage % 2 == 1) {
-                backPagePage--;
-            }
-        } else {
-            backPageChapter = -1;
-        }
-        return new int[]{backPageChapter, backPagePage};
     }
 
 
@@ -1804,12 +1424,15 @@ public class PageDrawing {
         this.drawSlotOverlay = false;
         this.drawTooltipStack = false;
         this.drawTooltipText = false;
-        BookEntries bookEntries = BookManager.getBookEntries();
+
+        BookData bookData = altarTile.currentBook;
+        if (bookData == null)
+            return;
+
+        BookEntries bookEntries = BookManager.getBookEntries(bookData.getBook());
 
         if (bookEntries == null)
             return;
-
-        BookData bookData = altarTile.currentBook;
 
         String left_page = "";
         String right_page = "";
@@ -1828,180 +1451,189 @@ public class PageDrawing {
         int location2_next_p = 0;
         int chapter = 0;
         int page = 0;
-        if (bookData != null) {
-            chapter = bookData.getChapter();
-            page = bookData.getPage();
-            if (page % 2 == 1)
-                page--;
+        chapter = Math.max(0, bookData.getChapter());
+        page = Math.max(0, bookData.getPage());
+        if (page % 2 == 1)
+            page--;
 
-            if (bookEntries.chapterList.get(chapter).pages.size() > page && page >= 0) {
-                BookPageEntry pageEntry = bookEntries.chapterList.get(chapter).pages.get(page);
-                left_page = pageEntry.location;
-                location1_p = pageEntry.pageNum;
+        if (bookEntries.chapterList.get(chapter).pages.size() > page && page >= 0) {
+            BookPageEntry pageEntry = bookEntries.chapterList.get(chapter).pages.get(page);
+            left_page = pageEntry.location;
+            location1_p = pageEntry.pageNum;
+        }
+        if (bookEntries.chapterList.get(chapter).pages.size() > page + 1 && page >= 0) {
+            BookPageEntry pageEntry = bookEntries.chapterList.get(chapter).pages.get(page + 1);
+            right_page = pageEntry.location;
+            location2_p = pageEntry.pageNum;
+        }
+
+
+        int next_page_chapter = chapter;
+        int next_page_page = page;
+        int back_page_chapter = chapter;
+        int back_page_page = page;
+        if (next_page_page < bookEntries.chapterList.get(chapter).pages.size() - 2)
+            next_page_page += 2;
+        else if (chapter < bookEntries.chapterList.size() - 1) {
+            next_page_chapter++;
+            next_page_page = 0;
+        } else
+            next_page_chapter = -1;
+
+        if (next_page_chapter != -1 && next_page_chapter < bookEntries.chapterList.size() && next_page_page < bookEntries.chapterList.get(next_page_chapter).pages.size()) {
+
+            BookPageEntry pageEntry = bookEntries.chapterList.get(next_page_chapter).pages.get(next_page_page);
+            right_page_under = pageEntry.location;
+            location1_next_p = pageEntry.pageNum;
+            if (bookEntries.chapterList.get(next_page_chapter).pages.size() > next_page_page + 1) {
+                BookPageEntry pageEntry2 = bookEntries.chapterList.get(next_page_chapter).pages.get(next_page_page + 1);
+                right_page_prev = pageEntry2.location;
+                location2_next_p = pageEntry2.pageNum;
+                List<BookPageEntry> entries = bookEntries.chapterList.stream().flatMap((entry) -> entry.pages.stream()).toList();
+                if (location2_next_p + 2 < entries.size())
+                    right_page_prev_prev = entries.get(location2_next_p + 2).location;
             }
-            if (bookEntries.chapterList.get(chapter).pages.size() > page + 1 && page >= 0) {
-                BookPageEntry pageEntry = bookEntries.chapterList.get(chapter).pages.get(page + 1);
-                right_page = pageEntry.location;
-                location2_p = pageEntry.pageNum;
+        }
+
+
+        if (back_page_page - 2 >= 0)
+            back_page_page -= 2;
+        else if (back_page_chapter > 0) {
+            back_page_chapter--;
+            back_page_page = bookEntries.chapterList.get(back_page_chapter).pages.size() - 1;
+            if (back_page_page % 2 == 1)
+                back_page_page--;
+        } else
+            back_page_chapter = -1;
+
+        if (back_page_chapter != -1 && back_page_chapter < bookEntries.chapterList.size() && back_page_page < bookEntries.chapterList.get(back_page_chapter).pages.size()) {
+
+            BookPageEntry pageEntry = bookEntries.chapterList.get(back_page_chapter).pages.get(back_page_page);
+            left_page_prev = pageEntry.location;
+            location1_back_p = pageEntry.pageNum;
+            if (bookEntries.chapterList.get(back_page_chapter).pages.size() > back_page_page + 1) {
+                BookPageEntry pageEntry2 = bookEntries.chapterList.get(back_page_chapter).pages.get(back_page_page + 1);
+                left_page_under = pageEntry2.location;
+                location2_back_p = pageEntry2.pageNum;
             }
 
-
-            int next_page_chapter = chapter;
-            int next_page_page = page;
-            int back_page_chapter = chapter;
-            int back_page_page = page;
-            if (next_page_page < BookManager.getBookEntries().chapterList.get(chapter).pages.size() - 2)
-                next_page_page += 2;
-            else if (chapter < BookManager.getBookEntries().chapterList.size() - 1) {
-                next_page_chapter++;
-                next_page_page = 0;
-            } else
-                next_page_chapter = -1;
-
-            if (next_page_chapter != -1 && next_page_chapter < bookEntries.chapterList.size() && next_page_page < bookEntries.chapterList.get(next_page_chapter).pages.size()) {
-
-                BookPageEntry pageEntry = bookEntries.chapterList.get(next_page_chapter).pages.get(next_page_page);
-                right_page_under = pageEntry.location;
-                location1_next_p = pageEntry.pageNum;
-                if (bookEntries.chapterList.get(next_page_chapter).pages.size() > next_page_page + 1) {
-                    BookPageEntry pageEntry2 = bookEntries.chapterList.get(next_page_chapter).pages.get(next_page_page + 1);
-                    right_page_prev = pageEntry2.location;
-                    location2_next_p = pageEntry2.pageNum;
-                    List<BookPageEntry> entries = bookEntries.chapterList.stream().flatMap((entry) -> entry.pages.stream()).toList();
-                    if (location2_next_p + 2 < entries.size())
-                        right_page_prev_prev = entries.get(location2_next_p + 2).location;
-                }
+            if (back_page_page - 1 > 0) {
+                BookPageEntry pageEntry2 = bookEntries.chapterList.get(back_page_chapter).pages.get(back_page_page - 1);
+                left_page_under_under = pageEntry2.location;
+            } else if (back_page_chapter - 1 > 0) {
+                BookPageEntry pageEntry2 = bookEntries.chapterList.get(back_page_chapter - 1).pages.getLast();
+                left_page_under_under = pageEntry2.location;
             }
 
-
-            if (back_page_page - 2 >= 0)
-                back_page_page -= 2;
-            else if (back_page_chapter > 0) {
-                back_page_chapter--;
-                back_page_page = BookManager.getBookEntries().chapterList.get(back_page_chapter).pages.size() - 1;
-                if (back_page_page % 2 == 1)
-                    back_page_page--;
-            } else
-                back_page_chapter = -1;
-
-            if (back_page_chapter != -1 && back_page_chapter < bookEntries.chapterList.size() && back_page_page < bookEntries.chapterList.get(back_page_chapter).pages.size()) {
-
-                BookPageEntry pageEntry = bookEntries.chapterList.get(back_page_chapter).pages.get(back_page_page);
-                left_page_prev = pageEntry.location;
-                location1_back_p = pageEntry.pageNum;
-                if (bookEntries.chapterList.get(back_page_chapter).pages.size() > back_page_page + 1) {
-                    BookPageEntry pageEntry2 = bookEntries.chapterList.get(back_page_chapter).pages.get(back_page_page + 1);
-                    left_page_under = pageEntry2.location;
-                    location2_back_p = pageEntry2.pageNum;
-                    List<BookPageEntry> entries = bookEntries.chapterList.stream().flatMap((entry) -> entry.pages.stream()).toList();
-                    if (location2_back_p > 2)
-                        left_page_under_under = entries.get(location2_back_p - 2).location;
-                    if (location2_back_p > 4)
-                        left_page_under_under_under = entries.get(location2_back_p - 4).location;
-                }
+            if (back_page_page - 3 > 0) {
+                BookPageEntry pageEntry2 = bookEntries.chapterList.get(back_page_chapter).pages.get(back_page_page - 3);
+                left_page_under_under_under = pageEntry2.location;
+            } else if (back_page_chapter - 1 > 0) {
+                BookPageEntry pageEntry2 = bookEntries.chapterList.get(back_page_chapter - 1).pages.get(bookEntries.chapterList.get(back_page_chapter - 1).pages.size() - 3);
+                left_page_under_under_under = pageEntry2.location;
             }
 
         }
-//
+
         if (transformType != ItemDisplayContext.GUI) {
 
             if (drawingType == DrawingType.SCREEN) {
                 if (altarTile.pageOneRotationRender < 65 + 90 && altarTile.pageTwoRotationRender < 65 + 90) {
 
-                    int seed = left_page_under.hashCode() * 157959;
+                    int seed =  getBookPageSeed(left_page_under, bookData.getUUID());
                     Random random = new Random(seed);
-                    String pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
+                    String pageLoc = pageTextureLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageTextureLocs.get(random.nextInt(pageTextureLocs.size())).toString();
                     drawBasePage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, 13, 18, 10.2f, pageLoc, new ArrayList<>()),
                             altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, -1, drawingType, ItemDisplayContext.NONE);
 
-                    seed = right_page.hashCode() * 157959;
+                    seed =  getBookPageSeed(right_page, bookData.getUUID());
                     random = new Random(seed);
-                    pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
+                    pageLoc = pageTextureLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageTextureLocs.get(random.nextInt(pageTextureLocs.size())).toString();
                     drawBasePage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, -13, 18, 10.2f, pageLoc, new ArrayList<>()),
                             altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE, -1, drawingType, ItemDisplayContext.NONE);
 
-                    seed = right_page.hashCode() * 157959;
+                    seed =  getBookPageSeed(right_page, bookData.getUUID());
                     random = new Random(seed);
-                    ResourceLocation loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
+                    ResourceLocation loc = overlayTextureLocs.get(random.nextInt(overlayTextureLocs.size()));
                     if (loc != null && seed != 0)
                         drawImage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, -13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                                altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-                    seed = left_page.hashCode() * 157959;
+                                altarTile, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
+                    seed =  getBookPageSeed(left_page, bookData.getUUID());
                     random = new Random(seed);
-                    loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
+                    loc = overlayTextureLocs.get(random.nextInt(overlayTextureLocs.size()));
                     if (loc != null && seed != 0)
                         drawBasePage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, 13, 18, 10.2f, loc.toString(), new ArrayList<>()),
                                 altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
 
-                    BookPage page1 = BookManager.getBookPages(ResourceLocation.parse(left_page));
-                    BookPage page2 = BookManager.getBookPages(ResourceLocation.parse(right_page));
+                    BookPage page1 = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(left_page));
+                    BookPage page2 = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(right_page));
                     drawPage(page1, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.LEFT_PAGE, drawingType, transformType, location1_p, partialTicks);
                     drawPage(page2, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.RIGHT_PAGE, drawingType, transformType, location2_p, partialTicks);
                 }
                 if (altarTile.pageOneRotationRender > 15) {
 
-                    int seed = right_page.hashCode() * 157959;
+                    int seed =  getBookPageSeed(right_page, bookData.getUUID());
                     Random random = new Random(seed);
-                    String pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
+                    String pageLoc = pageTextureLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageTextureLocs.get(random.nextInt(pageTextureLocs.size())).toString();
                     drawBasePage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, 13, 18, 10.2f, pageLoc, new ArrayList<>()),
                             altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_UNDER, -1, drawingType, ItemDisplayContext.NONE);
 
-                    seed = right_page_prev.hashCode() * 157959;
+                    seed =  getBookPageSeed(right_page_prev, bookData.getUUID());
                     random = new Random(seed);
-                    pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
+                    pageLoc = pageTextureLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageTextureLocs.get(random.nextInt(pageTextureLocs.size())).toString();
                     drawBasePage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, -13, 18, 10.2f, pageLoc, new ArrayList<>()),
                             altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_PREV, -1, drawingType, ItemDisplayContext.NONE);
 
-                    seed = right_page_prev.hashCode() * 157959;
+                    seed =  getBookPageSeed(right_page_prev, bookData.getUUID());
                     random = new Random(seed);
-                    ResourceLocation loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
+                    ResourceLocation loc = overlayTextureLocs.get(random.nextInt(overlayTextureLocs.size()));
                     if (loc != null && seed != 0)
                         drawImage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, -13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                                altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_PREV, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
+                                altarTile, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_PREV, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
 
-                    seed = right_page_under.hashCode() * 157959;
+                    seed =  getBookPageSeed(right_page_under, bookData.getUUID());
                     random = new Random(seed);
-                    loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
+                    loc = overlayTextureLocs.get(random.nextInt(overlayTextureLocs.size()));
                     if (loc != null && seed != 0)
                         drawImage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, 13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                                altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_UNDER, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
+                                altarTile, leftCursorX, leftCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_UNDER, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
 
 
-                    BookPage page2_under = BookManager.getBookPages(ResourceLocation.parse(right_page_under));
-                    BookPage page2_prev = BookManager.getBookPages(ResourceLocation.parse(right_page_prev));
+                    BookPage page2_under = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(right_page_under));
+                    BookPage page2_prev = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(right_page_prev));
                     drawPage(page2_under, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.RIGHT_PAGE_UNDER, drawingType, transformType, location1_next_p, partialTicks);
                     drawPage(page2_prev, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.RIGHT_PAGE_PREV, drawingType, transformType, location2_next_p, partialTicks);
                 }
                 if (altarTile.pageTwoRotationRender > 15) {
 
-                    int seed = left_page_under_under.hashCode() * 157959;
+                    int seed =  getBookPageSeed(left_page_under_under, bookData.getUUID());
                     Random random = new Random(seed);
-                    String pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
+                    String pageLoc = pageTextureLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageTextureLocs.get(random.nextInt(pageTextureLocs.size())).toString();
                     drawBasePage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, 13, 18, 10.2f, pageLoc, new ArrayList<>()),
                             altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_PREV, -1, drawingType, ItemDisplayContext.NONE);
 
-                    seed = left_page_under.hashCode() * 157959;
+                    seed =  getBookPageSeed(left_page_under, bookData.getUUID());
                     random = new Random(seed);
-                    pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
+                    pageLoc = pageTextureLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageTextureLocs.get(random.nextInt(pageTextureLocs.size())).toString();
                     drawBasePage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, -13, 18, 10.2f, pageLoc, new ArrayList<>()),
                             altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_UNDER, -1, drawingType, ItemDisplayContext.NONE);
 
-                    seed = left_page_under.hashCode() * 157959;
+                    seed =  getBookPageSeed(left_page_under, bookData.getUUID());
                     random = new Random(seed);
-                    ResourceLocation loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
+                    ResourceLocation loc = overlayTextureLocs.get(random.nextInt(overlayTextureLocs.size()));
                     if (loc != null && seed != 0)
                         drawBasePage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, -13, 18, 10.2f, loc.toString(), new ArrayList<>()),
                                 altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_UNDER, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-                    seed = left_page_prev.hashCode() * 157959;
+                    seed =  getBookPageSeed(left_page_prev, bookData.getUUID());
                     random = new Random(seed);
-                    loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
+                    loc = overlayTextureLocs.get(random.nextInt(overlayTextureLocs.size()));
                     if (loc != null && seed != 0)
                         drawBasePage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, 13, 18, 10.2f, loc.toString(), new ArrayList<>()),
                                 altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_PREV, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
 
 
-                    BookPage page1_under = BookManager.getBookPages(ResourceLocation.parse(left_page_under));
-                    BookPage page1_prev = BookManager.getBookPages(ResourceLocation.parse(left_page_prev));
+                    BookPage page1_under = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(left_page_under));
+                    BookPage page1_prev = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(left_page_prev));
                     drawPage(page1_under, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.LEFT_PAGE_UNDER, drawingType, transformType, location2_back_p, partialTicks);
                     drawPage(page1_prev, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.LEFT_PAGE_PREV, drawingType, transformType, location1_back_p, partialTicks);
 
@@ -2009,122 +1641,122 @@ public class PageDrawing {
 
             } else {
 
-                int seed = left_page_under_under.hashCode() * 157959;
+                int seed =  getBookPageSeed(left_page_under_under, bookData.getUUID());
                 Random random = new Random(seed);
-                String pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
+                String pageLoc = pageTextureLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageTextureLocs.get(random.nextInt(pageTextureLocs.size())).toString();
                 drawBasePage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, 13, 18, 10.2f, pageLoc, new ArrayList<>()),
                         altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_PREV, -1, drawingType, transformType);
 
-                seed = left_page_under.hashCode() * 157959;
+                seed =  getBookPageSeed(left_page_under, bookData.getUUID());
                 random = new Random(seed);
-                pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
+                pageLoc = pageTextureLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageTextureLocs.get(random.nextInt(pageTextureLocs.size())).toString();
                 drawBasePage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, -13, 18, 10.2f, pageLoc, new ArrayList<>()),
                         altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_UNDER, -1, drawingType, transformType);
                 drawBasePage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, 13, 18, 10.2f, pageLoc, new ArrayList<>()),
                         altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, -1, drawingType, transformType);
 
-                seed = right_page.hashCode() * 157959;
+                seed =  getBookPageSeed(right_page, bookData.getUUID());
                 random = new Random(seed);
-                pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
+                pageLoc = pageTextureLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageTextureLocs.get(random.nextInt(pageTextureLocs.size())).toString();
                 drawBasePage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, -13, 18, 10.2f, pageLoc, new ArrayList<>()),
                         altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE, -1, drawingType, transformType);
                 drawBasePage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, 13, 18, 10.2f, pageLoc, new ArrayList<>()),
                         altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_UNDER, -1, drawingType, transformType);
 
-                seed = right_page_prev.hashCode() * 157959;
+                seed =  getBookPageSeed(right_page_prev, bookData.getUUID());
                 random = new Random(seed);
-                pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
+                pageLoc = pageTextureLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageTextureLocs.get(random.nextInt(pageTextureLocs.size())).toString();
                 drawBasePage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.2f, 0, 0, 13, 18, -13, 18, 10.2f, pageLoc, new ArrayList<>()),
                         altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_PREV, -1, drawingType, transformType);
 
 
-                seed = left_page_prev.hashCode() * 157959;
+                seed =  getBookPageSeed(left_page_prev, bookData.getUUID());
                 random = new Random(seed);
-                ResourceLocation loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
+                ResourceLocation loc = overlayTextureLocs.get(random.nextInt(overlayTextureLocs.size()));
                 if (loc != null && seed != 0)
                     drawImage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, 13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_PREV, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-                seed = right_page.hashCode() * 157959;
+                            altarTile, leftCursorX, leftCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_PREV, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
+                seed =  getBookPageSeed(right_page, bookData.getUUID());
                 random = new Random(seed);
-                loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
+                loc = overlayTextureLocs.get(random.nextInt(overlayTextureLocs.size()));
                 if (loc != null && seed != 0)
                     drawImage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, -13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-                seed = right_page_under.hashCode() * 157959;
+                            altarTile, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
+                seed =  getBookPageSeed(right_page_under, bookData.getUUID());
                 random = new Random(seed);
-                loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
+                loc = overlayTextureLocs.get(random.nextInt(overlayTextureLocs.size()));
                 if (loc != null && seed != 0)
                     drawImage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, 13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_UNDER, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-                seed = left_page_under.hashCode() * 157959;
+                            altarTile, leftCursorX, leftCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_UNDER, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
+                seed =  getBookPageSeed(left_page_under, bookData.getUUID());
                 random = new Random(seed);
-                loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
+                loc = overlayTextureLocs.get(random.nextInt(overlayTextureLocs.size()));
                 if (loc != null && seed != 0)
                     drawImage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, -13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_UNDER, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-                seed = left_page.hashCode() * 157959;
+                            altarTile, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_UNDER, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
+                seed =  getBookPageSeed(left_page, bookData.getUUID());
                 random = new Random(seed);
-                loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
+                loc = overlayTextureLocs.get(random.nextInt(overlayTextureLocs.size()));
                 if (loc != null && seed != 0)
                     drawImage(new BookImage(-0.5f - (0.45f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, 13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
-                seed = right_page_prev.hashCode() * 157959;
+                            altarTile, leftCursorX, leftCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
+                seed =  getBookPageSeed(right_page_prev, bookData.getUUID());
                 random = new Random(seed);
-                loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
+                loc = overlayTextureLocs.get(random.nextInt(overlayTextureLocs.size()));
                 if (loc != null && seed != 0)
                     drawImage(new BookImage(-0.5f - (0.1f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.19f, 0, 0, 13, 18, -13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_PREV, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
+                            altarTile, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_PREV, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
 
 
 
                 if (altarTile.openedPercent < 0.6f) {
-                    seed = left_page_under_under_under.hashCode() * 157959;
+                    seed =  getBookPageSeed(left_page_under_under_under, bookData.getUUID());
                     random = new Random(seed);
-                    pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
+                    pageLoc = pageTextureLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageTextureLocs.get(random.nextInt(pageTextureLocs.size())).toString();
                     drawImage(new BookImage(-0.5f - (0.5f - (altarTile.pageTwoRotationRender / 180f) * 0.05f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.3f + (-altarTile.pageOneRotationRender / 180f) / 64f, 0, 0, 13, 18, 13, 18, 10.2f, pageLoc, new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_PREV_PREV, drawingType);
-                    seed = left_page_under_under_under.hashCode() * 157959;
+                            altarTile, leftCursorX, leftCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_PREV_PREV, drawingType);
+                    seed =  getBookPageSeed(left_page_under_under_under, bookData.getUUID());
                     random = new Random(seed);
-                    loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
+                    loc = overlayTextureLocs.get(random.nextInt(overlayTextureLocs.size()));
                     if (loc != null && seed != 0)
                         drawImage(new BookImage(-0.5f - (0.5f - (altarTile.pageTwoRotationRender / 180f) * 0.05f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.29f, 0, 0, 13, 18, 13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                                altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_PREV_PREV, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
+                                altarTile, leftCursorX, leftCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE_PREV_PREV, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
 
-                    seed = right_page_prev_prev.hashCode() * 157959;
+                    seed =  getBookPageSeed(right_page_prev_prev, bookData.getUUID());
                     random = new Random(seed);
-                    pageLoc = pageLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageLocs.get(random.nextInt(pageLocs.size())).toString();
+                    pageLoc = pageTextureLocs.isEmpty() ? "hexerei:textures/book/pages/page_1.png" : pageTextureLocs.get(random.nextInt(pageTextureLocs.size())).toString();
                     drawImage(new BookImage(-0.5f - (0.05f + (altarTile.pageOneRotationRender / 180f) * 0.05f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.3f + (-altarTile.pageOneRotationRender / 180f) / 64f, 0, 0, 13, 18, -13, 18, 10.2f, pageLoc, new ArrayList<>()),
-                            altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_PREV_PREV, drawingType);
-                    seed = right_page_prev_prev.hashCode() * 157959;
+                            altarTile, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_PREV_PREV, drawingType);
+                    seed =  getBookPageSeed(right_page_prev_prev, bookData.getUUID());
                     random = new Random(seed);
-                    loc = overlayLocs.get(random.nextInt(overlayLocs.size()));
+                    loc = overlayTextureLocs.get(random.nextInt(overlayTextureLocs.size()));
                     if (loc != null && seed != 0)
                         drawImage(new BookImage(-0.5f - (0.05f + (altarTile.pageOneRotationRender / 180f) * 0.05f) + 6.55f / 2f, -1 - 0.49f + 9.1f / 2f, -0.29f, 0, 0, 13, 18, -13, 18, 10.2f, loc.toString(), new ArrayList<>()),
-                                altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_PREV_PREV, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
+                                altarTile, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE_PREV_PREV, 0x99FFFFFF, drawingType, ItemDisplayContext.NONE);
                 }
 
 
-                BookPage page1 = BookManager.getBookPages(ResourceLocation.parse(left_page));
-                BookPage page2 = BookManager.getBookPages(ResourceLocation.parse(right_page));
+                BookPage page1 = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(left_page));
+                BookPage page2 = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(right_page));
                 drawPage(page1, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.LEFT_PAGE, drawingType, transformType, location1_p, partialTicks);
                 drawPage(page2, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.RIGHT_PAGE, drawingType, transformType, location2_p, partialTicks);
                 if (altarTile.pageTwoRotationRender < 87.5f) {
-                    BookPage page2_under = BookManager.getBookPages(ResourceLocation.parse(right_page_under));
-                    BookPage page2_prev = BookManager.getBookPages(ResourceLocation.parse(right_page_prev));
+                    BookPage page2_under = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(right_page_under));
+                    BookPage page2_prev = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(right_page_prev));
                     drawPage(page2_under, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.RIGHT_PAGE_UNDER, drawingType, transformType, location1_next_p, partialTicks);
                     drawPage(page2_prev, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.RIGHT_PAGE_PREV, drawingType, transformType, location2_next_p, partialTicks);
                 }
                 if (altarTile.pageOneRotationRender < 87.5f) {
-                    BookPage page1_under = BookManager.getBookPages(ResourceLocation.parse(left_page_under));
-                    BookPage page1_prev = BookManager.getBookPages(ResourceLocation.parse(left_page_prev));
+                    BookPage page1_under = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(left_page_under));
+                    BookPage page1_prev = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(left_page_prev));
                     drawPage(page1_under, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.LEFT_PAGE_UNDER, drawingType, transformType, location2_back_p, partialTicks);
                     drawPage(page1_prev, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.LEFT_PAGE_PREV, drawingType, transformType, location1_back_p, partialTicks);
                 }
             }
         } else {
 
-            BookPage page1 = BookManager.getBookPages(ResourceLocation.parse("hexerei:book/book_pages/gui_page_1"));
-            BookPage page2 = BookManager.getBookPages(ResourceLocation.parse("hexerei:book/book_pages/gui_page_1"));
+            BookPage page1 = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse("hexerei:book/book_pages/gui_page_1"));
+            BookPage page2 = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse("hexerei:book/book_pages/gui_page_1"));
             drawPage(page1, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.LEFT_PAGE, drawingType, transformType, location1_p, partialTicks);
             drawPage(page2, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, light, overlay, PageOn.RIGHT_PAGE, drawingType, transformType, location2_p, partialTicks);
         }
@@ -2141,10 +1773,8 @@ public class PageDrawing {
     @OnlyIn(Dist.CLIENT)
     public void drawBaseButtons(BookOfShadowsAltarTile altarTile, float leftCursorX, float leftCursorY, float rightCursorX, float rightCursorY, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, boolean drawNext, boolean drawBack, int chapter, int page, DrawingType drawingType, ItemDisplayContext transformType, boolean fullyExtended, float partial) {
 
-        Player playerIn = null;
-        if (altarTile.getLevel() != null && altarTile.getLevel().isClientSide)
-            playerIn = Hexerei.proxy.getPlayer();
-        if (playerIn != null) {
+        BookEntries bookEntries = BookManager.getBookEntries(altarTile.currentBook.getBook());
+        if (bookEntries != null) {
 
             for (int i = 0; i < this.bookmarkHoverAmountRender.size(); i++)
                 this.bookmarkHoverAmountRender.set(i, easeInOutElastic(Mth.lerp(partial, this.bookmarkHoverAmountOld.get(i), this.bookmarkHoverAmount.get(i))));
@@ -2180,7 +1810,7 @@ public class PageDrawing {
                             if (!slot.getId().isEmpty()) {
                                 bookmark_color = slot.getColor();
                                 bookmark_id = slot.getId();
-                                for (BookChapter chapterEntry : BookManager.getBookEntries().chapterList) {
+                                for (BookChapter chapterEntry : bookEntries.chapterList) {
                                     for (BookPageEntry pageEntry : chapterEntry.pages) {
                                         if (pageEntry.location.equals(bookmark_id)) {
                                             bookmark_chapter = pageEntry.chapterNum;
@@ -2219,8 +1849,8 @@ public class PageDrawing {
                         BookImage bookImage = new BookImage(-0.5f, -1f, 0, 0, 0, 32, 32, 32, 32, altarTile.buttonScaleRender / 2 * 1.15f, "hexerei:textures/book/bookmark_button_underlay.png", effects);
                         BookImage bookImage_overlay = new BookImage(-0.5f, -1f, 0, 0, 0, 32, 32, 32, 32, altarTile.buttonScaleRender / 2 * 1.15f, "hexerei:textures/book/bookmark_button_overlay.png", effects);
 
-                        drawImage(bookImage, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, drawingType);
-                        drawImage(bookImage_overlay, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, HexereiUtil.getColorValue(bookmark_color), drawingType, transformType);
+                        drawImage(bookImage, altarTile, leftCursorX, leftCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, drawingType);
+                        drawImage(bookImage_overlay, altarTile, leftCursorX, leftCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, HexereiUtil.getColorValue(bookmark_color), drawingType, transformType);
 
                     } else {
 
@@ -2235,7 +1865,7 @@ public class PageDrawing {
 
                         BookImage bookImage = new BookImage(-0.5f, -1f, 0, 0, 0, 32, 32, 32, 32, altarTile.buttonScaleRender / 2 * 1.15f, "hexerei:textures/book/bookmark_button.png", effects);
 
-                        drawImage(bookImage, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, drawingType);
+                        drawImage(bookImage, altarTile, leftCursorX, leftCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, drawingType);
                     }
 
                     //draw bookmarks
@@ -2262,7 +1892,7 @@ public class PageDrawing {
 
                         boolean flag3 = false;
                         if (bookmark_id != null) {
-                            for (BookChapter chapterEntry : BookManager.getBookEntries().chapterList) {
+                            for (BookChapter chapterEntry : bookEntries.chapterList) {
                                 for (BookPageEntry pageEntry : chapterEntry.pages) {
                                     if (ResourceLocation.parse(pageEntry.location).equals(bookmark_id)) {
                                         bookmark_chapter = pageEntry.chapterNum;
@@ -2281,10 +1911,6 @@ public class PageDrawing {
 
                             float xIn = -0.3f - altarTile.buttonScaleRender - 0.15f;
                             float yIn = slot.getIndex() * 1.5f;
-                            if (fullyExtended) {
-                                xIn = -1f;
-                                yIn += 0.25f;
-                            }
 
                             float width = 0.935f;
                             if (canInteract(leftCursorX, leftCursorY, xIn, yIn, width, width, altarTile, drawingType)) {
@@ -2292,18 +1918,29 @@ public class PageDrawing {
                                     this.bookmarkHovered.add(slot.getIndex());
 
                                 List<Component> list = new ArrayList<>();
-                                DyeColor col = bookmark_color;
-
-                                BookEntries bookEntries = BookManager.getBookEntries();
-
 
                                 if (flag3) {
-                                    list.add(Component.translatable("%s%s - Page %s%s",
-                                                    Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
-                                                    Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).name).withStyle(Style.EMPTY.withColor(10329495)),
-                                                    Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).pages.get(Math.max(0, bookmark_page)).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
-                                                    Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
-                                            .withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
+                                    String name = bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).pages.get(Math.max(0, bookmark_page)).location;
+                                    BookPage bookmarkedPage = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(name));
+                                    if (bookmarkedPage != null) {
+                                        name = bookmarkedPage.name;
+                                    }
+                                    if (name.isEmpty()) {
+                                        list.add(Component.translatable("%s%s - Page %s%s",
+                                                        Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(bookmark_color))),
+                                                        Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).name).withStyle(Style.EMPTY.withColor(10329495)),
+                                                    Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).pages.get(Math.max(0, bookmark_page)).pageNum - 1).withStyle(Style.EMPTY.withColor(10329495)),
+                                                        Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(bookmark_color))))
+                                                .withStyle(Style.EMPTY.withColor(10329495)));
+                                    } else {
+
+                                        list.add(Component.translatable("%s%s - %s%s",
+                                                        Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(bookmark_color))),
+                                                        Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).name).withStyle(Style.EMPTY.withColor(10329495)),
+                                                        Component.translatable(name).withStyle(Style.EMPTY.withColor(10329495)),
+                                                        Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(bookmark_color))))
+                                                .withStyle(Style.EMPTY.withColor(10329495)));
+                                    }
                                     this.tooltipText = list;
                                     this.tooltipStack = ItemStack.EMPTY;
                                     this.drawTooltipText = true;
@@ -2311,12 +1948,12 @@ public class PageDrawing {
 
                             }
 
-                            float bookX = xIn + 0.4f - this.bookmarkHoverAmountRender.get(slot.getIndex()) / 3 * altarTile.buttonScaleRender;
+                            float bookX = xIn + 0.8f - this.bookmarkHoverAmountRender.get(slot.getIndex()) / 2 * altarTile.buttonScaleRender;
                             if (fullyExtended)
                                 bookX = xIn + 0.4f - 0.33f;
 
-                            BookImage bookImageUnderlay = new BookImage(bookX, yIn, 0, 0, 0, 64, 48, 64, 48, 0.5f, "hexerei:textures/book/bookmark_underlay.png", effectsBookmark);
-                            BookImage bookImageOverlay = new BookImage(bookX, yIn, 0, 0, 0, 64, 48, 64, 48, 0.5f, "hexerei:textures/book/bookmark_overlay.png", effectsBookmark);
+                            BookImage bookImageUnderlay = new BookImage(bookX, yIn, 0, 0, 0, 64, 64, 64, 64, 0.5f, "hexerei:textures/book/bookmark_underlay.png", effectsBookmark);
+                            BookImage bookImageOverlay = new BookImage(bookX, yIn, 0, 0, 0, 64, 64, 64, 64, 0.5f, "hexerei:textures/book/bookmark_overlay.png", effectsBookmark);
 
                             drawBookmark(bookImageUnderlay, altarTile, poseStack, bufferSource, -10, 90, light, overlay, PageOn.LEFT_PAGE, HexereiUtil.getColorValue(bookmark_color), drawingType, transformType);
                             drawBookmark(bookImageOverlay, altarTile, poseStack, bufferSource, -10, 90, light, overlay, PageOn.LEFT_PAGE, HexereiUtil.getColorValue(bookmark_color), drawingType, transformType);
@@ -2326,10 +1963,6 @@ public class PageDrawing {
 
                             float xIn = -5.5f + slot.getIndex() * 1.15f;
                             float yIn = -0.75f - altarTile.buttonScaleRender - 0.25f;
-                            if (fullyExtended) {
-                                yIn = -2.15f + 0.65f;
-                                xIn += 0.25f;
-                            }
 
                             float width = 0.86f;
                             if (canInteract(leftCursorX, leftCursorY, xIn, yIn, width, width, altarTile, drawingType)) {
@@ -2337,29 +1970,39 @@ public class PageDrawing {
                                     this.bookmarkHovered.add(slot.getIndex());
 
                                 List<Component> list = new ArrayList<>();
-                                DyeColor col = bookmark_color;
 
-                                BookEntries bookEntries = BookManager.getBookEntries();
+                                if (flag3) {
+                                    String name = bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).pages.get(Math.max(0, bookmark_page)).location;
+                                    BookPage bookmarkedPage = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(name));
+                                    if (bookmarkedPage != null) {
+                                        name = bookmarkedPage.name;
+                                    }
+                                    if (name.isEmpty()) {
+                                        list.add(Component.translatable("%s%s - Page %s%s",
+                                                        Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(bookmark_color))),
+                                                        Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).name).withStyle(Style.EMPTY.withColor(10329495)),
+                                                        Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).pages.get(Math.max(0, bookmark_page)).pageNum - 1).withStyle(Style.EMPTY.withColor(10329495)),
+                                                        Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(bookmark_color))))
+                                                .withStyle(Style.EMPTY.withColor(10329495)));
+                                    } else {
 
-                                if (bookEntries != null) {
-                                    list.add(Component.translatable("%s%s - Page %s%s",
-                                                    Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
-                                                    Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
-                                                    Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
-                                                    Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
-                                            .withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
+                                        list.add(Component.translatable("%s%s - %s%s",
+                                                        Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(bookmark_color))),
+                                                        Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).name).withStyle(Style.EMPTY.withColor(10329495)),
+                                                        Component.translatable(name).withStyle(Style.EMPTY.withColor(10329495)),
+                                                        Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(bookmark_color))))
+                                                .withStyle(Style.EMPTY.withColor(10329495)));
+                                    }
                                     this.tooltipText = list;
                                     this.tooltipStack = ItemStack.EMPTY;
                                     this.drawTooltipText = true;
                                 }
                             }
 
-                            float bookY = yIn + 0.5f - this.bookmarkHoverAmountRender.get(slot.getIndex()) / 3 * altarTile.buttonScaleRender;
-                            if (fullyExtended)
-                                bookY = yIn + 0.5f - 0.33f;
+                            float bookY = yIn + 0.8f - this.bookmarkHoverAmountRender.get(slot.getIndex()) / 2 * altarTile.buttonScaleRender;
 
-                            BookImage bookImageUnderlay = new BookImage(xIn, bookY, 0, 0, 0, 64, 48, 64, 48, 0.5f, "hexerei:textures/book/bookmark_underlay.png", effectsBookmark);
-                            BookImage bookImageOverlay = new BookImage(xIn, bookY, 0, 0, 0, 64, 48, 64, 48, 0.5f, "hexerei:textures/book/bookmark_overlay.png", effectsBookmark);
+                            BookImage bookImageUnderlay = new BookImage(xIn, bookY, 0, 0, 0, 64, 64, 64, 64, 0.5f, "hexerei:textures/book/bookmark_underlay.png", effectsBookmark);
+                            BookImage bookImageOverlay = new BookImage(xIn, bookY, 0, 0, 0, 64, 64, 64, 64, 0.5f, "hexerei:textures/book/bookmark_overlay.png", effectsBookmark);
 
                             drawBookmark(bookImageUnderlay, altarTile, poseStack, bufferSource, -10, 0, light, overlay, PageOn.LEFT_PAGE, HexereiUtil.getColorValue(bookmark_color), drawingType, transformType);
                             drawBookmark(bookImageOverlay, altarTile, poseStack, bufferSource, -10, 0, light, overlay, PageOn.LEFT_PAGE, HexereiUtil.getColorValue(bookmark_color), drawingType, transformType);
@@ -2368,39 +2011,45 @@ public class PageDrawing {
 
                             float xIn = -11.25f + slot.getIndex() * 1.15f;
                             float yIn = -0.75f - altarTile.buttonScaleRender - 0.25f;
-                            if (fullyExtended) {
-                                yIn = -2.15f + 0.65f;
-                                xIn += 0.25f;
-                            }
 
                             float width = 0.86f;
                             if (canInteract(rightCursorX, rightCursorY, xIn, yIn, width, width, altarTile, drawingType)) {
                                 if (!this.bookmarkHovered.contains(slot.getIndex()))
                                     this.bookmarkHovered.add(slot.getIndex());
                                 List<Component> list = new ArrayList<>();
-                                DyeColor col = bookmark_color;
 
-                                BookEntries bookEntries = BookManager.getBookEntries();
+                                if (flag3) {
+                                    String name = bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).pages.get(Math.max(0, bookmark_page)).location;
+                                    BookPage bookmarkedPage = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(name));
+                                    if (bookmarkedPage != null) {
+                                        name = bookmarkedPage.name;
+                                    }
+                                    if (name.isEmpty()) {
+                                        list.add(Component.translatable("%s%s - Page %s%s",
+                                                        Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(bookmark_color))),
+                                                        Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).name).withStyle(Style.EMPTY.withColor(10329495)),
+                                                        Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).pages.get(Math.max(0, bookmark_page)).pageNum - 1).withStyle(Style.EMPTY.withColor(10329495)),
+                                                        Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(bookmark_color))))
+                                                .withStyle(Style.EMPTY.withColor(10329495)));
+                                    } else {
 
-                                if (bookEntries != null) {
-                                    list.add(Component.translatable("%s%s - Page %s%s",
-                                                    Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
-                                                    Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
-                                                    Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
-                                                    Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
-                                            .withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
+                                        list.add(Component.translatable("%s%s - %s%s",
+                                                        Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(bookmark_color))),
+                                                        Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).name).withStyle(Style.EMPTY.withColor(10329495)),
+                                                        Component.translatable(name).withStyle(Style.EMPTY.withColor(10329495)),
+                                                        Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(bookmark_color))))
+                                                .withStyle(Style.EMPTY.withColor(10329495)));
+                                    }
                                     this.tooltipText = list;
                                     this.tooltipStack = ItemStack.EMPTY;
                                     this.drawTooltipText = true;
                                 }
                             }
 
-                            float bookY = yIn + 0.5f - this.bookmarkHoverAmountRender.get(slot.getIndex()) / 3 * altarTile.buttonScaleRender;
-                            if (fullyExtended)
-                                bookY = yIn + 0.5f - 0.33f;
+                            float bookY = yIn + 0.8f - this.bookmarkHoverAmountRender.get(slot.getIndex()) / 2 * altarTile.buttonScaleRender;
 
-                            BookImage bookImageUnderlay = new BookImage(xIn, bookY, 0, 0, 0, 64, 48, 64, 48, 0.5f, "hexerei:textures/book/bookmark_underlay.png", effectsBookmark);
-                            BookImage bookImageOverlay = new BookImage(xIn, bookY, 0, 0, 0, 64, 48, 64, 48, 0.5f, "hexerei:textures/book/bookmark_overlay.png", effectsBookmark);
+                            BookImage bookImageUnderlay = new BookImage(xIn, bookY, 0, 0, 0, 64, 64, 64, 64, 0.5f, "hexerei:textures/book/bookmark_underlay.png", effectsBookmark);
+                            BookImage bookImageOverlay = new BookImage(xIn, bookY, 0, 0, 0, 64, 64, 64, 64, 0.5f, "hexerei:textures/book/bookmark_overlay.png", effectsBookmark);
 
                             drawBookmark(bookImageUnderlay, altarTile, poseStack, bufferSource, -10, 0, light, overlay, PageOn.RIGHT_PAGE, HexereiUtil.getColorValue(bookmark_color), drawingType, transformType);
                             drawBookmark(bookImageOverlay, altarTile, poseStack, bufferSource, -10, 0, light, overlay, PageOn.RIGHT_PAGE, HexereiUtil.getColorValue(bookmark_color), drawingType, transformType);
@@ -2409,44 +2058,45 @@ public class PageDrawing {
 
                             float xIn = 5.2f + altarTile.buttonScaleRender + 0.15f;
                             float yIn = (slot.getIndex() - 15) * 1.5f;
-                            if (fullyExtended) {
-                                xIn = 6.65f;
-                                yIn -= 0.25f;
-                            }
 
                             float width = 0.86f;
                             if (canInteract(rightCursorX, rightCursorY, xIn, yIn, width, width, altarTile, drawingType)) {
                                 if (!this.bookmarkHovered.contains(slot.getIndex()))
                                     this.bookmarkHovered.add(slot.getIndex());
-                                flag2 = true;
-                            }
 
-                            float bookX = xIn - 0.4f + this.bookmarkHoverAmountRender.get(slot.getIndex()) / 3 * altarTile.buttonScaleRender;
-                            if (fullyExtended)
-                                bookX = xIn - 0.4f - 0.33f;
-
-                            if (flag2) {
                                 List<Component> list = new ArrayList<>();
-                                DyeColor col = bookmark_color;
+                                if (flag3) {
+                                    String name = bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).pages.get(Math.max(0, bookmark_page)).location;
+                                    BookPage bookmarkedPage = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(name));
+                                    if (bookmarkedPage != null) {
+                                        name = bookmarkedPage.name;
+                                    }
+                                    if (name.isEmpty()) {
+                                        list.add(Component.translatable("%s%s - Page %s%s",
+                                                        Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(bookmark_color))),
+                                                        Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).name).withStyle(Style.EMPTY.withColor(10329495)),
+                                                        Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).pages.get(Math.max(0, bookmark_page)).pageNum - 1).withStyle(Style.EMPTY.withColor(10329495)),
+                                                        Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(bookmark_color))))
+                                                .withStyle(Style.EMPTY.withColor(10329495)));
+                                    } else {
 
-                                BookEntries bookEntries = BookManager.getBookEntries();
-
-
-                                if (bookEntries != null) {
-                                    list.add(Component.translatable("%s%s - Page %s%s",
-                                                    Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))),
-                                                    Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).name).withStyle(Style.EMPTY.withColor(10329495)),
-                                                    Component.translatable("%s", bookEntries.chapterList.get(bookmark_chapter).pages.get(bookmark_page).pageNum).withStyle(Style.EMPTY.withColor(10329495)),
-                                                    Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(col))))
-                                            .withStyle(Style.EMPTY.withItalic(true).withColor(10329495)));
+                                        list.add(Component.translatable("%s%s - %s%s",
+                                                        Component.translatable("[").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(bookmark_color))),
+                                                        Component.translatable("%s", bookEntries.chapterList.get(Math.max(0, bookmark_chapter)).name).withStyle(Style.EMPTY.withColor(10329495)),
+                                                        Component.translatable(name).withStyle(Style.EMPTY.withColor(10329495)),
+                                                        Component.translatable("]").withStyle(Style.EMPTY.withColor(HexereiUtil.getColorValue(bookmark_color))))
+                                                .withStyle(Style.EMPTY.withColor(10329495)));
+                                    }
                                     this.tooltipText = list;
                                     this.tooltipStack = ItemStack.EMPTY;
                                     this.drawTooltipText = true;
                                 }
                             }
 
-                            BookImage bookImageUnderlay = new BookImage(bookX, yIn, 0, 0, 0, 64, 48, 64, 48, 0.5f, "hexerei:textures/book/bookmark_underlay.png", effectsBookmark);
-                            BookImage bookImageOverlay = new BookImage(bookX, yIn, 0, 0, 0, 64, 48, 64, 48, 0.5f, "hexerei:textures/book/bookmark_overlay.png", effectsBookmark);
+                            float bookX = xIn - 0.7f + this.bookmarkHoverAmountRender.get(slot.getIndex()) / 2 * altarTile.buttonScaleRender;
+
+                            BookImage bookImageUnderlay = new BookImage(bookX, yIn, 0, 0, 0, 64, 64, 64, 64, 0.5f, "hexerei:textures/book/bookmark_underlay.png", effectsBookmark);
+                            BookImage bookImageOverlay = new BookImage(bookX, yIn, 0, 0, 0, 64, 64, 64, 64, 0.5f, "hexerei:textures/book/bookmark_overlay.png", effectsBookmark);
 
                             drawBookmark(bookImageUnderlay, altarTile, poseStack, bufferSource, -10, -90, light, overlay, PageOn.RIGHT_PAGE, HexereiUtil.getColorValue(bookmark_color), drawingType, transformType);
                             drawBookmark(bookImageOverlay, altarTile, poseStack, bufferSource, -10, -90, light, overlay, PageOn.RIGHT_PAGE, HexereiUtil.getColorValue(bookmark_color), drawingType, transformType);
@@ -2549,7 +2199,6 @@ public class PageDrawing {
 
                 float x = -0.45f, y = 7.2f, width = 0.86f;
                 if (canInteract(leftCursorX, leftCursorY, x, y, width, width, altarTile, drawingType)) {
-//                if (canInteract(x, y, width, width, altarTile, PageOn.LEFT_PAGE)) {
                     effects.add(bookImageEffect_scale);
                     effects.add(bookImageEffect_tilt);
                     List<Component> list = new ArrayList<>();
@@ -2564,14 +2213,13 @@ public class PageDrawing {
                     }
 
                     this.tooltipText = list;
-                    this.tooltipText = list;
                     this.tooltipStack = ItemStack.EMPTY;
                     this.drawTooltipText = true;
                 }
 
                 BookImage bookImage = new BookImage(-0.5f, 7.25f, 0, 0, 0, 32, 32, 32, 32, altarTile.buttonScaleRender / 2, loc, effects);
 
-                drawImage(bookImage, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, drawingType);
+                drawImage(bookImage, altarTile, leftCursorX, leftCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.LEFT_PAGE, drawingType);
             }
 
 
@@ -2609,7 +2257,7 @@ public class PageDrawing {
                 else
                     bookImage = new BookImage(0, 0, 35, 0, 0, 32, 32, 32, 32, altarTile.buttonScaleRender / 2f, loc_close, effects);
 
-                drawImage(bookImage, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.MIDDLE_BUTTON, drawingType);
+                drawImage(bookImage, altarTile, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.MIDDLE_BUTTON, drawingType);
 
                 effects = new ArrayList<>();
                 bookImageEffect_scale = new BookImageEffect("scale", 50, 1.15f);
@@ -2630,7 +2278,7 @@ public class PageDrawing {
 
                 bookImage = new BookImage(0, -8.1f, 0, 0, 0, 32, 32, 32, 32, altarTile.buttonScaleRender / 2f, loc, effects);
 
-                drawImage(bookImage, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.MIDDLE_BUTTON, drawingType);
+                drawImage(bookImage, altarTile, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.MIDDLE_BUTTON, drawingType);
 
 
                 if (drawNext) {
@@ -2654,7 +2302,7 @@ public class PageDrawing {
 
                     bookImage = new BookImage(5.5f, 7.25f, 0, 0, 0, 32, 32, 32, 32, altarTile.buttonScaleRender / 2, loc, effects);
 
-                    drawImage(bookImage, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE, drawingType);
+                    drawImage(bookImage, altarTile, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE, drawingType);
                 }
 
 
@@ -2680,7 +2328,7 @@ public class PageDrawing {
 
                     bookImage = new BookImage(5.5f, -1f, 0, 0, 0, 32, 32, 32, 32, altarTile.buttonScaleRender / 2, loc, effects);
 
-                    drawImage(bookImage, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE, drawingType);
+                    drawImage(bookImage, altarTile, rightCursorX, rightCursorY, poseStack, bufferSource, 0, light, overlay, PageOn.RIGHT_PAGE, drawingType);
                 }
             }
         }
@@ -2778,10 +2426,10 @@ public class PageDrawing {
 
 
 
-        BookEntries bookEntries = BookManager.getBookEntries();
         boolean debugDraw = false;
-        if (altarTile.currentBook != null && bookEntries != null && altarTile.openedPercent != 1 && debugDraw) {
+        if (altarTile.currentBook != null && BookManager.getBookEntries(altarTile.currentBook.getBook()) != null && altarTile.openedPercent != 1 && debugDraw) {
 
+            BookEntries bookEntries = BookManager.getBookEntries(altarTile.currentBook.getBook());
 
             boolean drawEdges = true;
             if (drawEdges){
@@ -2972,8 +2620,8 @@ public class PageDrawing {
             if (bookEntries.chapterList.get(chapter).pages.size() > page + 1 && page >= 0)
                 location2 = bookEntries.chapterList.get(chapter).pages.get(page + 1).location;
 
-            BookPage page1 = BookManager.getBookPages(ResourceLocation.parse(location1));
-            BookPage page2 = BookManager.getBookPages(ResourceLocation.parse(location2));
+            BookPage page1 = BookManager.getBookPages(altarTile.currentBook.getBook(), ResourceLocation.parse(location1));
+            BookPage page2 = BookManager.getBookPages(altarTile.currentBook.getBook(), ResourceLocation.parse(location2));
 
             MutableComponent component = Component.literal("");
 
@@ -3255,7 +2903,7 @@ public class PageDrawing {
             BookData bookData = altarTile.currentBook;
 
             if (bookData != null && bookData.isOpened()) {
-                if (PageDrawing.checkClick(playerIn, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, drawingType)) {
+                if (PageDrawing.checkClick(bookData, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, drawingType)) {
                     isClickedOld = true;
                     return true;
                 }
@@ -3267,110 +2915,150 @@ public class PageDrawing {
 
     public boolean releaseClick(BookOfShadowsAltarTile altarTile, Player playerIn, float leftCursorX, float leftCursorY, float rightCursorX, float rightCursorY, DrawingType drawingType) {
         //released
+        if (PageDrawing.focusedWritableTextBox != null)
+            PageDrawing.focusedWritableTextBox.getRight().client.clicked = false;
         if (altarTile.turnPage == 0) {
 
             BookData bookData = altarTile.currentBook;
 
-
             if (bookData != null) {
 
+                BookEntries bookEntries = BookManager.getBookEntries(bookData.getBook());
 
-                if (altarTile.slotClicked != -1){
-                    float x, y, width = 0.86f;
+                if (bookEntries != null) {
 
-                    int bookmark_chapter = 0;
-                    int bookmark_page = 0;
-                    ResourceLocation bookmark_id;
+                    int chapterNum = bookData.getChapter();
+                    int pageNum = bookData.getPage();
+                    if (pageNum % 2 == 1)
+                        pageNum--;
 
-                    BookData.Bookmarks bookmarks = bookData.getBookmarks();
+                    String location1 = "";
 
-                    x = -0.25f;
-                    y = 7.5f;
-                    if (canInteract(rightCursorX, rightCursorY, x - width / 2, y - width / 2, width, width, altarTile, drawingType)) {
-//                if (PageDrawing.canInteract(0 - 0.86f / 2, 7.2f - 0.86f / 2, 0.86f, 0.86f, altarTile, PageDrawing.PageOn.MIDDLE_BUTTON)) {
-                        //send signal to server that you deleted your bookmark.
-                        altarTile.deleteBookmark(altarTile.slotClicked);
-                        altarTile.slotClicked = -1;
-                        altarTile.slotClickedTick = 0;
-                        return true;
+                    if (bookEntries.chapterList.get(chapterNum).pages.size() > pageNum && pageNum >= 0)
+                        location1 = bookEntries.chapterList.get(chapterNum).pages.get(pageNum).location;
+
+                    BookPage page1 = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(location1));
+
+                    List<BookPageEntry> entries = bookEntries.chapterList.stream().flatMap((entry) -> entry.pages.stream()).toList();
+                    for (BookPageEntry bookPageEntry : entries) {
+                        BookPage page = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(bookPageEntry.location));
+                        if (page != null) {
+                            boolean flag = page == page1; // if its page 1 use left, otherwise use right
+                            for (BookPaintElement paintElement : page.paintElements) {
+                                PaintSystem paintSystem = paintElement.client.getPaintSystem(bookData.getUUID());
+                                if (paintElement.client != null) {
+                                    float w = paintElement.width / 326 * 2.55f * paintElement.scale / 0.062f;
+                                    float h = paintElement.height / 326 * 2.55f * paintElement.scale / 0.062f;
+                                    float x = paintElement.x + 0.025f;// + 0.455f;
+                                    float y = paintElement.y - 0.5f;// + 0.49f;
+                                    int xPixel = (int) (((flag ? leftCursorX : rightCursorX) - x + (flag ? 0 : 0.2f)) / w * paintElement.width);
+                                    int yPixel = (int) (((flag ? leftCursorY : rightCursorY) - y) / h * paintElement.height);
+                                    paintSystem.released(xPixel, yPixel);
+
+                                    paintSystem.getValueSliders().release();
+                                }
+                            }
+                        }
                     }
 
 
-                    boolean flag2 = false;
-                    for (BookData.Bookmarks.Slot slot : bookmarks.getSlots()) {
+                    if (altarTile.slotClicked != -1) {
+                        float x, y, width = 0.86f;
 
-                        bookmark_id = ResourceLocation.parse(slot.getId());
+                        int bookmark_chapter = 0;
+                        int bookmark_page = 0;
+                        ResourceLocation bookmark_id;
 
-                        if (slot.getIndex() < 5) {
+                        BookData.Bookmarks bookmarks = bookData.getBookmarks();
 
-                            x = -0.3f - altarTile.buttonScaleRender - 0.15f;
-                            y = slot.getIndex() * 1.5f;
-                            width = 0.935f;
-                            if (canInteract(leftCursorX, leftCursorY, x, y, width, width, altarTile, drawingType)) {
-                                flag2 = true;
-                            }
-                        }
-                        if (slot.getIndex() >= 5 && slot.getIndex() < 10) {
-
-                            x = -5.5f + slot.getIndex() * 1.15f;
-                            y = -0.75f - altarTile.buttonScaleRender - 0.25f;
-                            width = 0.935f;
-                            if (canInteract(leftCursorX, leftCursorY, x, y, width, width, altarTile, drawingType)) {
-                                flag2 = true;
-                            }
-                        }
-                        if (slot.getIndex() >= 10 && slot.getIndex() < 15) {
-
-                            x = -11.25f + slot.getIndex() * 1.15f;
-                            y = -0.75f - altarTile.buttonScaleRender - 0.25f;
-                            width = 0.935f;
-                            if (canInteract(rightCursorX, rightCursorY, x, y, width, width, altarTile, drawingType)) {
-                                flag2 = true;
-                            }
-                        }
-                        if (slot.getIndex() >= 15) {
-
-                            x = 5.2f + altarTile.buttonScaleRender + 0.15f;
-                            y = (slot.getIndex() - 15) * 1.5f;
-                            width = 0.935f;
-                            if (canInteract(rightCursorX, rightCursorY, x, y, width, width, altarTile, drawingType)) {
-                                flag2 = true;
-                            }
+                        x = -0.25f;
+                        y = 7.5f;
+                        if (canInteract(rightCursorX, rightCursorY, x - width / 2, y - width / 2, width, width, altarTile, drawingType)) {
+//                if (PageDrawing.canInteract(0 - 0.86f / 2, 7.2f - 0.86f / 2, 0.86f, 0.86f, altarTile, PageDrawing.PageOn.MIDDLE_BUTTON)) {
+                            //send signal to server that you deleted your bookmark.
+                            altarTile.deleteBookmark(altarTile.slotClicked);
+                            altarTile.slotClicked = -1;
+                            altarTile.slotClickedTick = 0;
+                            return true;
                         }
 
 
-                        if (flag2) {
-                            if (altarTile.slotClicked == slot.getIndex()) {
-                                if (altarTile.slotClickedTick < 20) {
-                                    //click the same bookmark
-                                    for (BookChapter chapter : BookManager.getBookEntries().chapterList) {
-                                        for (BookPageEntry pageEntry : chapter.pages) {
-                                            if (ResourceLocation.parse(pageEntry.location).equals(bookmark_id)) {
-                                                altarTile.setTurnPage(-1, pageEntry.chapterNum, pageEntry.chapterPageNum);
-                                                altarTile.slotClicked = -1;
-                                                altarTile.slotClickedTick = 0;
-                                                return true;
+                        boolean flag2 = false;
+                        for (BookData.Bookmarks.Slot slot : bookmarks.getSlots()) {
+
+                            bookmark_id = ResourceLocation.parse(slot.getId());
+
+                            if (slot.getIndex() < 5) {
+
+                                x = -0.3f - altarTile.buttonScaleRender - 0.15f;
+                                y = slot.getIndex() * 1.5f;
+                                width = 0.935f;
+                                if (canInteract(leftCursorX, leftCursorY, x, y, width, width, altarTile, drawingType)) {
+                                    flag2 = true;
+                                }
+                            }
+                            if (slot.getIndex() >= 5 && slot.getIndex() < 10) {
+
+                                x = -5.5f + slot.getIndex() * 1.15f;
+                                y = -0.75f - altarTile.buttonScaleRender - 0.25f;
+                                width = 0.935f;
+                                if (canInteract(leftCursorX, leftCursorY, x, y, width, width, altarTile, drawingType)) {
+                                    flag2 = true;
+                                }
+                            }
+                            if (slot.getIndex() >= 10 && slot.getIndex() < 15) {
+
+                                x = -11.25f + slot.getIndex() * 1.15f;
+                                y = -0.75f - altarTile.buttonScaleRender - 0.25f;
+                                width = 0.935f;
+                                if (canInteract(rightCursorX, rightCursorY, x, y, width, width, altarTile, drawingType)) {
+                                    flag2 = true;
+                                }
+                            }
+                            if (slot.getIndex() >= 15) {
+
+                                x = 5.2f + altarTile.buttonScaleRender + 0.15f;
+                                y = (slot.getIndex() - 15) * 1.5f;
+                                width = 0.935f;
+                                if (canInteract(rightCursorX, rightCursorY, x, y, width, width, altarTile, drawingType)) {
+                                    flag2 = true;
+                                }
+                            }
+
+
+                            if (flag2) {
+                                if (altarTile.slotClicked == slot.getIndex()) {
+                                    if (altarTile.slotClickedTick < 20) {
+                                        //click the same bookmark
+                                        for (BookChapter chapter : bookEntries.chapterList) {
+                                            for (BookPageEntry pageEntry : chapter.pages) {
+                                                if (ResourceLocation.parse(pageEntry.location).equals(bookmark_id)) {
+                                                    altarTile.setTurnPage(-1, pageEntry.chapterNum, pageEntry.chapterPageNum);
+                                                    altarTile.slotClicked = -1;
+                                                    altarTile.slotClickedTick = 0;
+                                                    return true;
+                                                }
                                             }
                                         }
+                                        altarTile.setTurnPage(-1, bookmark_chapter, bookmark_page);
+                                        altarTile.slotClicked = -1;
+                                        altarTile.slotClickedTick = 0;
+                                        return true;
                                     }
-                                    altarTile.setTurnPage(-1, bookmark_chapter, bookmark_page);
+                                } else {
+                                    //drag the bookmark to another slot
+                                    altarTile.swapBookmarks(altarTile.slotClicked, slot.getIndex());
+                                    altarTile.drawing.bookmarkHoverAmount.set(slot.getIndex(), 0f);
+                                    altarTile.drawing.bookmarkHoverAmount.set(altarTile.slotClicked, 0f);
                                     altarTile.slotClicked = -1;
                                     altarTile.slotClickedTick = 0;
                                     return true;
                                 }
-                            } else {
-                                //drag the bookmark to another slot
-                                altarTile.swapBookmarks(altarTile.slotClicked, slot.getIndex());
-                                altarTile.drawing.bookmarkHoverAmount.set(slot.getIndex(), 0f);
-                                altarTile.drawing.bookmarkHoverAmount.set(altarTile.slotClicked, 0f);
-                                altarTile.slotClicked = -1;
-                                altarTile.slotClickedTick = 0;
-                                return true;
+
+                                break;
                             }
 
-                            break;
                         }
-
                     }
                 }
             }
@@ -3385,8 +3073,67 @@ public class PageDrawing {
         return false;
     }
 
+    public static class ImageConverter {
+        public static NativeImage convertToNativeImage(BufferedImage bufferedImage) {
+            int width = bufferedImage.getWidth();
+            int height = bufferedImage.getHeight();
+            NativeImage nativeImage = new NativeImage(NativeImage.Format.RGBA, width, height, false);
+
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    int argb = bufferedImage.getRGB(x, y);
+                    int a = (argb >> 24) & 0xFF;
+                    int r = (argb >> 16) & 0xFF;
+                    int g = (argb >> 8) & 0xFF;
+                    int b = argb & 0xFF;
+
+                    // Ensure the color values are properly handled
+                    int rgba = (a << 24) | (r << 16) | (g << 8) | b;
+                    nativeImage.setPixelRGBA(x, y, rgba);
+                }
+            }
+
+            return nativeImage;
+        }
+        public static NativeImage convertToNativeImage(BufferedImage bufferedImage, NativeImage baseImage) {
+            if (baseImage == null)
+                return null;
+            int width = bufferedImage.getWidth();
+            int height = bufferedImage.getHeight();
+
+            // Get the dimensions of the base image
+            int baseWidth = baseImage.getWidth();
+            int baseHeight = baseImage.getHeight();
+
+            // Determine the region where the BufferedImage will be pasted onto the base image
+            int pasteWidth = Math.min(width, baseWidth);
+            int pasteHeight = Math.min(height, baseHeight);
+
+            // Iterate over the region and paste the BufferedImage onto the base image
+            for (int y = 0; y < pasteHeight; y++) {
+                for (int x = 0; x < pasteWidth; x++) {
+                    int argb = bufferedImage.getRGB(x, y);
+                    int a = (argb >> 24) & 0xFF;
+                    int b = (argb >> 16) & 0xFF;
+                    int g = (argb >> 8) & 0xFF;
+                    int r = argb & 0xFF;
+
+                    // Ensure the color values are properly handled
+                    int rgba = (a << 24) | (r << 16) | (g << 8) | b;
+                    baseImage.setPixelRGBA(x, y, rgba);
+                }
+            }
+
+            return baseImage;
+        }
+    }
     @OnlyIn(Dist.CLIENT)
-    public static boolean checkClick(Player playerIn, BookOfShadowsAltarTile altarTile, float leftCursorX, float leftCursorY, float rightCursorX, float rightCursorY, DrawingType drawingType) {
+    public static boolean checkClick(BookData bookData, BookOfShadowsAltarTile altarTile, float leftCursorX, float leftCursorY, float rightCursorX, float rightCursorY, DrawingType drawingType) {
+
+        BookEntries bookEntries = BookManager.getBookEntries(bookData.getBook());
+
+        if(bookEntries == null)
+            return false;
 
         if (!isClicked) {
             float width = 0.86f;
@@ -3445,56 +3192,48 @@ public class PageDrawing {
                     return true;
                 }
             }
-        }
 
-        if (!isClicked) {
+            for (BookData.Bookmarks.Slot slot : bookData.getBookmarks().getSlots()) {
+                if (!slot.getId().isEmpty()) {
 
-            BookData bookData = altarTile.itemHandler.getStackInSlot(0).get(ModDataComponents.BOOK);
+                    if (slot.getIndex() < 5) {
 
-            if (bookData != null) {
-
-                for (BookData.Bookmarks.Slot slot : bookData.getBookmarks().getSlots()) {
-                    if (!slot.getId().isEmpty()) {
-
-                        if (slot.getIndex() < 5) {
-
-                            float xIn = -0.3f - altarTile.buttonScaleRender - 0.15f;
-                            float yIn = slot.getIndex() * 1.5f;
-                            float width = 0.935f;
-                            if (canInteract(leftCursorX, leftCursorY, xIn, yIn, width, width, altarTile, drawingType)) {
-                                altarTile.slotClicked = slot.getIndex();
-                                return true;
-                            }
+                        float xIn = -0.3f - altarTile.buttonScaleRender - 0.15f;
+                        float yIn = slot.getIndex() * 1.5f;
+                        width = 0.935f;
+                        if (canInteract(leftCursorX, leftCursorY, xIn, yIn, width, width, altarTile, drawingType)) {
+                            altarTile.slotClicked = slot.getIndex();
+                            return true;
                         }
-                        if (slot.getIndex() >= 5 && slot.getIndex() < 10) {
+                    }
+                    if (slot.getIndex() >= 5 && slot.getIndex() < 10) {
 
-                            float xIn = -5.5f + slot.getIndex() * 1.15f;
-                            float yIn = -0.75f - altarTile.buttonScaleRender - 0.25f;
-                            float width = 0.935f;
-                            if (canInteract(leftCursorX, leftCursorY, xIn, yIn, width, width, altarTile, drawingType)) {
-                                altarTile.slotClicked = slot.getIndex();
-                                return true;
-                            }
+                        float xIn = -5.5f + slot.getIndex() * 1.15f;
+                        float yIn = -0.75f - altarTile.buttonScaleRender - 0.25f;
+                        width = 0.935f;
+                        if (canInteract(leftCursorX, leftCursorY, xIn, yIn, width, width, altarTile, drawingType)) {
+                            altarTile.slotClicked = slot.getIndex();
+                            return true;
                         }
-                        if (slot.getIndex() >= 10 && slot.getIndex() < 15) {
+                    }
+                    if (slot.getIndex() >= 10 && slot.getIndex() < 15) {
 
-                            float xIn = -11.25f + slot.getIndex() * 1.15f;
-                            float yIn = -0.75f - altarTile.buttonScaleRender - 0.25f;
-                            float width = 0.935f;
-                            if (canInteract(rightCursorX, rightCursorY, xIn, yIn, width, width, altarTile, drawingType)) {
-                                altarTile.slotClicked = slot.getIndex();
-                                return true;
-                            }
+                        float xIn = -11.25f + slot.getIndex() * 1.15f;
+                        float yIn = -0.75f - altarTile.buttonScaleRender - 0.25f;
+                        width = 0.935f;
+                        if (canInteract(rightCursorX, rightCursorY, xIn, yIn, width, width, altarTile, drawingType)) {
+                            altarTile.slotClicked = slot.getIndex();
+                            return true;
                         }
-                        if (slot.getIndex() >= 15) {
+                    }
+                    if (slot.getIndex() >= 15) {
 
-                            float xIn = 5.2f + altarTile.buttonScaleRender + 0.15f;
-                            float yIn = (slot.getIndex() - 15) * 1.5f;
-                            float width = 0.935f;
-                            if (canInteract(rightCursorX, rightCursorY, xIn, yIn, width, width, altarTile, drawingType)) {
-                                altarTile.slotClicked = slot.getIndex();
-                                return true;
-                            }
+                        float xIn = 5.2f + altarTile.buttonScaleRender + 0.15f;
+                        float yIn = (slot.getIndex() - 15) * 1.5f;
+                        width = 0.935f;
+                        if (canInteract(rightCursorX, rightCursorY, xIn, yIn, width, width, altarTile, drawingType)) {
+                            altarTile.slotClicked = slot.getIndex();
+                            return true;
                         }
                     }
                 }
@@ -3502,258 +3241,503 @@ public class PageDrawing {
         }
 
 
-        ItemStack stack = altarTile.itemHandler.getStackInSlot(0);
-        BookData bookData = stack.get(ModDataComponents.BOOK);
-        if (bookData != null) {
+        String location1 = "";
+        String location2 = "";
 
-            String location1 = "";
-            String location2 = "";
-            BookEntries bookEntries = BookManager.getBookEntries();
+        int chapter = bookData.getChapter();
+        int page = bookData.getPage();
+        if (page % 2 == 1)
+            page--;
 
-            int chapter = bookData.getChapter();
-            int page = bookData.getPage();
-            if (page % 2 == 1)
-                page--;
+        if (bookEntries.chapterList.get(chapter).pages.size() > page && page >= 0)
+            location1 = bookEntries.chapterList.get(chapter).pages.get(page).location;
+        if (bookEntries.chapterList.get(chapter).pages.size() > page + 1 && page >= 0)
+            location2 = bookEntries.chapterList.get(chapter).pages.get(page + 1).location;
 
-            if (bookEntries != null) {
-                if (bookEntries.chapterList.get(chapter).pages.size() > page && page >= 0)
-                    location1 = bookEntries.chapterList.get(chapter).pages.get(page).location;
-                if (bookEntries.chapterList.get(chapter).pages.size() > page + 1 && page >= 0)
-                    location2 = bookEntries.chapterList.get(chapter).pages.get(page + 1).location;
+        BookPage page1 = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(location1));
+        BookPage page2 = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(location2));
 
-                BookPage page1 = BookManager.getBookPages(ResourceLocation.parse(location1));
-                BookPage page2 = BookManager.getBookPages(ResourceLocation.parse(location2));
+        if (page1 != null) {
 
-                if (page1 != null) {
+            if (!isClicked) {
 
-                    if (!isClicked) {
+                for (BookPaintElement paintElement : page1.paintElements) {
 
-                        for (BookNonItemTooltip bookNonItemTooltip : page1.nonItemTooltipList) {
+                    if (paintElement.client == null)
+                        continue;
 
-                            if (bookNonItemTooltip.hyperlink_id.isEmpty() && bookNonItemTooltip.hyperlink_url.isEmpty())
+                    PaintSystem paintSystem = paintElement.client.getPaintSystem(bookData.getUUID());
+
+                    float cursorX = leftCursorX;
+                    float cursorY = leftCursorY;
+
+                    float w;
+                    float h;
+                    float x;
+                    float y;
+
+                    if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == ModItems.BOOK_CANVAS.get()) {
+
+                        w = paintElement.width / 326 * 2.55f * paintElement.scale / 0.062f;
+                        h = paintElement.height / 326 * 2.55f * paintElement.scale / 0.062f;
+                        x = paintElement.x + 0.025f;
+                        y = paintElement.y - 0.5f;
+                        if (canInteract(cursorX, cursorY, x, y, w, h, altarTile, drawingType)) {
+
+                            Minecraft.getInstance().setScreen(new CanvasPaintingCropScreen(paintElement, paintSystem));
+                            return true;
+                        }
+                    }
+
+
+                    if (paintSystem.getMovingSelection() == null){
+                        for (PaintSystem.Button button : paintSystem.buttons) {
+                            if(!button.isVisible(paintSystem))
                                 continue;
+                            BookImage image = new BookImage(button.getX(paintSystem, PageOn.LEFT_PAGE, 0), button.getY(paintSystem, PageOn.LEFT_PAGE, 0), 0, 0, 0, button.width, button.height, button.width, button.height, button.getScale(altarTile.buttonScaleRender), button.getTexture(paintSystem), new ArrayList<>());
 
-                            if (canInteract(leftCursorX, leftCursorY, bookNonItemTooltip.x, bookNonItemTooltip.y, bookNonItemTooltip.width, bookNonItemTooltip.height, altarTile, drawingType)) {
-                                if (!bookNonItemTooltip.hyperlink_url.isEmpty())
-                                    showLinkScreenClient(bookNonItemTooltip.hyperlink_url);
-                                if (!bookNonItemTooltip.hyperlink_id.isEmpty()) {
-                                    for (BookChapter chapterEntry : BookManager.getBookEntries().chapterList) {
-                                        for (BookPageEntry pageEntry : chapterEntry.pages) {
-                                            if (pageEntry.location.equals(bookNonItemTooltip.hyperlink_id)) {
-                                                altarTile.setTurnPage(-1, pageEntry.chapterNum, pageEntry.chapterPageNum);
-                                                return true;
-                                            }
-                                        }
-                                    }
-                                }
-                                break;
-                            }
-                        }
-                        for (BookItemsAndFluids bookItemStackInSlot : page1.itemList) {
+                            w = image.width / 330 * image.scale / 0.062f;
+                            h = image.height / 330 * image.scale / 0.062f;
+                            x = image.x - w / 2 + 0.455f;
+                            y = image.y - h / 2 + 0.49f;
 
-                            if (canInteract(leftCursorX, leftCursorY, bookItemStackInSlot.x, bookItemStackInSlot.y, 0.86f, 0.86f, altarTile, drawingType)) {
-                                String itemRegistryName;
-
-                                if (bookItemStackInSlot.item != null)
-                                    itemRegistryName = HexereiUtil.getRegistryName(bookItemStackInSlot.item.getItem()).toString();
-                                else
-                                    itemRegistryName = HexereiUtil.getRegistryName(bookItemStackInSlot.fluid.getFluid()).toString();
-
-                                boolean flag = false;
-                                if (BookManager.getBookItemHyperlinks().containsKey(itemRegistryName)) {
-                                    BookHyperlink hyperlink = BookManager.getBookItemHyperlinks().get(itemRegistryName);
-                                    if (!(chapter == hyperlink.chapter && (page == hyperlink.page || page == hyperlink.page - 1)))
-                                        altarTile.setTurnPage(-1, hyperlink.chapter, hyperlink.page);
-                                    flag = true;
-                                }
-                                if (!flag) {
-                                    for (int j = 1; j < bookEntries.chapterList.size(); j++) {
-                                        for (int k = 0; k < bookEntries.chapterList.get(j).pages.size(); k++) {
-                                            String location3 = bookEntries.chapterList.get(j).pages.get(k).location;
-                                            BookPage page_check = BookManager.getBookPages(ResourceLocation.parse(location3));
-                                            if (page_check != null && page_check.itemHyperlink.equals(itemRegistryName)) {
-                                                if (!(chapter == j && (page == k || page == k - 1)))
-                                                    altarTile.setTurnPage(-1, j, k);
-                                                BookManager.addBookItemHyperlink(itemRegistryName, new BookHyperlink(j, k));
-                                                return true;
-                                            }
-                                        }
-                                    }
-                                }
-                                break;
-                            }
-                        }
-
-                        for (BookImage bookImage : page1.imageList) {
-
-
-                            float w = bookImage.width / 330 * bookImage.scale / 0.062f;
-                            float h = bookImage.height / 330 * bookImage.scale / 0.062f;
-                            float x = bookImage.x - w / 2 + 0.45f;
-                            float y = bookImage.y - h / 2 + 0.49f;
-                            if (canInteract(leftCursorX, leftCursorY, x, y, w, h, altarTile, drawingType)) {
-
-                                if (!bookImage.hyperlink_url.isEmpty())
-                                    showLinkScreenClient(bookImage.hyperlink_url);
-                                if (!bookImage.hyperlink_id.isEmpty()) {
-
-                                    for (BookChapter chapterEntry : BookManager.getBookEntries().chapterList) {
-                                        for (BookPageEntry pageEntry : chapterEntry.pages) {
-                                            if (pageEntry.location.equals(bookImage.hyperlink_id)) {
-                                                altarTile.setTurnPage(-1, pageEntry.chapterNum, pageEntry.chapterPageNum);
-                                                return true;
-                                            }
-                                        }
-                                    }
-                                }
-                                break;
+                            if (canInteract(cursorX, cursorY, x, y, w, h, altarTile, drawingType)) {
+                                if (!button.getDisabled(paintSystem)) {
+                                    button.onClick(paintSystem);
+                                    button.clicked = true;
+                                    return true;
+                                } else
+                                    return false;
                             }
                         }
 
 
-                        if (altarTile.slotClicked == -1) {
-                            for (BookEntity bookEntity : page1.entityList) {
+                        if (paintSystem.toolsVisible) {
+                            for (int i = 0; i < 3; i++) {
+                                if (i >= paintSystem.getColors().colors.size())
+                                    continue;
+                                PaintSystem.Colors.ColorSelection colorSelection = paintSystem.getColors().colors.get(i);
 
-                                float xIn = bookEntity.x + bookEntity.offset.x + 0.52f;
-                                float yIn = bookEntity.y + bookEntity.offset.y;
-                                float width = 1.25f + bookEntity.scale / 5f;
-                                if (canInteract(leftCursorX, leftCursorY, xIn - width/2, yIn - width/2, width, width, altarTile, drawingType)) {
-                                    bookEntity.clicked = true;
+                                float w1 = colorSelection.colorPosData.width / 326 * 2.55f / 0.062f;
+                                float h1 = colorSelection.colorPosData.height / 326 * 2.55f / 0.062f;
+                                float x1 = (float) colorSelection.colorPosData.pos.x + 0.025f - w1 / 2;
+                                float y1 = (float) colorSelection.colorPosData.pos.y - 0.5f - 0.025f - h1 / 2;
+                                if (canInteract(cursorX, cursorY, x1, y1, w1, h1, altarTile, drawingType)) {
+                                    if (i == 2)
+                                        paintSystem.getColors().cycleColorBack(paintSystem);
+                                    else
+                                        paintSystem.getColors().cycleColor(paintSystem);
                                     return true;
                                 }
+
                             }
+                        }
+
+                        if (paintSystem.toolsVisible)
+                            if (paintSystem.getValueSliders().click(cursorX, cursorY, PageOn.LEFT_PAGE))
+                                return true;
+                    }
+
+
+                    if (paintSystem.toolsVisible) {
+                        w = paintElement.width / 326 * 2.55f * paintElement.scale / 0.062f;
+                        h = paintElement.height / 326 * 2.55f * paintElement.scale / 0.062f;
+                        x = paintElement.x + 0.025f;
+                        y = paintElement.y - 0.5f;
+                        float cushion = paintSystem.getBrush().size * 0.12f;
+                        if (canInteract(cursorX, cursorY, x - cushion, y - cushion, w + cushion * 2, h + cushion * 2, altarTile, drawingType)) {
+
+                            float xPixel = ((cursorX - x) / w * paintElement.width);
+                            float yPixel = ((cursorY - y) / h * paintElement.height);
+                            paintSystem.click(xPixel, yPixel);
+                            return true;
                         }
                     }
 
                 }
-                if (page2 != null) {
 
-                    if (!isClicked) {
-                        for (BookNonItemTooltip bookNonItemTooltip : page2.nonItemTooltipList) {
+                for (BookWritableTextBox bookWritableTextBox : page1.writableTextBoxes) {
 
-                            if (bookNonItemTooltip.hyperlink_id.isEmpty() && bookNonItemTooltip.hyperlink_url.isEmpty())
+                    if (canInteract(leftCursorX, leftCursorY, bookWritableTextBox.paragraphElement.x + 0.45f, bookWritableTextBox.paragraphElement.y, bookWritableTextBox.paragraphElement.width / 6.15f, bookWritableTextBox.paragraphElement.height / 2.57f, altarTile, drawingType)) {
+                        setFocusedWritableTextBox(altarTile, page1.location, bookWritableTextBox);
+
+                        long i = Util.getMillis();
+                        BookWritableTextBox.Client.DisplayCache bookeditscreen$displaycache = focusedWritableTextBox.getRight().client.getDisplayCache(PageDrawing.focusedWritableTextBox.getLeft().currentBook);
+                        BookWritableTextBox.Client.Pos2i pos2i = new BookWritableTextBox.Client.Pos2i((int) ((leftCursorX - bookWritableTextBox.paragraphElement.x - 0.45f) / 5 * 115f), (int) ((leftCursorY - bookWritableTextBox.paragraphElement.y) / 7.1f * 162f));
+                        int j = bookeditscreen$displaycache.getIndexAtPosition(
+                                ClientProxy.font(), pos2i
+                        );
+                        bookWritableTextBox.client.clicked = true;
+                        bookWritableTextBox.client.clickedPos = pos2i;
+                        if (j >= 0) {
+                            if (j != focusedWritableTextBox.getRight().client.lastIndex || i - focusedWritableTextBox.getRight().client.lastClickTime >= 250L) {
+                                focusedWritableTextBox.getRight().client.pageEdit.setCursorPos(j, Screen.hasShiftDown());
+                            } else if (!focusedWritableTextBox.getRight().client.pageEdit.isSelecting()) {
+                                focusedWritableTextBox.getRight().client.selectWord(j, focusedWritableTextBox.getLeft().currentBook);
+                            } else {
+                                focusedWritableTextBox.getRight().client.pageEdit.selectAll();
+                            }
+
+                            focusedWritableTextBox.getRight().client.clearDisplayCache(PageDrawing.focusedWritableTextBox.getLeft().currentBook.getUUID());
+                        }
+
+                        focusedWritableTextBox.getRight().client.lastIndex = j;
+                        focusedWritableTextBox.getRight().client.lastClickTime = i;
+
+                        return true;
+                    }
+                }
+                for (BookNonItemTooltip bookNonItemTooltip : page1.nonItemTooltipList) {
+
+                    if (bookNonItemTooltip.hyperlink.id.isEmpty() && bookNonItemTooltip.hyperlink.url.isEmpty())
+                        continue;
+
+                    if (canInteract(leftCursorX, leftCursorY, bookNonItemTooltip.x, bookNonItemTooltip.y, bookNonItemTooltip.width, bookNonItemTooltip.height, altarTile, drawingType)) {
+                        if (!bookNonItemTooltip.hyperlink.url.isEmpty())
+                            showLinkScreenClient(bookNonItemTooltip.hyperlink.url);
+                        if (!bookNonItemTooltip.hyperlink.id.isEmpty()) {
+                            for (BookChapter chapterEntry : bookEntries.chapterList) {
+                                for (BookPageEntry pageEntry : chapterEntry.pages) {
+                                    if (pageEntry.location.equals(bookNonItemTooltip.hyperlink.id)) {
+                                        altarTile.setTurnPage(-1, pageEntry.chapterNum, pageEntry.chapterPageNum);
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+                for (BookItemsAndFluids bookItemStackInSlot : page1.itemList) {
+
+                    if (canInteract(leftCursorX, leftCursorY, bookItemStackInSlot.x, bookItemStackInSlot.y, 0.86f, 0.86f, altarTile, drawingType)) {
+                        String itemRegistryName;
+
+                        if (bookItemStackInSlot.item != null)
+                            itemRegistryName = HexereiUtil.getRegistryName(bookItemStackInSlot.item.getItem()).toString();
+                        else
+                            itemRegistryName = HexereiUtil.getRegistryName(bookItemStackInSlot.fluid.getFluid()).toString();
+
+                        boolean flag = false;
+                        if (BookManager.getBookItemHyperlinks().containsKey(itemRegistryName)) {
+                            BookHyperlink hyperlink = BookManager.getBookItemHyperlinks().get(itemRegistryName);
+                            if (!(chapter == hyperlink.chapter && (page == hyperlink.page || page == hyperlink.page - 1)))
+                                altarTile.setTurnPage(-1, hyperlink.chapter, hyperlink.page);
+                            flag = true;
+                        }
+                        if (!flag) {
+                            for (int j = 1; j < bookEntries.chapterList.size(); j++) {
+                                for (int k = 0; k < bookEntries.chapterList.get(j).pages.size(); k++) {
+                                    String location3 = bookEntries.chapterList.get(j).pages.get(k).location;
+                                    BookPage page_check = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(location3));
+                                    if (page_check != null && page_check.itemHyperlink.equals(itemRegistryName)) {
+                                        if (!(chapter == j && (page == k || page == k - 1)))
+                                            altarTile.setTurnPage(-1, j, k);
+                                        BookManager.addBookItemHyperlink(itemRegistryName, new BookHyperlink(j, k));
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+
+                for (BookImage bookImage : page1.imageList) {
+
+
+                    float w = bookImage.width / 330 * bookImage.scale / 0.062f;
+                    float h = bookImage.height / 330 * bookImage.scale / 0.062f;
+                    float x = bookImage.x - w / 2 + 0.45f;
+                    float y = bookImage.y - h / 2 + 0.49f;
+                    if (canInteract(leftCursorX, leftCursorY, x, y, w, h, altarTile, drawingType)) {
+
+                        if (!bookImage.hyperlink.url.isEmpty())
+                            showLinkScreenClient(bookImage.hyperlink.url);
+                        if (!bookImage.hyperlink.id.isEmpty()) {
+
+                            for (BookChapter chapterEntry : bookEntries.chapterList) {
+                                for (BookPageEntry pageEntry : chapterEntry.pages) {
+                                    if (pageEntry.location.equals(bookImage.hyperlink.id)) {
+                                        altarTile.setTurnPage(-1, pageEntry.chapterNum, pageEntry.chapterPageNum);
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+
+
+                if (altarTile.slotClicked == -1) {
+                    for (BookEntity bookEntity : page1.entityList) {
+
+                        float xIn = bookEntity.x + bookEntity.offset.x + 0.52f;
+                        float yIn = bookEntity.y + bookEntity.offset.y;
+                        float width = 1.25f + bookEntity.scale / 5f;
+                        if (canInteract(leftCursorX, leftCursorY, xIn - width/2, yIn - width/2, width, width, altarTile, drawingType)) {
+                            bookEntity.clicked = true;
+                            return true;
+                        }
+                    }
+                }
+            }
+
+        }
+        if (page2 != null) {
+
+            if (!isClicked) {
+
+
+                for (BookPaintElement paintElement : page2.paintElements) {
+
+                    if (paintElement.client == null)
+                        continue;
+
+                    PaintSystem paintSystem = paintElement.client.getPaintSystem(bookData.getUUID());
+
+                    float cursorX = rightCursorX;
+                    float cursorY = rightCursorY;
+
+                    float w;
+                    float h;
+                    float x;
+                    float y;
+
+                    if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == ModItems.BOOK_CANVAS.get()) {
+
+                        w = paintElement.width / 326 * 2.55f * paintElement.scale / 0.062f;
+                        h = paintElement.height / 326 * 2.55f * paintElement.scale / 0.062f;
+                        x = paintElement.x + 0.025f;
+                        y = paintElement.y - 0.5f;
+                        if (canInteract(cursorX + 0.22f, cursorY, x, y, w, h, altarTile, drawingType)) {
+
+                            Minecraft.getInstance().setScreen(new CanvasPaintingCropScreen(paintElement, paintSystem));
+                            return true;
+                        }
+                    }
+
+                    if (paintSystem.getMovingSelection() == null) {
+                        for (PaintSystem.Button button : paintSystem.buttons) {
+                            if(!button.isVisible(paintSystem))
                                 continue;
+                            BookImage image = new BookImage(button.getX(paintSystem, PageOn.RIGHT_PAGE, 0), button.getY(paintSystem, PageOn.RIGHT_PAGE, 0), 0, 0, 0, button.width, button.height, button.width, button.height, button.getScale(altarTile.buttonScaleRender), button.getTexture(paintSystem), new ArrayList<>());
 
-                            if (canInteract(rightCursorX, rightCursorY, bookNonItemTooltip.x, bookNonItemTooltip.y, bookNonItemTooltip.width, bookNonItemTooltip.height, altarTile, drawingType)) {
+                            w = image.width / 330 * image.scale / 0.062f;
+                            h = image.height / 330 * image.scale / 0.062f;
+                            x = image.x - w / 2 + 0.455f;
+                            y = image.y - h / 2 + 0.49f;
+
+                            if (canInteract(cursorX, cursorY, x, y, w, h, altarTile, drawingType)) {
+                                if (!button.getDisabled(paintSystem)) {
+                                    button.onClick(paintSystem);
+                                    button.clicked = true;
+                                    return true;
+                                } else
+                                    return false;
+                            }
+                        }
+
+
+                        if (paintSystem.toolsVisible) {
+                            for (int i = 0; i < 3; i++) {
+                                if (i >= paintSystem.getColors().colors.size())
+                                    continue;
+                                PaintSystem.Colors.ColorSelection colorSelection = paintSystem.getColors().colors.get(i);
+
+                                float w1 = colorSelection.colorPosData.width / 326 * 2.55f / 0.062f;
+                                float h1 = colorSelection.colorPosData.height / 326 * 2.55f / 0.062f;
+                                float x1 = (float) colorSelection.colorPosData.pos.x + 0.025f - w1 / 2 + 0.8f;
+                                float y1 = (float) colorSelection.colorPosData.pos.y - 0.5f - 0.025f - h1 / 2;
+                                if (canInteract(cursorX, cursorY, x1, y1, w1, h1, altarTile, drawingType)) {
+                                    if (i == 2)
+                                        paintSystem.getColors().cycleColorBack(paintSystem);
+                                    else
+                                        paintSystem.getColors().cycleColor(paintSystem);
+                                    return true;
+                                }
+
+                            }
+                        }
+
+                        if (paintSystem.toolsVisible)
+                            if (paintSystem.getValueSliders().click(cursorX, cursorY, PageOn.RIGHT_PAGE))
+                                return true;
+                    }
+
+
+                    if (paintSystem.toolsVisible) {
+                        w = paintElement.width / 326 * 2.55f * paintElement.scale / 0.062f;
+                        h = paintElement.height / 326 * 2.55f * paintElement.scale / 0.062f;
+                        x = paintElement.x + 0.025f;// + 0.455f;
+                        y = paintElement.y - 0.5f;
+                        float cushion = paintSystem.getBrush().size * 0.12f;
+                        if (canInteract(cursorX + 0.22f, cursorY, x - cushion, y - cushion, w + cushion * 2, h + cushion * 2, altarTile, drawingType)) {
+
+                            float xPixel = ((cursorX - x) / w * paintElement.width) + 1.8f;
+                            float yPixel = ((cursorY - y) / h * paintElement.height);
+                            paintSystem.click(xPixel, yPixel);
+                            return true;
+                        }
+                    }
+
+                }
+
+                for (BookWritableTextBox bookWritableTextBox : page2.writableTextBoxes) {
+
+                    if (canInteract(rightCursorX, rightCursorY, bookWritableTextBox.paragraphElement.x + 0.45f, bookWritableTextBox.paragraphElement.y, bookWritableTextBox.paragraphElement.width / 6.15f, bookWritableTextBox.paragraphElement.height / 2.57f, altarTile, drawingType)) {
+                        setFocusedWritableTextBox(altarTile, page2.location, bookWritableTextBox);
+
+                        long i = Util.getMillis();
+                        BookWritableTextBox.Client.DisplayCache bookeditscreen$displaycache = focusedWritableTextBox.getRight().client.getDisplayCache(PageDrawing.focusedWritableTextBox.getLeft().currentBook);
+                        BookWritableTextBox.Client.Pos2i pos2i = new BookWritableTextBox.Client.Pos2i((int) ((rightCursorX - bookWritableTextBox.paragraphElement.x - 0.45f) / 5 * 115f), (int) ((rightCursorY - bookWritableTextBox.paragraphElement.y) / 7.1f * 162f));
+                        int j = bookeditscreen$displaycache.getIndexAtPosition(
+                                ClientProxy.font(), pos2i
+                        );
+                        bookWritableTextBox.client.clicked = true;
+                        bookWritableTextBox.client.clickedPos = pos2i;
+                        if (j >= 0) {
+                            if (j != focusedWritableTextBox.getRight().client.lastIndex || i - focusedWritableTextBox.getRight().client.lastClickTime >= 250L) {
+                                focusedWritableTextBox.getRight().client.pageEdit.setCursorPos(j, Screen.hasShiftDown());
+                            } else if (!focusedWritableTextBox.getRight().client.pageEdit.isSelecting()) {
+                                focusedWritableTextBox.getRight().client.selectWord(j, focusedWritableTextBox.getLeft().currentBook);
+                            } else {
+                                focusedWritableTextBox.getRight().client.pageEdit.selectAll();
+                            }
+
+                            focusedWritableTextBox.getRight().client.clearDisplayCache(PageDrawing.focusedWritableTextBox.getLeft().currentBook.getUUID());
+                        }
+
+                        focusedWritableTextBox.getRight().client.lastIndex = j;
+                        focusedWritableTextBox.getRight().client.lastClickTime = i;
+
+                        return true;
+                    }
+                }
+
+                for (BookNonItemTooltip bookNonItemTooltip : page2.nonItemTooltipList) {
+
+                    if (bookNonItemTooltip.hyperlink.id.isEmpty() && bookNonItemTooltip.hyperlink.url.isEmpty())
+                        continue;
+
+                    if (canInteract(rightCursorX, rightCursorY, bookNonItemTooltip.x, bookNonItemTooltip.y, bookNonItemTooltip.width, bookNonItemTooltip.height, altarTile, drawingType)) {
 //                            if (intersectPointNonItem(bookNonItemTooltip.x, bookNonItemTooltip.y, bookNonItemTooltip.width, bookNonItemTooltip.height, playerIn.getLookAngle(), playerIn.getEyePosition(), altarTile, PageOn.RIGHT_PAGE) &&
 //                                    Math.sqrt(altarTile.getBlockPos().distToCenterSqr(playerIn.getEyePosition())) <= reach) {
 
-                                if (!bookNonItemTooltip.hyperlink_url.isEmpty())
-                                    showLinkScreenClient(bookNonItemTooltip.hyperlink_url);
-                                if (!bookNonItemTooltip.hyperlink_id.isEmpty()) {
+                        if (!bookNonItemTooltip.hyperlink.url.isEmpty())
+                            showLinkScreenClient(bookNonItemTooltip.hyperlink.url);
+                        if (!bookNonItemTooltip.hyperlink.id.isEmpty()) {
 
-                                    for (BookChapter chapterEntry : BookManager.getBookEntries().chapterList) {
-                                        for (BookPageEntry pageEntry : chapterEntry.pages) {
-                                            if (pageEntry.location.equals(bookNonItemTooltip.hyperlink_id)) {
-                                                altarTile.setTurnPage(-1, pageEntry.chapterNum, pageEntry.chapterPageNum);
-                                                return true;
-                                            }
-                                        }
+                            for (BookChapter chapterEntry : bookEntries.chapterList) {
+                                for (BookPageEntry pageEntry : chapterEntry.pages) {
+                                    if (pageEntry.location.equals(bookNonItemTooltip.hyperlink.id)) {
+                                        altarTile.setTurnPage(-1, pageEntry.chapterNum, pageEntry.chapterPageNum);
+                                        return true;
                                     }
                                 }
-                                break;
                             }
                         }
-                        for (BookItemsAndFluids bookItemStackInSlot : page2.itemList) {
+                        break;
+                    }
+                }
+                for (BookItemsAndFluids bookItemStackInSlot : page2.itemList) {
 
-                            if (canInteract(rightCursorX, rightCursorY, bookItemStackInSlot.x, bookItemStackInSlot.y, 0.86f, 0.86f, altarTile, drawingType)) {
+                    if (canInteract(rightCursorX, rightCursorY, bookItemStackInSlot.x, bookItemStackInSlot.y, 0.86f, 0.86f, altarTile, drawingType)) {
 //                            if (intersectPointItems(bookItemStackInSlot.x, bookItemStackInSlot.y, playerIn.getLookAngle(), playerIn.getEyePosition(), altarTile, PageOn.RIGHT_PAGE) &&
 //                                    Math.sqrt(altarTile.getBlockPos().distToCenterSqr(playerIn.getEyePosition())) <= reach) {
 
-                                String itemRegistryName;
+                        String itemRegistryName;
 
-                                if (bookItemStackInSlot.item != null)
-                                    itemRegistryName = HexereiUtil.getRegistryName(bookItemStackInSlot.item.getItem()).toString();
-                                else
-                                    itemRegistryName = HexereiUtil.getRegistryName(bookItemStackInSlot.fluid.getFluid()).toString();
+                        if (bookItemStackInSlot.item != null)
+                            itemRegistryName = HexereiUtil.getRegistryName(bookItemStackInSlot.item.getItem()).toString();
+                        else
+                            itemRegistryName = HexereiUtil.getRegistryName(bookItemStackInSlot.fluid.getFluid()).toString();
 
-                                boolean flag = false;
-                                if (BookManager.getBookItemHyperlinks().containsKey(itemRegistryName)) {
+                        boolean flag = false;
+                        if (BookManager.getBookItemHyperlinks().containsKey(itemRegistryName)) {
 //                                System.out.println("Found previous hyperlink");
-                                    BookHyperlink hyperlink = BookManager.getBookItemHyperlinks().get(itemRegistryName);
-                                    if (!(chapter == hyperlink.chapter && (page == hyperlink.page || page == hyperlink.page - 1)))
-                                        altarTile.setTurnPage(-1, hyperlink.chapter, hyperlink.page);
-                                    flag = true;
-                                }
-                                if (!flag) {
-                                    for (int j = 1; j < bookEntries.chapterList.size(); j++) {
-                                        for (int k = 0; k < bookEntries.chapterList.get(j).pages.size(); k++) {
-                                            String location3 = bookEntries.chapterList.get(j).pages.get(k).location;
-                                            BookPage page_check = BookManager.getBookPages(ResourceLocation.parse(location3));
-                                            if (page_check != null && page_check.itemHyperlink.equals(itemRegistryName)) {
-                                                if (!(chapter == j && (page == k || page == k - 1)))
-                                                    altarTile.setTurnPage(-1, j, k);
-                                                BookManager.addBookItemHyperlink(itemRegistryName, new BookHyperlink(j, k));
-                                                return true;
-                                            }
-                                        }
+                            BookHyperlink hyperlink = BookManager.getBookItemHyperlinks().get(itemRegistryName);
+                            if (!(chapter == hyperlink.chapter && (page == hyperlink.page || page == hyperlink.page - 1)))
+                                altarTile.setTurnPage(-1, hyperlink.chapter, hyperlink.page);
+                            flag = true;
+                        }
+                        if (!flag) {
+                            for (int j = 1; j < bookEntries.chapterList.size(); j++) {
+                                for (int k = 0; k < bookEntries.chapterList.get(j).pages.size(); k++) {
+                                    String location3 = bookEntries.chapterList.get(j).pages.get(k).location;
+                                    BookPage page_check = BookManager.getBookPages(bookData.getBook(), ResourceLocation.parse(location3));
+                                    if (page_check != null && page_check.itemHyperlink.equals(itemRegistryName)) {
+                                        if (!(chapter == j && (page == k || page == k - 1)))
+                                            altarTile.setTurnPage(-1, j, k);
+                                        BookManager.addBookItemHyperlink(itemRegistryName, new BookHyperlink(j, k));
+                                        return true;
                                     }
                                 }
-                                break;
                             }
                         }
+                        break;
+                    }
+                }
 
-                        for (BookImage bookImage : page2.imageList) {
+                for (BookImage bookImage : page2.imageList) {
 
-                            if (bookImage.hyperlink_id.isEmpty() && bookImage.hyperlink_url.isEmpty())
-                                continue;
+                    if (bookImage.hyperlink.id.isEmpty() && bookImage.hyperlink.url.isEmpty())
+                        continue;
 
 
 
-                            float w = bookImage.width / 330 * bookImage.scale / 0.062f;
-                            float h = bookImage.height / 330 * bookImage.scale / 0.062f;
-                            float x = bookImage.x - w / 2 + 0.45f;
-                            float y = bookImage.y - h / 2 + 0.49f;
-                            if (canInteract(rightCursorX, rightCursorY, x, y, w, h, altarTile, drawingType)) {
+                    float w = bookImage.width / 330 * bookImage.scale / 0.062f;
+                    float h = bookImage.height / 330 * bookImage.scale / 0.062f;
+                    float x = bookImage.x - w / 2 + 0.45f;
+                    float y = bookImage.y - h / 2 + 0.49f;
+                    if (canInteract(rightCursorX, rightCursorY, x, y, w, h, altarTile, drawingType)) {
 //                            if (intersectPointImage(bookImage.x, bookImage.y, bookImage.height, bookImage.width, bookImage.scale, playerIn.getLookAngle(), playerIn.getEyePosition(), altarTile, PageOn.RIGHT_PAGE) &&
 //                                    Math.sqrt(altarTile.getBlockPos().distToCenterSqr(playerIn.getEyePosition())) <= reach) {
 
 
-                                if (!bookImage.hyperlink_url.isEmpty())
-                                    showLinkScreenClient(bookImage.hyperlink_url);
-                                if (!bookImage.hyperlink_id.isEmpty()) {
+                        if (!bookImage.hyperlink.url.isEmpty())
+                            showLinkScreenClient(bookImage.hyperlink.url);
+                        if (!bookImage.hyperlink.id.isEmpty()) {
 
-                                    for (BookChapter chapterEntry : BookManager.getBookEntries().chapterList) {
-                                        for (BookPageEntry pageEntry : chapterEntry.pages) {
-                                            if (pageEntry.location.equals(bookImage.hyperlink_id)) {
-                                                altarTile.setTurnPage(-1, pageEntry.chapterNum, pageEntry.chapterPageNum);
-                                                return true;
-                                            }
-                                        }
+                            for (BookChapter chapterEntry : bookEntries.chapterList) {
+                                for (BookPageEntry pageEntry : chapterEntry.pages) {
+                                    if (pageEntry.location.equals(bookImage.hyperlink.id)) {
+                                        altarTile.setTurnPage(-1, pageEntry.chapterNum, pageEntry.chapterPageNum);
+                                        return true;
                                     }
                                 }
-                                break;
-
-                                //add hyperlink stuff here
-//                            loc.set(bookImageEffect.hoverImage.imageLoc);
                             }
                         }
+                        break;
+
+                        //add hyperlink stuff here
+//                            loc.set(bookImageEffect.hoverImage.imageLoc);
                     }
+                }
+            }
 
 
-                    if (altarTile.slotClicked == -1) {
-                        for (BookEntity bookEntity : page2.entityList) {
+            if (altarTile.slotClicked == -1) {
+                for (BookEntity bookEntity : page2.entityList) {
 
-                            float xIn = bookEntity.x + bookEntity.offset.x + 0.52f;
-                            float yIn = bookEntity.y + bookEntity.offset.y;
-                            float width = 1.25f + bookEntity.scale / 5f;
-                            if (canInteract(rightCursorX, rightCursorY, xIn - width/2, yIn - width/2, width, width, altarTile, drawingType)) {
-                                bookEntity.clicked = true;
+                    float xIn = bookEntity.x + bookEntity.offset.x + 0.52f;
+                    float yIn = bookEntity.y + bookEntity.offset.y;
+                    float width = 1.25f + bookEntity.scale / 5f;
+                    if (canInteract(rightCursorX, rightCursorY, xIn - width/2, yIn - width/2, width, width, altarTile, drawingType)) {
+                        bookEntity.clicked = true;
 //                            if (canInteract(leftOffset, rightOffset, xIn - width / 2f, yIn - width / 2f, width, width, playerIn, altarTile, PageOn.RIGHT_PAGE)) {
 //                                if (!isRightPressedOld) {
 //                                    playerIn.swing(InteractionHand.MAIN_HAND);
 //                                    Hexerei.entityClicked = true;
 //                                }
-                                return true;
-                            }
-                        }
+                        return true;
                     }
-
                 }
             }
 
-
         }
+
 
         return false;
     }
@@ -3948,8 +3932,9 @@ public class PageDrawing {
     @OnlyIn(Dist.CLIENT)
     private static TextureAtlasSprite getStillFluidSprite(FluidStack fluidStack) {
         Minecraft minecraft = Minecraft.getInstance();
+        if (fluidStack.isEmpty())
+            return minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(ResourceLocation.withDefaultNamespace("missingno"));
         Fluid fluid = fluidStack.getFluid();
-        FluidType type = fluid.getFluidType();
         ResourceLocation fluidStill = IClientFluidTypeExtensions.of(fluid).getStillTexture(fluidStack);
         return minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStill);
     }
@@ -4021,7 +4006,7 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawTooltipImage(ItemStack stack, BookOfShadowsAltarTile altarTile, PoseStack poseStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay) {
+    public void drawTooltipImage(ItemStack stack, BookOfShadowsAltarTile altarTile, PoseStack poseStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, float partialTicks) {
 
         poseStack.pushPose();
 
@@ -4034,8 +4019,8 @@ public class PageDrawing {
         poseStack.translate(0, 0, -(altarTile.degreesFloppedRender / 10f) / 32);
         poseStack.mulPose(Axis.XP.rotationDegrees(-90));
         poseStack.mulPose(Axis.YP.rotationDegrees(270));
-        poseStack.translate(0.25f, -(1 - (this.drawTooltipScale < 0.5f ? this.drawTooltipScale * 2f : 1)) / 12f, 0);
-        float scale = easeInOutElastic(this.drawTooltipScale);
+        float scale = easeInOutElastic(Mth.lerp(partialTicks, this.drawTooltipScaleOld, this.drawTooltipScale));
+        poseStack.translate(0.05f + 0.1f * scale, -(1 - (this.drawTooltipScale < 0.5f ? this.drawTooltipScale * 2f : 1)) / 12f, 0);
         poseStack.scale(scale, scale, scale);
 
         RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
@@ -4097,7 +4082,7 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    public void drawTooltipText(BookOfShadowsAltarTile altarTile, PoseStack poseStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay) {
+    public void drawTooltipText(BookOfShadowsAltarTile altarTile, PoseStack poseStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, float partialTicks) {
 
         poseStack.pushPose();
 
@@ -4110,9 +4095,9 @@ public class PageDrawing {
         poseStack.translate(0, 0, -(altarTile.degreesFloppedRender / 10f) / 32);
         poseStack.mulPose(Axis.XP.rotationDegrees(-90));
         poseStack.mulPose(Axis.YP.rotationDegrees(270));
-        float scale = Math.min(this.drawTooltipScale, 1);
-        poseStack.translate(0.25f, -(1 - (scale < 0.5f ? scale * 2f : 1)) / 12f, 0);
-        scale = easeInOutElastic(this.drawTooltipScale);
+        float scale = easeInOutElastic(Mth.lerp(partialTicks, this.drawTooltipScaleOld, this.drawTooltipScale));
+        poseStack.translate(0.05f + 0.1f * scale, -(1 - (Math.min(this.drawTooltipScale, 1) < 0.5f ? Math.min(this.drawTooltipScale, 1) * 2f : 1)) / 12f, 0);
+
         if (scale < 0) scale = 0;
         poseStack.scale(scale, scale, scale);
 
@@ -4343,7 +4328,7 @@ public class PageDrawing {
 
 
         Matrix4f matrix = poseStack.last().pose();
-        VertexConsumer buffer = bufferSource.getBuffer(RenderType.entityCutout(ResourceLocation.parse(bookImage.imageLoc)));
+        VertexConsumer buffer = bufferSource.getBuffer(RenderType.entityCutout(ResourceLocation.parse(bookImage.texture)));
 
         PoseStack.Pose normal = poseStack.last();
         int u = (int) bookImage.u;
@@ -4391,11 +4376,15 @@ public class PageDrawing {
 
 
     @OnlyIn(Dist.CLIENT)
-    public void drawImage(BookImage bookImage, BookOfShadowsAltarTile altarTile, float leftCursorX, float leftCursorY, float rightCursorX, float rightCursorY, PoseStack poseStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, DrawingType drawingType) {
-        drawImage(bookImage, altarTile, leftCursorX, leftCursorY, rightCursorX, rightCursorY, poseStack, bufferSource, zLevel, light, overlay, pageOn, -1, drawingType, ItemDisplayContext.NONE);
+    public void drawImage(BookImage bookImage, BookOfShadowsAltarTile altarTile, float cursorX, float cursorY, PoseStack poseStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, DrawingType drawingType) {
+        drawImage(bookImage, altarTile, cursorX, cursorY, poseStack, bufferSource, zLevel, light, overlay, pageOn, -1, drawingType, ItemDisplayContext.NONE);
     }
     @OnlyIn(Dist.CLIENT)
-    public void drawImage(BookImage bookImage, BookOfShadowsAltarTile altarTile, float leftCursorX, float leftCursorY, float rightCursorX, float rightCursorY, PoseStack poseStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, int color, DrawingType drawingType, ItemDisplayContext transformType) {
+    public void drawImage(BookImage bookImage, BookOfShadowsAltarTile altarTile, float cursorX, float cursorY, PoseStack poseStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, int color, DrawingType drawingType, ItemDisplayContext transformType) {
+        drawImage(bookImage, altarTile, cursorX, cursorY, poseStack, bufferSource, zLevel, light, overlay, pageOn, color, drawingType, transformType, false);
+    }
+    @OnlyIn(Dist.CLIENT)
+    public void drawImage(BookImage bookImage, BookOfShadowsAltarTile altarTile, float cursorX, float cursorY, PoseStack poseStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, int color, DrawingType drawingType, ItemDisplayContext transformType, boolean transparent) {
 
         poseStack.pushPose();
 
@@ -4448,7 +4437,7 @@ public class PageDrawing {
         RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
 
 
-        AtomicReference<String> loc = new AtomicReference<>(bookImage.imageLoc);
+        AtomicReference<String> loc = new AtomicReference<>(bookImage.texture);
         AtomicReference<BookImage> overlay_image = new AtomicReference<>(bookImage);
         AtomicReference<Boolean> overlay_draw = new AtomicReference<>(false);
 
@@ -4469,9 +4458,9 @@ public class PageDrawing {
                 float h = bookImage.height / 330 * bookImage.scale / 0.062f;
                 float x = bookImage.x - w / 2 + 0.455f;
                 float y = bookImage.y - h / 2 + 0.49f;
-                if (canInteract(pageOn == PageOn.LEFT_PAGE ? leftCursorX : rightCursorX, pageOn == PageOn.LEFT_PAGE ? leftCursorY : rightCursorY, x, y, w, h, altarTile, drawingType)) {
+                if (canInteract(cursorX, cursorY, x, y, w, h, altarTile, drawingType)) {
                     flag.set(true);
-                    loc.set(bookImageEffect.hoverImage.imageLoc);
+                    loc.set(bookImageEffect.hoverImage.texture);
                 }
             }
             if (bookImageEffect.type.equals("hover_overlay")) {
@@ -4480,7 +4469,7 @@ public class PageDrawing {
                 float h = bookImage.height / 330 * bookImage.scale / 0.062f;
                 float x = bookImage.x - w / 2 + 0.45f;
                 float y = bookImage.y - h / 2 + 0.49f;
-                if (canInteract(pageOn == PageOn.LEFT_PAGE ? leftCursorX : rightCursorX, pageOn == PageOn.LEFT_PAGE ? leftCursorY : rightCursorY, x, y, w, h, altarTile, drawingType)) {
+                if (canInteract(cursorX, cursorY, x, y, w, h, altarTile, drawingType)) {
                     overlay_image.set(bookImageEffect.hoverImage);
                     overlay_draw.set(true);
                 }
@@ -4532,8 +4521,8 @@ public class PageDrawing {
             b = (float) (color & 255) / 255.0F;
         }
         VertexConsumer buffer;
-        if (a != 1)
-            buffer = bufferSource.getBuffer(RenderType.entityTranslucent(ResourceLocation.parse(loc.get())));
+        if (a != 1 || transparent)
+            buffer = bufferSource.getBuffer(ModRenderTypes.bookTranslucent(ResourceLocation.parse(loc.get())));
         else
             buffer = bufferSource.getBuffer(RenderType.entityCutout(ResourceLocation.parse(loc.get())));
 
@@ -4542,11 +4531,16 @@ public class PageDrawing {
         buffer.addVertex(matrix, 0, 0.055f / 18 * height.get(), -0.055f / 18 * width.get()).setColor(r, g, b, a).setUv(u1, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
         buffer.addVertex(matrix, 0, 0.055f / 18 * height.get(), 0.055f / 18 * width.get()).setColor(r, g, b, a).setUv(u2, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
         buffer.addVertex(matrix, 0, -0.055f / 18 * height.get(), 0.055f / 18 * width.get()).setColor(r, g, b, a).setUv(u2, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
-
+        if (bufferSource instanceof MultiBufferSource.BufferSource multiBufferSource)
+            multiBufferSource.endBatch();
 
         if (overlay_draw.get()) {
             BookImage ov_img = overlay_image.get();
-            VertexConsumer buffer2 = bufferSource.getBuffer(RenderType.entityCutout(ResourceLocation.parse(ov_img.imageLoc)));
+            VertexConsumer buffer2;
+            if (a != 1 || transparent)
+                buffer2 = bufferSource.getBuffer(ModRenderTypes.bookTranslucent(ResourceLocation.parse(loc.get())));
+            else
+                buffer2 = bufferSource.getBuffer(RenderType.entityCutout(ResourceLocation.parse(loc.get())));
 
             float overlay_u1 = (ov_img.u + 0.0F) / ov_img.imageWidth;
             float overlay_u2 = (ov_img.u + ov_img.width) / ov_img.imageWidth;
@@ -4570,11 +4564,637 @@ public class PageDrawing {
             buffer2.addVertex(matrix, ov_img.z / 2000f, 0.055f / 18 * ov_img.height, 0.055f / 18 * ov_img.width).setColor(overlay_r, overlay_g, overlay_b, overlay_a).setUv(overlay_u2, overlay_v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
             buffer2.addVertex(matrix, ov_img.z / 2000f, -0.055f / 18 * ov_img.height, 0.055f / 18 * ov_img.width).setColor(overlay_r, overlay_g, overlay_b, overlay_a).setUv(overlay_u2, overlay_v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
             poseStack.popPose();
+            if (bufferSource instanceof MultiBufferSource.BufferSource multiBufferSource)
+                multiBufferSource.endBatch();
         }
 
         poseStack.popPose();
 
     }
+
+    @OnlyIn(Dist.CLIENT)
+    public void drawPaintColorSlider(float offset, PaintSystem.ValueSlider valueSlider, BookOfShadowsAltarTile altarTile, float cursorX, float cursorY, float scale, PoseStack poseStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, int color, DrawingType drawingType, ItemDisplayContext transformType, float partial) {
+
+        if (scale == 0)
+            return;
+        float x;
+        float y;
+        float width;
+        float height;
+        float width2;
+        float height2;
+
+        if (valueSlider.isHorizontal()){
+            x = valueSlider.getX(pageOn) + valueSlider.getValue() * valueSlider.width / 8f + 0.006f;
+            y = valueSlider.getY(pageOn) + offset;
+            width = 0.75f + 0.1f;
+            height = 1.25f + 0.1f;
+            height *= valueSlider.getHoveringScale(partial);
+        } else {
+            x = valueSlider.getX(pageOn) + offset;
+            y = valueSlider.getY(pageOn) - valueSlider.getValue() * valueSlider.height / 8f + valueSlider.height / 16f;
+            width = 1.25f + 0.1f;
+            height = 0.75f + 0.1f;
+            width *= valueSlider.getHoveringScale(partial);
+        }
+        width2 = width - 0.6f;
+        height2 = height - 0.6f;
+
+        poseStack.pushPose();
+
+        if (pageOn == PageOn.LEFT_PAGE)
+            translateToLeftPage(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.LEFT_PAGE_UNDER)
+            translateToLeftPageUnder(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.LEFT_PAGE_PREV)
+            translateToLeftPagePrevious(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.LEFT_PAGE_PREV_PREV)
+            translateToLeftPagePrevious2(altarTile, poseStack, drawingType, transformType);
+        if (pageOn == PageOn.RIGHT_PAGE)
+            translateToRightPage(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.RIGHT_PAGE_UNDER)
+            translateToRightPageUnder(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.RIGHT_PAGE_PREV)
+            translateToRightPagePrevious(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.RIGHT_PAGE_PREV_PREV)
+            translateToRightPagePrevious2(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.MIDDLE_BUTTON)
+            translateToMiddleButton(altarTile, poseStack, drawingType, transformType);
+
+        poseStack.mulPose(Axis.YP.rotationDegrees(90));
+        poseStack.translate(-8f / 16f, 5.5f / 16f, -0.012f / 16f);
+        poseStack.scale(0.5f * scale * 2.55f, 0.5f * scale * 2.55f, 0.5f * 2.55f);
+        poseStack.mulPose(Axis.ZP.rotationDegrees(-90));
+
+        poseStack.translate((x / 8.1f - 0.475f / 8.1f) / (scale * 2.55f), (y / 8.1f - 1f / 8.1f) / (scale * 2.55f), -(zLevel) / 1600f);
+
+        poseStack.mulPose(Axis.XP.rotationDegrees(-90));
+        poseStack.mulPose(Axis.YP.rotationDegrees(90));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(90));
+
+        RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
+
+        Matrix4f matrix = poseStack.last().pose();
+
+        PoseStack.Pose normal = poseStack.last();
+
+        float u1 = 0;
+        float u2 = 1;
+        float v1 = 0;
+        float v2 = 1;
+
+        float a = 1;
+        float r = 0;
+        float g = 0;
+        float b = 0;
+
+        VertexConsumer buffer = bufferSource.getBuffer(RenderType.entityTranslucent(ResourceLocation.parse("hexerei:textures/book/blank.png")));
+
+        a = (color >> 24 & 255) / 255.0F;
+        r = (color >> 16 & 255) / 255.0F;
+        g = (color >> 8 & 255) / 255.0F;
+        b = (color & 255) / 255.0F;
+        buffer.addVertex(matrix, 0.00001f, -0.055f / 18 * height2, -0.055f / 18 * width2).setColor(r, g, b, a).setUv(u1, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+        buffer.addVertex(matrix, 0.00001f, 0.055f / 18 * height2, -0.055f / 18 * width2).setColor(r, g, b, a).setUv(u1, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+        buffer.addVertex(matrix, 0.00001f, 0.055f / 18 * height2, 0.055f / 18 * width2).setColor(r, g, b, a).setUv(u2, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+        buffer.addVertex(matrix, 0.00001f, -0.055f / 18 * height2, 0.055f / 18 * width2).setColor(r, g, b, a).setUv(u2, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+
+        if (bufferSource instanceof MultiBufferSource.BufferSource multiBufferSource)
+            multiBufferSource.endBatch();
+
+        buffer = bufferSource.getBuffer(RenderType.entityTranslucent(ResourceLocation.parse("hexerei:textures/book/blank.png")));
+        a = 1;
+        r = 0;
+        g = 0;
+        b = 0;
+        buffer.addVertex(matrix, 0, -0.055f / 18 * height, -0.055f / 18 * width).setColor(r, g, b, a).setUv(u1, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+        buffer.addVertex(matrix, 0, 0.055f / 18 * height, -0.055f / 18 * width).setColor(r, g, b, a).setUv(u1, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+        buffer.addVertex(matrix, 0, 0.055f / 18 * height, 0.055f / 18 * width).setColor(r, g, b, a).setUv(u2, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+        buffer.addVertex(matrix, 0, -0.055f / 18 * height, 0.055f / 18 * width).setColor(r, g, b, a).setUv(u2, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+
+        if (bufferSource instanceof MultiBufferSource.BufferSource multiBufferSource)
+            multiBufferSource.endBatch();
+        poseStack.popPose();
+
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void drawPaintColors(PaintSystem paintSystem, BookOfShadowsAltarTile altarTile, float cursorX, float cursorY, float scale, PoseStack poseStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, DrawingType drawingType, ItemDisplayContext transformType, float partial) {
+
+        if (scale <= 0)
+            return;
+
+        for (int i = 0; i < 3; i++) {
+            if (i > paintSystem.getColors().colors.size())
+                continue;
+            PaintSystem.Colors.ColorSelection colorSelection = paintSystem.getColors().colors.get(i);
+            float x = Mth.lerp(partial, (float) colorSelection.colorPosDataOld.pos.x, (float) colorSelection.colorPosData.pos.x) + (pageOn.isOnLeftSide() ? 0 : 0.8f);
+            float y = Mth.lerp(partial, (float) colorSelection.colorPosDataOld.pos.y, (float) colorSelection.colorPosData.pos.y);
+            float z = Mth.lerp(partial, (float) colorSelection.colorPosDataOld.pos.z, (float) colorSelection.colorPosData.pos.z);
+            float width = Mth.lerp(partial, colorSelection.colorPosDataOld.width, colorSelection.colorPosData.width);
+            float height = Mth.lerp(partial, colorSelection.colorPosDataOld.height, colorSelection.colorPosData.height);
+            float width2 = width - 0.75f;
+            float height2 = height - 0.75f;
+
+            poseStack.pushPose();
+
+            if (pageOn == PageOn.LEFT_PAGE)
+                translateToLeftPage(altarTile, poseStack, drawingType, transformType);
+            else if (pageOn == PageOn.LEFT_PAGE_UNDER)
+                translateToLeftPageUnder(altarTile, poseStack, drawingType, transformType);
+            else if (pageOn == PageOn.LEFT_PAGE_PREV)
+                translateToLeftPagePrevious(altarTile, poseStack, drawingType, transformType);
+            else if (pageOn == PageOn.LEFT_PAGE_PREV_PREV)
+                translateToLeftPagePrevious2(altarTile, poseStack, drawingType, transformType);
+            if (pageOn == PageOn.RIGHT_PAGE)
+                translateToRightPage(altarTile, poseStack, drawingType, transformType);
+            else if (pageOn == PageOn.RIGHT_PAGE_UNDER)
+                translateToRightPageUnder(altarTile, poseStack, drawingType, transformType);
+            else if (pageOn == PageOn.RIGHT_PAGE_PREV)
+                translateToRightPagePrevious(altarTile, poseStack, drawingType, transformType);
+            else if (pageOn == PageOn.RIGHT_PAGE_PREV_PREV)
+                translateToRightPagePrevious2(altarTile, poseStack, drawingType, transformType);
+            else if (pageOn == PageOn.MIDDLE_BUTTON)
+                translateToMiddleButton(altarTile, poseStack, drawingType, transformType);
+
+            poseStack.mulPose(Axis.YP.rotationDegrees(90));
+            poseStack.translate(-8f / 16f, 5.5f / 16f, -0.012f / 16f);
+            poseStack.scale(0.5f * scale * 2.55f, 0.5f * scale * 2.55f, 0.5f * 2.55f);
+            poseStack.mulPose(Axis.ZP.rotationDegrees(-90));
+
+            poseStack.translate((x / 8.1f - 0.475f / 8.1f) / (scale * 2.55f), (y / 8.1f - 1f / 8.1f) / (scale * 2.55f), -(zLevel) / 1600f);
+
+            poseStack.mulPose(Axis.XP.rotationDegrees(-90));
+            poseStack.mulPose(Axis.YP.rotationDegrees(90));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(90));
+
+            RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
+
+            Matrix4f matrix = poseStack.last().pose();
+
+            PoseStack.Pose normal = poseStack.last();
+
+            float u1 = 0;
+            float u2 = 1;
+            float v1 = 0;
+            float v2 = 1;
+
+            VertexConsumer buffer;
+
+            int color = colorSelection.getColor();
+
+            buffer = bufferSource.getBuffer(RenderType.entityTranslucent(ResourceLocation.parse("hexerei:textures/book/blank.png")));
+            float a = (color >> 24 & 255) / 255.0F;
+            float r = (color >> 16 & 255) / 255.0F;
+            float g = (color >> 8 & 255) / 255.0F;
+            float b = (color & 255) / 255.0F;
+            buffer.addVertex(matrix, 0.0001f + z, -0.055f / 18 * height2, -0.055f / 18 * width2).setColor(r, g, b, 1).setUv(u1, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+            buffer.addVertex(matrix, 0.0001f + z, 0.055f / 18 * height2, -0.055f / 18 * width2).setColor(r, g, b, a).setUv(u1, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+            buffer.addVertex(matrix, 0.0001f + z, 0.055f / 18 * height2, 0.055f / 18 * width2).setColor(r, g, b, a).setUv(u2, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+            buffer.addVertex(matrix, 0.0001f + z, -0.055f / 18 * height2, 0.055f / 18 * width2).setColor(r, g, b, 1).setUv(u2, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+
+            if (bufferSource instanceof MultiBufferSource.BufferSource multiBufferSource)
+                multiBufferSource.endBatch();
+
+            buffer = bufferSource.getBuffer(RenderType.entityTranslucent(ResourceLocation.parse("hexerei:textures/book/blank.png")));
+            a = 1;
+            r = 0;
+            g = 0;
+            b = 0;
+            buffer.addVertex(matrix, 0.00007f + z, -0.055f / 18 * height, -0.055f / 18 * width).setColor(r, g, b, a).setUv(u1, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+            buffer.addVertex(matrix, 0.00007f + z, 0.055f / 18 * height, -0.055f / 18 * width).setColor(r, g, b, a).setUv(u1, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+            buffer.addVertex(matrix, 0.00007f + z, 0.055f / 18 * height, 0.055f / 18 * width).setColor(r, g, b, a).setUv(u2, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+            buffer.addVertex(matrix, 0.00007f + z, -0.055f / 18 * height, 0.055f / 18 * width).setColor(r, g, b, a).setUv(u2, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+
+            if (bufferSource instanceof MultiBufferSource.BufferSource multiBufferSource)
+                multiBufferSource.endBatch();
+
+
+            poseStack.popPose();
+
+
+
+            float w1 = width / 326 * 2.55f / 0.062f;
+            float h1 = height / 326 * 2.55f / 0.062f;
+            float x1 = x + 0.025f - w1 / 2;
+            float y1 = y - 0.5f - 0.025f - h1 / 2;
+            if (canInteract(cursorX, cursorY, x1, y1, w1, h1, altarTile, drawingType)) {
+                List<Component> tooltipList = new ArrayList<>();
+                tooltipList.add(Component.translatable("Cycle Colors").withStyle(ChatFormatting.GRAY));
+                this.tooltipText = tooltipList;
+                this.drawTooltipText = true;
+                this.tooltipStack = ItemStack.EMPTY;
+            }
+        }
+
+
+
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void drawPaintColorSliderBar(float heightPercent, PaintSystem.ValueSlider valueSlider, BookOfShadowsAltarTile altarTile, float cursorX, float cursorY, float scale, PoseStack poseStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, int color1, int color2, DrawingType drawingType, ItemDisplayContext transformType, boolean hueSlider, float partial) {
+
+        if (scale == 0)
+            return;
+        float x = valueSlider.getX(pageOn);
+        float y = valueSlider.getY(pageOn);
+        float width = valueSlider.width;
+        float height = valueSlider.height * heightPercent;
+
+        poseStack.pushPose();
+
+        if (pageOn == PageOn.LEFT_PAGE)
+            translateToLeftPage(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.LEFT_PAGE_UNDER)
+            translateToLeftPageUnder(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.LEFT_PAGE_PREV)
+            translateToLeftPagePrevious(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.LEFT_PAGE_PREV_PREV)
+            translateToLeftPagePrevious2(altarTile, poseStack, drawingType, transformType);
+        if (pageOn == PageOn.RIGHT_PAGE)
+            translateToRightPage(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.RIGHT_PAGE_UNDER)
+            translateToRightPageUnder(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.RIGHT_PAGE_PREV)
+            translateToRightPagePrevious(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.RIGHT_PAGE_PREV_PREV)
+            translateToRightPagePrevious2(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.MIDDLE_BUTTON)
+            translateToMiddleButton(altarTile, poseStack, drawingType, transformType);
+
+        poseStack.mulPose(Axis.YP.rotationDegrees(90));
+        poseStack.translate(-8f / 16f, 5.5f / 16f, -0.012f / 16f);
+        poseStack.scale(0.5f * scale * 2.55f, 0.5f * scale * 2.55f, 0.5f * 2.55f);
+        poseStack.mulPose(Axis.ZP.rotationDegrees(-90));
+
+        poseStack.translate((x / 8.1f - 0.475f / 8.1f) / (scale * 2.55f), (y / 8.1f - 1f / 8.1f) / (scale * 2.55f), -(zLevel) / 1600f);
+
+        poseStack.mulPose(Axis.XP.rotationDegrees(-90));
+        poseStack.mulPose(Axis.YP.rotationDegrees(90));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(90));
+
+        RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
+
+        Matrix4f matrix = poseStack.last().pose();
+
+        PoseStack.Pose normal = poseStack.last();
+
+        float u1 = 0;
+        float u2 = 1;
+        float v1 = 0;
+        float v2 = 1;
+
+        float a1 = 1;
+        float r1 = 1;
+        float g1 = 1;
+        float b1 = 1;
+
+        if (color1 != -1) {
+            a1 = (float) (color1 >> 24 & 255) / 255.0F;
+            r1 = (float) (color1 >> 16 & 255) / 255.0F;
+            g1 = (float) (color1 >> 8 & 255) / 255.0F;
+            b1 = (float) (color1 & 255) / 255.0F;
+        }
+
+        float a2 = 1;
+        float r2 = 1;
+        float g2 = 1;
+        float b2 = 1;
+
+        if (color2 != -1) {
+            a2 = (float) (color2 >> 24 & 255) / 255.0F;
+            r2 = (float) (color2 >> 16 & 255) / 255.0F;
+            g2 = (float) (color2 >> 8 & 255) / 255.0F;
+            b2 = (float) (color2 & 255) / 255.0F;
+        }
+        VertexConsumer buffer;
+        if (hueSlider) {
+            float bubblePosX = valueSlider.getValue();
+            float bubblePosY = 0.5f;
+            float bubbleRadius = 0.275f;                                          // normalized value for radius
+            float bubbleStrength = (valueSlider.getHoveringScale(partial) - 1);   // intensity of the bubble effect
+            if (!valueSlider.isHorizontal()) {
+                bubblePosY = 1 - valueSlider.getValue();
+                bubblePosX = 0.5f;
+            }
+
+            ClientEvents.hueSliderShader.safeGetUniform("bubblePos").set(bubblePosX, bubblePosY);
+            ClientEvents.hueSliderShader.safeGetUniform("bubbleRadius").set(bubbleRadius);
+            ClientEvents.hueSliderShader.safeGetUniform("bubbleStrength").set(bubbleStrength);
+            ClientEvents.hueSliderShader.safeGetUniform("isHorizontal").set(valueSlider.isHorizontal() ? 1 : 0);
+            buffer = bufferSource.getBuffer(ModRenderTypes.hueSlider(ResourceLocation.parse("hexerei:textures/book/blank.png")));
+        }
+        else {
+
+            float bubblePosX = valueSlider.getValue();
+            float bubblePosY = 0.5f;
+            float bubbleRadius = 0.275f;                                          // normalized value for radius
+            float bubbleStrength = (valueSlider.getHoveringScale(partial) - 1);   // intensity of the bubble effect
+            if (!valueSlider.isHorizontal()) {
+                bubblePosY = 1 - valueSlider.getValue();
+                bubblePosX = 0.5f;
+            }
+
+            ClientEvents.sliderShader.safeGetUniform("bubblePos").set(bubblePosX, bubblePosY);
+            ClientEvents.sliderShader.safeGetUniform("bubbleRadius").set(bubbleRadius);
+            ClientEvents.sliderShader.safeGetUniform("bubbleStrength").set(bubbleStrength);
+            ClientEvents.sliderShader.safeGetUniform("isHorizontal").set(valueSlider.isHorizontal() ? 1 : 0);
+            buffer = bufferSource.getBuffer(ModRenderTypes.slider(ResourceLocation.parse("hexerei:textures/book/blank.png")));
+        }
+
+        if (hueSlider) {
+            if (valueSlider.isHorizontal()) {
+                buffer.addVertex(matrix, 0, -0.055f / 18 * height, 0).setColor(255, 255, 255, 255).setUv(u1, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+                buffer.addVertex(matrix, 0, 0.055f / 18 * height, 0).setColor(255, 255, 255, 255).setUv(u1, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+                buffer.addVertex(matrix, 0, 0.055f / 18 * height, 0.055f / 9 * width).setColor(255, 255, 255, 255).setUv(u2, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+                buffer.addVertex(matrix, 0, -0.055f / 18 * height, 0.055f / 9 * width).setColor(255, 255, 255, 255).setUv(u2, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+            } else {
+                buffer.addVertex(matrix, 0, -0.055f / 18 * height, 0).setColor(255, 255, 255, 255).setUv(u1, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+                buffer.addVertex(matrix, 0, 0.055f / 18 * height, 0).setColor(255, 255, 255, 255).setUv(u1, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+                buffer.addVertex(matrix, 0, 0.055f / 18 * height, 0.055f / 9 * width).setColor(255, 255, 255, 255).setUv(u2, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+                buffer.addVertex(matrix, 0, -0.055f / 18 * height, 0.055f / 9 * width).setColor(255, 255, 255, 255).setUv(u2, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+            }
+        } else {
+            if (valueSlider.isHorizontal()) {
+                buffer.addVertex(matrix, 0, -0.055f / 18 * height, 0).setColor(r1, g1, b1, a1).setUv(u1, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+                buffer.addVertex(matrix, 0, 0.055f / 18 * height, 0).setColor(r1, g1, b1, a1).setUv(u1, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+                buffer.addVertex(matrix, 0, 0.055f / 18 * height, 0.055f / 9 * width).setColor(r2, g2, b2, a2).setUv(u2, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+                buffer.addVertex(matrix, 0, -0.055f / 18 * height, 0.055f / 9 * width).setColor(r2, g2, b2, a2).setUv(u2, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+            } else {
+                buffer.addVertex(matrix, 0, -0.055f / 18 * height, 0).setColor(r2, g2, b2, a2).setUv(u1, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+                buffer.addVertex(matrix, 0, 0.055f / 18 * height, 0).setColor(r1, g1, b1, a1).setUv(u1, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+                buffer.addVertex(matrix, 0, 0.055f / 18 * height, 0.055f / 9 * width).setColor(r1, g1, b1, a1).setUv(u2, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+                buffer.addVertex(matrix, 0, -0.055f / 18 * height, 0.055f / 9 * width).setColor(r2, g2, b2, a2).setUv(u2, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+            }
+        }
+
+        poseStack.popPose();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void drawPaintElement(BookPaintElement paintElement, BookOfShadowsAltarTile altarTile, float cursorX, float cursorY, PoseStack poseStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, int color, DrawingType drawingType, ItemDisplayContext transformType, float partial) {
+
+        if (paintElement.client == null) {
+            paintElement.client = new BookPaintElement.Client(paintElement);
+            return;
+        }
+
+        BookData bookData = altarTile.currentBook;
+        PaintSystem paintSystem = paintElement.client.getPaintSystem(bookData.getUUID());
+        paintSystem.shouldTick = true; // allow it to tick next tick cycle
+
+        poseStack.pushPose();
+
+        if (pageOn == PageOn.LEFT_PAGE)
+            translateToLeftPage(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.LEFT_PAGE_UNDER)
+            translateToLeftPageUnder(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.LEFT_PAGE_PREV)
+            translateToLeftPagePrevious(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.LEFT_PAGE_PREV_PREV)
+            translateToLeftPagePrevious2(altarTile, poseStack, drawingType, transformType);
+        if (pageOn == PageOn.RIGHT_PAGE)
+            translateToRightPage(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.RIGHT_PAGE_UNDER)
+            translateToRightPageUnder(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.RIGHT_PAGE_PREV)
+            translateToRightPagePrevious(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.RIGHT_PAGE_PREV_PREV)
+            translateToRightPagePrevious2(altarTile, poseStack, drawingType, transformType);
+        else if (pageOn == PageOn.MIDDLE_BUTTON)
+            translateToMiddleButton(altarTile, poseStack, drawingType, transformType);
+
+        poseStack.mulPose(Axis.YP.rotationDegrees(90));
+        poseStack.translate(-8f / 16f, 5.5f / 16f, -0.012f / 16f);
+        poseStack.scale(0.5f * paintElement.scale * 2.55f, 0.5f * paintElement.scale * 2.55f, 0.5f * 2.55f);
+        poseStack.mulPose(Axis.ZP.rotationDegrees(-90));
+
+        poseStack.translate((paintElement.x / 8.1f - 0.475f / 8.1f) / (paintElement.scale * 2.55f) - (pageOn.isOnLeftSide() ? 0 : (0.15f / 8.1f / 2.55f)), (paintElement.y / 8.1f - 1f / 8.1f) / (paintElement.scale * 2.55f), -(zLevel + paintElement.z) / 1600f);
+
+        poseStack.mulPose(Axis.XP.rotationDegrees(-90));
+        poseStack.mulPose(Axis.YP.rotationDegrees(90));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(90));
+
+        RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
+
+        AtomicReference<Integer> width = new AtomicReference<>((int) paintElement.width);
+        AtomicReference<Integer> height = new AtomicReference<>((int) paintElement.height);
+
+
+        Matrix4f matrix = poseStack.last().pose();
+
+        PoseStack.Pose normal = poseStack.last();
+
+        float u1 = 0;
+        float u2 = 1;
+        float v1 = 0;
+        float v2 = 1;
+
+        float a = 1;
+        float r = 1;
+        float g = 1;
+        float b = 1;
+
+        if (color != -1) {
+            a = (float) (color >> 24 & 255) / 255.0F;
+            r = (float) (color >> 16 & 255) / 255.0F;
+            g = (float) (color >> 8 & 255) / 255.0F;
+            b = (float) (color & 255) / 255.0F;
+        }
+        VertexConsumer buffer;
+        buffer = bufferSource.getBuffer(ModRenderTypes.bookTranslucent(paintSystem.getImageLocation()));
+
+        buffer.addVertex(matrix, 0, 0, 0).setColor(r, g, b, a).setUv(u1, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+        buffer.addVertex(matrix, 0, 0.055f / 9 * height.get(), 0).setColor(r, g, b, a).setUv(u1, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+        buffer.addVertex(matrix, 0, 0.055f / 9 * height.get(), 0.055f / 9 * width.get()).setColor(r, g, b, a).setUv(u2, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+        buffer.addVertex(matrix, 0, 0, 0.055f / 9 * width.get()).setColor(r, g, b, a).setUv(u2, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
+
+        if (bufferSource instanceof MultiBufferSource.BufferSource multiBufferSource)
+            multiBufferSource.endBatch();
+
+        poseStack.popPose();
+
+
+
+
+        if (pageOn == PageOn.LEFT_PAGE) {
+            float w = paintElement.width / 326 * 2.55f * paintElement.scale / 0.062f;
+            float h = paintElement.height / 326 * 2.55f * paintElement.scale / 0.062f;
+            float x = paintElement.x + 0.025f;// + 0.455f;
+            float y = paintElement.y - 0.5f;// + 0.49f;
+
+            if (paintSystem.toolsVisible) {
+                if (canInteract(cursorX, cursorY, x - paintElement.width * paintElement.scale * 0.24f, y - paintElement.height * paintElement.scale * 0.24f, w + paintElement.width * paintElement.scale * 0.24f * 2, h + paintElement.height * paintElement.scale * 0.24f * 2, altarTile, drawingType)) {
+
+                    float xPixel = ((cursorX - x) / w * paintElement.width);
+                    float yPixel = ((cursorY - y) / h * paintElement.height);
+                    paintSystem.hover(xPixel, yPixel);
+                }
+            }
+
+            drawPaintColors(paintSystem, altarTile, cursorX, cursorY, altarTile.buttonScaleRender * paintSystem.getColorsVisibility(partial), poseStack, bufferSource, 0, light, overlay, pageOn, drawingType, ItemDisplayContext.NONE, partial);
+
+            for (PaintSystem.ValueSlider slider : paintSystem.getValueSliders().getSliders()) {
+                if (slider.shouldRender(paintSystem)) {
+                    if (slider.isDragging() && slider.isVisible(paintSystem))
+                        slider.updateValue(cursorX, cursorY, pageOn);
+
+                    drawPaintColorSlider((slider.isHorizontal() ? 0 : (slider.width / 326 * 5f * 4.1f)), slider, altarTile, cursorX, cursorY, altarTile.buttonScaleRender * slider.getVisibility(partial), poseStack, bufferSource, 0, light, overlay, pageOn, slider.getSliderColor(paintSystem), drawingType, ItemDisplayContext.NONE, partial);
+                    drawPaintColorSliderBar(1f, slider, altarTile, cursorX, cursorY, altarTile.buttonScaleRender * slider.getVisibility(partial), poseStack, bufferSource, -0.1f, light, overlay, pageOn, slider.getColor1(paintSystem), slider.getColor2(paintSystem), drawingType, ItemDisplayContext.NONE, slider.isSpecialHueSlider(), partial);
+
+                    w = slider.width / 326 * 2.55f / 0.062f;
+                    h = slider.height / 326 * 2.55f / 0.062f;
+                    x = slider.getX(pageOn) + 0.025f;
+                    y = slider.getY(pageOn) - 0.5f - h / 2;
+                    if (slider.isVisible(paintSystem) && (slider.isDragging() || canInteract(cursorX, cursorY, x, y, w, h, altarTile, drawingType))) {
+                        slider.setHovering();
+                        List<Component> tooltipList = new ArrayList<>();
+                        tooltipList.add(slider.getTooltip(paintSystem));
+                        this.tooltipText = tooltipList;
+                        this.drawTooltipText = true;
+                        this.tooltipStack = ItemStack.EMPTY;
+                    }
+                }
+            }
+
+
+            ArrayList<BookImageEffect> effects = new ArrayList<>(List.of(
+                    new BookImageEffect("scale", 50, 1.25f),
+                    new BookImageEffect("tilt", 35, 10f)));
+
+            // Buttons
+            for (PaintSystem.Button button : paintSystem.buttons) {
+                if (!button.shouldRender(paintSystem))
+                    continue;
+
+                if (button.selected.apply(paintSystem)){
+                    BookImage selectedTool = new BookImage(button.getX(paintSystem, pageOn, partial), button.getY(paintSystem, pageOn, partial), 0f, 0, 0, button.width, button.height, button.width, button.height, Math.max(0, button.getScale(altarTile.buttonScaleRender) * button.getVisibility(partial)), "hexerei:textures/book/paint_tools/tool_selected.png", new ArrayList<>());
+                    drawImage(selectedTool, altarTile, cursorX, cursorY, poseStack, bufferSource, 0, light, overlay, pageOn, drawingType);
+                }
+            }
+            for (PaintSystem.Button button : paintSystem.buttons) {
+                if (!button.shouldRender(paintSystem))
+                    continue;
+                boolean disabled = button.getDisabled(paintSystem);
+                BookImage image = new BookImage(button.getX(paintSystem, pageOn, partial), button.getY(paintSystem, pageOn, partial), 0, 0, 0, button.width, button.height, button.width, button.height, Math.max(0, button.getScale(altarTile.buttonScaleRender) * button.getVisibility(partial)), disabled ? button.getDisabledTexture(paintSystem) : button.getTexture(paintSystem), new ArrayList<>());
+                BookImage imageHover = new BookImage(button.getX(paintSystem, pageOn, partial), button.getY(paintSystem, pageOn, partial), 0, 0, 0, button.width, button.height, button.width, button.height, Math.max(0, button.getScale(altarTile.buttonScaleRender) * button.getVisibility(partial)), button.getHoverTexture(paintSystem), effects);
+
+                boolean drawHover = false;
+                w = image.width / 330 * image.scale / 0.062f;
+                h = image.height / 330 * image.scale / 0.062f;
+                x = image.x - w / 2 + 0.455f;
+                y = image.y - h / 2 + 0.49f;
+
+                if (button.clickedScale != 1)
+                    drawHover = true;
+
+                if (button.isVisible(paintSystem) && canInteract(cursorX, cursorY, x, y, w, h, altarTile, drawingType)) {
+                    drawHover = true;
+                    if (!button.getTooltipList().isEmpty()) {
+                        this.tooltipText = button.getTooltipList();
+                        this.drawTooltipText = true;
+                        this.tooltipStack = ItemStack.EMPTY;
+                    }
+                }
+
+                if (drawHover && !disabled) {
+                    drawImage(imageHover, altarTile, cursorX, cursorY, poseStack, bufferSource, 0.1f, light, overlay, pageOn, -1, drawingType, ItemDisplayContext.NONE, true);
+                } else {
+                    drawImage(image, altarTile, cursorX, cursorY, poseStack, bufferSource, 0.1f, light, overlay, pageOn, -1, drawingType, ItemDisplayContext.NONE, true);
+                }
+            }
+
+        } else if (pageOn == PageOn.RIGHT_PAGE) {
+            float w = paintElement.width / 326 * 2.55f * paintElement.scale / 0.062f;
+            float h = paintElement.height / 326 * 2.55f * paintElement.scale / 0.062f;
+            float x = paintElement.x + 0.025f;// + 0.455f;
+            float y = paintElement.y - 0.5f;// + 0.49f;
+
+            if (paintSystem.toolsVisible) {
+                if (canInteract(cursorX + (pageOn.isOnLeftSide() ? 0 : 0.22f), cursorY, x - paintElement.width * paintElement.scale * 0.24f, y - paintElement.height * paintElement.scale * 0.24f, w + paintElement.width * paintElement.scale * 0.24f * 2, h + paintElement.height * paintElement.scale * 0.24f * 2, altarTile, drawingType)) {
+
+                    float xPixel = ((cursorX - x) / w * paintElement.width) + (pageOn.isOnLeftSide() ? 0 : 1.8f);
+                    float yPixel = ((cursorY - y) / h * paintElement.height);
+                    paintSystem.hover(xPixel, yPixel);
+                }
+            }
+
+            drawPaintColors(paintSystem, altarTile, cursorX, cursorY, altarTile.buttonScaleRender * paintSystem.getColorsVisibility(partial), poseStack, bufferSource, 0, light, overlay, pageOn, drawingType, ItemDisplayContext.NONE, partial);
+
+            for (PaintSystem.ValueSlider slider : paintSystem.getValueSliders().getSliders()) {
+                if (slider.shouldRender(paintSystem)) {
+                    if (slider.isDragging() && slider.isVisible(paintSystem))
+                        slider.updateValue(cursorX, cursorY, pageOn);
+
+                    drawPaintColorSlider((slider.isHorizontal() ? 0 : (slider.width / 326 * 5f * 4.1f)), slider, altarTile, cursorX, cursorY, altarTile.buttonScaleRender * slider.getVisibility(partial), poseStack, bufferSource, 0, light, overlay, pageOn, slider.getSliderColor(paintSystem), drawingType, ItemDisplayContext.NONE, partial);
+                    drawPaintColorSliderBar(1f, slider, altarTile, cursorX, cursorY, altarTile.buttonScaleRender * slider.getVisibility(partial), poseStack, bufferSource, -0.1f, light, overlay, pageOn, slider.getColor1(paintSystem), slider.getColor2(paintSystem), drawingType, ItemDisplayContext.NONE, slider.isSpecialHueSlider(), partial);
+
+                    w = slider.width / 326 * 2.55f / 0.062f;
+                    h = slider.height / 326 * 2.55f / 0.062f;
+                    x = slider.getX(pageOn) + 0.025f - (pageOn.isOnLeftSide() ? 0 : 0.09f);
+                    y = slider.getY(pageOn) - 0.5f - h / 2;
+                    if (slider.isVisible(paintSystem) && (slider.isDragging() || canInteract(cursorX, cursorY, x, y, w, h, altarTile, drawingType))) {
+                        slider.setHovering();
+                        List<Component> tooltipList = new ArrayList<>();
+                        tooltipList.add(slider.getTooltip(paintSystem));
+                        this.tooltipText = tooltipList;
+                        this.drawTooltipText = true;
+                        this.tooltipStack = ItemStack.EMPTY;
+                    }
+                }
+            }
+
+
+            ArrayList<BookImageEffect> effects = new ArrayList<>(List.of(
+                    new BookImageEffect("scale", 50, 1.25f),
+                    new BookImageEffect("tilt", 35, 10f)));
+
+            // Buttons
+            for (PaintSystem.Button button : paintSystem.buttons) {
+                if (!button.shouldRender(paintSystem))
+                    continue;
+
+                if (button.selected.apply(paintSystem)){
+                    BookImage selectedTool = new BookImage(button.getX(paintSystem, pageOn, partial), button.getY(paintSystem, pageOn, partial), 0f, 0, 0, button.width, button.height, button.width, button.height, Math.max(0, button.getScale(altarTile.buttonScaleRender) * button.getVisibility(partial)), "hexerei:textures/book/paint_tools/tool_selected.png", new ArrayList<>());
+                    drawImage(selectedTool, altarTile, cursorX, cursorY, poseStack, bufferSource, 0, light, overlay, pageOn, drawingType);
+                }
+            }
+            for (PaintSystem.Button button : paintSystem.buttons) {
+                if (!button.shouldRender(paintSystem))
+                    continue;
+                boolean disabled = button.getDisabled(paintSystem);
+                BookImage image = new BookImage(button.getX(paintSystem, pageOn, partial), button.getY(paintSystem, pageOn, partial), 0, 0, 0, button.width, button.height, button.width, button.height, Math.max(0, button.getScale(altarTile.buttonScaleRender) * button.getVisibility(partial)), disabled ? button.getDisabledTexture(paintSystem) : button.getTexture(paintSystem), new ArrayList<>());
+                BookImage imageHover = new BookImage(button.getX(paintSystem, pageOn, partial), button.getY(paintSystem, pageOn, partial), 0, 0, 0, button.width, button.height, button.width, button.height, Math.max(0, button.getScale(altarTile.buttonScaleRender) * button.getVisibility(partial)), button.getHoverTexture(paintSystem), effects);
+
+                boolean drawHover = false;
+                w = image.width / 330 * image.scale / 0.062f;
+                h = image.height / 330 * image.scale / 0.062f;
+                x = image.x - w / 2 + 0.455f;
+                y = image.y - h / 2 + 0.49f;
+
+                if (button.clickedScale != 1)
+                    drawHover = true;
+
+                if (button.isVisible(paintSystem) && canInteract(cursorX, cursorY, x, y, w, h, altarTile, drawingType)) {
+                    drawHover = true;
+                    if (!button.getTooltipList().isEmpty()) {
+                        this.tooltipText = button.getTooltipList();
+                        this.drawTooltipText = true;
+                        this.tooltipStack = ItemStack.EMPTY;
+                    }
+                }
+
+                if (drawHover && !disabled) {
+                    drawImage(imageHover, altarTile, cursorX, cursorY, poseStack, bufferSource, 0.1f, light, overlay, pageOn, -1, drawingType, ItemDisplayContext.NONE, true);
+                } else {
+                    drawImage(image, altarTile, cursorX, cursorY, poseStack, bufferSource, 0.1f, light, overlay, pageOn, -1, drawingType, ItemDisplayContext.NONE, true);
+                }
+            }
+
+        }
+
+    }
+
     @OnlyIn(Dist.CLIENT)
     public void drawBasePage(BookImage bookImage, BookOfShadowsAltarTile altarTile, float leftCursorX, float leftCursorY, float rightCursorX, float rightCursorY, PoseStack poseStack, MultiBufferSource bufferSource, float zLevel, int light, int overlay, PageOn pageOn, int color, DrawingType drawingType, ItemDisplayContext transformType) {
 
@@ -4613,7 +5233,7 @@ public class PageDrawing {
         RenderSystem.setShader(GameRenderer::getRendertypeEntityCutoutNoCullShader);
 
 
-        AtomicReference<String> loc = new AtomicReference<>(bookImage.imageLoc);
+        AtomicReference<String> loc = new AtomicReference<>(bookImage.texture);
         AtomicReference<BookImage> overlay_image = new AtomicReference<>(bookImage);
         AtomicReference<Boolean> overlay_draw = new AtomicReference<>(false);
 
@@ -4648,17 +5268,19 @@ public class PageDrawing {
             buffer = bufferSource.getBuffer(RenderType.entityTranslucent(ResourceLocation.parse(loc.get())));
         else
             buffer = bufferSource.getBuffer(RenderType.entityCutout(ResourceLocation.parse(loc.get())));
-
+        buffer = bufferSource.getBuffer(ModRenderTypes.bookTranslucent(ResourceLocation.parse(loc.get())));
 
         buffer.addVertex(matrix, 0, -0.055f / 18 * height, -0.055f / 18 * width).setColor(r, g, b, a).setUv(u1, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
         buffer.addVertex(matrix, 0, 0.055f / 18 * height, -0.055f / 18 * width).setColor(r, g, b, a).setUv(u1, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
         buffer.addVertex(matrix, 0, 0.055f / 18 * height, 0.055f / 18 * width).setColor(r, g, b, a).setUv(u2, v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
         buffer.addVertex(matrix, 0, -0.055f / 18 * height, 0.055f / 18 * width).setColor(r, g, b, a).setUv(u2, v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
 
+        if (bufferSource instanceof MultiBufferSource.BufferSource multiBufferSource)
+            multiBufferSource.endBatch();
 
         if (overlay_draw.get()) {
             BookImage ov_img = overlay_image.get();
-            VertexConsumer buffer2 = bufferSource.getBuffer(RenderType.entityCutout(ResourceLocation.parse(ov_img.imageLoc)));
+            VertexConsumer buffer2 = bufferSource.getBuffer(ModRenderTypes.bookTranslucent(ResourceLocation.parse(ov_img.texture)));
 
             float overlay_u1 = (ov_img.u + 0.0F) / ov_img.imageWidth;
             float overlay_u2 = (ov_img.u + ov_img.width) / ov_img.imageWidth;
@@ -4682,6 +5304,8 @@ public class PageDrawing {
             buffer2.addVertex(matrix, ov_img.z / 2000f, 0.055f / 18 * ov_img.height, 0.055f / 18 * ov_img.width).setColor(overlay_r, overlay_g, overlay_b, overlay_a).setUv(overlay_u2, overlay_v2).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
             buffer2.addVertex(matrix, ov_img.z / 2000f, -0.055f / 18 * ov_img.height, 0.055f / 18 * ov_img.width).setColor(overlay_r, overlay_g, overlay_b, overlay_a).setUv(overlay_u2, overlay_v1).setOverlay(overlay).setLight(light).setNormal(normal, 1F, 0F, 0F);
             poseStack.popPose();
+            if (bufferSource instanceof MultiBufferSource.BufferSource multiBufferSource)
+                multiBufferSource.endBatch();
         }
 
         poseStack.popPose();
@@ -4750,25 +5374,28 @@ public class PageDrawing {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public BookParagraphElements resetLinesNewBox(BookParagraph bookParagraph, int boxOn) {
+    public BookParagraphElements resetLinesNewBox(List<BookParagraphElements> elements, int boxOn) {
         this.lineWidth = 0;
         this.lineHeight = 0;
-        if (boxOn + 1 < bookParagraph.paragraphElements.toArray().length)
-            return (BookParagraphElements) (bookParagraph.paragraphElements.toArray()[boxOn + 1]);
+        if (boxOn + 1 < elements.size())
+            return elements.get(boxOn + 1);
         return null;
     }
 
     @OnlyIn(Dist.CLIENT)
     public void drawString(BookParagraph bookParagraph, BookOfShadowsAltarTile altarTile, PoseStack poseStack, MultiBufferSource bufferSource, float mouseX, float mouseY, float zLevel, int light, int overlay, PageOn pageOn, DrawingType drawingType) {
 
+        if (bookParagraph.paragraphElements.isEmpty())
+            return;
+
         MutableComponent pageText = bookParagraph.translatablePassage;
         int wordNumber = -1;
         int boxOn = 0;
-        BookParagraphElements activeElement = (bookParagraph.paragraphElements.get(0));
+        BookParagraphElements activeElement = (bookParagraph.paragraphElements.getFirst());
 
         Font font = ClientProxy.font();
         boolean findNewWord = true;
-        String[] words = pageText.getString().trim().split("\\s+");
+        String[] words = pageText.getString().trim().split("(\\s+)");
         String pageTextString = pageText.getString();
 
 
@@ -4776,12 +5403,11 @@ public class PageDrawing {
         for (String word : words) {
             itor++;
             if (word.length() > 2) {
-                StringBuilder stringBuilder = new StringBuilder();
                 if (word.charAt(0) == '%' && word.charAt(1) == 'k') {
-                    for (int i = 2; i < word.length(); i++) {
-                        stringBuilder.append(word.charAt(i));
-                    }
-                    String temp = stringBuilder.toString();
+                    String temp = word.substring(2);
+
+                    String[] temp2 = temp.split("%");
+                    temp = temp2[0];
 
                     String alt = "key." + temp;
 
@@ -4791,15 +5417,25 @@ public class PageDrawing {
                             String keyName = k.getTranslatedKeyMessage().getString();
                             if (keyName.length() <= 1)
                                 keyName = keyName.toUpperCase(Locale.ROOT);
-                            words[itor] = keyName;
+                            words[itor] = keyName + ((temp2.length > 1) ? temp2[1] : "");
                             pageTextString = pageTextString.replaceAll(word, words[itor]);
                         }
                     }
 
                 }
             }
-
         }
+        List<String> combinedList = new ArrayList<>();
+        for (int i = 0; i < words.length; i++) {
+            if (words[i].equals(",") && i != 0) {
+                combinedList.set(combinedList.size() - 1, combinedList.getLast() + words[i]);
+            } else {
+                combinedList.add(words[i]);
+            }
+        }
+        words = combinedList.toArray(new String[0]);
+
+
         char[] text = pageTextString.toCharArray();
 
         int[] wordLength = new int[words.length];
@@ -4821,7 +5457,7 @@ public class PageDrawing {
                 strings.add(stringBuilder.toString());
                 stringBuilder = new StringBuilder();
                 if (this.lineHeight >= activeElement.height) {
-                    activeElement = resetLinesNewBox(bookParagraph, boxOn++);
+                    activeElement = resetLinesNewBox(bookParagraph.paragraphElements, boxOn++);
                     if (activeElement == null) {
                         breakBool = true;
                         break;
@@ -4839,7 +5475,7 @@ public class PageDrawing {
                     strings.add(stringBuilder.toString());
                     stringBuilder = new StringBuilder();
                     if (this.lineHeight >= activeElement.height) {
-                        activeElement = resetLinesNewBox(bookParagraph, boxOn++);
+                        activeElement = resetLinesNewBox(bookParagraph.paragraphElements, boxOn++);
                         if (activeElement == null) {
                             breakBool = true;
                             break;
@@ -4858,7 +5494,7 @@ public class PageDrawing {
                     strings.add(stringBuilder.toString());
                     stringBuilder = new StringBuilder();
                     if (this.lineHeight >= activeElement.height) {
-                        activeElement = resetLinesNewBox(bookParagraph, boxOn++);
+                        activeElement = resetLinesNewBox(bookParagraph.paragraphElements, boxOn++);
                         if (activeElement == null) {
                             breakBool = true;
                             break;
@@ -4875,7 +5511,7 @@ public class PageDrawing {
                         strings.add(stringBuilder.toString());
                         stringBuilder = new StringBuilder();
                         if (this.lineHeight >= activeElement.height) {
-                            activeElement = resetLinesNewBox(bookParagraph, boxOn++);
+                            activeElement = resetLinesNewBox(bookParagraph.paragraphElements, boxOn++);
                             if (activeElement == null) {
                                 breakBool = true;
                                 break;
@@ -4913,9 +5549,6 @@ public class PageDrawing {
         poseStack.mulPose(Axis.ZP.rotationDegrees(-90));
 
         MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-//        MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-//            font.drawInBatch(s1, (activeElement.x * 9f) - 24, (activeElement.y * 9f) - 4, 16777216, false, poseStack.last().pose(), bufferSource, false, 0, light);
-
 
         int boxId = 0;
         int linenumber = 0;
@@ -4937,10 +5570,10 @@ public class PageDrawing {
                         if (bookParagraph.align.equals("middle"))
                             offsetX = (font.width(s1)) / 2;
 
-                        font.drawInBatch(s1, (box.x * 8f) - 24 - offsetX, ((box.y) * (font.lineHeight) + Math.round(linenumber * font.lineHeight)) - 4 + offsetY, HexereiUtil.getColorValue(0.12f, 0.12f, 0.12f), false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
+                        font.drawInBatch(s1, (box.x * 8f) - 24 - offsetX, ((box.y * font.lineHeight) + (linenumber * font.lineHeight)) - 4 + offsetY, HexereiUtil.getColorValue(0.12f, 0.12f, 0.12f), false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
                         poseStack.pushPose();
                         poseStack.translate(0.25f, 0.25f, 1 / 16f);
-                        font.drawInBatch(s1, (box.x * 8f) - 24 - offsetX, ((box.y) * (font.lineHeight) + Math.round(linenumber * font.lineHeight)) - 4 + offsetY, 16777216, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
+                        font.drawInBatch(s1, (box.x * 8f) - 24 - offsetX, ((box.y * font.lineHeight) + (linenumber * font.lineHeight)) - 4 + offsetY, 16777216, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
                         poseStack.popPose();
                     } else {
                         remainder.add(s1);
@@ -4956,6 +5589,93 @@ public class PageDrawing {
                 linenumber = 0;
                 strings = remainder;
             }
+        }
+
+        buffer.endBatch();
+        poseStack.popPose();
+
+        resetLines();
+
+    }
+
+    private void renderHighlight(Rect2i[] highlightAreas, PoseStack poseStack, MultiBufferSource bufferSource, int overlay, int light, float xOffset, float yOffset) {
+        for (Rect2i rect2i : highlightAreas) {
+            float[] col = HexereiUtil.rgbaIntToFloatArray(-16776961);
+            fill(RenderType.guiTextHighlight(), poseStack, bufferSource, rect2i.getX() + xOffset, rect2i.getY() + yOffset, 0, rect2i.getWidth(), rect2i.getHeight(), (int) (col[0] * 255), (int) (col[1] * 255), (int) (col[2] * 255), (int) (col[3] * 255), overlay, light);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void drawString(BookWritableTextBox bookWritableTextBox, BookOfShadowsAltarTile altarTile, PoseStack poseStack, MultiBufferSource bufferSource, float xCursor, float yCursor, float zLevel, int light, int overlay, PageOn pageOn, DrawingType drawingType) {
+
+        if (bookWritableTextBox.client == null) {
+            bookWritableTextBox.client = new BookWritableTextBox.Client(bookWritableTextBox);
+            return;
+        }
+        BookWritableTextBox.Client.DisplayCache displaycache = bookWritableTextBox.client.getDisplayCache(altarTile.currentBook);
+
+        Font font = ClientProxy.font();
+
+        poseStack.pushPose();
+
+        if (pageOn == PageOn.LEFT_PAGE)
+            translateToLeftPage(altarTile, poseStack, drawingType, ItemDisplayContext.NONE);
+        else if (pageOn == PageOn.LEFT_PAGE_UNDER)
+            translateToLeftPageUnder(altarTile, poseStack, drawingType, ItemDisplayContext.NONE);
+        else if (pageOn == PageOn.LEFT_PAGE_PREV)
+            translateToLeftPagePrevious(altarTile, poseStack, drawingType, ItemDisplayContext.NONE);
+        if (pageOn == PageOn.RIGHT_PAGE)
+            translateToRightPage(altarTile, poseStack, drawingType, ItemDisplayContext.NONE);
+        else if (pageOn == PageOn.RIGHT_PAGE_UNDER)
+            translateToRightPageUnder(altarTile, poseStack, drawingType, ItemDisplayContext.NONE);
+        else if (pageOn == PageOn.RIGHT_PAGE_PREV)
+            translateToRightPagePrevious(altarTile, poseStack, drawingType, ItemDisplayContext.NONE);
+
+        poseStack.mulPose(Axis.YP.rotationDegrees(90));
+        poseStack.translate(-8.35f / 16f, 4.5f / 16f, -0.01f / 16f);
+        poseStack.scale(0.00272f, 0.00272f, 0.00272f);
+        poseStack.mulPose(Axis.ZP.rotationDegrees(-90));
+
+        MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
+
+        int linenumber = 0;
+        BookParagraphElements box = bookWritableTextBox.paragraphElement;
+
+        float offsetY = 0;
+
+        for (BookWritableTextBox.Client.LineInfo line : displaycache.lines) {
+
+            if ((linenumber + 1) * font.lineHeight <= Math.round(box.height * font.lineHeight) + 1) {
+                float offsetX = 0;
+
+                font.drawInBatch(line.asComponent, (box.x * 8f) - 24 - offsetX, ((box.y) * (font.lineHeight) + linenumber * font.lineHeight) - 4 + offsetY, HexereiUtil.getColorValue(0.12f, 0.12f, 0.12f), false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
+                poseStack.pushPose();
+                poseStack.translate(0.25f, 0.25f, 1 / 16f);
+                font.drawInBatch(line.asComponent, (box.x * 8f) - 24 - offsetX, ((box.y) * (font.lineHeight) + linenumber * font.lineHeight) - 4 + offsetY, 16777216, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
+                poseStack.popPose();
+            }
+            ++linenumber;
+        }
+
+        if (PageDrawing.focusedWritableTextBox != null && PageDrawing.focusedWritableTextBox.getRight() == bookWritableTextBox && altarTile == PageDrawing.focusedWritableTextBox.getLeft()){
+            if ((int) ClientEvents.getClientTicks() / 6 % 3 == 0 || (int) ClientEvents.getClientTicks() / 6 % 3 == 1) {
+                fill(RenderType.entityCutout(ResourceLocation.parse("hexerei:textures/book/pencil_cursor.png")), poseStack, bufferSource, (box.x * 8f) - 24 + displaycache.cursor.x, (box.y * font.lineHeight) - 5 + displaycache.cursor.y, -1, 9, 9, 255, 255, 255, 255, overlay, light);
+            }
+            renderHighlight(displaycache.selection, poseStack, bufferSource, overlay, light, (box.x * 8f) - 92, (box.y * font.lineHeight) - 36);
+        } else {
+
+            if (canInteract(xCursor, yCursor, bookWritableTextBox.paragraphElement.x + 0.45f, bookWritableTextBox.paragraphElement.y, bookWritableTextBox.paragraphElement.width / 6.15f, bookWritableTextBox.paragraphElement.height / 2.57f, altarTile, drawingType)) {
+                BookWritableTextBox.Client.Pos2i pos2i = new BookWritableTextBox.Client.Pos2i((int) ((xCursor - bookWritableTextBox.paragraphElement.x - 0.45f) / 5 * 115f), (int) ((yCursor - bookWritableTextBox.paragraphElement.y) / 7.1f * 162f));
+                int i = displaycache.getIndexAtPosition(
+                        ClientProxy.font(), pos2i
+                );
+                pos2i = bookWritableTextBox.client.getCursorPosOf(i, altarTile.currentBook);
+
+                fill(RenderType.entityCutout(ResourceLocation.parse("hexerei:textures/book/pencil_cursor.png")), poseStack, bufferSource, (box.x * 8f) - 24 + pos2i.x, (box.y * font.lineHeight) - 5 + pos2i.y, -1, 9, 9, 255, 255, 255, 255, overlay, light);
+
+            }
+
+
         }
 
 //            font.drawInBatch(pageText, (xIn * 9f) - 24, (yIn * 9f) - 4, 16777216, false, poseStack.last().pose(), bufferSource, false, 0, light);
@@ -4976,8 +5696,11 @@ public class PageDrawing {
         RIGHT_PAGE_UNDER,
         RIGHT_PAGE_PREV,
         RIGHT_PAGE_PREV_PREV,
-        MIDDLE_BUTTON
+        MIDDLE_BUTTON;
 
+        public boolean isOnLeftSide() {
+            return this == LEFT_PAGE || this == LEFT_PAGE_PREV || this == LEFT_PAGE_PREV_PREV || this == RIGHT_PAGE_UNDER;
+        }
     }
 
 }

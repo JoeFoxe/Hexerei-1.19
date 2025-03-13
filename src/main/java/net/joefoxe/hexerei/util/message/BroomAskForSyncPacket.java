@@ -2,7 +2,9 @@ package net.joefoxe.hexerei.util.message;
 
 import net.joefoxe.hexerei.client.renderer.entity.custom.BroomEntity;
 import net.joefoxe.hexerei.util.AbstractPacket;
+import net.joefoxe.hexerei.util.HexereiPacketHandler;
 import net.joefoxe.hexerei.util.HexereiUtil;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -37,7 +39,7 @@ public class BroomAskForSyncPacket extends AbstractPacket {
     @Override
     public void onServerReceived(MinecraftServer server, ServerPlayer player) {
         if(server.overworld().getEntity(sourceId) instanceof BroomEntity broom) {
-            broom.sync();
+            HexereiPacketHandler.sendToPlayerClient(new BroomSyncPacket(broom.getId(), broom.saveWithoutId(new CompoundTag())), player);
         }
     }
 }

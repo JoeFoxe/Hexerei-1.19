@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.joefoxe.hexerei.Hexerei;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -26,7 +27,7 @@ public class ModRenderTypes extends RenderType {
 
     private static final LineStateShard THICK_LINE = new LineStateShard(OptionalDouble.of(10.0));
 
-    public static final RenderType BLOCK_HILIGHT_FACE = create("block_hilight",
+    public static final RenderType BLOCK_HIGHLIGHT_FACE = create("block_highlight",
             DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256,false, false,
             RenderType.CompositeState.builder()
                     .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
@@ -40,19 +41,77 @@ public class ModRenderTypes extends RenderType {
                     .createCompositeState(false)
     );
 
+    public static RenderType hueSlider(ResourceLocation location) {
+        return HUE_SLIDER.apply(location, true);
+    }
+
+    public static final BiFunction<ResourceLocation, Boolean, RenderType> HUE_SLIDER = Util.memoize(
+            (location, bool) -> {
+                RenderType.CompositeState rendertype$compositestate = RenderType.CompositeState.builder()
+                        .setShaderState(new ShaderStateShard(() -> ClientEvents.hueSliderShader))
+                        .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
+                        .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                        .setCullState(NO_CULL)
+                        .setLightmapState(LIGHTMAP)
+                        .setOverlayState(OVERLAY)
+                        .createCompositeState(bool);
+                return create("hue_slider", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 1536, true, true, rendertype$compositestate);
+            }
+    );
+
+    public static RenderType slider(ResourceLocation location) {
+        return SLIDER.apply(location, true);
+    }
+
+    public static final BiFunction<ResourceLocation, Boolean, RenderType> SLIDER = Util.memoize(
+            (location, bool) -> {
+                RenderType.CompositeState rendertype$compositestate = RenderType.CompositeState.builder()
+                        .setShaderState(new ShaderStateShard(() -> ClientEvents.sliderShader))
+                        .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
+                        .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                        .setCullState(NO_CULL)
+                        .setLightmapState(LIGHTMAP)
+                        .setOverlayState(OVERLAY)
+                        .createCompositeState(bool);
+                return create("slider", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 1536, true, true, rendertype$compositestate);
+            }
+    );
+
+    public static RenderType bookTranslucent(ResourceLocation location) {
+        return BOOK_TRANSLUCENT.apply(location, true);
+    }
+
+    public static final BiFunction<ResourceLocation, Boolean, RenderType> BOOK_TRANSLUCENT = Util.memoize(
+            (location, bool) -> {
+                RenderType.CompositeState rendertype$compositestate = RenderType.CompositeState.builder()
+                        .setShaderState(new ShaderStateShard(() -> ClientEvents.bookTranslucentShader))
+                        .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
+                        .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                        .setLightmapState(LIGHTMAP)
+                        .setOverlayState(OVERLAY)
+                        .createCompositeState(bool);
+                return create("book_translucent", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 1536, true, true, rendertype$compositestate);
+            }
+    );
+
     public static final RenderType MOON_PHASE = RenderType.create(
             "moon_phase",
             DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
             VertexFormat.Mode.QUADS,
-            256,
-            true,
+            786432,
+            false,
             true,
             RenderType.CompositeState.builder()
                     .setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
                     .setTextureState(new TextureStateShard(HexereiUtil.getResource("textures/gui/moon_phases.png"), false, false))
-                    .setCullState(RenderStateShard.NO_CULL)
                     .setLightmapState(RenderStateShard.LIGHTMAP)
-                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setTransparencyState(new TransparencyStateShard("translucent_transparency", () -> {
+                        RenderSystem.enableBlend();
+                        RenderSystem.defaultBlendFunc();
+                    }, () -> {
+                        RenderSystem.disableBlend();
+                        RenderSystem.defaultBlendFunc();
+                    }))
                     .createCompositeState(false)
     );
 

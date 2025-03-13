@@ -1,8 +1,5 @@
 package net.joefoxe.hexerei.data.loot;
 
-
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.joefoxe.hexerei.item.ModItems;
@@ -46,29 +43,4 @@ public class CopyCourierPackageDataFunction extends LootItemConditionalFunction 
     public LootItemFunctionType<CopyCourierPackageDataFunction> getType() {
         return ModItems.COPY_PACKAGE_DATA.get();
     }
-
-//    public static class Serializer extends LootItemConditionalFunction.Serializer<CopyCourierPackageDataFunction> {
-//
-//
-//        @Override
-//        public CopyCourierPackageDataFunction deserialize(JsonObject pObject, JsonDeserializationContext pDeserializationContext, LootItemCondition[] pConditions) {
-//            return new CopyCourierPackageDataFunction(pConditions);
-//        }
-//    }
-//
-//    public static CopyCourierPackageDataFunction.Builder builder() {
-//        return new CopyCourierPackageDataFunction.Builder();
-//    }
-//
-//    public static class Builder extends LootItemConditionalFunction.Builder<CopyCourierPackageDataFunction.Builder> {
-//        @Override
-//        protected CopyCourierPackageDataFunction.Builder getThis() {
-//            return this;
-//        }
-//
-//        @Override
-//        public LootItemFunction build() {
-//            return new CopyCourierPackageDataFunction(getConditions());
-//        }
-//    }
 }

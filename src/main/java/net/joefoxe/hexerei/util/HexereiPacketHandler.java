@@ -98,6 +98,11 @@ public class HexereiPacketHandler {
         reg.playToClient(ToggleDynamicLightPacket.TYPE, ToggleDynamicLightPacket.CODEC,  HexereiPacketHandler::handle);
         reg.playToClient(WoodcutterRecipesPacket.TYPE, WoodcutterRecipesPacket.CODEC,  HexereiPacketHandler::handle);
         reg.playToClient(BookSyncDataPacket.TYPE, BookSyncDataPacket.CODEC,  HexereiPacketHandler::handle);
+        reg.playToServer(UpdateBookDataToServer.TYPE, UpdateBookDataToServer.CODEC,  HexereiPacketHandler::handle);
+        reg.playToServer(PaintDataToServer.TYPE, PaintDataToServer.CODEC,  HexereiPacketHandler::handle);
+        reg.playToClient(ClientboundPaintData.TYPE, ClientboundPaintData.CODEC,  HexereiPacketHandler::handle);
+        reg.playToServer(AskForPaintDataToServer.TYPE, AskForPaintDataToServer.CODEC,  HexereiPacketHandler::handle);
+        reg.playToServer(SetPaintingToServer.TYPE, SetPaintingToServer.CODEC,  HexereiPacketHandler::handle);
     }
 
     private static <T extends AbstractPacket> void handle(T message, IPayloadContext ctx) {
@@ -141,6 +146,13 @@ public class HexereiPacketHandler {
 
     public static void sendToAllPlayers(CustomPacketPayload msg, MinecraftServer server) {
         server.getPlayerList().getPlayers().forEach((serverPlayer) -> PacketDistributor.sendToPlayer(serverPlayer, msg));
+    }
+
+    public static void sendToAllPlayersBut(CustomPacketPayload msg, MinecraftServer server, ServerPlayer playerNotToSendTo) {
+        server.getPlayerList().getPlayers().forEach((serverPlayer) -> {
+            if (serverPlayer != playerNotToSendTo)
+                PacketDistributor.sendToPlayer(serverPlayer, msg);
+        });
     }
 
     public static void sendToServer(CustomPacketPayload msg) {

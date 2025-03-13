@@ -9,6 +9,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 public class BroomSyncRotation extends AbstractPacket {
 
@@ -21,27 +22,41 @@ public class BroomSyncRotation extends AbstractPacket {
     }
 
     int sourceId;
-    float rotation;
+    float deltaRotation;
+    Vec3 deltaMovement;
 
-    public BroomSyncRotation(Entity entity, float rot) {
-        this.sourceId = entity.getId();
-        this.rotation = rot;
+    public BroomSyncRotation(BroomEntity broom) {
+        this.sourceId = broom.getId();
+        this.deltaRotation = broom.deltaRotation;
+        this.deltaMovement = broom.getDeltaMovement();
     }
+
+    public BroomSyncRotation(int id, float deltaRotation, Vec3 deltaMovement) {
+        this.sourceId = id;
+        this.deltaRotation = deltaRotation;
+        this.deltaMovement = deltaMovement;
+    }
+
     public BroomSyncRotation(RegistryFriendlyByteBuf buf) {
         this.sourceId = buf.readInt();
-        this.rotation = buf.readFloat();
+        this.deltaRotation = buf.readFloat();
+        this.deltaMovement = buf.readVec3();
     }
 
     public void encode(RegistryFriendlyByteBuf buffer) {
         buffer.writeInt(sourceId);
-        buffer.writeFloat(rotation);
+        buffer.writeFloat(deltaRotation);
+        buffer.writeVec3(deltaMovement);
     }
 
     @Override
     public void onClientReceived(Minecraft minecraft, Player player) {
         if(minecraft.level.getEntity(sourceId) instanceof BroomEntity broom) {
-            if(!broom.isControlledByLocalInstance())
-                broom.setRotation(rotation);
+
+            if(!broom.isControlledByLocalInstance()) {
+                broom.deltaRotationLerp = deltaRotation;
+                broom.deltaMovementLerp = deltaMovement;
+            }
         }
     }
 }

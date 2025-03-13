@@ -5,9 +5,11 @@ import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.events.GlassesZoomKeyPressEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.util.SmoothDouble;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.ClientHooks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,6 +28,14 @@ public class MouseHandlerMixin {
     private double accumulatedDX;
     @Shadow
     private double accumulatedDY;
+    @Shadow
+    private double xpos;
+    @Shadow
+    private double ypos;
+    @Shadow
+    private int activeButton;
+    @Shadow
+    private double mousePressedTime;
 
     private final SmoothDouble smoothTurnX = new SmoothDouble();
     private final SmoothDouble smoothTurnY = new SmoothDouble();

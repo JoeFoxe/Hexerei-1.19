@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.BiomeColors;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
@@ -37,17 +38,20 @@ public class CauldronParticle extends TextureSheetParticle {
 
     // thanks to understanding simibubi's code from the Create mod for rendering particles I was able to render my own :D
     public static final Vec3[] CUBE = {
-            // top render
-            new Vec3(0.5, 0.1, -0.5),
-            new Vec3(0.5, 0.1, 0.5),
-            new Vec3(-0.5, 0.1, 0.5),
-            new Vec3(-0.5, 0.1, -0.5),
 
-            // bottom render
+
+
+            // top render
             new Vec3(-0.5, -0.1, -0.5),
             new Vec3(-0.5, -0.1, 0.5),
             new Vec3(0.5, -0.1, 0.5),
             new Vec3(0.5, -0.1, -0.5),
+
+            // bottom render
+            new Vec3(0.5, 0.1, -0.5),
+            new Vec3(0.5, 0.1, 0.5),
+            new Vec3(-0.5, 0.1, 0.5),
+            new Vec3(-0.5, 0.1, -0.5),
 
             // front render
             new Vec3(-0.5, -0.1, 0.5),
@@ -71,17 +75,55 @@ public class CauldronParticle extends TextureSheetParticle {
             new Vec3(0.5, -0.1, 0.5),
             new Vec3(0.5, 0.1, 0.5),
             new Vec3(0.5, 0.1, -0.5),
-            new Vec3(0.5, -0.1, -0.5)
+            new Vec3(0.5, -0.1, -0.5),
+
+
+
+            // top render
+            new Vec3(0.5, -0.1, -0.5),
+            new Vec3(0.5, -0.1, 0.5),
+            new Vec3(-0.5, -0.1, 0.5),
+            new Vec3(-0.5, -0.1, -0.5),
+
+            // bottom render
+            new Vec3(-0.5, 0.1, -0.5),
+            new Vec3(-0.5, 0.1, 0.5),
+            new Vec3(0.5, 0.1, 0.5),
+            new Vec3(0.5, 0.1, -0.5),
+
+            // front render
+            new Vec3(-0.5, 0.1, 0.5),
+            new Vec3(-0.5, -0.1, 0.5),
+            new Vec3(0.5, -0.1, 0.5),
+            new Vec3(0.5, 0.1, 0.5),
+
+            // back render
+            new Vec3(0.5, 0.1, -0.5),
+            new Vec3(0.5, -0.1, -0.5),
+            new Vec3(-0.5, -0.1, -0.5),
+            new Vec3(-0.5, 0.1, -0.5),
+
+            // left render
+            new Vec3(-0.5, 0.1, -0.5),
+            new Vec3(-0.5, -0.1, -0.5),
+            new Vec3(-0.5, -0.1, 0.5),
+            new Vec3(-0.5, 0.1, 0.5),
+
+            // right render
+            new Vec3(0.5, 0.1, 0.5),
+            new Vec3(0.5, -0.1, 0.5),
+            new Vec3(0.5, -0.1, -0.5),
+            new Vec3(0.5, 0.1, -0.5),
     };
 
     public static final Vec3[] CUBE_NORMALS = {
             // modified normals for the sides
-            new Vec3(0, 0.1, 0),
-            new Vec3(0, -0.5, 0),
+            new Vec3(0, -0.1, 0),
+            new Vec3(0, 0.25, 0),
             new Vec3(0, 0, 0.5),
-            new Vec3(0, 0, 0.5),
-            new Vec3(0, 0, 0.5),
-            new Vec3(0, 0, 0.5),
+            new Vec3(0, 0, -0.5),
+            new Vec3(-0.5, 0, 0),
+            new Vec3(0.5, 0, 0),
     };
 
     public final static ResourceLocation TEXTURE_BLANK =
@@ -89,38 +131,24 @@ public class CauldronParticle extends TextureSheetParticle {
     private static final ParticleRenderType renderType = new ParticleRenderType() {
         @Override
         public @Nullable BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
-            RenderSystem.setShaderTexture(0, TEXTURE_BLANK);
 
-            RenderSystem.depthMask(false);
+            RenderSystem.depthMask(true);
+            RenderSystem.setShaderTexture(0, TEXTURE_BLANK);
             RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+            RenderSystem.defaultBlendFunc();
+//            RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
 
             return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
         }
 
-//        @Override
-//        public void begin(BufferBuilder bufferBuilder, TextureManager textureManager) {
-//            RenderSystem.setShaderTexture(0, TEXTURE_BLANK);
-//
-//            RenderSystem.depthMask(false);
-//            RenderSystem.enableBlend();
-//            RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-//
-//            bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
-//        }
-//
-//        @Override
-//        public void end(Tesselator tesselator) {
-//            tesselator.end();
-//            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA,
-//                    GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-//        }
     };
 
     protected float scale;
     protected float rotationDirection;
     protected float rotation;
     private IClientFluidTypeExtensions clientFluid;
+    private boolean canPop;
+    int pixelCol = -1;
 
     public CauldronParticle(ClientLevel world, double x, double y, double z, double motionX, double motionY, double motionZ) {
         super(world, x, y, z);
@@ -129,8 +157,8 @@ public class CauldronParticle extends TextureSheetParticle {
         this.zd = motionZ;
         this.rotation = 0;
         Random random = new Random();
-        setScale(0.2F);
-        setRotationDirection(random.nextFloat() - 0.5f);
+        setScale(0.2F);  setRotationDirection(random.nextFloat() - 0.5f);
+        this.canPop = random.nextInt(3) == 0 && this.lifetime > 10;
     }
 
     public void setScale(float scale) {
@@ -148,62 +176,78 @@ public class CauldronParticle extends TextureSheetParticle {
         super.tick();
     }
 
+    public float ease(float x) {
+        return (float) (1 - Math.pow(1 - x, 5));
+    }
+
     @Override
-    public void render(VertexConsumer builder, Camera renderInfo, float p_225606_3_) {
+    public void render(VertexConsumer builder, Camera renderInfo, float partial) {
         Vec3 projectedView = renderInfo.getPosition();
-        float lerpX = (float) (Mth.lerp(p_225606_3_, this.xo, this.x) - projectedView.x());
-        float lerpY = (float) (Mth.lerp(p_225606_3_, this.yo, this.y) - projectedView.y());
-        float lerpZ = (float) (Mth.lerp(p_225606_3_, this.zo, this.z) - projectedView.z());
+        float lerpX = (float) (Mth.lerp(partial, this.xo, this.x) - projectedView.x());
+        float lerpY = (float) (Mth.lerp(partial, this.yo, this.y) - projectedView.y());
+        float lerpZ = (float) (Mth.lerp(partial, this.zo, this.z) - projectedView.z());
 
         int light = 15728880;
-        double ageMultiplier = 1 - Math.pow(Mth.clamp(age + p_225606_3_, 0, lifetime), 3) / Math.pow(lifetime, 3);
+        double ageMultiplier = 1 - Math.pow(Mth.clamp(age + partial, 0, lifetime), 3) / Math.pow(lifetime, 3);
 
         RenderSystem._setShaderTexture(0, TEXTURE);
 
-        for (int i = 0; i < 6; i++) {
+
+        for (int i = 0; i < 12; i++) {
             for (int j = 0; j < 4; j++) {
+                float alpha = this.alpha * 0.75f;
                 Vec3 vec = CUBE[i * 4 + j];
+                float popScale = Math.clamp(age + partial - (lifetime - 5), 0, 5) / 5f;
                 vec = vec
                         .yRot(this.rotation)
-                        .scale(scale * ageMultiplier)
+                        .scale(scale * ageMultiplier * ((canPop && !(i % 6 == 0 || i % 6 == 1)) ? (1 + ease(popScale)) : 1))
                         .add(lerpX, lerpY, lerpZ);
 
-                Vec3 normal = CUBE_NORMALS[i];
+                Vec3 normal = CUBE_NORMALS[i % 6];
 
-                if(i == 0) {
+                if (canPop){
+                    if (popScale > 0){
+                        vec = vec.add(normal.yRot(this.rotation).scale(ease(popScale) / 4));
+                        alpha = alpha * Math.clamp(ease(Mth.clamp(1f - popScale, 0, 1)), 0, 1);
+                    }
+                }
+
+                float[] cols = HexereiUtil.rgbaIntToFloatArray(pixelCol);
+
+                if(i % 6 == 1) {
                     builder.addVertex((float)vec.x, (float)vec.y, (float)vec.z)
                             .setUv(0, 0)
-                            .setColor(Mth.clamp(rCol * 1.25f, 0, 1.0f), Mth.clamp(gCol * 1.25f, 0, 1.0f), Mth.clamp(bCol * 1.25f, 0, 1.0f), alpha)
+                            .setColor(Mth.clamp(rCol * 1.35f * cols[2], 0, 1.0f), Mth.clamp(gCol * 1.35f * cols[1], 0, 1.0f), Mth.clamp(bCol * 1.35f * cols[0], 0, 1.0f), alpha * cols[3])
                             .setNormal((float) normal.x, (float) normal.y, (float) normal.z)
                             .setLight(light);
-                }else if(i == 1) {
+                }else if(i % 6 == 0) {
                     builder.addVertex((float)vec.x, (float)vec.y, (float)vec.z)
                             .setUv(0, 0)
-                            .setColor(rCol * 0.55f, gCol * 0.55f, bCol * 0.55f, alpha)
+                            .setColor(Mth.clamp(rCol * 0.95f * cols[2], 0, 1.0f), Mth.clamp(gCol * 0.95f * cols[1], 0, 1.0f), Mth.clamp(bCol * 0.95f * cols[0], 0, 1.0f), alpha * cols[3])
                             .setNormal((float) normal.x, (float) normal.y, (float) normal.z)
                             .setLight(light);
-                }else if(i == 2) {
+                }else if(i % 6 == 2) {
                     builder.addVertex((float)vec.x, (float)vec.y, (float)vec.z)
                             .setUv(0, 0)
-                            .setColor(rCol * 0.95f, gCol * 0.95f, bCol * 0.95f, alpha)
+                            .setColor(Mth.clamp(rCol * 1.15f * cols[2], 0, 1.0f), Mth.clamp(gCol * 1.15f * cols[1], 0, 1.0f), Mth.clamp(bCol * 1.15f * cols[0], 0, 1.0f), alpha * cols[3])
                             .setNormal((float) normal.x, (float) normal.y, (float) normal.z)
                             .setLight(light);
-                }else if(i == 3) {
+                }else if(i % 6 == 3) {
                     builder.addVertex((float)vec.x, (float)vec.y, (float)vec.z)
                             .setUv(0, 0)
-                            .setColor(rCol * 0.75f, gCol * 0.75f, bCol * 0.75f, alpha)
+                            .setColor(Mth.clamp(rCol * 1.2f * cols[2], 0, 1.0f), Mth.clamp(gCol * 1.2f * cols[1], 0, 1.0f), Mth.clamp(bCol * 1.2f * cols[0], 0, 1.0f), alpha * cols[3])
                             .setNormal((float) normal.x, (float) normal.y, (float) normal.z)
                             .setLight(light);
-                }else if(i == 4) {
+                }else if(i % 6 == 4) {
                     builder.addVertex((float)vec.x, (float)vec.y, (float)vec.z)
                             .setUv(0, 0)
-                            .setColor(rCol * 0.9f, gCol * 0.9f, bCol * 0.9f, alpha)
+                            .setColor(Mth.clamp(rCol * 1.25f * cols[2], 0, 1.0f), Mth.clamp(gCol * 1.25f * cols[1], 0, 1.0f), Mth.clamp(bCol * 1.25f * cols[0], 0, 1.0f), alpha * cols[3])
                             .setNormal((float) normal.x, (float) normal.y, (float) normal.z)
                             .setLight(light);
                 }else {
                     builder.addVertex((float)vec.x, (float)vec.y, (float)vec.z)
                             .setUv(0, 0)
-                            .setColor(rCol * 0.85f, gCol * 0.85f, bCol * 0.85f, alpha)
+                            .setColor(Mth.clamp(rCol * 1.2f * cols[2], 0, 1.0f), Mth.clamp(gCol * 1.2f * cols[1], 0, 1.0f), Mth.clamp(bCol * 1.2f * cols[0], 0, 1.0f), alpha * cols[3])
                             .setNormal((float) normal.x, (float) normal.y, (float) normal.z)
                             .setLight(light);
                 }
@@ -246,21 +290,24 @@ public class CauldronParticle extends TextureSheetParticle {
 
             TextureAtlasSprite sprite = textureAtlasSpriteFunction.apply(stillLoc);
 
+            if (sprite != null)
+                cauldronParticle.pixelCol = sprite.getPixelRGBA(0, random.nextInt(sprite.contents().width()), random.nextInt(sprite.contents().height()));
+
             int colorInt = IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor(fluidStack);
             float alpha = (colorInt >> 24 & 255) / 275f;
             float red = (colorInt >> 16 & 255) / 275f;
             float green = (colorInt >> 8 & 255) / 275f;
             float blue = (colorInt & 255) / 275f;
-            colorInt = sprite.getPixelRGBA(0, random.nextInt(sprite.contents().width()), random.nextInt(sprite.contents().height()));
-            float alpha2 = (colorInt >> 24 & 255) / 275f;
-            float blue2 = (colorInt >> 16 & 255) / 275f;
-            float green2 = (colorInt >> 8 & 255) / 275f;
-            float red2 = (colorInt & 255) / 275f;
+//            colorInt = sprite.getPixelRGBA(0, random.nextInt(sprite.contents().width()), random.nextInt(sprite.contents().height()));
+//            float alpha2 = (colorInt >> 24 & 255) / 275f;
+//            float blue2 = (colorInt >> 16 & 255) / 275f;
+//            float green2 = (colorInt >> 8 & 255) / 275f;
+//            float red2 = (colorInt & 255) / 275f;
 
             float colorOffset = (random.nextFloat() * 0.15f);
-            if (red > 0.75f && blue > 0.75f && green > 0.75f)
-                cauldronParticle.setColor(Mth.clamp(red2 + colorOffset, 0, 1), Mth.clamp(green2 + colorOffset, 0, 1), Mth.clamp(blue2 + colorOffset, 0, 1));
-            else
+//            if (red > 0.75f && blue > 0.75f && green > 0.75f)
+//                cauldronParticle.setColor(Mth.clamp(red2 + colorOffset, 0, 1), Mth.clamp(green2 + colorOffset, 0, 1), Mth.clamp(blue2 + colorOffset, 0, 1));
+//            else
                 cauldronParticle.setColor(Mth.clamp(red + colorOffset, 0, 1), Mth.clamp(green + colorOffset, 0, 1), Mth.clamp(blue + colorOffset, 0, 1));
 
 

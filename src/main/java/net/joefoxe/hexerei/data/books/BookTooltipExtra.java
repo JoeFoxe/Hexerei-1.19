@@ -2,6 +2,8 @@ package net.joefoxe.hexerei.data.books;
 
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.GsonHelper;
 
 public class BookTooltipExtra {
@@ -17,12 +19,9 @@ public class BookTooltipExtra {
         this.type = type;
     }
 
-    public static BookTooltipExtra deserialize(JsonObject object) throws CommandSyntaxException {
-        int color = GsonHelper.getAsInt(object, "color", 16777215);
-        String color_hex = GsonHelper.getAsString(object, "color_hex", "none");
-        String type = GsonHelper.getAsString(object, "type", "append");
-        String text = GsonHelper.getAsString(object, "text", "empty");
-
-        return new BookTooltipExtra(color, color_hex, type, text);
-    }
+    public static final Codec<BookTooltipExtra> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.optionalFieldOf("color", 16777215).forGetter(e -> e.color),
+            Codec.STRING.optionalFieldOf("color_hex", "").forGetter(e -> e.color_hex),
+            Codec.STRING.optionalFieldOf("text", "append").forGetter(e -> e.text),
+            Codec.STRING.optionalFieldOf("type", "empty").forGetter(e -> e.type) ).apply(instance, BookTooltipExtra::new));
 }

@@ -1,23 +1,6 @@
 {
-  "item.hexerei.armor_scrap": "Armor Scrap",
-  "block.hexerei.scrap_block": "Scrap Block",
   "block.hexerei.mixing_cauldron": "Mixing Cauldron",
   "block.hexerei.coffer": "Coffer",
-  "block.hexerei.coffer_black": "Black Coffer",
-  "block.hexerei.coffer_blue": "Blue Coffer",
-  "block.hexerei.coffer_cyan": "Cyan Coffer",
-  "block.hexerei.coffer_gray": "Gray Coffer",
-  "block.hexerei.coffer_green": "Green Coffer",
-  "block.hexerei.coffer_light_blue": "Light Blue Coffer",
-  "block.hexerei.coffer_light_gray": "Light Gray Coffer",
-  "block.hexerei.coffer_lime": "Lime Coffer",
-  "block.hexerei.coffer_magenta": "Magenta Coffer",
-  "block.hexerei.coffer_orange": "Orange Coffer",
-  "block.hexerei.coffer_pink": "Pink Coffer",
-  "block.hexerei.coffer_purple": "Purple Coffer",
-  "block.hexerei.coffer_red": "Red Coffer",
-  "block.hexerei.coffer_white": "White Coffer",
-  "block.hexerei.coffer_yellow": "Yellow Coffer",
   "item.hexerei.willow_broom": "Willow Broom",
   "entity.hexerei.willow_broom": "Willow Broom",
   "item.hexerei.mahogany_broom": "Mahogany Broom",
@@ -399,7 +382,7 @@
   "tooltip.hexerei.witch_armor_bonus_4": " - 15% of magic damage dealt is converted to health",
 
   "item.hexerei.book_of_shadows": "Book of Shadows",
-  "tooltip.hexerei.book_of_shadows_shift": "This is the guidebook of Hexerei.\nFor now it must be placed on an altar to be read.\nDye the cover upon crafting based on the dye given.\nDye the corners by dying the book again.",
+  "tooltip.hexerei.book_of_shadows_shift": "This is the guidebook of Hexerei.\nPlace on an altar to read in world, otherwise just right click to open a screen.\nDye the cover upon crafting based on the dye given.\nDye the corners by dying the book again.",
 
   "item.hexerei.reading_glasses": "Reading Glasses",
   "tooltip.hexerei.reading_glasses_shift": "Reading in the book of shadows a bit too hard? Got the eyes of grandpa? They can be used like a spyglass or worn on your head and toggled with '%s' to zoom in slightly.",
@@ -431,7 +414,7 @@
 
   "book.hexerei.intro_page_5.passage_1": "  They can be swapped with another bookmark or with an empty slot. Clicking on a bookmark will redirect you to the page that it was saved on.\n  Crouch and right click the altar to pick up the book. \n  The book can be opened or closed when picked up, if left opened it will still show the pages on the book, though for now you wont be able to turn the pages in hand, it must be on an altar.",
 
-  "book.hexerei.intro_page_6.passage_1": "  In the configs you can change the font from fancy to normal minecraft font if its hard to read or you are wanting more immersion.\n  You are also able to hover items and press %kkey.hexerei.book_hovering_recipe for recipes, and %kkey.hexerei.book_hovering_uses for uses to open up the JEI page respectively",
+  "book.hexerei.intro_page_6.passage_1": "  In the configs you can change the font from fancy to normal minecraft font if its hard to read or you are wanting more immersion.\n  You are also able to hover items and press %kkey.hexerei.book_hovering_recipe% for recipes, and %kkey.hexerei.book_hovering_uses% for uses to open up the JEI page respectively",
 
 
   "book.hexerei.support_page_1.passage_1": "  This mod has come a long way due to this community, and will continue to strive because of it. Come be a part of it and join our Discord!\n  If you have any questions feel free to join and ask for help as we do have a very friendly community!",
@@ -711,7 +694,7 @@
   "book.hexerei.items_mindful_trance_blend_1.passage_2": "  A blend that can be applied to candles.",
 
   "book.hexerei.items_reading_glasses_1.passage_1": "Reading Glasses",
-  "book.hexerei.items_reading_glasses_1.passage_2": "  Need help reading the book? want to just slightly zoom into the book to better look at images? Well these are the glasses for you! Acts like a spyglass when holding the item and right clicking, but zooms in just a bit. You can also put these on your head and press %kkey.hexerei.glasses_zoom to toggle zoom in.",
+  "book.hexerei.items_reading_glasses_1.passage_2": "  Need help reading the book? want to just slightly zoom into the book to better look at images? Well these are the glasses for you! Acts like a spyglass when holding the item and right clicking, but zooms in just a bit. You can also put these on your head and press %kkey.hexerei.glasses_zoom% to toggle zoom in.",
 
 
   "book.hexerei.entities_index_page_1.passage_1": "- Entities -",
@@ -747,7 +730,7 @@
   "book.hexerei.entities_broom_page_1.passage_2": "  The Broom is the rideable mount from Hexerei. This allows witches to fly with it and with that the ability to traverse the lands with ease. Currently there are two broom types available which one is Willow and the other Mahogany. ",
   "book.hexerei.entities_broom_page_2.passage_1": "  First off the Willow broom. This broom is the slower of the brooms, which is nice for server exploration and nice for precise building. Though, it being slower you may have already figured out that it is easier to make for the early game.",
   "book.hexerei.entities_broom_page_3.passage_1": "  Second the Mahogany broom. This broom faster than the Willow Broom, which is great for getting around faster than before. Not only is this broom faster but its item is also fire and lava resistant, but not while the broom is an entity.",
-  "book.hexerei.entities_broom_page_4.passage_1": "  To use the broom, right click on the ground with the broom, just like a boat. Then to ride it simply right click, and to open its GUI crouch and right click. While riding, to ascend up into the clouds hold Space and to descend back to the ground hold %kkey.hexerei.broomDescend and be sure to check the keybinds if there are conflicting keys, or change the descend key to your desired key.",
+  "book.hexerei.entities_broom_page_4.passage_1": "  To use the broom, right click on the ground with the broom, just like a boat. Then to ride it simply right click, and to open its GUI crouch and right click. While riding, to ascend up into the clouds hold %kkey.hexerei.broomUp%, to descend back to the ground hold %kkey.hexerei.broomDown%, and to dismount %kkey.hexerei.broomDismount%.",
   "book.hexerei.entities_broom_page_5.passage_1": "  The rest of the broom controls act like a boat. Now that you know how to fly the broom lets get into its GUI and attachments.\n\n Again to access the broom simply crouch and right click the broom while it is an entity.",
   "book.hexerei.entities_broom_page_6.passage_1": "  To begin there are three slots on the top of the GUI, first the Misc which is for misc attachments on the broom and usually attached to the tip. For example the Broom Chain can be attached to the broom in that slot and when the chain has an item imprinted it will display the item hanging on the chain.",
   "book.hexerei.entities_broom_page_7.passage_1": "  The second slot is for the Satchel and this slot is for the satchel items, there are three tiers of attachments each tier gives an additional 9 slots to hold items within while on your travels.",
@@ -1289,6 +1272,35 @@
 
   "book.hexerei.items_woodcutter_planks": "* Use a woodcutter to cut the planks into special connecting variants",
 
+  "book.hexerei.index_name": "Index",
+
+  "block.hexerei.crystal_ball.daytime": "Daytime",
+  "block.hexerei.crystal_ball.moon_phase": "Moon Phase: ",
+
+  "book.hexerei.dark_coven": "Dark Coven",
+  "book.hexerei.nature_coven": "Nature Coven",
+  "book.hexerei.owl_post_office": "Owl Post Office",
+  "book.hexerei.witch_hut": "Witch Hut",
+
+  "item.hexerei.notebook": "Notebook",
+  "tooltip.hexerei.notebook": "The magical book of note taking.\nPlace on an altar to use in world, otherwise just right click to open a screen.\nInteracts the same as a Book of Shadows.",
+  "book.hexerei.items_notebook_1.passage_1": "Notebook",
+  "book.hexerei.items_notebook_1.passage_2": "  For those who love taking notes, writing lists, or telling stories.\n\n This book allows you to write in it, like a book and quill. It can be used on an altar or opened in hand by right-clicking.",
+
+  "item.hexerei.book_of_colors": "Book of Colors",
+  "tooltip.hexerei.book_of_colors": "A magical book of painting.\nPlace on an altar to use in world, otherwise just right click to open a screen.\nInteracts the same as a Book of Shadows.\nUse a Canvas on a painting to copy a section",
+  "book.hexerei.items_book_of_colors_1.passage_1": "Book of Colors",
+  "book.hexerei.items_book_of_colors_1.passage_2": "  Made for those who love to paint.\n\n This book allows the player to paint within the pages, and take those paintings and copy them onto canvases to place.",
+
+
+  "item.hexerei.book_canvas": "Canvas",
+  "tooltip.hexerei.book_canvas": "Used to display a painting from the Book of Colors as a painting",
+  "tooltip.hexerei.book_canvas2": "Right-click a painting in the Book of Colors with this item, then crop the section you want to display in the screen.\nLeft-click and drag in the screen to make the cropped section, Right-click to clear.\nUpon exiting the screen the section will be imprinted onto the canvas",
+  "book.hexerei.items_book_canvas_1.passage_1": "Canvas",
+  "book.hexerei.items_book_canvas_1.passage_2": "  For those who want to take their paintings from their Book of Colors and hang them up in world.\n\n Right click a painting in a Book of Colors and select the cropping size by clicking and dragging, showing the preview of what will appear on the painting on the left, then it'll be selected on close.",
+
+  "book.hexerei.items_selenite_shard_1.passage_1": "Selenite Shard",
+  "book.hexerei.items_selenite_shard_1.passage_2": "  Found in selenite geodes beneath jungles and swamps. Their faint, ethereal glow is said to hold shielding energy, making them a prized tool for witches and enchanters seeking protection.",
 
   "itemGroup.hexereiModTab": "Hexerei"
 }

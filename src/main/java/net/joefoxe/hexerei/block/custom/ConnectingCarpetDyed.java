@@ -3,8 +3,6 @@ package net.joefoxe.hexerei.block.custom;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.connected.CTDyable;
 import net.joefoxe.hexerei.block.connected.Waxed;
-import net.joefoxe.hexerei.item.ModDataComponents;
-import net.joefoxe.hexerei.item.data_components.DyeColorData;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;

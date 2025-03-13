@@ -1,8 +1,7 @@
 package net.joefoxe.hexerei.data.books;
 
-import com.google.gson.JsonObject;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.util.GsonHelper;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public class BookHoverOffset {
     public float x;
@@ -15,11 +14,9 @@ public class BookHoverOffset {
         this.scale = scale;
     }
 
-    public static BookHoverOffset deserialize(JsonObject object) throws CommandSyntaxException {
-        float x = GsonHelper.getAsFloat(object, "x", 0);
-        float y = GsonHelper.getAsFloat(object, "y", 0);
-        float scale = GsonHelper.getAsFloat(object, "scale", 1);
-
-        return new BookHoverOffset(x, y, scale);
-    }
+    public static final Codec<BookHoverOffset> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.FLOAT.optionalFieldOf("x", 0f).forGetter(e -> e.x),
+            Codec.FLOAT.optionalFieldOf("y", 0f).forGetter(e -> e.y),
+            Codec.FLOAT.optionalFieldOf("scale", 1f).forGetter(e -> e.scale)
+    ).apply(instance, BookHoverOffset::new));
 }

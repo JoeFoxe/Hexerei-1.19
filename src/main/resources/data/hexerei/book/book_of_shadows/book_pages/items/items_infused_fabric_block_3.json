@@ -1,0 +1,53 @@
+{
+  "name": "block.hexerei.infused_fabric_block",
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 5,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.items_infused_fabric_block_3.passage_1"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 10,
+          "height": 5,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.items_infused_fabric_block_3.passage_2"
+    }
+  ],
+  "images": [
+    {
+      "x": 2.5,
+      "y": 2,
+      "u": 0,
+      "v": 0,
+      "width": 212,
+      "height": 63,
+      "imageWidth": 212,
+      "imageHeight": 63,
+      "scale": 0.45,
+      "texture": "hexerei:textures/book/pictures/infused_fabric_block_banner.png"
+    },
+    {
+      "x": 2.5,
+      "y": 6,
+      "u": 0,
+      "v": 0,
+      "width": 212,
+      "height": 63,
+      "imageWidth": 212,
+      "imageHeight": 63,
+      "scale": 0.45,
+      "texture": "hexerei:textures/book/pictures/infused_fabric_block_waxed_banner.png"
+    }
+  ]
+}

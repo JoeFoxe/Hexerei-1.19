@@ -9,6 +9,7 @@ import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.data.books.HexereiBookItem;
 import net.joefoxe.hexerei.data.recipes.CrowFluteRecipe;
 import net.joefoxe.hexerei.event.ClientEvents;
+import net.joefoxe.hexerei.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -115,7 +116,8 @@ public class ExtraBookOfShadowsIcon implements IDrawable {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
 
-        ItemStack output_stack = HexereiBookItem.withColors(color1, color2);
+        ItemStack stack = new ItemStack(ModItems.BOOK_OF_SHADOWS.get());
+        ItemStack output_stack = HexereiBookItem.withColors(stack, color1, color2);
 //        output_stack.getOrCreateTagElement("display").putInt("color", color2);
         renderItem(output_stack, Minecraft.getInstance().level, guiGraphics.pose(), buffer, LightTexture.FULL_BRIGHT);
 

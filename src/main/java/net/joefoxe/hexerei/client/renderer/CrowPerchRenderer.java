@@ -15,8 +15,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -131,7 +129,7 @@ public class CrowPerchRenderer {
     private static void renderPillar(MultiBufferSource.BufferSource buffer, PoseStack matrixStack, float xOffset, float yOffset, float zOffset){
 //        VertexConsumer faceBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HILIGHT_FACE);
 //        VertexConsumer faceBuilder = buffer.getBuffer(RenderType.beaconBeam(BEAM_LOCATION, true));
-        VertexConsumer faceBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HILIGHT_FACE);
+        VertexConsumer faceBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HIGHLIGHT_FACE);
         Matrix4f posMat = matrixStack.last().pose();
         int color = 0x110511;
         int r = (color & 0xFF0000) >> 16;
@@ -175,13 +173,13 @@ public class CrowPerchRenderer {
         faceBuilder.addVertex(posMat, xOffset, yOffset + BOX_SIZE, zOffset).setColor(r, g, b, alpha).setUv(0, 0).setUv2(0, 10).setNormal(0.0F, 1.0F, 0.0F);
 
         RenderSystem.disableDepthTest();
-        buffer.endBatch(ModRenderTypes.BLOCK_HILIGHT_FACE);
+        buffer.endBatch(ModRenderTypes.BLOCK_HIGHLIGHT_FACE);
     }
 
     private static void renderHorizontalPillar(MultiBufferSource.BufferSource buffer, PoseStack matrixStack, float xOffset, float yOffset, float zOffset){
 //        VertexConsumer faceBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HILIGHT_FACE);
 //        VertexConsumer faceBuilder = buffer.getBuffer(RenderType.beaconBeam(BEAM_LOCATION, true));
-        VertexConsumer faceBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HILIGHT_FACE);
+        VertexConsumer faceBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HIGHLIGHT_FACE);
         Matrix4f posMat = matrixStack.last().pose();
         int color = 0x110511;
         int r = (color & 0xFF0000) >> 16;
@@ -225,11 +223,11 @@ public class CrowPerchRenderer {
         faceBuilder.addVertex(posMat, xOffset + BOX_SIZE * 0.9f, yOffset + BOX_SIZE * 0.1f, zOffset).setColor(r, g, b, alpha).setUv(0, 0).setUv2(0, 10).setNormal(0.0F, 1.0F, 0.0F);
 
         RenderSystem.disableDepthTest();
-        buffer.endBatch(ModRenderTypes.BLOCK_HILIGHT_FACE);
+        buffer.endBatch(ModRenderTypes.BLOCK_HIGHLIGHT_FACE);
     }
 
     private static void renderHorizontalPillarTurned(MultiBufferSource.BufferSource buffer, PoseStack matrixStack, float xOffset, float yOffset, float zOffset){
-        VertexConsumer faceBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HILIGHT_FACE);
+        VertexConsumer faceBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HIGHLIGHT_FACE);
         Matrix4f posMat = matrixStack.last().pose();
         int color = 0x110511;
         int r = (color & 0xFF0000) >> 16;
@@ -269,7 +267,7 @@ public class CrowPerchRenderer {
         faceBuilder.addVertex(posMat, xOffset, yOffset + BOX_SIZE * 0.1f, zOffset + BOX_SIZE * 0.9f).setColor(r, g, b, alpha).setUv(0.0F, 0.0F).setUv2(0, 10).setNormal(0.0F, 1.0F, 0.0F);
 
         RenderSystem.disableDepthTest();
-        buffer.endBatch(ModRenderTypes.BLOCK_HILIGHT_FACE);
+        buffer.endBatch(ModRenderTypes.BLOCK_HIGHLIGHT_FACE);
     }
 
     private static void renderPerch(MultiBufferSource.BufferSource buffer, PoseStack matrixStack, ItemStack stack) {
@@ -334,7 +332,7 @@ public class CrowPerchRenderer {
                 renderHorizontalPillarTurned(buffer, matrixStack, 0,  BOX_SIZE, BOX_SIZE * 0.1f);
                 renderHorizontalPillarTurned(buffer, matrixStack, 0,  BOX_SIZE, -BOX_SIZE);
 
-                VertexConsumer lineBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HILIGHT_FACE);
+                VertexConsumer lineBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HIGHLIGHT_FACE);
 //                VertexConsumer lineBuilder = buffer.getBuffer(RenderType.beaconBeam(BEAM_LOCATION, true));
 
                 lineBuilder.addVertex(posMat, 0, 0, 0).setColor(r, g, b, alpha).setUv(0.0F, 0.0F).setUv2(0, 10).setNormal(0.0F, 0.0F, -1.0F);
@@ -373,7 +371,7 @@ public class CrowPerchRenderer {
                 lineBuilder.addVertex(posMat, 0, BOX_SIZE, 0).setColor(r, g, b, alpha).setUv(0.0F, 0.0F).setUv2(0, 10).setNormal(0.0F, 1.0F, 0.0F);
 
                 RenderSystem.disableDepthTest();
-                buffer.endBatch(ModRenderTypes.BLOCK_HILIGHT_FACE);
+                buffer.endBatch(ModRenderTypes.BLOCK_HIGHLIGHT_FACE);
 
                 matrixStack.popPose();
 
@@ -450,7 +448,7 @@ public class CrowPerchRenderer {
                 matrixStack.scale(0.35f, 0.35f, 0.35f);
                 matrixStack.translate(0.5f, 0, 0.5f);
 
-                VertexConsumer lineBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HILIGHT_FACE);
+                VertexConsumer lineBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HIGHLIGHT_FACE);
 
                 lineBuilder.addVertex(posMat, 0, 0, 0).setColor(r, g, b, alpha).setUv(0.0F, 0.0F).setUv2(0, 10).setNormal(0.0F, 0.0F, -1.0F);
                 lineBuilder.addVertex(posMat, 0, BOX_SIZE, 0).setColor(r, g, b, alpha).setUv(0.0F, 1.0F).setUv2(0, 10).setNormal(0.0F, 0.0F, -1.0F);
@@ -488,7 +486,7 @@ public class CrowPerchRenderer {
                 lineBuilder.addVertex(posMat, 0, BOX_SIZE, 0).setColor(r, g, b, alpha).setUv(0.0F, 0.0F).setUv2(0, 10).setNormal(0.0F, 1.0F, 0.0F);
 
                 RenderSystem.disableDepthTest();
-                buffer.endBatch(ModRenderTypes.BLOCK_HILIGHT_FACE);
+                buffer.endBatch(ModRenderTypes.BLOCK_HIGHLIGHT_FACE);
 
                 matrixStack.popPose();
 
@@ -517,7 +515,7 @@ public class CrowPerchRenderer {
         matrixStack.scale(0.35f, 0.35f, 0.35f);
         matrixStack.translate(0.5f, 0, 0.5f);
 
-        VertexConsumer lineBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HILIGHT_FACE);
+        VertexConsumer lineBuilder = buffer.getBuffer(ModRenderTypes.BLOCK_HIGHLIGHT_FACE);
 
         lineBuilder.addVertex(posMat, 0, 0, 0).setColor(r, g, b, alpha).setUv(0.0F, 0.0F).setUv2(0, 10).setNormal(0.0F, 0.0F, -1.0F);
         lineBuilder.addVertex(posMat, 0, BOX_SIZE, 0).setColor(r, g, b, alpha).setUv(0.0F, 1.0F).setUv2(0, 10).setNormal(0.0F, 0.0F, -1.0F);
@@ -555,7 +553,7 @@ public class CrowPerchRenderer {
         lineBuilder.addVertex(posMat, 0, BOX_SIZE, 0).setColor(r, g, b, alpha).setUv(0.0F, 0.0F).setUv2(0, 10).setNormal(0.0F, 1.0F, 0.0F);
 
         RenderSystem.disableDepthTest();
-        buffer.endBatch(ModRenderTypes.BLOCK_HILIGHT_FACE);
+        buffer.endBatch(ModRenderTypes.BLOCK_HIGHLIGHT_FACE);
 
         matrixStack.popPose();
 

@@ -23,6 +23,7 @@ import net.joefoxe.hexerei.util.message.EmitParticlesPacket;
 import net.joefoxe.hexerei.util.message.TESyncPacket;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -51,6 +52,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -88,6 +90,7 @@ import java.util.stream.Stream;
 
 import static net.joefoxe.hexerei.tileentity.renderer.MixingCauldronRenderer.MAX_Y;
 import static net.joefoxe.hexerei.tileentity.renderer.MixingCauldronRenderer.MIN_Y;
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.LIT;
 
 @SuppressWarnings("deprecation")
 public class MixingCauldron extends BaseEntityBlock implements ITileEntity<MixingCauldronTile> {
@@ -432,15 +435,40 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
     }
 
     @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
-        super.onNeighborChange(state, level, pos, neighbor);
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
 
         withTileEntityDo(level, pos, te -> {
-            if (level.getBlockState(neighbor).is(HexereiTags.Blocks.HEAT_SOURCES))
-                te.checkCraft = true;
+            if (!level.isClientSide()) {
+                boolean old = te.hasHeatSource;
+                te.hasHeatSource = false;
+                BlockState heatSource = level.getBlockState(pos.below());
+                if (heatSource.is(HexereiTags.Blocks.HEAT_SOURCES))
+                    if (!heatSource.hasProperty(LIT) || heatSource.getValue(LIT))
+                        te.hasHeatSource = true;
+                te.setChanged();
+            }
+        });
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+
+        withTileEntityDo(level, pos, te -> {
+            if (!level.isClientSide()) {
+                boolean old = te.hasHeatSource;
+                te.hasHeatSource = false;
+                BlockState heatSource = level.getBlockState(pos.below());
+                if (heatSource.is(HexereiTags.Blocks.HEAT_SOURCES))
+                    if (!heatSource.hasProperty(LIT) || heatSource.getValue(LIT))
+                        te.hasHeatSource = true;
+                te.setChanged();
+            }
         });
 
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
+
 
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
@@ -473,10 +501,10 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
         if (tileEntity instanceof MixingCauldronTile cauldronTile) {
             height = MIN_Y + (MAX_Y - MIN_Y) * Math.min(1, (float) cauldronTile.getFluidStack().getAmount() / cauldronTile.getTankCapacity(0)) + 1 / 16f;
 //
-            int num = cauldronTile.getNumberOfItems();
+            int num = cauldronTile.getNumberOfItems() / 4;
 
             if (cauldronTile.getFluidStack().getAmount() > 0) {
-                for (int i = 0; i < Mth.floor(cauldronTile.getFluidStack().getAmount() / 666f + 0.5f); i++) {
+                for (int i = 0; i < Mth.floor(cauldronTile.getFluidStack().getAmount() / 1000f + 0.5f); i++) {
                     if (rand.nextDouble() > 0.5f)
                         world.addParticle(new CauldronParticleData(cauldronTile.getFluidStack()), pos.getX() + 0.2d + (0.6d * rand.nextDouble()), pos.getY() + height, pos.getZ() + 0.2d + (0.6d * rand.nextDouble()), (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.004d, (rand.nextDouble() - 0.5d) / 50d);
                 }
@@ -485,8 +513,7 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
                         world.addParticle(new CauldronParticleData(cauldronTile.getFluidStack()), pos.getX() + 0.2d + (0.6d * rand.nextDouble()), pos.getY() + height, pos.getZ() + 0.2d + (0.6d * rand.nextDouble()), (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.004d, (rand.nextDouble() - 0.5d) / 50d);
                 }
 
-                BlockState heatSource = world.getBlockState(pos.below());
-                if(heatSource.is(HexereiTags.Blocks.HEAT_SOURCES)){
+                if(cauldronTile.hasHeatSource){
                     for (int i = 0; i < num + 5; i++) {
                         if (rand.nextDouble() > 0.5f)
                             world.addParticle(new CauldronParticleData(cauldronTile.getFluidStack()), pos.getX() + 0.2d + (0.6d * rand.nextDouble()), pos.getY() + height, pos.getZ() + 0.2d + (0.6d * rand.nextDouble()), (rand.nextDouble() - 0.5d) / 50d, (rand.nextDouble() + 0.5d) * 0.014d, (rand.nextDouble() - 0.5d) / 50d);

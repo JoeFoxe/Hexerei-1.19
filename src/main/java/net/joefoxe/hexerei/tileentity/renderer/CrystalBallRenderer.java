@@ -7,6 +7,7 @@ import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.client.renderer.ModRenderTypes;
 import net.joefoxe.hexerei.data.recipes.MoonPhases;
 import net.joefoxe.hexerei.tileentity.CrystalBallTile;
+import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,6 +16,8 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -35,6 +38,8 @@ import java.util.Collection;
 
 public class CrystalBallRenderer implements BlockEntityRenderer<CrystalBallTile> {
 
+    public static ModelResourceLocation ORB = ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath("hexerei", "block/crystal_ball_orb1"));
+    public static ModelResourceLocation ORB2 = ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath("hexerei", "block/crystal_ball_orb2"));
 
     @Override
     public void render(CrystalBallTile tileEntityIn, float partialTicks, PoseStack poseStack,
@@ -43,6 +48,7 @@ public class CrystalBallRenderer implements BlockEntityRenderer<CrystalBallTile>
         if(!tileEntityIn.getLevel().getBlockState(tileEntityIn.getBlockPos()).hasBlockEntity() || !(tileEntityIn.getLevel().getBlockEntity(tileEntityIn.getBlockPos()) instanceof CrystalBallTile))
             return;
 
+
         renderMoon(tileEntityIn, poseStack, partialTicks, bufferIn);
 
         poseStack.pushPose();
@@ -50,7 +56,60 @@ public class CrystalBallRenderer implements BlockEntityRenderer<CrystalBallTile>
         poseStack.translate(0f/16f , tileEntityIn.orbOffset/16f, 0f/16f);
         poseStack.mulPose(Axis.YP.rotationDegrees(-Mth.rotLerp(partialTicks, tileEntityIn.degreesSpunOld, tileEntityIn.degreesSpun) * 4));
 
-        renderBlock(poseStack, bufferIn, combinedLightIn, combinedOverlayIn, ModBlocks.CRYSTAL_BALL_ORB.get().defaultBlockState(), null, 0xFFFFFF);
+
+//        poseStack.pushPose();
+//        poseStack.translate(0.5f, 0.5f, 0.5f);
+//        poseStack.scale(1.33f, 1.33f, 1.33f);
+//        BakedModel baseModel = Minecraft.getInstance().getModelManager().getModel(ORB2);
+//        if (baseModel != Minecraft.getInstance().getModelManager().getMissingModel()) {
+//            Minecraft.getInstance().getItemRenderer().render(
+//                    ModBlocks.CRYSTAL_BALL.get().asItem().getDefaultInstance(),
+//                    ItemDisplayContext.FIXED,
+//                    false,
+//                    poseStack,
+//                    bufferIn,
+//                    combinedLightIn,
+//                    combinedOverlayIn,
+//                    baseModel
+//            );
+//        }
+//        poseStack.popPose();
+
+        if (bufferIn instanceof MultiBufferSource.BufferSource bufferSource)
+            bufferSource.endBatch();
+
+        BakedModel baseModel = Minecraft.getInstance().getModelManager().getModel(ORB2);
+        if (baseModel != Minecraft.getInstance().getModelManager().getMissingModel()) {
+            BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
+            int i = -1;
+            float f = (float) (i >> 16 & 255) / 255.0F;
+            float f1 = (float) (i >> 8 & 255) / 255.0F;
+            float f2 = (float) (i & 255) / 255.0F;
+            for (RenderType rt : baseModel.getRenderTypes(ModBlocks.CRYSTAL_BALL.get().defaultBlockState(), RandomSource.create(42), ModelData.EMPTY))
+                dispatcher.getModelRenderer().renderModel(poseStack.last(), bufferIn.getBuffer(RenderTypeHelper.getEntityRenderType(rt, false)), ModBlocks.CRYSTAL_BALL.get().defaultBlockState(), baseModel, f, f1, f2, combinedLightIn, combinedOverlayIn, ModelData.EMPTY, rt);
+        }
+
+
+        if (bufferIn instanceof MultiBufferSource.BufferSource bufferSource)
+            bufferSource.endBatch();
+
+        baseModel = Minecraft.getInstance().getModelManager().getModel(ORB);
+        if (baseModel != Minecraft.getInstance().getModelManager().getMissingModel()) {
+            BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
+            int i = -1;
+            float f = (float) (i >> 16 & 255) / 255.0F;
+            float f1 = (float) (i >> 8 & 255) / 255.0F;
+            float f2 = (float) (i & 255) / 255.0F;
+            for (RenderType rt : baseModel.getRenderTypes(ModBlocks.CRYSTAL_BALL.get().defaultBlockState(), RandomSource.create(42), ModelData.EMPTY))
+                dispatcher.getModelRenderer().renderModel(poseStack.last(), bufferIn.getBuffer(RenderTypeHelper.getEntityRenderType(rt, false)), ModBlocks.CRYSTAL_BALL.get().defaultBlockState(), baseModel, f, f1, f2, combinedLightIn, combinedOverlayIn, ModelData.EMPTY, rt);
+        }
+
+        if (bufferIn instanceof MultiBufferSource.BufferSource bufferSource)
+            bufferSource.endBatch();
+
+
+
+//        renderBlock(poseStack, bufferIn, combinedLightIn, combinedOverlayIn, ModBlocks.CRYSTAL_BALL_ORB.get().defaultBlockState(), null, 0xFFFFFF);
         poseStack.popPose();
 
         poseStack.pushPose();
@@ -101,10 +160,10 @@ public class CrystalBallRenderer implements BlockEntityRenderer<CrystalBallTile>
             }
         }
 
-        renderQuad(tileEntityIn, poseStack, xOffset, yOffset, bufferIn.getBuffer(ModRenderTypes.MOON_PHASE), partialTicks);
+        renderQuad(tileEntityIn, poseStack, xOffset, yOffset, bufferIn.getBuffer(ModRenderTypes.entityTranslucent(HexereiUtil.getResource("textures/gui/moon_phases.png"))), partialTicks);
 
         if (bufferIn instanceof MultiBufferSource.BufferSource bufferSource)
-            bufferSource.endBatch(ModRenderTypes.MOON_PHASE);
+            bufferSource.endBatch();
     }
 
     public void renderQuad(CrystalBallTile tileEntityIn, PoseStack poseStack, int xOffset, int yOffset, VertexConsumer consumer, float partialTicks) {
@@ -178,10 +237,10 @@ public class CrystalBallRenderer implements BlockEntityRenderer<CrystalBallTile>
 
         Matrix4f matrix = poseStack.last().pose();
 
-        consumer.addVertex(matrix, offsets[0].x(), offsets[0].y(), offsets[0].z()).setColor(1, 1, 1, alpha).setUv((xOffset + 8) / 256f, (yOffset + 8) / 256f).setLight(0xF000F0);
-        consumer.addVertex(matrix, offsets[1].x(), offsets[1].y(), offsets[1].z()).setColor(1, 1, 1, alpha).setUv((xOffset) / 256f, (yOffset + 8) / 256f).setLight(0xF000F0);
-        consumer.addVertex(matrix, offsets[2].x(), offsets[2].y(), offsets[2].z()).setColor(1, 1, 1, alpha).setUv((xOffset) / 256f, yOffset / 256f).setLight(0xF000F0);
-        consumer.addVertex(matrix, offsets[3].x(), offsets[3].y(), offsets[3].z()).setColor(1, 1, 1, alpha).setUv((xOffset + 8) / 256f, yOffset / 256f).setLight(0xF000F0);
+        consumer.addVertex(matrix, offsets[0].x(), offsets[0].y(), offsets[0].z()).setColor(1, 1, 1, alpha).setUv((xOffset + 8) / 256f, (yOffset + 8) / 256f).setNormal(0, 1, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0);
+        consumer.addVertex(matrix, offsets[1].x(), offsets[1].y(), offsets[1].z()).setColor(1, 1, 1, alpha).setUv((xOffset) / 256f, (yOffset + 8) / 256f).setNormal(0, 1, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0);
+        consumer.addVertex(matrix, offsets[2].x(), offsets[2].y(), offsets[2].z()).setColor(1, 1, 1, alpha).setUv((xOffset) / 256f, yOffset / 256f).setNormal(0, 1, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0);
+        consumer.addVertex(matrix, offsets[3].x(), offsets[3].y(), offsets[3].z()).setColor(1, 1, 1, alpha).setUv((xOffset + 8) / 256f, yOffset / 256f).setNormal(0, 1, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0);
 
         poseStack.popPose();
     }

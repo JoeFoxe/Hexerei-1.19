@@ -1,0 +1,69 @@
+{
+  "chapters": [
+    {
+      "name": "Index",
+      "pages": [
+        {
+          "page_location": "hexerei:book_of_colors/page1"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page2"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page3"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page4"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page5"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page6"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page7"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page8"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page9"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page10"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page11"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page12"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page13"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page14"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page15"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page16"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page17"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page18"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page19"
+        },
+        {
+          "page_location": "hexerei:book_of_colors/page20"
+        }
+      ]
+    }
+  ]
+}

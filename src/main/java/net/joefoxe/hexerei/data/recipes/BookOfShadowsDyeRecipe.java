@@ -1,5 +1,6 @@
 package net.joefoxe.hexerei.data.recipes;
 
+import net.joefoxe.hexerei.data.books.HexereiBookItem;
 import net.joefoxe.hexerei.item.ModDataComponents;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.item.data_components.BookColorData;
@@ -34,11 +35,11 @@ public class BookOfShadowsDyeRecipe extends CustomRecipe {
         for (int slot = 0; slot < inv.size(); slot++) {
             ItemStack slotStack = inv.getItem(slot);
             int column = slot % inv.width();
-            int row = slot / inv.height();
+            int row = slot / inv.width();
             if (slotStack.isEmpty()) {
                 continue;
             }
-            if (slotStack.is(ModItems.BOOK_OF_SHADOWS.get())) {
+            if (slotStack.getItem() instanceof HexereiBookItem) {
                 if (posBook != null) {
                     return false;
                 }
@@ -61,25 +62,29 @@ public class BookOfShadowsDyeRecipe extends CustomRecipe {
         boolean trimDye = false;
 
         for (Map.Entry<Tuple<Integer, Integer>, List<DyeColor>> entry : posDyes.entrySet()) {
-            if (entry.getKey().getA() == posBook.getA().getA() + 1 && entry.getKey().getB().equals(posBook.getA().getB())) {
+            int dyeCol = entry.getKey().getA();
+            int dyeRow = entry.getKey().getB();
+            int bookCol = posBook.getA().getA();
+            int bookRow = posBook.getA().getB();
+            if (dyeCol == bookCol + 1 && dyeRow == bookRow) {
                 if (!mainDye)
                     mainDye = true;
                 else
                     return false;
             }
-            else if (entry.getKey().getA() == posBook.getA().getA() - 1 && entry.getKey().getB().equals(posBook.getA().getB())) {
+            else if (dyeCol == bookCol - 1 && dyeRow == bookRow) {
                 if (!mainDye)
                     mainDye = true;
                 else
                     return false;
             }
-            else if (entry.getKey().getB() == posBook.getA().getB() + 1 && entry.getKey().getA().equals(posBook.getA().getA())) {
+            else if (dyeRow == bookRow + 1 && dyeCol == bookCol) {
                 if (!trimDye)
                     trimDye = true;
                 else
                     return false;
             }
-            else if (entry.getKey().getB() == posBook.getA().getB() - 1 && entry.getKey().getA().equals(posBook.getA().getA())) {
+            else if (dyeRow == bookRow - 1 && dyeCol == bookCol) {
                 if (!trimDye)
                     trimDye = true;
                 else
@@ -103,8 +108,8 @@ public class BookOfShadowsDyeRecipe extends CustomRecipe {
                 continue;
             }
             int column = slot % inv.width();
-            int row = slot / inv.height();
-            if (slotStack.is(ModItems.BOOK_OF_SHADOWS.get())) {
+            int row = slot / inv.width();
+            if (slotStack.getItem() instanceof HexereiBookItem) {
                 if (posBook != null) {
                     return ItemStack.EMPTY;
                 }

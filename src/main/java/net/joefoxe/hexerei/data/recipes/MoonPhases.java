@@ -47,6 +47,8 @@ public class MoonPhases {
 
         public static MoonCondition getMoonPhase(Level level) {
 
+            if (level == null)
+                return NONE;
             long time = level.getDayTime();
             int phase = level.getMoonPhase();
             if (time % 24000 < 12300 || time % 24000 > 23850) {// (time % 24000 < 12300 || time % 24000 > 23850) {

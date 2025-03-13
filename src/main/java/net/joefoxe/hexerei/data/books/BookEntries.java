@@ -1,22 +1,26 @@
 package net.joefoxe.hexerei.data.books;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 
 public class BookEntries {
+    public ResourceLocation book;
     public ArrayList<BookChapter> chapterList;
     public int numberOfPages;
 
 
 
-    public BookEntries(ArrayList<BookChapter> chapterList, int numberOfPages) {
+    public BookEntries(ResourceLocation book, ArrayList<BookChapter> chapterList, int numberOfPages) {
         this.chapterList = chapterList;
         this.numberOfPages = numberOfPages;
+        this.book = book;
     }
 
     public static CompoundTag saveToTag(BookEntries bookEntries) {
         CompoundTag tag = new CompoundTag();
+        tag.putString("bookId", bookEntries.book.toString());
         tag.putInt("numberOfChapters", bookEntries.chapterList.size());
         for(int i = 0; i < bookEntries.chapterList.size(); i++) {
             BookChapter bookChapter = bookEntries.chapterList.get(i);
@@ -39,6 +43,7 @@ public class BookEntries {
     }
 
     public static BookEntries loadFromTag(CompoundTag tag) {
+        String book = tag.getString("bookId");
         int size = tag.getInt("numberOfChapters");
         int numOfPages = 0;
         ArrayList<BookChapter> list = new ArrayList<>();
@@ -65,6 +70,6 @@ public class BookEntries {
             list.add(bookChapter);
         }
 
-        return new BookEntries(list, numOfPages);
+        return new BookEntries(ResourceLocation.parse(book), list, numOfPages);
     }
 }

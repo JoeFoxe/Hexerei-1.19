@@ -1,19 +1,14 @@
 package net.joefoxe.hexerei.data.books;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.util.HexereiUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.MouseHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.TamableAnimal;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -64,7 +59,40 @@ public class BookEntity {
         this.clicked = false;
         this.markedForUpdate = false;
     }
-    public static float normalizeRadian(float angle) { float twoPi = (float)(2 * Math.PI); angle = angle % twoPi; if (angle < 0) { angle += twoPi; } return angle;}
+
+    public static final Codec<BookEntity> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.FLOAT.fieldOf("scale").orElse(1f).forGetter(e -> e.scale),
+            Codec.FLOAT.fieldOf("x").orElse(0f).forGetter(e -> e.x),
+            Codec.FLOAT.fieldOf("y").orElse(0f).forGetter(e -> e.y),
+            Codec.STRING.fieldOf("id").orElse("player").forGetter(e -> e.entityType),
+            Codec.STRING.optionalFieldOf("tag", "{}").xmap(str -> {
+                try {
+                    return TagParser.parseTag(str);
+                    } catch (CommandSyntaxException e) {
+                        throw new RuntimeException(e);
+                    }
+                }, CompoundTag::getAsString
+            ).forGetter(e -> e.entityTags),
+            Codec.STRING.listOf().optionalFieldOf("tag_array", new ArrayList<>()).xmap(strings -> strings.stream().map((s -> {
+                try {
+                    return TagParser.parseTag(s);
+                } catch (CommandSyntaxException e) {
+                    throw new RuntimeException(e);
+                }
+            })).toList(), compoundTags -> compoundTags.stream().map(CompoundTag::getAsString).toList()).forGetter(e -> e.entityTagsList),
+            BookHoverOffset.CODEC.fieldOf("hover_offset").forGetter(e -> e.offset)
+    ).apply(instance, (scale, x, y, entityType, entityTags, entityTagsList, offset) -> {
+        Entity entity = null;
+        Optional<EntityType<?>> type = EntityType.byString(entityType);
+        if (type.isPresent() && Hexerei.proxy.getLevel() != null) {
+            entity = type.get().create(Hexerei.proxy.getLevel());
+            if (entity != null) {
+                entity.load(entityTags);
+            }
+        }
+        return new BookEntity(scale, x, y, entityType, entity, entityTags, new ArrayList<>(entityTagsList), offset);
+    }));
+
     private float normalizeAngle(float angle) {
         while (angle > 90) {
             angle -= 360;
@@ -101,43 +129,4 @@ public class BookEntity {
         this.hovered = false;
     }
 
-    public static BookEntity deserialize(JsonObject object) throws CommandSyntaxException {
-        float x = GsonHelper.getAsFloat(object, "x", 0);
-        float y = GsonHelper.getAsFloat(object, "y", 0);
-        float scale = GsonHelper.getAsFloat(object, "scale", 1);
-        String string = GsonHelper.getAsString(object, "id", "player");
-
-
-        JsonObject hover_offset = GsonHelper.getAsJsonObject(object, "hover_offset", new JsonObject());
-        float hover_x = GsonHelper.getAsFloat(hover_offset, "x", 0);
-        float hover_y = GsonHelper.getAsFloat(hover_offset, "y", 0);
-        float hover_scale = GsonHelper.getAsFloat(hover_offset, "scale", 1);
-
-        BookHoverOffset hoverOffset = new BookHoverOffset(hover_x, hover_y, hover_scale);
-
-
-        Entity entity = null;
-        Optional<EntityType<?>> type = EntityType.byString(string);
-        if(type.isPresent() && Hexerei.proxy.getLevel() != null) {
-            entity = type.get().create(Hexerei.proxy.getLevel());
-        }
-        CompoundTag tag = new CompoundTag();
-
-        if(object.has("tag")) {
-            tag = TagParser.parseTag(GsonHelper.getAsString(object, "tag", "{}"));
-
-            if(entity != null)
-                entity.load(tag);
-        }
-
-        JsonArray tag_array = GsonHelper.getAsJsonArray(object, "tag_array", new JsonArray());
-        ArrayList<CompoundTag> entityTagsList = new ArrayList<>();
-        for(int i = 0; i < tag_array.size(); i++){
-            JsonObject obj = tag_array.get(i).getAsJsonObject();
-
-            entityTagsList.add(TagParser.parseTag(GsonHelper.getAsString(obj, "tag", "{}")));
-        }
-
-        return new BookEntity(scale, x, y, string, entity, tag, entityTagsList, hoverOffset);
-    }
 }

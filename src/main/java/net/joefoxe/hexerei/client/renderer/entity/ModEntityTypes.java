@@ -52,6 +52,12 @@ public class ModEntityTypes {
                     () -> EntityType.Builder.of(OwlEntity::new,
                                     MobCategory.CREATURE).sized(0.5F, 0.65F).setTrackingRange(64).setUpdateInterval(1)
                             .build(HexereiUtil.getResource("owl").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<HexereiPaintingEntity>> BOOK_CANVAS =
+            ENTITY_TYPES.register("book_canvas",
+                    () -> EntityType.Builder.of(HexereiPaintingEntity::new,
+                                    MobCategory.MISC).sized(0.5F, 0.5F).clientTrackingRange(10).updateInterval(Integer.MAX_VALUE)
+                            .build(HexereiUtil.getResource("book_canvas").toString()));
 //
 //    public static final EntityType<EntityCrow> CROW = registerEntity(EntityType.Builder.create(EntityCrow::new, MobCategory.CREATURE).size(0.45F, 0.45F), "crow");
 

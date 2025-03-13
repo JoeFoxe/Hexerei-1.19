@@ -5,6 +5,7 @@ import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.custom.OwlCourierDepot;
 import net.joefoxe.hexerei.client.renderer.entity.ModEntityTypes;
 import net.joefoxe.hexerei.client.renderer.entity.custom.BroomEntity;
+import net.joefoxe.hexerei.client.renderer.entity.custom.HexereiPaintingEntity;
 import net.joefoxe.hexerei.client.renderer.entity.custom.ModBoatEntity;
 import net.joefoxe.hexerei.client.renderer.entity.custom.ModChestBoatEntity;
 import net.joefoxe.hexerei.client.renderer.entity.model.*;
@@ -15,11 +16,13 @@ import net.joefoxe.hexerei.data.loot.CopyCourierPackageDataFunction;
 import net.joefoxe.hexerei.fluid.ModFluids;
 import net.joefoxe.hexerei.item.custom.*;
 import net.joefoxe.hexerei.item.custom.bottles.*;
+import net.joefoxe.hexerei.item.data_components.BookColorData;
 import net.joefoxe.hexerei.item.data_components.BookData;
 import net.joefoxe.hexerei.item.data_components.FluteData;
 import net.joefoxe.hexerei.particle.ModParticleTypes;
 import net.joefoxe.hexerei.tileentity.OwlCourierDepotTile;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
+import net.joefoxe.hexerei.util.HexereiUtil;
 import net.joefoxe.hexerei.util.message.BroomEnderSatchelBrushParticlePacket;
 import net.joefoxe.hexerei.util.message.OpenOwlCourierDepotNameEditorPacket;
 import net.minecraft.ChatFormatting;
@@ -28,6 +31,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -41,15 +45,21 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -62,7 +72,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class ModItems {
 
@@ -74,7 +83,91 @@ public class ModItems {
 	public static final DeferredHolder<LootItemFunctionType<?>, LootItemFunctionType<CopyCourierPackageDataFunction>> COPY_PACKAGE_DATA = LOOT_FUNCTION_TYPES.register("copy_package_data", () -> new LootItemFunctionType<>(CopyCourierPackageDataFunction.CODEC));
 	public static final DeferredHolder<LootItemFunctionType<?>, LootItemFunctionType<CopyCourierLetterDataFunction>> COPY_LETTER_DATA = LOOT_FUNCTION_TYPES.register("copy_letter_data", () -> new LootItemFunctionType<>(CopyCourierLetterDataFunction.CODEC));
 	public static final DeferredHolder<Item, Item> BOOK_OF_SHADOWS = ITEMS.register("book_of_shadows",
-			() -> new HexereiBookItem(new Item.Properties().stacksTo(1)));
+			() -> new HexereiBookItem(new Item.Properties().component(ModDataComponents.BOOK, BookData.EMPTY).component(ModDataComponents.BOOK_COLORS, BookColorData.EMPTY).stacksTo(1)));
+
+	public static final DeferredHolder<Item, Item> NOTEBOOK = ITEMS.register("notebook",
+			() -> new HexereiBookItem(new Item.Properties().component(ModDataComponents.BOOK, BookData.EMPTY_NOTEBOOK).component(ModDataComponents.BOOK_COLORS, BookColorData.EMPTY_NOTEBOOK).stacksTo(1)){
+
+				@Override
+				public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+
+					if(Screen.hasShiftDown()) {
+						tooltipComponents.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+						tooltipComponents.add(Component.translatable("tooltip.hexerei.notebook").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+					} else {
+						tooltipComponents.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+
+					}
+				}
+			});
+
+	public static final DeferredHolder<Item, Item> BOOK_OF_COLORS = ITEMS.register("book_of_colors",
+			() -> new HexereiBookItem(new Item.Properties().component(ModDataComponents.BOOK, BookData.EMPTY_AS.apply(HexereiUtil.getResource("book_of_colors"))).component(ModDataComponents.BOOK_COLORS, BookColorData.EMPTY_COLORS).stacksTo(1)){
+
+				@Override
+				public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+
+					if(Screen.hasShiftDown()) {
+						tooltipComponents.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+						tooltipComponents.add(Component.translatable("tooltip.hexerei.book_of_colors").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+					} else {
+						tooltipComponents.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+
+					}
+				}
+			});
+
+	public static final DeferredHolder<Item, Item> BOOK_CANVAS = ITEMS.register("book_canvas",
+			() -> new HangingEntityItem(ModEntityTypes.BOOK_CANVAS.get(), new Item.Properties()) {
+
+				public InteractionResult useOn(UseOnContext context) {
+					BlockPos blockpos = context.getClickedPos();
+					Direction direction = context.getClickedFace();
+					BlockPos blockpos1 = blockpos.relative(direction);
+					Player player = context.getPlayer();
+					ItemStack itemstack = context.getItemInHand();
+					if (player != null && !this.mayPlace(player, direction, itemstack, blockpos1)) {
+						return InteractionResult.FAIL;
+					} else {
+						Level level = context.getLevel();
+						HangingEntity hangingentity;
+						HexereiPaintingEntity painting = HexereiPaintingEntity.create(level, blockpos1, direction);
+						painting.setDirection(direction);
+
+						hangingentity = painting;
+
+						CustomData customdata = itemstack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+						if (!customdata.isEmpty()) {
+							EntityType.updateCustomEntityTag(level, player, hangingentity, customdata);
+						}
+
+						if (hangingentity.survives()) {
+							if (!level.isClientSide) {
+								hangingentity.playPlacementSound();
+								level.gameEvent(player, GameEvent.ENTITY_PLACE, hangingentity.position());
+								level.addFreshEntity(hangingentity);
+							}
+
+							itemstack.shrink(1);
+							return InteractionResult.sidedSuccess(level.isClientSide);
+						} else {
+							return InteractionResult.CONSUME;
+						}
+					}
+				}
+
+				@Override
+				public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+					if (Screen.hasShiftDown()) {
+						tooltipComponents.add(Component.translatable("<%s>", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAA6600)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+						tooltipComponents.add(Component.translatable("tooltip.hexerei.book_canvas").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+						tooltipComponents.add(Component.translatable("tooltip.hexerei.book_canvas2").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+					} else  {
+						tooltipComponents.add(Component.translatable("[%s]", Component.translatable("tooltip.hexerei.shift").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xAAAA00)))).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x999999))));
+					}
+					super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+				}
+			});
 
 
 	public static final DeferredHolder<Item, Item> MAHOGANY_BROOM = ITEMS.register("mahogany_broom",

@@ -2,6 +2,7 @@ package net.joefoxe.hexerei.block.custom;
 
 import com.mojang.serialization.MapCodec;
 import net.joefoxe.hexerei.block.ITileEntity;
+import net.joefoxe.hexerei.data.recipes.MoonPhases;
 import net.joefoxe.hexerei.tileentity.CrystalBallTile;
 import net.joefoxe.hexerei.tileentity.ModTileEntities;
 import net.minecraft.client.gui.screens.Screen;
@@ -88,6 +89,16 @@ public class CrystalBall extends BaseEntityBlock implements ITileEntity<CrystalB
         if (!level.isClientSide) {
             level.gameEvent(player, GameEvent.BLOCK_ACTIVATE, pos);
             level.blockEvent(pos, state.getBlock(), 1, 0);
+        } else {
+            if (level.getBlockEntity(pos) instanceof CrystalBallTile crystalBallTile) {
+                MoonPhases.MoonCondition phase = MoonPhases.MoonCondition.getMoonPhase(level);
+                if (Math.abs(crystalBallTile.centerYawIncrement) == 100)
+                    player.displayClientMessage(Component.translatable("Nyooooom"), true);
+                else if (phase == MoonPhases.MoonCondition.NONE)
+                    player.displayClientMessage(Component.translatable("block.hexerei.crystal_ball.daytime"), true);
+                else
+                    player.displayClientMessage(Component.translatable("block.hexerei.crystal_ball.moon_phase").append(Component.translatable(phase.getNameTranslated())), true);
+            }
         }
         return InteractionResult.SUCCESS;
     }

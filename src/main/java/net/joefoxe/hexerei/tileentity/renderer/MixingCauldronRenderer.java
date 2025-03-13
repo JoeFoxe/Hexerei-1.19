@@ -89,11 +89,6 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
         }
         else return;
 
-        float dist = Math.abs(tileEntityIn.fluidRenderLevel - tileEntityIn.getFluidStack().getAmount()) / 1000f;
-        tileEntityIn.fluidRenderLevel = HexereiUtil.moveTo(tileEntityIn.fluidRenderLevel, tileEntityIn.getFluidStack().getAmount(),  (25 + 50 * dist) * partialTicks);
-
-        renderBlock(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, ModBlocks.MIXING_CAULDRON_DYE.get().defaultBlockState(), null, tileEntityIn.getDyeColor());
-
         float fillPercentage = 0;
         boolean flag = false;
         FluidStack fluidStack = tileEntityIn.getFluidInTank(0);
@@ -106,8 +101,10 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
         }
 
 
+        float dist = Math.abs(tileEntityIn.fluidRenderLevel - tileEntityIn.getFluidStack().getAmount()) / 1000f;
+        tileEntityIn.fluidRenderLevel = HexereiUtil.moveTo(tileEntityIn.fluidRenderLevel, tileEntityIn.getFluidStack().getAmount(),  (25 + 50 * dist) * partialTicks);
 
-
+        renderBlock(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, ModBlocks.MIXING_CAULDRON_DYE.get().defaultBlockState(), null, tileEntityIn.getDyeColor());
 
 
 
@@ -179,9 +176,8 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
                 matrixStackIn.popPose();
             }
         }
-
-
-
+        if (bufferIn instanceof MultiBufferSource.BufferSource bufferSource)
+            bufferSource.endBatch();
 
         if(!fluidStack.isEmpty()) {
             matrixStackIn.pushPose();
@@ -194,6 +190,7 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
                 renderFluid(matrixStackIn, bufferIn, fluidStack, 1, fillPercentage, combinedLightIn, tileEntityIn, waterColor);
             matrixStackIn.popPose();
         }
+
 
     }
 

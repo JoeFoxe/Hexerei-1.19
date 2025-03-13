@@ -1,0 +1,38 @@
+{
+  "parent": "builtin/entity",
+  "textures": {
+    "particle": "hexerei:item/book_canvas"
+  },
+  "gui_light": "front",
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [0, 0, 0],
+      "translation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [0, 0, 0],
+      "translation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    },
+    "firstperson_righthand": {
+      "rotation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    },
+    "firstperson_lefthand": {
+      "rotation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    },
+    "ground": {
+      "translation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    },
+    "gui": {
+      "rotation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    },
+    "fixed": {
+      "scale": [1, 1, 1]
+    }
+  }
+}

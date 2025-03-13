@@ -39,6 +39,7 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class BookOfShadowsAltarRenderer implements BlockEntityRenderer<BookOfShadowsAltarTile> {
@@ -75,6 +76,8 @@ public class BookOfShadowsAltarRenderer implements BlockEntityRenderer<BookOfSha
         ItemStack stack = altarTile.itemHandler.getStackInSlot(0);
 
         if(stack.getItem() instanceof HexereiBookItem){
+
+            boolean isBookOfShadows = altarTile.currentBook != null && altarTile.currentBook.book().equals(HexereiUtil.getResource("book_of_shadows"));
             MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
 
             altarTile.degreesSpunRender = CrystalBallRenderer.lerpAngle(altarTile.degreesSpunOld, altarTile.degreesSpun, partialTicks);// altarTile.drawing.moveToAngle(altarTile.degreesSpun, altarTile.degreesSpunTo, altarTile.degreesSpunSpeed * partialTicks);
@@ -84,16 +87,8 @@ public class BookOfShadowsAltarRenderer implements BlockEntityRenderer<BookOfSha
 
             altarTile.pageOneRotationRender = Mth.lerp(partialTicks, altarTile.pageOneRotationLast, altarTile.pageOneRotation);
             altarTile.pageTwoRotationRender = Mth.lerp(partialTicks, altarTile.pageTwoRotationLast, altarTile.pageTwoRotation);
+//            altarTile.degreesOpenedRender = (Mth.sin(altarTile.pageOneRotationRender / 180 * Mth.PI) * 2.5f) + (Mth.sin(altarTile.pageTwoRotationRender / 180 * Mth.PI) * 2.5f);
 
-            Vec2 ip = PageDrawing.getIntersectPoint(Minecraft.getInstance().player.getLookAngle(), Minecraft.getInstance().player.getEyePosition(), altarTile, PageDrawing.PageOn.LEFT_PAGE);
-            Vec2 ip2 = PageDrawing.getIntersectPoint(Minecraft.getInstance().player.getLookAngle(), Minecraft.getInstance().player.getEyePosition(), altarTile, PageDrawing.PageOn.RIGHT_PAGE);
-            if (ip == null)
-                ip = new Vec2(50, 50);
-            if (ip2 == null)
-                ip2 = new Vec2(50, 50);
-            if (altarTile.openedPercent != 1) {
-                altarTile.drawing.drawPages(altarTile, ip.x, ip.y, ip2.x, ip2.y, matrixStackIn, buffer, combinedLightIn, combinedOverlayIn, partialTicks, PageDrawing.DrawingType.BOOK);
-            }
             DyeColor col = HexereiUtil.getDyeColorNamed(stack.getHoverName().getString());
 
             matrixStackIn.pushPose();
@@ -107,8 +102,13 @@ public class BookOfShadowsAltarRenderer implements BlockEntityRenderer<BookOfSha
             matrixStackIn.mulPose(Axis.ZP.rotationDegrees(altarTile.degreesOpenedRender - 90));
             matrixStackIn.translate(1f / 32f * (altarTile.degreesOpenedRender / 90f), 1f / 32f * (1 - (altarTile.degreesOpenedRender / 90f)), 0);
 
-            renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_COVER.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
-            renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_COVER_CORNERS.get().defaultBlockState(), col == null ? HexereiBookItem.getColor1(stack) : HexereiUtil.getColorValue(col));
+            if (isBookOfShadows) {
+                renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_COVER.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
+                renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_COVER_CORNERS.get().defaultBlockState(), col == null ? HexereiBookItem.getColor1(stack) : HexereiUtil.getColorValue(col));
+            } else {
+                renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_COVER.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
+                renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_COVER_CORNERS.get().defaultBlockState(), col == null ? HexereiBookItem.getColor1(stack) : HexereiUtil.getColorValue(col));
+            }
             matrixStackIn.popPose();
 
             matrixStackIn.pushPose();
@@ -122,8 +122,13 @@ public class BookOfShadowsAltarRenderer implements BlockEntityRenderer<BookOfSha
             matrixStackIn.mulPose(Axis.ZP.rotationDegrees(-(altarTile.degreesOpenedRender - 90)));
             matrixStackIn.translate(-1f / 32f * (altarTile.degreesOpenedRender / 90f), 1f / 32f * (1 - (altarTile.degreesOpenedRender / 90f)), 0);
 
-            renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_BACK.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
-            renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_BACK_CORNERS.get().defaultBlockState(), col == null ? HexereiBookItem.getColor1(stack) : HexereiUtil.getColorValue(col));
+            if (isBookOfShadows) {
+                renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_BACK.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
+                renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_BACK_CORNERS.get().defaultBlockState(), col == null ? HexereiBookItem.getColor1(stack) : HexereiUtil.getColorValue(col));
+            } else {
+                renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_BACK.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
+                renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_BACK_CORNERS.get().defaultBlockState(), col == null ? HexereiBookItem.getColor1(stack) : HexereiUtil.getColorValue(col));
+            }
             matrixStackIn.popPose();
 
             matrixStackIn.pushPose();
@@ -134,74 +139,26 @@ public class BookOfShadowsAltarRenderer implements BlockEntityRenderer<BookOfSha
             matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(altarTile.degreesOpenedRender / 2 + 45)));
             matrixStackIn.mulPose(Axis.YP.rotationDegrees(-altarTile.degreesFloppedRender));
             matrixStackIn.translate(0, 0, -(altarTile.degreesFloppedRender / 10f) / 32);
-            renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_BINDING.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
+            if (isBookOfShadows) {
+                renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_BINDING.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
+            } else {
+                renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_BINDING.get().defaultBlockState(), HexereiBookItem.getColor2(stack));
+            }
             matrixStackIn.popPose();
 
-//            if(altarTile.floppedPercent != 1){
-//                matrixStackIn.pushPose();
-//                matrixStackIn.translate(8f / 16f, 18f / 16f, 8f / 16f);
-//                matrixStackIn.translate((float) Math.sin((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpenedRender / 5f - 12f), 0f / 16f, (float) Math.cos((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpenedRender / 5f - 12f));
-//                matrixStackIn.translate(0, ((BookOfShadowsAltarTile.easeFlop(1 - altarTile.degreesFlopped / 90) - 1) / 16f), 0);
-//                matrixStackIn.mulPose(Axis.YP.rotationDegrees(altarTile.degreesSpunRender));
-//                matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(altarTile.degreesOpenedRender / 2 + 45)));
-//                matrixStackIn.mulPose(Axis.YP.rotationDegrees(-altarTile.degreesFloppedRender));
-//                matrixStackIn.translate(0, 0, -(altarTile.degreesFloppedRender / 10f) / 32);
-//                matrixStackIn.translate(0, 1f / 32f, 0);
-//                matrixStackIn.mulPose(Axis.ZP.rotationDegrees((80f - altarTile.degreesOpenedRender / 1.12f)));
-//                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(((80f - altarTile.degreesOpenedRender / 1.12f) / 90f) * (-altarTile.pageOneRotationRender)));
-//                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(((80f - altarTile.degreesOpenedRender / 1.12f) / 90f) * (altarTile.pageTwoRotationRender / 16f)));
-//                renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_PAGE.get().defaultBlockState());
-//                matrixStackIn.popPose();
-//            }
-//
-//            if(altarTile.turnPage == 1 || altarTile.turnPage == -1){
-//                matrixStackIn.pushPose();
-//                matrixStackIn.translate(8f / 16f, 18f / 16f, 8f / 16f);
-//                matrixStackIn.translate((float) Math.sin((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpenedRender / 5f - 12f), 0f / 16f, (float) Math.cos((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpenedRender / 5f - 12f));
-//                matrixStackIn.translate(0, ((BookOfShadowsAltarTile.easeFlop(1 - altarTile.degreesFlopped / 90) - 1) / 16f), 0);
-//                matrixStackIn.mulPose(Axis.YP.rotationDegrees(altarTile.degreesSpunRender));
-//                matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(altarTile.degreesOpenedRender / 2 + 45)));
-//                matrixStackIn.mulPose(Axis.YP.rotationDegrees(-altarTile.degreesFloppedRender));
-//                matrixStackIn.translate(0, 0, -(altarTile.degreesFloppedRender / 10f) / 32);
-//                matrixStackIn.translate(0, 1f / 32f, 0);
-//                matrixStackIn.mulPose(Axis.ZP.rotationDegrees((80f - altarTile.degreesOpenedRender / 1.12f)));
-//                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(((80f - altarTile.degreesOpenedRender / 1.12f) / 90f) * (-altarTile.pageOneRotationRender / 16f + 180/16f)));
-//                renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_PAGE.get().defaultBlockState());
-//                matrixStackIn.popPose();
-//            }
-//
-//            if(altarTile.floppedPercent != 1) {
-//                matrixStackIn.pushPose();
-//                matrixStackIn.translate(8f / 16f, 18f / 16f, 8f / 16f);
-//                matrixStackIn.translate((float) Math.sin((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpenedRender / 5f - 12f), 0f / 16f, (float) Math.cos((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpenedRender / 5f - 12f));
-//                matrixStackIn.translate(0, ((BookOfShadowsAltarTile.easeFlop(1 - altarTile.degreesFlopped / 90) - 1) / 16f), 0);
-//                matrixStackIn.mulPose(Axis.YP.rotationDegrees(altarTile.degreesSpunRender));
-//                matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(altarTile.degreesOpenedRender / 2 + 45)));
-//                matrixStackIn.mulPose(Axis.YP.rotationDegrees(-altarTile.degreesFloppedRender));
-//                matrixStackIn.translate(0, 0, -(altarTile.degreesFloppedRender / 10f) / 32);
-//                matrixStackIn.translate(0, 1f / 32f, 0);
-//                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(-(80f - altarTile.degreesOpenedRender / 1.12f)));
-//                matrixStackIn.mulPose(Axis.ZP.rotationDegrees((-(80f - altarTile.degreesOpenedRender / 1.12f) / 90f)*(-altarTile.pageTwoRotationRender)));
-//                matrixStackIn.mulPose(Axis.ZP.rotationDegrees((-(80f - altarTile.degreesOpenedRender / 1.12f) / 90f)*(altarTile.pageOneRotationRender / 16f)));
-//                renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_PAGE.get().defaultBlockState());
-//                matrixStackIn.popPose();
-//            }
-//
-//            if(altarTile.turnPage == 2 || altarTile.turnPage == -1){
-//                matrixStackIn.pushPose();
-//                matrixStackIn.translate(8f / 16f, 18f / 16f, 8f / 16f);
-//                matrixStackIn.translate((float) Math.sin((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpenedRender / 5f - 12f), 0f / 16f, (float) Math.cos((altarTile.degreesSpunRender) / 57.3f) / 32f * (altarTile.degreesOpenedRender / 5f - 12f));
-//                matrixStackIn.translate(0, ((BookOfShadowsAltarTile.easeFlop(1 - altarTile.degreesFlopped / 90) - 1) / 16f), 0);
-//                matrixStackIn.mulPose(Axis.YP.rotationDegrees(altarTile.degreesSpunRender));
-//                matrixStackIn.mulPose(Axis.XP.rotationDegrees(-(altarTile.degreesOpenedRender / 2 + 45)));
-//                matrixStackIn.mulPose(Axis.YP.rotationDegrees(-altarTile.degreesFloppedRender));
-//                matrixStackIn.translate(0, 0, -(altarTile.degreesFloppedRender / 10f) / 32);
-//                matrixStackIn.translate(0, 1f / 32f, 0);
-//                matrixStackIn.mulPose(Axis.ZP.rotationDegrees(-(80f - altarTile.degreesOpenedRender / 1.12f)));
-//                matrixStackIn.mulPose(Axis.ZP.rotationDegrees((-(80f - altarTile.degreesOpenedRender / 1.12f) / 90f) * (-altarTile.pageTwoRotationRender / 16f + 180/16f)));
-//                renderBlock(matrixStackIn, buffer, combinedLightIn, ModBlocks.BOOK_OF_SHADOWS_PAGE.get().defaultBlockState());
-//                matrixStackIn.popPose();
-//            }
+            buffer.endBatch();
+
+
+            Vec2 ip = PageDrawing.getIntersectPoint(Minecraft.getInstance().player.getLookAngle(), Minecraft.getInstance().player.getEyePosition(), altarTile, PageDrawing.PageOn.LEFT_PAGE);
+            Vec2 ip2 = PageDrawing.getIntersectPoint(Minecraft.getInstance().player.getLookAngle(), Minecraft.getInstance().player.getEyePosition(), altarTile, PageDrawing.PageOn.RIGHT_PAGE);
+            if (ip == null)
+                ip = new Vec2(50, 50);
+            if (ip2 == null)
+                ip2 = new Vec2(50, 50);
+            if (altarTile.openedPercent != 1) {
+                altarTile.drawing.drawPages(altarTile, ip.x, ip.y, ip2.x, ip2.y, matrixStackIn, buffer, combinedLightIn, combinedOverlayIn, partialTicks, PageDrawing.DrawingType.BOOK);
+            }
+
             buffer.endBatch();
             if (altarTile.openedPercent != 1) {
                 try {

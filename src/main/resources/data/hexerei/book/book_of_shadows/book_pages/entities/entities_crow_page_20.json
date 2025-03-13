@@ -1,0 +1,77 @@
+{
+  "name": "entity.hexerei.crow",
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 0,
+          "height": 19,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_crow_page_20.passage_1"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 12,
+          "height": 3,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_crow_page_20.passage_2"
+    }
+  ],
+
+
+  "entities": [
+    {
+      "x": 2.5,
+      "y": 3.55,
+      "scale": 2,
+      "id": "hexerei:crow",
+      "tag": "{Owner: [I; 940439953, -167562164, -1601161573, -1389718966], Sitting: 1b, UUID: [I; -1634668069, 186008803, -1187431543, -118718510], CustomName: '\"joe_\"', OnGround: 1b, DyeColor: 15, Variant: 0,inv:{Size:3,Items:[{count:1,Slot:0,components:{\"minecraft:custom_name\":'\"joe_\"',\"minecraft:dyed_color\":{rgb:12687579}},id:\"hexerei:witch_helmet\"}]}, Command: 1}",
+      "hover_offset": {
+        "x": 0,
+        "y": -0.35,
+        "scale": 0.4
+      }
+    },
+    {
+      "x": 1,
+      "y": 2.45,
+      "scale": 2,
+      "id": "hexerei:crow",
+      "tag": "{Owner: [I; 940439953, -167562164, -1601161573, -1389718966], Sitting: 1b, UUID: [I; -1634668069, 186008803, -1187431543, -118718510], CustomName: '\"les_\"', OnGround: 1b, DyeColor: 15, Variant: 0,inv:{Size:3,Items:[{count:1,Slot:0,components:{\"minecraft:custom_name\":'\"joe_\"',\"minecraft:dyed_color\":{rgb:12687579}},id:\"hexerei:witch_helmet\"}]}, Command: 1}",
+      "hover_offset": {
+        "x": 0,
+        "y": -0.35,
+        "scale": 0.4
+      }
+    },
+    {
+      "x": 4,
+      "y": 2.45,
+      "scale": 2,
+      "id": "hexerei:crow",
+      "tag": "{Owner: [I; 940439953, -167562164, -1601161573, -1389718966], Sitting: 1b, UUID: [I; -1634668069, 186008803, -1187431543, -118718510], CustomName: '\"trans_\"', OnGround: 1b, DyeColor: 15, Variant: 0,inv:{Size:3,Items:[{count:1,Slot:0,components:{\"minecraft:custom_name\":'\"joe_\"',\"minecraft:dyed_color\":{rgb:12687579}},id:\"hexerei:witch_helmet\"}]}, Command: 1}",
+      "hover_offset": {
+        "x": 0,
+        "y": -0.35,
+        "scale": 0.4
+      }
+    }
+  ],
+  "items_and_fluids": [
+    {
+      "type": "item",
+      "x": 2.5,
+      "y": 6,
+      "item": {
+        "id": "hexerei:seed_mixture"
+      }
+    }
+  ]
+}

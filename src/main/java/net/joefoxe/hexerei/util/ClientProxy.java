@@ -23,16 +23,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
-import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -48,8 +44,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static net.joefoxe.hexerei.block.connected.StitchedSprite.ALL;
@@ -82,10 +76,6 @@ public class ClientProxy implements SidedProxy {
             Font toReturn = ClientProxy.fontList.get(HexConfig.FONT_LIST.get().get(index));
             return toReturn == null ? Minecraft.getInstance().font : toReturn;
         }
-//		if(clientTicks % 40 > 20)
-//			return fontList.values().stream().toList().get(0);
-//		return fontList.values().stream().toList().get(1);
-//		return font;
     }
 
     @Override
@@ -151,6 +141,7 @@ public class ClientProxy implements SidedProxy {
         e.registerEntityRenderer(ModEntityTypes.HEXEREI_CHEST_BOAT.get(), ModChestBoatRenderer::new);
         e.registerEntityRenderer(ModEntityTypes.CROW.get(), CrowRenderer::new);
         e.registerEntityRenderer(ModEntityTypes.OWL.get(), OwlRenderer::new);
+        e.registerEntityRenderer(ModEntityTypes.BOOK_CANVAS.get(), HexereiPaintingRenderer::new);
         ModItemProperties.setup();
     }
 

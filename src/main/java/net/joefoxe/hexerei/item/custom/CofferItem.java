@@ -1,9 +1,7 @@
 package net.joefoxe.hexerei.item.custom;
 
-import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.container.CofferContainer;
 import net.joefoxe.hexerei.event.ClientEvents;
-import net.joefoxe.hexerei.item.ModDataComponents;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
@@ -15,7 +13,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -42,18 +39,6 @@ public class CofferItem extends BlockItem {
     public interface ItemHandlerConsumer {
         void register(ItemColor handler, ItemLike... items);
     }
-
-//    @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = "hexerei", bus = Mod.EventBusSubscriber.Bus.MOD)
-//    static class ColorRegisterHandler
-//    {
-//        @SubscribeEvent(priority = EventPriority.HIGHEST)
-//        public static void registerCofferColors(RegisterColorHandlersEvent.Item event)
-//        {
-//            CofferItem.ItemHandlerConsumer items = event.getItemColors()::register;
-//            items.register((s, t) -> t == 1 ? getColorValue(CofferItem.getDyeColorNamed(s), s) : -1, ModItems.COFFER.get());
-//
-//        }
-//    }
 
     public static int getColorValue(DyeColor color, ItemStack stack) {
         int dyeCol = getColorStatic(stack);

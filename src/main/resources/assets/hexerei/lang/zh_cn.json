@@ -429,7 +429,7 @@
 
   "book.hexerei.intro_page_5.passage_1": "    它们可以与另一个书签或空插槽交换。右键书签会将您重定向到它保存的页面。\n 蹲下并右键单击祭坛以拿起此书。\n此书在拿起时可以保持打开或合上状态，尽管在您手中不能翻页，但当此书处于打开状态时，仍会显示当前书页，它必须在祭坛上才能翻页。",
 
-  "book.hexerei.intro_page_6.passage_1": "    在配置中，如果字体难以阅读或您想要更多的沉浸感，您可以将字体从奇特的字体更改为普通的 minecraft 字体。\n 您还可以悬停到物品上并按 %kkey.hexerei.book_hovering_recipe 查询配方并使用 %kkey.hexerei.book_hovering_uses 单独打开JEI页面。",
+  "book.hexerei.intro_page_6.passage_1": "    在配置中，如果字体难以阅读或您想要更多的沉浸感，您可以将字体从奇特的字体更改为普通的 minecraft 字体。\n 您还可以悬停到物品上并按 %kkey.hexerei.book_hovering_recipe% 查询配方并使用 %kkey.hexerei.book_hovering_uses 单独打开JEI页面。",
 
 
   "book.hexerei.support_page_1.passage_1": "    因为模组社区，这个模组已经走了很长一段路，并将因此而继续努力。快来加入我们的 Discord 吧！\n  如果您有任何问题，请随时加入并寻求帮助，因为我们是一个非常友好的社区！",
@@ -709,7 +709,7 @@
   "book.hexerei.items_mindful_trance_blend_1.passage_2": "    这将被用于特殊效果的蜡烛注入，这将在不久的将来实现。",
 
   "book.hexerei.items_reading_glasses_1.passage_1": "老花镜",
-  "book.hexerei.items_reading_glasses_1.passage_2": "    阅读本书需要助力吗？想要稍微的放大书本更好的看清图片内容？不错！这正是为您准备的眼镜！老花镜可以像望远镜一样使用，但只能缩放一点点...也能够戴在您的头上使用 %kkey.hexerei.glasses_zoom 调节缩放。",
+  "book.hexerei.items_reading_glasses_1.passage_2": "    阅读本书需要助力吗？想要稍微的放大书本更好的看清图片内容？不错！这正是为您准备的眼镜！老花镜可以像望远镜一样使用，但只能缩放一点点...也能够戴在您的头上使用 %kkey.hexerei.glasses_zoom% 调节缩放。",
 
 
   "book.hexerei.entities_index_page_1.passage_1": "- 生物、实体 -",
@@ -745,7 +745,7 @@
   "book.hexerei.entities_broom_page_1.passage_2": "  扫帚是巫师世界的可骑行载具。允许巫师们驾驭它们，可以横穿大陆四处翱翔。当前有柳木扫帚和桃花心木扫帚这两种扫帚可用。",
   "book.hexerei.entities_broom_page_2.passage_1": "  首先是柳木扫帚。这是最慢的扫帚，它适合进行游戏探索并且可以进行慢而准的建筑建造。\n\n  尽管它很慢，但是您会发现，它在早期游戏中十分容易制作出来。",
   "book.hexerei.entities_broom_page_3.passage_1": "  其次是桃花心木扫帚。它比柳木扫帚更快！探索世界比柳木扫帚快得多。\n  它不仅快，而且掉落后能防火防岩浆，但当扫帚放置为实体时并不能防。",
-  "book.hexerei.entities_broom_page_4.passage_1": "  如果想骑上扫帚，右键点击放在地上的扫帚即可，就像船一样。\n  蹲伏右键点击可以打开扫帚的界面。\n  当骑行时，可以按住空格键升入云霄，也可以按住 %kkey.hexerei.broomDescend 降落地面。确保降落的快捷键绑定没有冲突，或者您可以将降落的快捷键绑定成您喜欢的。",
+  "book.hexerei.entities_broom_page_4.passage_1": "  如果想骑上扫帚，右键点击放在地上的扫帚即可，就像船一样。\n  蹲伏右键点击可以打开扫帚的界面。\n  当骑行时，可以按住空格键升入云霄，也可以按住 %kkey.hexerei.broomDescend% 降落地面。确保降落的快捷键绑定没有冲突，或者您可以将降落的快捷键绑定成您喜欢的。",
   "book.hexerei.entities_broom_page_5.passage_1": "  扫帚的其余操作就像船一样。您已经了解如何骑着扫帚飞行，现在，让我们学学扫帚的配件吧！\n  我们再次对着放下的扫帚蹲伏右键点击，打开它的界面。",
   "book.hexerei.entities_broom_page_6.passage_1": "  首先，在扫帚界面的顶部有三个空槽位，第一个是杂项配件，通常会装配到扫帚尖端。\n  例如，扫帚钥匙链可以装到这个空槽上，当钥匙链吊着挂坠时，会在链上显示被吊着的挂坠。",
   "book.hexerei.entities_broom_page_7.passage_1": "  第二个空槽是用来装上挎包的，挎包有三种等级，每升一级都会额外增加9格物品容量。\n\n\n\n  我想旅行时您需要它。",

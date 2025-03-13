@@ -1,10 +1,12 @@
 package net.joefoxe.hexerei.item.custom;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.block.custom.HerbJar;
+import net.joefoxe.hexerei.client.renderer.ModRenderTypes;
 import net.joefoxe.hexerei.item.ModItems;
 import net.joefoxe.hexerei.tileentity.HerbJarTile;
 import net.joefoxe.hexerei.tileentity.renderer.HerbJarRenderer;
@@ -25,6 +27,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.RandomSource;
@@ -33,6 +36,7 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -42,6 +46,7 @@ import net.neoforged.neoforge.client.RenderTypeHelper;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Random;
 
@@ -89,6 +94,7 @@ public class HerbJarItemRenderer extends CustomItemRenderer {
         Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, combinedLightIn,
                 OverlayTexture.NO_OVERLAY, matrixStackIn, bufferIn, level, 1);
     }
+    public static ModelResourceLocation JAR = ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath("hexerei", "block/herb_jar_model"));
 
     public void renderTileStuff(ItemStack stack, ItemDisplayContext transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
 
@@ -98,27 +104,13 @@ public class HerbJarItemRenderer extends CustomItemRenderer {
         String name = tileEntityIn.getDisplayName().getString();
         DyeColor col = HexereiUtil.getDyeColorNamed(name);
 
-        int color = col != null ? HexereiUtil.getColorValue(col) : HexereiUtil.getDyeColor(stack, HerbJar.DEFAULT_COLOR.rgb());
-
         matrixStackIn.pushPose();
 
         matrixStackIn.translate(0.2, -0.1, -0.10);
         matrixStackIn.translate(8D/16D, 4.25D/16D, 4D/16D);
         matrixStackIn.scale(0.30f, 0.30f, 0.30f);
 
-//        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180));
         renderItem(new ItemStack(tileEntityIn.itemHandler.getStackInSlot(0).getItem(), 1), tileEntityIn.getLevel(), matrixStackIn, bufferIn, combinedLightIn);
-        matrixStackIn.popPose();
-
-
-        matrixStackIn.pushPose();
-        matrixStackIn.mulPose(Axis.YP.rotationDegrees(0));
-        matrixStackIn.translate(0.2, -0.1, -0.1);
-//        Lighting.setupFor3DItems();
-        renderBlock(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, ModBlocks.HERB_JAR.get().defaultBlockState().setValue(HerbJar.GUI_RENDER, true).setValue(HerbJar.DYED, color != HerbJar.DEFAULT_COLOR.rgb()), null, color);
-//        renderBlock(matrixStackIn, bufferIn, combinedLightIn, ModBlocks.HERB_JAR.get().defaultBlockState().setValue(HerbJar.GUI_RENDER, true).setValue(HerbJar.DYED, color != 0x422F1E && color != 0));
-
-//        renderBlock(matrixStackIn, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY, ModBlocks.HERB_JAR.get().defaultBlockState().setValue(HerbJar.GUI_RENDER, true).setValue(HerbJar.DYED, (color != 0x422F1E && color != 0)), color);
         matrixStackIn.popPose();
 
 
@@ -153,7 +145,6 @@ public class HerbJarItemRenderer extends CustomItemRenderer {
             for(int a = 0; a < ((float)tileEntityIn.itemHandler.getContents().get(0).getCount() / 1024f) * 10f; a++){
                 matrixStackIn.pushPose();
                 matrixStackIn.translate(0.2, -0.1, -0.10);
-//                boolean is3dModel = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(Registry.ITEM.getKey(item), "inventory")).isGui3d();
                 if(is3dModel) {
                     matrixStackIn.translate(0, 1.5D / 16D, 0);
                 }
@@ -182,10 +173,16 @@ public class HerbJarItemRenderer extends CustomItemRenderer {
 
 
         int i = 0x464F56;
-        int j = (int)((double) FastColor.ARGB32.red(i) * 0.4D);
-        int k = (int)((double) FastColor.ARGB32.green(i) * 0.4D);
-        int l = (int)((double) FastColor.ARGB32.blue(i) * 0.4D);
-        int i1 = FastColor.ARGB32.color( 0, j, k, l);
+        int j1 = (int)((double) FastColor.ARGB32.red(i) * 0.4D);
+        int k1 = (int)((double) FastColor.ARGB32.green(i) * 0.4D);
+        int l1 = (int)((double) FastColor.ARGB32.blue(i) * 0.4D);
+        int i1 = FastColor.ARGB32.color( 0, j1, k1, l1);
+        int j2 = (int)((double) FastColor.ARGB32.red(i) * 0.2D);
+        int k2 = (int)((double) FastColor.ARGB32.green(i) * 0.2D);
+        int l2 = (int)((double) FastColor.ARGB32.blue(i) * 0.2D);
+        int i2 = FastColor.ARGB32.color( 0, j2, k2, l2);
+
+        matrixStackIn.pushPose();
 
 
         matrixStackIn.translate(0.2, -0.1, -0.10);
@@ -198,10 +195,10 @@ public class HerbJarItemRenderer extends CustomItemRenderer {
         Component component = null;
         if(stack.has(DataComponents.CUSTOM_NAME))
             component = stack.getHoverName();
-//
+
         if(component == null){
             if (tileEntityIn.getItemStackInSlot(0) != ItemStack.EMPTY) {
-                if (tileEntityIn.getItemStackInSlot(0).getHoverName().getString().equals(""))
+                if (tileEntityIn.getItemStackInSlot(0).getHoverName().getString().isEmpty())
                     component = tileEntityIn.getItemStackInSlot(0).getItem().getName(tileEntityIn.getItemStackInSlot(0));
                 else
                     component = tileEntityIn.getItemStackInSlot(0).getHoverName();
@@ -211,17 +208,65 @@ public class HerbJarItemRenderer extends CustomItemRenderer {
 
         if(component != null){
             List<FormattedCharSequence> list = Minecraft.getInstance().font.split(component, 70);
-            float f3 = (float) (-Minecraft.getInstance().font.width(list.get(0)) / 2);
+            float f3 = (float) (-Minecraft.getInstance().font.width(list.getFirst()) / 2);
+            matrixStackIn.translate(0, 0, 1);
             if(tileEntityIn.components().has(DataComponents.DYED_COLOR))
-                matrixStackIn.translate(0, 5, 1);
-            Minecraft.getInstance().font.drawInBatch(list.get(0), f3, 0, i1, false, matrixStackIn.last().pose(), bufferIn, Font.DisplayMode.NORMAL, 0, combinedLightIn);
+                matrixStackIn.translate(0, 5, 0);
+            Minecraft.getInstance().font.drawInBatch(list.getFirst(), f3, 0, i1, false, matrixStackIn.last().pose(), bufferIn, Font.DisplayMode.NORMAL, 0, combinedLightIn);
+            for (int y = 0; y < 9; y++) {
+                if (y % 2 == 0)
+                    continue;
+                matrixStackIn.pushPose();
+                matrixStackIn.translate(((y % 3) - 1) * 0.25f, ((y / 3) - 1) * 0.25f, -0.05f);
+                Minecraft.getInstance().font.drawInBatch(list.getFirst(), f3, 0, i2, false, matrixStackIn.last().pose(), bufferIn, Font.DisplayMode.NORMAL, 0, combinedLightIn);
+                matrixStackIn.popPose();
+            }
 
             if (list.size() > 1) {
                 matrixStackIn.translate(0, 10, 0);
                 f3 = (float) (-Minecraft.getInstance().font.width(list.get(1)) / 2);
                 Minecraft.getInstance().font.drawInBatch(list.get(1), f3, 0, i1, false, matrixStackIn.last().pose(), bufferIn, Font.DisplayMode.NORMAL, 0, combinedLightIn);
+                for (int y = 0; y < 9; y++) {
+                    if (y % 2 == 0)
+                        continue;
+                    matrixStackIn.pushPose();
+                    matrixStackIn.translate(((y % 3) - 1) * 0.25f, ((y / 3) - 1) * 0.25f, -0.05f);
+                    Minecraft.getInstance().font.drawInBatch(list.get(1), f3, 0, i2, false, matrixStackIn.last().pose(), bufferIn, Font.DisplayMode.NORMAL, 0, combinedLightIn);
+                    matrixStackIn.popPose();
+                }
             }
         }
+
+        if (bufferIn instanceof MultiBufferSource.BufferSource bufferSource)
+            bufferSource.endBatch();
+
+        matrixStackIn.popPose();
+
+
+
+        matrixStackIn.pushPose();
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees(0));
+        matrixStackIn.translate(0.2 + 0.5f, -0.1 + 0.5f, -0.1 + 0.5f);
+        matrixStackIn.scale(1.33f, 1.33f, 1.33f);
+
+        BakedModel baseModel = Minecraft.getInstance().getModelManager().getModel(JAR);
+
+        if (baseModel != Minecraft.getInstance().getModelManager().getMissingModel()) {
+
+            Minecraft.getInstance().getItemRenderer().render(
+                    stack,
+                    ItemDisplayContext.FIXED,
+                    false,
+                    matrixStackIn,
+                    bufferIn,
+                    combinedLightIn,
+                    combinedOverlayIn,
+                    baseModel
+            );
+
+        }
+
+        matrixStackIn.popPose();
 
     }
 

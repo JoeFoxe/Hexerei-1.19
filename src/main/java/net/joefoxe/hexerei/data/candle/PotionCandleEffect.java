@@ -20,6 +20,7 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 public class PotionCandleEffect extends AbstractCandleEffect{
@@ -75,9 +76,21 @@ public class PotionCandleEffect extends AbstractCandleEffect{
             AABB aabb = (new AABB(pPos)).inflate(size).expandTowards(0.0D, (size * 4) < 4 ? 4 : size * 4 , 0.0D);
             List<LivingEntity> list = pLevel.getEntitiesOfClass(LivingEntity.class, aabb);
 
+            int id = BuiltInRegistries.MOB_EFFECT.getId(pPrimary);
+            Optional<Holder.Reference<MobEffect>> effectHolder = BuiltInRegistries.MOB_EFFECT.getHolder(id);
             for(LivingEntity living : list) {
-                if(!pLevel.isClientSide) {
-                    living.addEffect(new MobEffectInstance(Holder.direct(pPrimary), duration, amplifier, true, false, true));
+                if(!pLevel.isClientSide && effectHolder.isPresent()) {
+                    living.addEffect(
+                            new MobEffectInstance(
+                                    effectHolder.get(),
+                                    duration,
+                                    amplifier,
+                                    true,
+                                    false,
+                                    true
+                            )
+                    );
+
                     if(particle != null && !particle.isEmpty())
                         HexereiPacketHandler.sendToNearbyClient(pLevel, pPos, new CandleEffectParticlePacket(pPos, particle, living.getId(), 0));
                 }

@@ -23,7 +23,7 @@ public class HexereiSupporterBenefits {
     public static void init(){
 
         try {
-            String readUrl = readUrl(new URL("https://raw.githubusercontent.com/JoeFoxe/Hexerei-1.19/1.20.1/supporters.json"));
+            String readUrl = readUrl(new URL("https://raw.githubusercontent.com/JoeFoxe/Hexerei-1.19/1.21.1/supporters.json"));
             JsonObject object = JsonParser.parseString(readUrl).getAsJsonObject();
             JsonArray supportersJsonArray = object.getAsJsonArray("supporters");
             for(JsonElement element : supportersJsonArray){

@@ -14,24 +14,22 @@
                   "condition": "minecraft:any_of",
                   "terms": [
                     {
-                      "condition": "minecraft:match_tool",
-                      "predicate": {
-                        "items": [
-                          "minecraft:shears"
-                        ]
-                      }
+                      "ability": "shears_dig",
+                      "condition": "neoforge:can_item_perform_ability"
                     },
                     {
                       "condition": "minecraft:match_tool",
                       "predicate": {
-                        "enchantments": [
-                          {
-                            "enchantment": "minecraft:silk_touch",
-                            "levels": {
-                              "min": 1
+                        "predicates": {
+                          "minecraft:enchantments": [
+                            {
+                              "enchantments": "minecraft:silk_touch",
+                              "levels": {
+                                "min": 1
+                              }
                             }
-                          }
-                        ]
+                          ]
+                        }
                       }
                     }
                   ]
@@ -72,24 +70,22 @@
             "condition": "minecraft:any_of",
             "terms": [
               {
-                "condition": "minecraft:match_tool",
-                "predicate": {
-                  "items": [
-                    "minecraft:shears"
-                  ]
-                }
+                "ability": "shears_dig",
+                "condition": "neoforge:can_item_perform_ability"
               },
               {
                 "condition": "minecraft:match_tool",
                 "predicate": {
-                  "enchantments": [
-                    {
-                      "enchantment": "minecraft:silk_touch",
-                      "levels": {
-                        "min": 1
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "minecraft:silk_touch",
+                        "levels": {
+                          "min": 1
+                        }
                       }
-                    }
-                  ]
+                    ]
+                  }
                 }
               }
             ]

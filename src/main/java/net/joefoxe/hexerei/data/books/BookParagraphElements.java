@@ -1,7 +1,7 @@
 package net.joefoxe.hexerei.data.books;
 
-import com.google.gson.JsonObject;
-import net.minecraft.util.GsonHelper;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public class BookParagraphElements {
     public float x;
@@ -17,15 +17,13 @@ public class BookParagraphElements {
         this.width = width;
         this.verticalAlign = align;
     }
-
-    public static BookParagraphElements deserialize(JsonObject object) {
-        float x = GsonHelper.getAsFloat(object, "x", 0);
-        float y = GsonHelper.getAsFloat(object, "y", 0);
-        float height = GsonHelper.getAsFloat(object, "height", 0);
-        float width = GsonHelper.getAsFloat(object, "width", 0);
-        String align = GsonHelper.getAsString(object, "verticalAlign", "top");
-        return new BookParagraphElements(x, y, height, width, align);
-    }
+    public static final Codec<BookParagraphElements> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.FLOAT.optionalFieldOf("x", 0f).forGetter(e -> e.x),
+            Codec.FLOAT.optionalFieldOf("y", 0f).forGetter(e -> e.y),
+            Codec.FLOAT.optionalFieldOf("height", 0f).forGetter(e -> e.height),
+            Codec.FLOAT.optionalFieldOf("width", 0f).forGetter(e -> e.width),
+            Codec.STRING.optionalFieldOf("verticalAlign", "top").forGetter(e -> e.verticalAlign) )
+        .apply(instance, BookParagraphElements::new));
 
 
 }

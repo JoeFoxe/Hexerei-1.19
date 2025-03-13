@@ -1,0 +1,67 @@
+{
+  "name": "entity.hexerei.crow",
+  "paragraphs": [
+    {
+      "paragraph_box": [
+        {
+          "x": 7,
+          "y": 0,
+          "height": 18,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_crow_page_1.passage_1",
+      "align": "middle"
+    },
+    {
+      "paragraph_box": [
+        {
+          "x": 0,
+          "y": 7,
+          "height": 11,
+          "width": 32
+        }
+      ],
+      "passage_text": "book.hexerei.entities_crow_page_1.passage_2"
+    }
+  ],
+  "entities": [
+    {
+      "x": 2.5,
+      "y": 2,
+      "scale": 2.5,
+      "id": "hexerei:crow",
+      "tag": "{Owner: [I; 940439953, -167562164, -1601161573, -1389718966], Sitting: 1b, UUID: [I; -1634668069, 186008803, -1187431543, -118718510], OnGround: 1b, DyeColor: -1, Variant: 0, inv: {Size: 3, Items: [{count: 1, Slot: 0, id: \"hexerei:mushroom_witch_hat\"}, {count: 1, Slot: 1, id: \"hexerei:seed_mixture\"}]}, Command: 1}",
+
+      "tag_array": [
+          "{Owner: [I; 940439953, -167562164, -1601161573, -1389718966], Sitting: 1b, UUID: [I; -1634668069, 186008803, -1187431543, -118718510], OnGround: 1b, DyeColor: -1, Variant: 0, inv: {Size: 3, Items: []}, Command: 1}",
+          "{Owner: [I; 940439953, -167562164, -1601161573, -1389718966], Sitting: 1b, UUID: [I; -1634668069, 186008803, -1187431543, -118718510], CustomName: '\"joe_\"', OnGround: 1b, DyeColor: 12, Variant: 1, inv: {Size: 3, Items: []}, Command: 1}",
+          "{Owner: [I; 940439953, -167562164, -1601161573, -1389718966], Sitting: 1b, UUID: [I; -1634668069, 186008803, -1187431543, -118718510], OnGround: 1b, DyeColor: 15, Variant: 1, inv: {Size: 3, Items: [{count: 1, Slot: 0, id: \"minecraft:turtle_helmet\"}]}, Command: 1}",
+          "{Owner: [I; 940439953, -167562164, -1601161573, -1389718966], Sitting: 1b, UUID: [I; -1634668069, 186008803, -1187431543, -118718510], CustomName: '\"joe_\"', OnGround: 1b, DyeColor: -1, Variant: 2, inv: {Size: 3, Items: [{count: 1, Slot: 0, id: \"hexerei:mushroom_witch_hat\"}, {count: 1, Slot: 1, id: \"hexerei:seed_mixture\"}]}, Command: 1}",
+          "{Owner: [I; 940439953, -167562164, -1601161573, -1389718966], Sitting: 1b, UUID: [I; -1634668069, 186008803, -1187431543, -118718510], CustomName: '\"Thor\"', OnGround: 1b, DyeColor: -1, Variant: 2, inv: {Size: 3, Items: [{count: 1, Slot: 0, id: \"hexerei:mushroom_witch_hat\"}, {Count:1b,Slot:1,id:\"hexerei:warhammer\"}]}, Command: 1}",
+          "{Owner: [I; 940439953, -167562164, -1601161573, -1389718966], Sitting: 1b, UUID: [I; -1634668069, 186008803, -1187431543, -118718510], OnGround: 1b, DyeColor: 5, Variant: 3, inv: {Size: 3, Items: []}, Command: 1}",
+          "{Owner: [I; 940439953, -167562164, -1601161573, -1389718966], Sitting: 1b, UUID: [I; -1634668069, 186008803, -1187431543, -118718510], OnGround: 1b, DyeColor: 8, Variant: 4, inv: {Size: 3, Items: []}, Command: 1}"
+      ],
+      "hover_offset": {
+        "x": 0,
+        "y": -0.5,
+        "scale": 0.5
+      }
+    }
+  ],
+  "images": [
+    {
+      "x": 2.5,
+      "y": -0.3,
+      "z": -4,
+      "u": 0,
+      "v": 0,
+      "width": 380,
+      "height": 74,
+      "imageWidth": 380,
+      "imageHeight": 74,
+      "scale": 0.3,
+      "texture": "hexerei:textures/book/chapter_header.png"
+    }
+  ]
+}

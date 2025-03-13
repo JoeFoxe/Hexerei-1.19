@@ -1,5 +1,6 @@
 package net.joefoxe.hexerei.util.message;
 
+import net.joefoxe.hexerei.data.books.*;
 import net.joefoxe.hexerei.item.ModDataComponents;
 import net.joefoxe.hexerei.item.data_components.BookData;
 import net.joefoxe.hexerei.tileentity.BookOfShadowsAltarTile;
@@ -11,6 +12,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 public class ClientboundBookDataUpdate extends AbstractPacket {
@@ -43,8 +45,29 @@ public class ClientboundBookDataUpdate extends AbstractPacket {
 
     @Override
     public void onClientReceived(Minecraft minecraft, Player player) {
-        if (player.level().getBlockEntity(bookAltar) instanceof  BookOfShadowsAltarTile book) {
-            book.currentBook = bookData;
+        if (player.level().getBlockEntity(bookAltar) instanceof  BookOfShadowsAltarTile altar) {
+            altar.currentBook = bookData;
+            //update the BookWritableTextBoxes
+
+            for (ResourceLocation book : BookManager.getBookLocations()) {
+                BookEntries bookEntries = BookManager.getBookEntries(book);
+
+                if (bookEntries != null) {
+                    for (BookChapter bookChapter : bookEntries.chapterList) {
+                        for (BookPageEntry bookPageEntry : bookChapter.pages) {
+
+                            if (bookData.pageTexts().containsKey(bookPageEntry.location)) {
+                                BookPage page = BookManager.getBookPages(book, ResourceLocation.parse(bookPageEntry.location));
+                                if (page != null) {
+                                    for (BookWritableTextBox bookWritableTextBox : page.writableTextBoxes) {
+                                        bookWritableTextBox.client.clearDisplayCache(bookData.getUUID());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

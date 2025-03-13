@@ -31,6 +31,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ServerboundPaddleBoatPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -101,16 +102,18 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
     private final float[] paddlePositions = new float[2];
     private float outOfControlTicks;
     public float deltaRotation;
+    public float deltaRotationLerp;
     public float deltaRotationOld;
     public float floatingOffset;
     public float floatingOffsetOld;
+    public Vec3 deltaMovementLerp;
     public Vec3 deltaMovementOld;
     private int lerpSteps;
     private double lerpX;
     private double lerpY;
     private double lerpZ;
-    private double lerpYaw;
-    private double lerpPitch;
+    private double lerpYRot;
+    private double lerpXRot;
     public boolean leftInputDown;
     public boolean rightInputDown;
     public boolean forwardInputDown;
@@ -386,6 +389,35 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         return !this.isRemoved();
     }
 
+
+    public void lerpTo(double x, double y, double z, float yRot, float xRot, int steps) {
+        this.lerpX = x;
+        this.lerpY = y;
+        this.lerpZ = z;
+        this.lerpYRot = (double)yRot;
+        this.lerpXRot = (double)xRot;
+        this.lerpSteps = 10;
+    }
+
+    public double lerpTargetX() {
+        return this.lerpSteps > 0 ? this.lerpX : this.getX();
+    }
+
+    public double lerpTargetY() {
+        return this.lerpSteps > 0 ? this.lerpY : this.getY();
+    }
+
+    public double lerpTargetZ() {
+        return this.lerpSteps > 0 ? this.lerpZ : this.getZ();
+    }
+
+    public float lerpTargetXRot() {
+        return this.lerpSteps > 0 ? (float)this.lerpXRot : this.getXRot();
+    }
+
+    public float lerpTargetYRot() {
+        return this.lerpSteps > 0 ? (float)this.lerpYRot : this.getYRot();
+    }
     /**
      * Gets the horizontal facing direction of this Entity, adjusted to take specially-treated entity types into account.
      */
@@ -662,7 +694,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         }
 
         if (this.isControlledByLocalInstance()) {
-            if (this.getPassengers().isEmpty() || !(this.getPassengers().get(0) instanceof Player)) {
+            if (this.getPassengers().isEmpty() || !(this.getPassengers().getFirst() instanceof Player)) {
                 this.setPaddleState(false, false);
             }
 
@@ -675,7 +707,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
             if (this.level().isClientSide) {
                 this.controlBoat();
                 this.level().sendPacketToServer(new ServerboundPaddleBoatPacket(this.getPaddleState(0), this.getPaddleState(1)));
-                HexereiPacketHandler.sendToServer(new BroomSyncRotationToServer(this.getId(), getYRot()));
+                HexereiPacketHandler.sendToServer(new BroomSyncRotationToServer(this));
 
             }
 
@@ -685,7 +717,10 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
                 brushItem.renderParticles(this, level(), status, this.random);
             }
         } else {
-            this.setDeltaMovement(Vec3.ZERO);
+            if (this.getPassengers().isEmpty()) {
+                this.updateMotion();
+                this.move(MoverType.SELF, this.getDeltaMovement());
+            }
             if (this.floatMode) {
                 if (level().isClientSide) {
                     floatingOffset = HexereiUtil.moveTo(floatingOffset, 0.05f + (float) Math.sin(((this.age * 2f) + (this.getId() * 1000)) / 30f) * 0.15f, 0.01f);
@@ -817,7 +852,6 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
 
     @Override
     protected void playStepSound(BlockPos pPos, BlockState pState) {
-//        super.playStepSound(pPos, pState);
     }
 
     private void tickLerp() {
@@ -826,17 +860,13 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
             this.syncPacketPositionCodec(this.getX(), this.getY(), this.getZ());
         }
 
-        if (this.lerpSteps > 0) {
-            double d0 = this.getX() + (this.lerpX - this.getX()) / (double) this.lerpSteps;
-            double d1 = this.getY() + (this.lerpY - this.getY()) / (double) this.lerpSteps;
-            double d2 = this.getZ() + (this.lerpZ - this.getZ()) / (double) this.lerpSteps;
-            double d3 = Mth.wrapDegrees(this.getYRot() - (double) this.getYRot());
-            this.setYRot((float) ((double) this.getYRot() + d3 / (double) this.lerpSteps));
-            this.setXRot((float) ((double) this.getXRot() + (this.lerpPitch - (double) this.getXRot()) / (double) this.lerpSteps));
+        if (this.lerpSteps > 0 && this.deltaMovementLerp != null) {
+            this.lerpPositionAndRotationStep(this.lerpSteps, this.lerpX, this.lerpY, this.lerpZ, this.lerpYRot, this.lerpXRot);
+            this.deltaRotation = Mth.lerp(1 / (float)this.lerpSteps, this.deltaRotation, this.deltaRotationLerp);
+            this.setDeltaMovement(new Vec3(Mth.lerp(1 / (float)this.lerpSteps, this.getDeltaMovement().x, this.deltaMovementLerp.x), Mth.lerp(1 / (float)this.lerpSteps, this.getDeltaMovement().y, this.deltaMovementLerp.y), Mth.lerp(1 / (float)this.lerpSteps, this.getDeltaMovement().z, this.deltaMovementLerp.z)));
             --this.lerpSteps;
-            this.setPos(d0, d1, d2);
-            this.setRot(this.getYRot(), this.getXRot());
         }
+
     }
 
 
@@ -1206,7 +1236,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
             offsetZ = 0.05f;
         }
 
-        Vec3 vec3 = (new Vec3(f, 0.0D, offsetZ)).yRot((-this.getYRot() - this.deltaRotation * 2 + 90) * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
+        Vec3 vec3 = (new Vec3(f, 0.0D, offsetZ)).yRot((-this.getYRot() - Math.clamp(this.deltaRotation, -13 + this.deltaRotation / 22.5f, 13 + this.deltaRotation / 22.5f) * 2 + 90) * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
         return vec3.add(0, f1, 0);
     }
 
@@ -1221,8 +1251,8 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
             i = this.getPassengers().indexOf(entityToUpdate);
         }
         if (i == 1){
-            rotation = 90f;
-        } else if(hasSeat) {
+            rotation = 0f;
+        } else if(hasSeat && (i == 0 || i == -1)) {
             rotation = 90f;
         }
         if(entityToUpdate.getType().is(HexereiTags.Entity.CAN_RIDE_BROOM))
@@ -1232,7 +1262,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         if(entityToUpdate instanceof OwlEntity)
             rotation = 40f;
         if(entityToUpdate instanceof Cat)
-            rotation = 100f;
+            rotation = 90f;
         entityToUpdate.setYBodyRot(this.getYRot() + rotation);
         float f = Mth.wrapDegrees(entityToUpdate.getYRot() - this.getYRot() - rotation);
         float f1 = Mth.clamp(f, -105.0F, 105.0F);
@@ -1274,6 +1304,15 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         this.applyYawToEntity(entityToUpdate);
     }
 
+
+    @Override
+    public void recreateFromPacket(ClientboundAddEntityPacket packet) {
+        super.recreateFromPacket(packet);
+
+        if (level().isClientSide)
+            HexereiPacketHandler.sendToServer(new BroomAskForSyncPacket(this.getId()));
+
+    }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
@@ -1320,25 +1359,6 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
     @Override
     public void load(CompoundTag compound) {
         super.load(compound);
-
-//        itemHandler.deserializeNBT(this.level().registryAccess(), compound.getCompound("inv"));
-        this.floatMode = compound.getBoolean("floatMode");
-
-        //legacy type
-        if (compound.contains("Type", 8)) {
-            this.setBroomType(compound.getString("Type"));
-        }
-
-        //new type
-        if (compound.contains("BroomType", 8)) {
-            this.setBroomType(compound.getString("BroomType"));
-        }
-        itemHandler.deserializeNBT(this.level().registryAccess(), compound.getCompound("inv"));
-        this.floatMode = compound.getBoolean("floatMode");
-        if (compound.contains("broomUUID"))
-            this.broomUUID = compound.getUUID("broomUUID");
-
-
     }
 
     private ItemStackHandler createHandler() {
@@ -1493,10 +1513,15 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         this.setYRot(rotation);
         this.yRotO = rotation;
 
-        if (!this.level().isClientSide) {
-            HexereiPacketHandler.sendToNearbyClient(this.level(), this, new BroomSyncRotation(this, rotation));
-        }
+//        if (!this.level().isClientSide) {
+//            HexereiPacketHandler.sendToNearbyClient(this.level(), this, new BroomSyncRotation(this, rotation));
+//        }
 
+    }
+
+    public void syncDeltaRotation() {
+//        this.deltaRotation = deltaRotation;
+        HexereiPacketHandler.sendToNearbyClient(this.level(), this, new BroomSyncRotation(this));
     }
 
     /**
@@ -1619,7 +1644,7 @@ public class BroomEntity extends Entity implements Container, MenuProvider, HasC
         super.addPassenger(passenger);
         if (this.isControlledByLocalInstance() && this.lerpSteps > 0) {
             this.lerpSteps = 0;
-            this.absMoveTo(this.lerpX, this.lerpY, this.lerpZ, this.getYRot(), (float) this.lerpPitch);
+            this.absMoveTo(this.lerpX, this.lerpY, this.lerpZ, this.getYRot(), (float) this.lerpXRot);
         }
     }
 

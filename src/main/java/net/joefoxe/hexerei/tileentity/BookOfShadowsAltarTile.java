@@ -1,29 +1,22 @@
 package net.joefoxe.hexerei.tileentity;
 
-import com.mojang.math.Axis;
-import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.data.books.*;
 import net.joefoxe.hexerei.data.candle.CandleData;
 import net.joefoxe.hexerei.item.ModDataComponents;
 import net.joefoxe.hexerei.item.data_components.BookData;
-import net.joefoxe.hexerei.particle.ModParticleTypes;
 import net.joefoxe.hexerei.sounds.ModSounds;
 import net.joefoxe.hexerei.util.HexereiPacketHandler;
-import net.joefoxe.hexerei.util.HexereiUtil;
 import net.joefoxe.hexerei.util.message.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -31,24 +24,21 @@ import net.minecraft.world.Clearable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -126,6 +116,7 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
     public int slotClicked = -1;
 
     public int slotClickedTick = 0;
+    public boolean fromItem = false;
 
 
     public BookOfShadowsAltarTile(BlockEntityType<?> tileEntityTypeIn, BlockPos blockPos, BlockState blockState) {
@@ -348,43 +339,6 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
         return false;
     }
 
-    public int interactWithoutItem(Player player) {
-        ItemStack stack = this.itemHandler.getStackInSlot(0).copy();
-        if (!player.isShiftKeyDown()) {
-            if (stack.getItem() instanceof HexereiBookItem) {
-                BookData bookData = stack.get(ModDataComponents.BOOK);
-                if (bookData != null){
-                    if (!bookData.isOpened() && this.openedPercent == 1) {
-
-                        level.playSound(null, this.worldPosition.above(), ModSounds.BOOK_OPENING.get(), SoundSource.BLOCKS, 1f, (level.random.nextFloat() * 0.25f + 0.75f));
-                        bookData = bookData.setOpened(true);
-                        stack.set(ModDataComponents.BOOK, bookData);
-                        this.itemHandler.setStackInSlot(0, stack);
-                        setChanged();
-                        return 1;
-                    }
-                }
-            }
-        }
-        if (!stack.isEmpty()) {
-
-            setChanged();
-
-            player.getInventory().placeItemBackInInventory(this.itemHandler.getStackInSlot(0).copy());
-
-            resetBookRotations();
-
-            level.playSound(null, worldPosition, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, level.random.nextFloat() * 0.4F + 1.0F);
-            this.itemHandler.setStackInSlot(0, ItemStack.EMPTY);
-
-            setChanged();
-
-            return 1;
-        }
-
-        return 0;
-    }
-
     public void resetBookRotations() {
         this.floppedPercent = 1;
         this.degreesFlopped = 90;
@@ -550,43 +504,8 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                 : (float) (Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
     }
 
-    //    @Override
-    public void tick() {
-        if (level.isClientSide) {
-            this.openedPercentOld = this.openedPercent;
-            this.floppedPercentOld = this.floppedPercent;
-            this.degreesSpunOld = this.degreesSpun;
-            this.tooltipScaleOld = this.tooltipScale;
-            this.buttonScaleOld = this.buttonScale;
-
-            this.drawing.tick();
-
-
-
-            if (this.drawTooltip) {
-                this.tooltipScale = moveTo(this.tooltipScale, 1f, 0.075f);
-            } else {
-                this.tooltipScale = moveTo(this.tooltipScale, 0f, 0.15f);
-            }
-
-            ItemStack stack = this.itemHandler.getStackInSlot(0).copy();
-            BookData bookData = stack.get(ModDataComponents.BOOK);
-
-            if (this.turnPage != 0 || (bookData != null && !bookData.isOpened())) {
-                this.buttonScaleSpeed = 0.1f * (this.buttonScale + 0.25f);
-                this.buttonScaleTo = 0;
-            } else {
-                this.buttonScaleSpeed = 0.15f * (this.buttonScale + 0.25f);
-                this.buttonScaleTo = 1;
-            }
-
-
-            tickCount++;
-
-            closestPlayerPos = null;
-
-
-        }
+    public void tickCandles() {
+        tickCount++;
 
         numberOfCandles = 0;
 
@@ -777,29 +696,68 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
             candleData.yTarget = (worldPosition.getY() - candlePos3.getY() + 1f + (float) Math.sin((this.tickCount + 20) / 20f) / 10);
             candleData.zTarget = (worldPosition.getZ() - candlePos3.getZ() + (float) Math.cos(degreesSpunCandles + Math.PI * 2f / 3f * 2f) * 1.25f);
         }
+    }
 
+    public void tickBook(ItemStack stack) {
+        tickBook(stack, false);
+    }
 
-        closestDist = maxDist;
-        Item item = this.itemHandler.getStackInSlot(0).getItem();
-        if (item instanceof HexereiBookItem) {
-            Player playerEntity = this.level.getNearestPlayer(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), maxDist, false);
-            if (playerEntity != null) {
-                double dist = (getDistanceToEntity(playerEntity, this.worldPosition));
-                if (dist < maxDist) {
-                    if (dist < this.closestDist) {
-                        this.closestDist = dist;
-                        this.closestPlayerPos = playerEntity.position();
-                        this.closestPlayer = playerEntity;
-                    }
-                }
+    static class ClientSounds {
+        public static void playTurnPageSound() {
+            Minecraft.getInstance().getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(ModSounds.BOOK_TURN_PAGE_SLOW.get(), (new Random().nextFloat() * 0.25f + 0.75f), 0.25f * (new Random().nextFloat() * 0.25f + 0.5f)));
+        }
+        public static void playTurnPageFastSound() {
+            Minecraft.getInstance().getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(ModSounds.BOOK_TURN_PAGE_FAST.get(), (new Random().nextFloat() * 0.3f + 0.7f), 0.25f * (new Random().nextFloat() * 0.25f + 0.5f)));
+        }
+        public static void playBookCloseSound() {
+            Minecraft.getInstance().getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(ModSounds.BOOK_CLOSE.get(), (new Random().nextFloat() * 0.25f + 0.75f)));
+        }
+        public static void playBookmarkSound() {
+            Minecraft.getInstance().getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(ModSounds.BOOKMARK_BUTTON.get(), (new Random().nextFloat() * 0.25f + 0.75f)));
+        }
+        public static void playBookmarkSwapSound() {
+            Minecraft.getInstance().getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(ModSounds.BOOKMARK_SWAP.get(), (new Random().nextFloat() * 0.25f + 0.75f), 0.25f * 0.75f));
+        }
+        public static void playBookmarkDeleteSound() {
+            Minecraft.getInstance().getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(ModSounds.BOOKMARK_DELETE.get(), (new Random().nextFloat() * 0.25f + 0.75f)));
+        }
+    }
+    public static int snapToCardinalDirection(float angle) {
+        // Normalize the angle to the range [0, 360)
+        angle = angle % 360;
+        if (angle < 0) {
+            angle += 360; // Ensure the angle is positive
+        }
+
+        // Define the cardinal directions
+//        int[] cardinalDirections = {0, 90, 180, 270, 360};
+        int[] directions = {0, 45, 90, 135, 180, 225, 270, 315, 360};
+
+        // Find the closest cardinal direction
+        int closestDirection = 0;
+        float smallestDifference = 360;
+
+        for (int direction : directions) {
+            float difference = Math.abs(angle - direction);
+            if (difference < smallestDifference) {
+                smallestDifference = difference;
+                closestDirection = direction;
             }
+        }
 
+        // Normalize 360° to 0° (since they represent the same direction)
+        if (closestDirection == 360) {
+            closestDirection = 0;
+        }
 
+        return closestDirection;
+    }
+    public void tickBook(ItemStack stack, boolean fromItem) {
+        if (stack.getItem() instanceof HexereiBookItem) {
             if (slotClicked != -1)
                 this.slotClickedTick++;
 
-            ItemStack stack = this.itemHandler.getStackInSlot(0).copy();
-            BookData bookData = this.level.isClientSide ? this.currentBook : stack.get(ModDataComponents.BOOK);
+            BookData bookData = (fromItem || this.level.isClientSide) ? this.currentBook : stack.get(ModDataComponents.BOOK);
             this.pageOneRotationLast = this.pageOneRotation;
             this.pageTwoRotationLast = this.pageTwoRotation;
             boolean opened = bookData != null && bookData.isOpened();
@@ -813,13 +771,14 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                 else
                     this.bookmarkSelectorScale = 0;
 
-                if (this.closestPlayerPos != null) {
-                    if (this.level.isClientSide ? this.degreesFloppedRender < 0.9f * 90 : this.floppedPercent < 0.9f) {
+                if ((this.closestPlayerPos != null || fromItem)) {
+                    if (!fromItem && (this.level.isClientSide ? this.degreesFloppedRender < 0.9f * 90 : this.floppedPercent < 0.9f)) {
 
                         Vec3 playerPos = this.closestPlayerPos;
                         double dx = playerPos.x - getBlockPos().getX() - 0.5f;
                         double dz = playerPos.z - getBlockPos().getZ() - 0.5f;
                         float yaw = 270f - (float) (Math.atan2(dz, dx) * (180 / Math.PI));
+                        yaw = snapToCardinalDirection(yaw);
 
                         this.bookYawIncrement = updateIncrement(bookYaw, yaw, bookYawIncrement);
                         this.bookYaw = updateAngle(bookYaw, bookYawIncrement);
@@ -827,25 +786,27 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                     }
                     this.degreesFloppedTo = 0;
                     this.degreesFloppedSpeed = (3f + 6 * (Math.abs(floppedPercent - 0.66f))) / 90f / 2f;
+                    this.degreesOpenedTo = 0;
+                    this.degreesOpenedSpeed = (2f + 5 * (0.5f - Math.abs(0.5f - openedPercent))) / 90f / 2f;
 //                    this.degreesFlopped = moveTo(this.degreesFlopped, this.degreesFloppedTo, this.degreesFloppedSpeed);
                 } else {
-                    if (this.openedPercent > 0.80f) {
-                        this.degreesFloppedTo = 1;
-                        this.degreesFloppedSpeed = (2f + 4 * (0.5f - Math.abs(0.5f - floppedPercent))) / 90 / 2f;
-                    }
+                    this.degreesOpenedTo = 1;
+                    this.degreesOpenedSpeed = (2f + 6 * (0.5f - Math.abs(0.5f - openedPercent))) / 90f / 2f;
+                    this.degreesFloppedTo = 1;
+                    this.degreesFloppedSpeed = (2f + 4 * (0.5f - Math.abs(0.5f - floppedPercent))) / 90 / 2f;
                 }
                 this.degreesSpun = this.bookYaw;
                 this.floppedPercent = moveTo(this.floppedPercent, this.degreesFloppedTo, this.degreesFloppedSpeed);
                 this.degreesFlopped = floppedPercent * 90;
 
 
-                if (this.floppedPercent < 1) {
-                    this.degreesOpenedTo = Mth.clamp((float) (Math.max(0, this.closestDist - 1) * (360 / (maxDist - 1))) / 4, 4.0f, 90f) / 90f;
-                    this.degreesOpenedSpeed = (2f + 5 * (0.5f - Math.abs(0.5f - openedPercent))) / 90f / 2f;
-                } else {
-                    this.degreesOpenedTo = 1;
-                    this.degreesOpenedSpeed = (2f + 6 * (0.5f - Math.abs(0.5f - openedPercent))) / 90f / 2f;
-                }
+//                if (this.floppedPercent < 1) {
+//                    this.degreesOpenedTo = Mth.clamp((float) (Math.max(0, this.closestDist - 2) * (360 / Math.max(1, maxDist - 2))) / 4, 0.0f, 90f) / 90f;
+//                    this.degreesOpenedSpeed = (2f + 5 * (0.5f - Math.abs(0.5f - openedPercent))) / 90f / 2f;
+//                } else {
+//                    this.degreesOpenedTo = 1;
+//                    this.degreesOpenedSpeed = (2f + 6 * (0.5f - Math.abs(0.5f - openedPercent))) / 90f / 2f;
+//                }
 
                 this.openedPercent = moveTo(this.openedPercent, this.degreesOpenedTo, this.degreesOpenedSpeed);
                 this.degreesOpened = easeOpened(openedPercent) * 90;
@@ -862,8 +823,14 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                         this.pageOneRotationLast = this.pageOneRotation;
 //                        setChanged();
                     } else {
-                        if (this.pageOneRotation == 0 && !level.isClientSide)
-                            level.playSound(null, this.worldPosition.above(), ModSounds.BOOK_TURN_PAGE_SLOW.get(), SoundSource.BLOCKS, (level.random.nextFloat() * 0.25f + 0.5f), (level.random.nextFloat() * 0.25f + 0.75f));
+                        if (this.pageOneRotation == 0) {
+                            if (fromItem) {
+                                if (EffectiveSide.get().isClient())
+                                    ClientSounds.playTurnPageSound();
+                            } else if (!level.isClientSide) {
+                                level.playSound(null, this.worldPosition.above(), ModSounds.BOOK_TURN_PAGE_SLOW.get(), SoundSource.BLOCKS, (level.random.nextFloat() * 0.25f + 0.5f), (level.random.nextFloat() * 0.25f + 0.75f));
+                            }
+                        }
 
                         float f = (float) Math.sin(this.pageOneRotation / 180 * Math.PI);
                         this.pageOneRotationSpeed = (f * f * 35) + 10f;
@@ -881,8 +848,14 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
 //                        setChanged();
                     } else {
 
-                        if (this.pageTwoRotation == 0 && !level.isClientSide)
-                            level.playSound(null, this.worldPosition.above(), ModSounds.BOOK_TURN_PAGE_SLOW.get(), SoundSource.BLOCKS, (level.random.nextFloat() * 0.25f + 0.5f), (level.random.nextFloat() * 0.25f + 0.75f));
+                        if (this.pageTwoRotation == 0) {
+                            if (fromItem) {
+                                if (EffectiveSide.get().isClient())
+                                    ClientSounds.playTurnPageSound();
+                            } else if (!level.isClientSide) {
+                                level.playSound(null, this.worldPosition.above(), ModSounds.BOOK_TURN_PAGE_SLOW.get(), SoundSource.BLOCKS, (level.random.nextFloat() * 0.25f + 0.5f), (level.random.nextFloat() * 0.25f + 0.75f));
+                            }
+                        }
 
                         float f = (float) Math.sin(this.pageTwoRotation / 180 * Math.PI);
                         this.pageTwoRotationSpeed = (f * f * 35) + 10f;
@@ -891,76 +864,92 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                     }
                 } else if (this.turnPage == -1) {
 
-                    BookEntries bookEntries = BookManager.getBookEntries();
-                    int chapter = bookData.getChapter();
-                    int page = bookData.getPage();
-                    int pageOnNum = bookEntries.chapterList.get(chapter).startPage + page;
-                    if (this.turnToChapter >= bookEntries.chapterList.size())
-                        this.turnToChapter = bookEntries.chapterList.size() - 1;
-                    if (this.turnToPage >= bookEntries.chapterList.get(this.turnToChapter).pages.size())
-                        this.turnToPage = bookEntries.chapterList.get(this.turnToChapter).pages.size() - 1;
-                    int destPageNum = bookEntries.chapterList.get(this.turnToChapter).startPage + this.turnToPage;
-                    int numPagesToDest = Math.abs(destPageNum - pageOnNum);
-                    if (page % 2 == 1)
-                        page--;
+                    BookEntries bookEntries = BookManager.getBookEntries(currentBook.getBook());
+                    if (bookEntries != null) {
+                        int chapter = bookData.getChapter();
+                        int page = bookData.getPage();
+                        int pageOnNum = bookEntries.chapterList.get(chapter).startPage + page;
+                        if (this.turnToChapter >= bookEntries.chapterList.size())
+                            this.turnToChapter = bookEntries.chapterList.size() - 1;
+                        if (this.turnToPage >= bookEntries.chapterList.get(this.turnToChapter).pages.size())
+                            this.turnToPage = bookEntries.chapterList.get(this.turnToChapter).pages.size() - 1;
+                        int destPageNum = bookEntries.chapterList.get(this.turnToChapter).startPage + this.turnToPage;
+                        int numPagesToDest = Math.abs(destPageNum - pageOnNum);
+                        if (page % 2 == 1)
+                            page--;
 
-                    int pagesToTurn = numPagesToDest > 90 ? 13 : numPagesToDest > 75 ? 11 : numPagesToDest > 60 ? 9 : numPagesToDest > 45 ? 7 : numPagesToDest > 30 ? 5 : numPagesToDest > 15 ? 3 : 1;
+                        int pagesToTurn = numPagesToDest > 90 ? 13 : numPagesToDest > 75 ? 11 : numPagesToDest > 60 ? 9 : numPagesToDest > 45 ? 7 : numPagesToDest > 30 ? 5 : numPagesToDest > 15 ? 3 : 1;
 
-                    if (chapter > this.turnToChapter || (chapter == this.turnToChapter && page > this.turnToPage)) {
+                        if (chapter > this.turnToChapter || (chapter == this.turnToChapter && page > this.turnToPage)) {
 
-                        if (this.pageTwoRotation == 180) {
-                            bookData = clickedBack(bookData, pagesToTurn);
+                            if (this.pageTwoRotation == 180) {
+                                bookData = clickedBack(bookData, pagesToTurn);
+                                this.pageTwoRotation = 0;
+                                this.pageTwoRotationRender = 0;
+                                this.pageTwoRotationLast = this.pageTwoRotation;
+                                this.pageTwoRotationTo = 0;
+                                this.pageTwoRotationSpeed = 0.01f;
+                            } else {
+                                if (this.pageTwoRotation == 0 && numPagesToDest > 1) {
+
+                                    if (fromItem) {
+                                        if (EffectiveSide.get().isClient())
+                                            ClientSounds.playTurnPageFastSound();
+                                    } else if (!level.isClientSide) {
+                                        level.playSound(null, this.worldPosition.above(), ModSounds.BOOK_TURN_PAGE_FAST.get(), SoundSource.BLOCKS, (level.random.nextFloat() * 0.25f + 0.5f), (level.random.nextFloat() * 0.3f + 0.7f));
+                                    }
+
+                                }
+
+
+                                float f = (1 + Math.min(numPagesToDest, 50) / 200f);
+                                this.pageTwoRotationSpeed = 65 * f * f + 15;
+                                this.pageTwoRotationTo = (float) 180;
+                            }
+                        }
+
+
+                        if (chapter < this.turnToChapter || (chapter == this.turnToChapter && page < this.turnToPage)) {
+
+
+                            if (this.pageOneRotation == 180) {
+                                bookData = clickedNext(bookData, pagesToTurn);
+                                this.pageOneRotation = 0;
+                                this.pageOneRotationRender = 0;
+                                this.pageOneRotationTo = 0;
+                                this.pageOneRotationLast = this.pageOneRotation;
+                                this.pageOneRotationSpeed = 0.01f;
+                            } else {
+                                if (this.pageOneRotation == 0 && numPagesToDest > 0) {
+
+                                    if (fromItem) {
+                                        if (EffectiveSide.get().isClient())
+                                            ClientSounds.playTurnPageFastSound();
+                                    } else if (!level.isClientSide) {
+                                        level.playSound(null, this.worldPosition.above(), ModSounds.BOOK_TURN_PAGE_FAST.get(), SoundSource.BLOCKS, (level.random.nextFloat() * 0.3f + 0.7f), (level.random.nextFloat() * 0.25f + 0.5f));
+                                    }
+
+                                }
+                                float f = (1 + Math.min(numPagesToDest, 50) / 200f);
+                                this.pageOneRotationSpeed = 65 * f * f + 15;
+                                this.pageOneRotationTo = (float) 180;
+                            }
+                        }
+
+
+                        if (chapter == this.turnToChapter && (page == this.turnToPage || page + 1 == turnToPage)) {
+                            this.turnPage = 0;
                             this.pageTwoRotation = 0;
-                            this.pageTwoRotationRender = 0;
-                            this.pageTwoRotationLast = this.pageTwoRotation;
                             this.pageTwoRotationTo = 0;
+                            this.pageTwoRotationRender = 0;
                             this.pageTwoRotationSpeed = 0.01f;
-                        } else {
-                            if (this.pageTwoRotation == 0 && !level.isClientSide && numPagesToDest > 1) {
-                                level.playSound(null, this.worldPosition.above(), ModSounds.BOOK_TURN_PAGE_FAST.get(), SoundSource.BLOCKS, (level.random.nextFloat() * 0.25f + 0.5f), (level.random.nextFloat() * 0.3f + 0.7f));
-                            }
-
-
-                            float f = (1 + Math.min(numPagesToDest, 50) / 200f);
-                            this.pageTwoRotationSpeed = 65 * f * f + 15;
-                            this.pageTwoRotationTo = (float) 180;
-                        }
-                    }
-
-
-                    if (chapter < this.turnToChapter || (chapter == this.turnToChapter && page < this.turnToPage)) {
-
-
-                        if (this.pageOneRotation == 180) {
-                            bookData = clickedNext(bookData, pagesToTurn);
                             this.pageOneRotation = 0;
-                            this.pageOneRotationRender = 0;
                             this.pageOneRotationTo = 0;
-                            this.pageOneRotationLast = this.pageOneRotation;
+                            this.pageOneRotationRender = 0;
                             this.pageOneRotationSpeed = 0.01f;
-                        } else {
-                            if (this.pageOneRotation == 0 && !level.isClientSide && numPagesToDest > 0) {
-                                level.playSound(null, this.worldPosition.above(), ModSounds.BOOK_TURN_PAGE_FAST.get(), SoundSource.BLOCKS, (level.random.nextFloat() * 0.25f + 0.5f), (level.random.nextFloat() * 0.3f + 0.7f));
-                            }
-                            float f = (1 + Math.min(numPagesToDest, 50) / 200f);
-                            this.pageOneRotationSpeed = 65 * f * f + 15;
-                            this.pageOneRotationTo = (float) 180;
+                            this.pageTwoRotationLast = this.pageTwoRotation;
+                            this.pageOneRotationLast = this.pageOneRotation;
                         }
-                    }
-
-
-                    if (chapter == this.turnToChapter && (page == this.turnToPage || page + 1 == turnToPage)) {
-                        this.turnPage = 0;
-                        this.pageTwoRotation = 0;
-                        this.pageTwoRotationTo = 0;
-                        this.pageTwoRotationRender = 0;
-                        this.pageTwoRotationSpeed = 0.01f;
-                        this.pageOneRotation = 0;
-                        this.pageOneRotationTo = 0;
-                        this.pageOneRotationRender = 0;
-                        this.pageOneRotationSpeed = 0.01f;
-                        this.pageTwoRotationLast = this.pageTwoRotation;
-                        this.pageOneRotationLast = this.pageOneRotation;
                     }
 
                 } else if (this.turnPage == 0) {
@@ -995,9 +984,9 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                 this.floppedPercent = moveTo(this.floppedPercent, this.degreesFloppedTo, this.degreesFloppedSpeed);
                 this.degreesFlopped = floppedPercent * 90;
             }
-            BookData bookData1 = this.level.isClientSide ? this.currentBook : this.itemHandler.getStackInSlot(0).get(ModDataComponents.BOOK);
+            BookData bookData1 = (fromItem || this.level.isClientSide) ? this.currentBook : this.itemHandler.getStackInSlot(0).get(ModDataComponents.BOOK);
             if (bookData1 != bookData) {
-                if (!this.level.isClientSide) {
+                if (!(fromItem || this.level.isClientSide)) {
                     ItemStack stack1 = this.itemHandler.getStackInSlot(0).copy();
                     stack1.set(ModDataComponents.BOOK, bookData);
                     this.itemHandler.setStackInSlot(0, stack1);
@@ -1023,6 +1012,62 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
             this.pageTwoRotationTo = 0;
             this.pageTwoRotationRender = 0;
         }
+    }
+
+    public void tickClient() {
+        this.openedPercentOld = this.openedPercent;
+        this.floppedPercentOld = this.floppedPercent;
+        this.degreesSpunOld = this.degreesSpun;
+        this.tooltipScaleOld = this.tooltipScale;
+        this.buttonScaleOld = this.buttonScale;
+
+        this.drawing.tick();
+
+        if (this.drawTooltip) {
+            this.tooltipScale = moveTo(this.tooltipScale, 1f, 0.075f);
+        } else {
+            this.tooltipScale = moveTo(this.tooltipScale, 0f, 0.15f);
+        }
+
+        ItemStack stack = this.itemHandler.getStackInSlot(0).copy();
+        BookData bookData = stack.get(ModDataComponents.BOOK);
+
+        if (this.turnPage != 0 || (bookData != null && !bookData.isOpened())) {
+            this.buttonScaleSpeed = 0.1f * (this.buttonScale + 0.25f);
+            this.buttonScaleTo = 0;
+        } else {
+            this.buttonScaleSpeed = 0.15f * (this.buttonScale + 0.25f);
+            this.buttonScaleTo = 1;
+        }
+
+        closestPlayerPos = null;
+    }
+
+    //    @Override
+    public void tick() {
+        if (level.isClientSide) {
+            tickClient();
+        }
+
+        tickCandles();
+
+
+        closestDist = maxDist;
+        if (this.itemHandler.getStackInSlot(0).getItem() instanceof HexereiBookItem) {
+            Player playerEntity = this.level.getNearestPlayer(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), maxDist, false);
+            if (playerEntity != null) {
+                double dist = (getDistanceToEntity(playerEntity, this.worldPosition));
+                if (dist < maxDist) {
+                    if (dist < this.closestDist) {
+                        this.closestDist = dist;
+                        this.closestPlayerPos = playerEntity.position();
+                        this.closestPlayer = playerEntity;
+                    }
+                }
+            }
+        }
+
+        tickBook(this.itemHandler.getStackInSlot(0));
 
 
     }
@@ -1071,23 +1116,26 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
     }
 
     public BookData clickedNext(BookData bookData, int pages) {
+        if (bookData == null)
+            return bookData;
 
-        if (bookData != null && BookManager.getBookEntries() != null) {
+        BookEntries bookEntries = BookManager.getBookEntries(bookData.getBook());
+        if (bookEntries != null) {
             for (int i = 0; i < pages; i++) {
                 int currentPage = bookData.getPage();
                 int currentChapter = bookData.getChapter();
-                if (currentPage < BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - (2)) {
+                if (currentPage < bookEntries.chapterList.get(currentChapter).pages.size() - (2)) {
                     bookData = bookData.setPage(currentPage + (2));
-                    if (currentChapter < BookManager.getBookEntries().chapterList.size() - 1 && currentPage + (2) > BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - 1) {
+                    if (currentChapter < bookEntries.chapterList.size() - 1 && currentPage + (2) > bookEntries.chapterList.get(currentChapter).pages.size() - 1) {
                         bookData = bookData.setChapter(++currentChapter);
-                        bookData = bookData.setPage(BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - 1);
+                        bookData = bookData.setPage(bookEntries.chapterList.get(currentChapter).pages.size() - 1);
                     }
                 } else {
-                    if (currentChapter < BookManager.getBookEntries().chapterList.size() - 1) {
+                    if (currentChapter < bookEntries.chapterList.size() - 1) {
                         bookData = bookData.setChapter(++currentChapter);
                         bookData = bookData.setPage(0);
                     } else {
-                        bookData = bookData.setPage(BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - 1);
+                        bookData = bookData.setPage(bookEntries.chapterList.get(currentChapter).pages.size() - 1);
                     }
                 }
             }
@@ -1097,10 +1145,14 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
     }
 
     public BookData clickedBack(BookData bookData, int pages) {
+        if (bookData == null)
+            return bookData;
+
+        BookEntries bookEntries = BookManager.getBookEntries(bookData.getBook());
 //        ItemStack stack = this.itemHandler.getStackInSlot(0).copy();
 //        BookData bookData = stack.get(ModDataComponents.BOOK);
 
-        if (bookData != null && BookManager.getBookEntries() != null) {
+        if (bookEntries != null) {
             for (int i = 0; i < pages; i++) {
 
                 int currentPage = bookData.getPage();
@@ -1109,7 +1161,7 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
 
                     if (currentChapter > 0 && currentPage - (2) < 0) {
                         bookData = bookData.setChapter(--currentChapter);
-                        bookData = bookData.setPage(BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - 1);
+                        bookData = bookData.setPage(bookEntries.chapterList.get(currentChapter).pages.size() - 1);
                     } else {
                         bookData = bookData.setPage(Math.max(currentPage - (2), 0));
                     }
@@ -1117,7 +1169,7 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
                 } else {
                     if (currentChapter > 0) {
                         bookData = bookData.setChapter(--currentChapter);
-                        bookData = bookData.setPage(BookManager.getBookEntries().chapterList.get(currentChapter).pages.size() - 1);
+                        bookData = bookData.setPage(bookEntries.chapterList.get(currentChapter).pages.size() - 1);
                     } else {
                         bookData = bookData.setPage(0);
                     }
@@ -1130,7 +1182,40 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
 //        this.itemHandler.setStackInSlot(0, stack);
     }
 
+    public void forceTurnPage(int turnPage, int chapter, int page) {
+        if (currentBook == null)
+            return;
+
+        if (turnPage == -2) {
+            turnPage += 2;
+            if (EffectiveSide.get().isClient())
+                ClientSounds.playBookCloseSound();
+
+            if (currentBook.isOpened())
+                currentBook = currentBook.setOpened(false);
+
+        }
+        this.turnPage = turnPage;
+        this.turnToChapter = chapter;
+        this.turnToPage = page;
+
+        this.pageOneRotationRender = 0;
+        this.pageOneRotation = 0;
+        this.pageOneRotationTo = 0;
+        this.pageOneRotationLast = this.pageOneRotation;
+        this.pageTwoRotationRender = 0;
+        this.pageTwoRotation = 0;
+        this.pageTwoRotationTo = 0;
+        this.pageTwoRotationLast = this.pageTwoRotation;
+    }
+
     public void setTurnPage(int turnPage, int chapter, int page) {
+
+
+        if (this.fromItem) {
+            forceTurnPage(turnPage, chapter, page);
+            return;
+        }
 
         if (level.isClientSide) {
             HexereiPacketHandler.sendToServer(new BookTurnPageToServer(this, turnPage, chapter, page));
@@ -1179,7 +1264,42 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
             setTurnPage(turnPage, -1, -1);
     }
 
+    public void forcePageBookmark(int chapter, int page) {
+
+        if (EffectiveSide.get().isClient())
+            ClientSounds.playBookmarkSound();
+        if (this.currentBook != null) {
+            BookEntries bookEntries = BookManager.getBookEntries(this.currentBook.getBook());
+            if (bookEntries != null) {
+                List<BookData.Bookmarks.Slot> slots = this.currentBook.getBookmarks().getSlots();
+                boolean flag = false;
+                BookData.Bookmarks.Slot firstEmpty = null;
+                for (BookData.Bookmarks.Slot slot : slots) {
+                    if (!slot.getId().isEmpty()) {
+                        if (bookEntries.chapterList.get(chapter).pages.get(page).location.equals(slot.getId())) {
+                            slot.setColor(DyeColor.byId(slot.getColor().getId() + 1 >= DyeColor.values().length ? 0 : slot.getColor().getId() + 1));
+                            flag = true;
+                            break;
+                        }
+
+                    } else if (firstEmpty == null) {
+                        firstEmpty = slot;
+                    }
+                }
+                if (!flag && firstEmpty != null) {
+                    firstEmpty.setId(bookEntries.chapterList.get(chapter).pages.get(page).location);
+                    firstEmpty.setColor(DyeColor.values()[new Random().nextInt(DyeColor.values().length)]);
+                }
+            }
+        }
+    }
+
     public void clickPageBookmark(int chapter, int page) {
+
+        if (this.fromItem) {
+            forcePageBookmark(chapter, page);
+            return;
+        }
 
         if (level == null) return;
 
@@ -1191,29 +1311,32 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
             ItemStack stack = this.itemHandler.getStackInSlot(0).copy();
             BookData bookData = stack.get(ModDataComponents.BOOK);
             if (bookData != null) {
-                List<BookData.Bookmarks.Slot> slots = bookData.getBookmarks().getSlots();
-                boolean flag = false;
-                BookData.Bookmarks.Slot firstEmpty = null;
-                for (BookData.Bookmarks.Slot slot : slots) {
-                    if (!slot.getId().isEmpty()) {
-                        if (BookManager.getBookEntries().chapterList.get(chapter).pages.get(page).location.equals(slot.getId())) {
-                            slot.setColor(DyeColor.byId(slot.getColor().getId() + 1 >= DyeColor.values().length ? 0 : slot.getColor().getId() + 1));
-                            flag = true;
-                            break;
-                        }
+                BookEntries bookEntries = BookManager.getBookEntries(bookData.getBook());
+                if (bookEntries != null) {
+                    List<BookData.Bookmarks.Slot> slots = bookData.getBookmarks().getSlots();
+                    boolean flag = false;
+                    BookData.Bookmarks.Slot firstEmpty = null;
+                    for (BookData.Bookmarks.Slot slot : slots) {
+                        if (!slot.getId().isEmpty()) {
+                            if (bookEntries.chapterList.get(chapter).pages.get(page).location.equals(slot.getId())) {
+                                slot.setColor(DyeColor.byId(slot.getColor().getId() + 1 >= DyeColor.values().length ? 0 : slot.getColor().getId() + 1));
+                                flag = true;
+                                break;
+                            }
 
-                    } else if (firstEmpty == null) {
-                        firstEmpty = slot;
+                        } else if (firstEmpty == null) {
+                            firstEmpty = slot;
+                        }
+                    }
+                    if (!flag && firstEmpty != null) {
+                        firstEmpty.setId(bookEntries.chapterList.get(chapter).pages.get(page).location);
+                        firstEmpty.setColor(DyeColor.values()[new Random().nextInt(DyeColor.values().length)]);
                     }
                 }
-                if (!flag && firstEmpty != null) {
-                    firstEmpty.setId(BookManager.getBookEntries().chapterList.get(chapter).pages.get(page).location);
-                    firstEmpty.setColor(DyeColor.values()[new Random().nextInt(DyeColor.values().length)]);
-                }
-
-                stack.set(ModDataComponents.BOOK, bookData);
-                this.itemHandler.setStackInSlot(0, stack);
             }
+
+            stack.set(ModDataComponents.BOOK, bookData);
+            this.itemHandler.setStackInSlot(0, stack);
 
             HexereiPacketHandler.sendToNearbyClient(this.level, this.getBlockPos(), new BookSyncDataPacket(this.getBlockPos()));
 
@@ -1223,7 +1346,24 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
 
     }
 
+    public void forceSwapBookmarks(int slot1, int slot2) {
+        if (EffectiveSide.get().isClient())
+            ClientSounds.playBookmarkSwapSound();
+        List<BookData.Bookmarks.Slot> slots = new ArrayList<>(currentBook.getBookmarks().getSlots());
+
+        BookData.Bookmarks.Slot temp = slots.get(slot1).copyWithIndex(slot2);
+        slots.set(slot1, slots.get(slot2).copyWithIndex(slot1));
+        slots.set(slot2, temp);
+
+        currentBook = currentBook.setBookmarks(new BookData.Bookmarks(slots));
+    }
+
     public void swapBookmarks(int slot1, int slot2) {
+
+        if (this.fromItem) {
+            forceSwapBookmarks(slot1, slot2);
+            return;
+        }
 
         if (level.isClientSide)
             HexereiPacketHandler.sendToServer(new BookBookmarkSwapToServer(this, slot1, slot2));
@@ -1250,7 +1390,24 @@ public class BookOfShadowsAltarTile extends RandomizableContainerBlockEntity imp
 
     }
 
+    public void forceDeleteBookmark(int slot1) {
+        if (EffectiveSide.get().isClient())
+            ClientSounds.playBookmarkDeleteSound();
+        List<BookData.Bookmarks.Slot> slots = new ArrayList<>(currentBook.getBookmarks().getSlots());
+
+        slots.set(slot1, new BookData.Bookmarks.Slot("", DyeColor.WHITE, slot1));
+
+        currentBook = currentBook.setBookmarks(new BookData.Bookmarks(slots));
+
+
+    }
+
     public void deleteBookmark(int slot1) {
+
+        if (this.fromItem) {
+            forceDeleteBookmark(slot1);
+            return;
+        }
 
         if (level.isClientSide)
             HexereiPacketHandler.sendToServer(new BookBookmarkDeleteToServer(this, slot1));

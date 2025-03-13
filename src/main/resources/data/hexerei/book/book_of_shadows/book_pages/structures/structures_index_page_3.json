@@ -1,0 +1,105 @@
+{
+  "name": "book.hexerei.index_name",
+  "images": [
+    {
+      "x": 2.5,
+      "y": 1.5,
+      "u": 0,
+      "v": 0,
+      "width": 165,
+      "height": 165,
+      "imageWidth": 165,
+      "imageHeight": 165,
+      "scale": 0.35,
+      "texture": "hexerei:textures/book/pictures/nature_coven.png",
+      "hyperlink":
+      {
+        "chapter": 4,
+        "page": 7,
+        "id": "hexerei:book_of_shadows/book_pages/structures/structures_nature_coven_page_1"
+      },
+      "tooltip": [
+        {
+          "color_hex": "808080",
+          "text": "book.hexerei.tooltip_go_to_page"
+        },
+        {
+          "color_hex": "16777215",
+          "text": " - ",
+          "type": "append"
+        },
+        {
+          "color_hex": "CCB37E",
+          "text": "book.hexerei.structures_nature_coven_page_1.passage_1",
+          "type": "append"
+        }
+      ],
+      "effects": [
+        {
+          "type": "hover_change_texture",
+          "image": {
+            "u": 0,
+            "v": 0,
+            "width": 165,
+            "height": 165,
+            "imageWidth": 165,
+            "imageHeight": 165,
+            "texture": "hexerei:textures/book/pictures/nature_coven_hover.png",
+            "effects": [
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "x": 2.5,
+      "y": 5,
+      "u": 0,
+      "v": 0,
+      "width": 165,
+      "height": 165,
+      "imageWidth": 165,
+      "imageHeight": 165,
+      "scale": 0.35,
+      "texture": "hexerei:textures/book/pictures/owl_post_office.png",
+      "hyperlink":
+      {
+        "chapter": 4,
+        "page": 8,
+        "id": "hexerei:book_of_shadows/book_pages/structures/structures_owl_post_office_page_1"
+      },
+      "tooltip": [
+        {
+          "color_hex": "808080",
+          "text": "book.hexerei.tooltip_go_to_page"
+        },
+        {
+          "color_hex": "16777215",
+          "text": " - ",
+          "type": "append"
+        },
+        {
+          "color_hex": "CCB37E",
+          "text": "book.hexerei.structures_owl_post_office_page_1.passage_1",
+          "type": "append"
+        }
+      ],
+      "effects": [
+        {
+          "type": "hover_change_texture",
+          "image": {
+            "u": 0,
+            "v": 0,
+            "width": 165,
+            "height": 165,
+            "imageWidth": 165,
+            "imageHeight": 165,
+            "texture": "hexerei:textures/book/pictures/owl_post_office_hover.png",
+            "effects": [
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
