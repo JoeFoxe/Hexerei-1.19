@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -21,6 +22,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -40,6 +42,7 @@ import org.joml.Matrix4f;
 
 import java.awt.*;
 import java.util.Objects;
+import java.util.Optional;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.LIT;
 
@@ -177,53 +180,68 @@ public class MixingCauldronRenderer implements BlockEntityRenderer<MixingCauldro
 
 
 
-    public static void renderFluidBox(FluidStack fluidStack, float xMin, float yMin, float zMin, float xMax, float yMax,
-                                      float zMax, MultiBufferSource buffer, PoseStack ms, int light, boolean renderBottom, int waterColor) {
-        renderFluidBox(fluidStack, xMin, yMin, zMin, xMax, yMax, zMax, buffer.getBuffer(RenderType.translucentNoCrumbling()), ms, light,
-                renderBottom, waterColor);
+//    public static void renderFluidBox(FluidStack fluidStack, float xMin, float yMin, float zMin, float xMax, float yMax,
+//                                      float zMax, MultiBufferSource buffer, PoseStack ms, int light, boolean renderBottom, int waterColor) {
+//        renderFluidBox(fluidStack, xMin, yMin, zMin, xMax, yMax, zMax, buffer.getBuffer(RenderType.translucentNoCrumbling()), ms, light,
+//                renderBottom, waterColor);
+//    }
+
+    public static Optional<TextureAtlasSprite> getStillFluidSprite(FluidStack fluidStack) {
+        Fluid fluid = fluidStack.getFluid();
+        IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid);
+        ResourceLocation fluidStill = renderProperties.getStillTexture(fluidStack);
+        return Optional.ofNullable(fluidStill)
+                .map(f -> Minecraft.getInstance()
+                        .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                        .apply(f)
+                )
+                .filter(s -> s.atlasLocation() != MissingTextureAtlasSprite.getLocation());
     }
 
     public static void renderFluidBox(FluidStack fluidStack, float xMin, float yMin, float zMin, float xMax, float yMax,
-                                      float zMax, VertexConsumer builder, PoseStack matrixStack, int light, boolean renderBottom, int waterColor) {
+                                      float zMax, MultiBufferSource buffer, PoseStack matrixStack, int light, boolean renderBottom, int waterColor) {
         Fluid fluid = fluidStack.getFluid();
         IClientFluidTypeExtensions clientFluid = IClientFluidTypeExtensions.of(fluid);
         FluidType fluidAttributes = fluid.getFluidType();
-        TextureAtlasSprite fluidTexture = Minecraft.getInstance()
-                .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                .apply(clientFluid.getStillTexture(fluidStack));
 
-        int color = clientFluid.getTintColor(fluidStack);
-        int a = (color >> 24) & 255;
 
-        if(fluidStack.isFluidEqual(new FluidStack(Fluids.WATER, 1)))
-            color = a << 24 | waterColor;
+        getStillFluidSprite(fluidStack).ifPresent((fluidTexture) -> {
+            VertexConsumer builder = buffer.getBuffer(RenderType.entityTranslucentCull(fluidTexture.atlasLocation()));
+            int color = clientFluid.getTintColor(fluidStack);
+            int a = (color >> 24) & 255;
+            int r = color >> 16 & 255;
+            int g = color >> 8 & 255;
+            int b = color >> 0 & 255;
 
-        int blockLightIn = (light >> 4) & 0xF;
-        int luminosity = Math.max(blockLightIn, fluidAttributes.getLightLevel(fluidStack));
-        light = (light & 0xF00000) | luminosity << 4;
+            if(fluidStack.isFluidEqual(new FluidStack(Fluids.WATER, 1)))
+                color = a << 24 | waterColor;
 
-        matrixStack.pushPose();
-        for (Direction side : Direction.values()) {
-            if (side == Direction.DOWN && !renderBottom)
-                continue;
 
-            boolean positive = side.getAxisDirection() == Direction.AxisDirection.POSITIVE;
-            if (side.getAxis()
-                    .isHorizontal()) {
-                if (side.getAxis() == Direction.Axis.X) {
-                    renderStillTiledFace(side, zMin, yMin, zMax, yMax, positive ? xMax : xMin, builder, matrixStack, light,
-                            color, fluidTexture);
+            int blockLightIn = (light >> 4) & 0xF;
+            int luminosity = Math.max(blockLightIn, fluidAttributes.getLightLevel(fluidStack));
+            int lightFF = (light & 0xF00000) | luminosity << 4;
+
+            matrixStack.pushPose();
+            for (Direction side : Direction.values()) {
+                if (side == Direction.DOWN && !renderBottom)
+                    continue;
+
+                boolean positive = side.getAxisDirection() == Direction.AxisDirection.POSITIVE;
+                if (side.getAxis()
+                        .isHorizontal()) {
+                    if (side.getAxis() == Direction.Axis.X) {
+                        renderStillTiledFace(side, zMin, yMin, zMax, yMax, positive ? xMax : xMin, builder, matrixStack, lightFF, color, fluidTexture);
+                    } else {
+                        renderStillTiledFace(side, xMin, yMin, xMax, yMax, positive ? zMax : zMin, builder, matrixStack, lightFF, color, fluidTexture);
+                    }
                 } else {
-                    renderStillTiledFace(side, xMin, yMin, xMax, yMax, positive ? zMax : zMin, builder, matrixStack, light,
-                            color, fluidTexture);
+                    renderStillTiledFace(side, xMin, zMin, xMax, zMax, positive ? yMax : yMin, builder, matrixStack, lightFF, color, fluidTexture);
                 }
-            } else {
-                renderStillTiledFace(side, xMin, zMin, xMax, zMax, positive ? yMax : yMin, builder, matrixStack, light, color,
-                        fluidTexture);
             }
-        }
 
-        matrixStack.popPose();
+            matrixStack.popPose();
+        });
+
     }
 
     public static void renderStillTiledFace(Direction dir, float left, float down, float right, float up, float depth,

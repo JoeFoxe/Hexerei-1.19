@@ -179,6 +179,8 @@ public class Hexerei {
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, HexConfig.CLIENT_CONFIG, "Hexerei-client.toml");
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, HexConfig.COMMON_CONFIG, "Hexerei-common.toml");
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> Mod.EventBusSubscriber.Bus.FORGE.bus().get().register(ClientEvents.class));
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(ClientEvents::onRegisterAdditionalModels));
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(ClientEvents::onBakeModels));
 
 		ModItems.register(eventBus);
 		ModBlocks.register(eventBus);

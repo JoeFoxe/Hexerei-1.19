@@ -7,17 +7,18 @@ import net.joefoxe.hexerei.Hexerei;
 import net.joefoxe.hexerei.block.ModBlocks;
 import net.joefoxe.hexerei.client.renderer.ModRenderTypes;
 import net.joefoxe.hexerei.data.recipes.MoonPhases;
+import net.joefoxe.hexerei.event.ClientEvents;
 import net.joefoxe.hexerei.tileentity.CrystalBallTile;
 import net.joefoxe.hexerei.util.HexereiUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.animal.Sheep;
@@ -30,6 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.RenderTypeHelper;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.client.model.data.ModelData;
 import org.joml.Matrix4f;
@@ -55,7 +57,38 @@ public class CrystalBallRenderer implements BlockEntityRenderer<CrystalBallTile>
         poseStack.translate(0f/16f , tileEntityIn.orbOffset/16f, 0f/16f);
         poseStack.mulPose(Axis.YP.rotationDegrees(-Mth.rotLerp(partialTicks, tileEntityIn.degreesSpunOld, tileEntityIn.degreesSpun) * 4));
 
-        renderBlock(poseStack, bufferIn, combinedLightIn, combinedOverlayIn, ModBlocks.CRYSTAL_BALL_ORB.get().defaultBlockState(), null, 0xFFFFFF);
+        if (bufferIn instanceof MultiBufferSource.BufferSource bufferSource)
+            bufferSource.endBatch();
+
+        BakedModel orbModel = ClientEvents.ORB2_MODEL;
+        if (orbModel != null) {
+            BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
+            int i = -1;
+            float f = (float) (i >> 16 & 255) / 255.0F;
+            float f1 = (float) (i >> 8 & 255) / 255.0F;
+            float f2 = (float) (i & 255) / 255.0F;
+            for (RenderType rt : orbModel.getRenderTypes(ModBlocks.CRYSTAL_BALL.get().defaultBlockState(), RandomSource.create(42), ModelData.EMPTY))
+                dispatcher.getModelRenderer().renderModel(poseStack.last(), bufferIn.getBuffer(RenderTypeHelper.getEntityRenderType(rt, false)), ModBlocks.CRYSTAL_BALL.get().defaultBlockState(), orbModel, f, f1, f2, combinedLightIn, combinedOverlayIn, ModelData.EMPTY, rt);
+        }
+
+
+        if (bufferIn instanceof MultiBufferSource.BufferSource bufferSource)
+            bufferSource.endBatch();
+
+        orbModel = ClientEvents.ORB_MODEL;
+        if (orbModel != null) {
+            BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
+            int i = -1;
+            float f = (float) (i >> 16 & 255) / 255.0F;
+            float f1 = (float) (i >> 8 & 255) / 255.0F;
+            float f2 = (float) (i & 255) / 255.0F;
+            for (RenderType rt : orbModel.getRenderTypes(ModBlocks.CRYSTAL_BALL.get().defaultBlockState(), RandomSource.create(42), ModelData.EMPTY))
+                dispatcher.getModelRenderer().renderModel(poseStack.last(), bufferIn.getBuffer(RenderTypeHelper.getEntityRenderType(rt, false)), ModBlocks.CRYSTAL_BALL.get().defaultBlockState(), orbModel, f, f1, f2, combinedLightIn, combinedOverlayIn, ModelData.EMPTY, rt);
+        }
+
+        if (bufferIn instanceof MultiBufferSource.BufferSource bufferSource)
+            bufferSource.endBatch();
+
         poseStack.popPose();
 
         poseStack.pushPose();
@@ -106,10 +139,10 @@ public class CrystalBallRenderer implements BlockEntityRenderer<CrystalBallTile>
             }
         }
 
-        renderQuad(tileEntityIn, poseStack, xOffset, yOffset, bufferIn.getBuffer(ModRenderTypes.MOON_PHASE), partialTicks);
+        renderQuad(tileEntityIn, poseStack, xOffset, yOffset, bufferIn.getBuffer(ModRenderTypes.entityTranslucent(HexereiUtil.getResource("textures/gui/moon_phases.png"))), partialTicks);
 
         if (bufferIn instanceof MultiBufferSource.BufferSource bufferSource)
-            bufferSource.endBatch(ModRenderTypes.MOON_PHASE);
+            bufferSource.endBatch();
     }
 
     public void renderQuad(CrystalBallTile tileEntityIn, PoseStack poseStack, int xOffset, int yOffset, VertexConsumer consumer, float partialTicks) {
@@ -182,10 +215,20 @@ public class CrystalBallRenderer implements BlockEntityRenderer<CrystalBallTile>
 
         Matrix4f matrix = poseStack.last().pose();
 
-        consumer.vertex(matrix, offsets[0].x(), offsets[0].y(), offsets[0].z()).color(1, 1, 1, alpha).uv((xOffset + 8) / 256f, (yOffset + 8) / 256f).uv2(0xF000F0).endVertex();
-        consumer.vertex(matrix, offsets[1].x(), offsets[1].y(), offsets[1].z()).color(1, 1, 1, alpha).uv((xOffset) / 256f, (yOffset + 8) / 256f).uv2(0xF000F0).endVertex();
-        consumer.vertex(matrix, offsets[2].x(), offsets[2].y(), offsets[2].z()).color(1, 1, 1, alpha).uv((xOffset) / 256f, yOffset / 256f).uv2(0xF000F0).endVertex();
-        consumer.vertex(matrix, offsets[3].x(), offsets[3].y(), offsets[3].z()).color(1, 1, 1, alpha).uv((xOffset + 8) / 256f, yOffset / 256f).uv2(0xF000F0).endVertex();
+        consumer.vertex(matrix, offsets[0].x(), offsets[0].y(), offsets[0].z()).color(1, 1, 1, alpha).uv((xOffset + 8) / 256f, (yOffset + 8) / 256f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(0, 0, -1).endVertex();
+        consumer.vertex(matrix, offsets[1].x(), offsets[1].y(), offsets[1].z()).color(1, 1, 1, alpha).uv((xOffset) / 256f, (yOffset + 8) / 256f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(0, 0, -1).endVertex();
+        consumer.vertex(matrix, offsets[2].x(), offsets[2].y(), offsets[2].z()).color(1, 1, 1, alpha).uv((xOffset) / 256f, yOffset / 256f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(0, 0, -1).endVertex();
+        consumer.vertex(matrix, offsets[3].x(), offsets[3].y(), offsets[3].z()).color(1, 1, 1, alpha).uv((xOffset + 8) / 256f, yOffset / 256f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(0, 0, -1).endVertex();
+//
+//        consumer.vertex(matrix, offsets[0].x(), offsets[0].y(), offsets[0].z()).color(1, 1, 1, alpha).uv((xOffset + 8) / 256f, (yOffset + 8) / 256f).uv2(0xF000F0).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 1, 0).endVertex();
+//        consumer.vertex(matrix, offsets[1].x(), offsets[1].y(), offsets[1].z()).color(1, 1, 1, alpha).uv((xOffset) / 256f, (yOffset + 8) / 256f).uv2(0xF000F0).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 1, 0).endVertex();
+//        consumer.vertex(matrix, offsets[2].x(), offsets[2].y(), offsets[2].z()).color(1, 1, 1, alpha).uv((xOffset) / 256f, yOffset / 256f).uv2(0xF000F0).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 1, 0);
+//        consumer.vertex(matrix, offsets[3].x(), offsets[3].y(), offsets[3].z()).color(1, 1, 1, alpha).uv((xOffset + 8) / 256f, yOffset / 256f).uv2(0xF000F0).overlayCoords(OverlayTexture.NO_OVERLAY).normal(0, 1, 0).endVertex();
+
+//        consumer.addVertex(matrix, offsets[0].x(), offsets[0].y(), offsets[0].z()).setColor(1, 1, 1, alpha).setUv((xOffset + 8) / 256f, (yOffset + 8) / 256f).setNormal(0, 1, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0);
+//        consumer.addVertex(matrix, offsets[1].x(), offsets[1].y(), offsets[1].z()).setColor(1, 1, 1, alpha).setUv((xOffset) / 256f, (yOffset + 8) / 256f).setNormal(0, 1, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0);
+//        consumer.addVertex(matrix, offsets[2].x(), offsets[2].y(), offsets[2].z()).setColor(1, 1, 1, alpha).setUv((xOffset) / 256f, yOffset / 256f).setNormal(0, 1, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0);
+//        consumer.addVertex(matrix, offsets[3].x(), offsets[3].y(), offsets[3].z()).setColor(1, 1, 1, alpha).setUv((xOffset + 8) / 256f, yOffset / 256f).setNormal(0, 1, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0);
 
         poseStack.popPose();
     }
