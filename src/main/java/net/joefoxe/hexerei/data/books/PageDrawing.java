@@ -5570,10 +5570,13 @@ public class PageDrawing {
                         if (bookParagraph.align.equals("middle"))
                             offsetX = (font.width(s1)) / 2;
 
-                        font.drawInBatch(s1, (box.x * 8f) - 24 - offsetX, ((box.y * font.lineHeight) + (linenumber * font.lineHeight)) - 4 + offsetY, HexereiUtil.getColorValue(0.12f, 0.12f, 0.12f), false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
+                        var component = Component.literal(s1);
+                        if (ClientProxy.fontId() != null)
+                            component = component.withStyle(Style.EMPTY.withFont(ClientProxy.fontId()));
+                        Minecraft.getInstance().font.drawInBatch(component, (box.x * 8f) - 24 - offsetX, ((box.y * font.lineHeight) + (linenumber * font.lineHeight)) - 4 + offsetY, HexereiUtil.getColorValue(0.12f, 0.12f, 0.12f), false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
                         poseStack.pushPose();
                         poseStack.translate(0.25f, 0.25f, 1 / 16f);
-                        font.drawInBatch(s1, (box.x * 8f) - 24 - offsetX, ((box.y * font.lineHeight) + (linenumber * font.lineHeight)) - 4 + offsetY, 16777216, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
+                        Minecraft.getInstance().font.drawInBatch(component, (box.x * 8f) - 24 - offsetX, ((box.y * font.lineHeight) + (linenumber * font.lineHeight)) - 4 + offsetY, 16777216, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
                         poseStack.popPose();
                     } else {
                         remainder.add(s1);
@@ -5648,10 +5651,12 @@ public class PageDrawing {
             if ((linenumber + 1) * font.lineHeight <= Math.round(box.height * font.lineHeight) + 1) {
                 float offsetX = 0;
 
-                font.drawInBatch(line.asComponent, (box.x * 8f) - 24 - offsetX, ((box.y) * (font.lineHeight) + linenumber * font.lineHeight) - 4 + offsetY, HexereiUtil.getColorValue(0.12f, 0.12f, 0.12f), false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
+                Component component = ClientProxy.fontId() != null ? Component.literal("").append(line.asComponent).withStyle(Style.EMPTY.withFont(ClientProxy.fontId())) : line.asComponent;
+
+                font.drawInBatch(component, (box.x * 8f) - 24 - offsetX, ((box.y) * (font.lineHeight) + linenumber * font.lineHeight) - 4 + offsetY, HexereiUtil.getColorValue(0.12f, 0.12f, 0.12f), false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
                 poseStack.pushPose();
                 poseStack.translate(0.25f, 0.25f, 1 / 16f);
-                font.drawInBatch(line.asComponent, (box.x * 8f) - 24 - offsetX, ((box.y) * (font.lineHeight) + linenumber * font.lineHeight) - 4 + offsetY, 16777216, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
+                font.drawInBatch(component, (box.x * 8f) - 24 - offsetX, ((box.y) * (font.lineHeight) + linenumber * font.lineHeight) - 4 + offsetY, 16777216, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, light);
                 poseStack.popPose();
             }
             ++linenumber;

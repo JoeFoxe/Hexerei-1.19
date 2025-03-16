@@ -69,8 +69,16 @@
       "fluid_offset_x": 0,
       "fluid_offset_y": -4,
       "fluid": {
-        "id": "minecraft:water",
-        "amount": 1000
+        "id": "hexerei:potion",
+        "amount": 1000,
+        "components": {
+          "hexerei:potion_bottle_type": {
+            "Bottle": "REGULAR"
+          },
+          "minecraft:potion_contents": {
+            "potion": "minecraft:thick"
+          }
+        }
       }
     },
     {

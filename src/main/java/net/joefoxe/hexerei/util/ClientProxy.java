@@ -78,6 +78,15 @@ public class ClientProxy implements SidedProxy {
         }
     }
 
+    public static ResourceLocation fontId() {
+        if (ClientProxy.fontIndex == 0)
+            return null;
+        else {
+            int index = ClientProxy.fontIndex % HexConfig.FONT_LIST.get().size();
+            return ResourceLocation.parse(HexConfig.FONT_LIST.get().get(index));
+        }
+    }
+
     @Override
     public Player getPlayer() {
         return Minecraft.getInstance().player;

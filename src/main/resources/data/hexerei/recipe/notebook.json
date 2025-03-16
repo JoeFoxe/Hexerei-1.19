@@ -10,7 +10,7 @@
       "item": "minecraft:leather"
     },
     "A": {
-      "tag": "minecraft:feather"
+      "item": "minecraft:feather"
     },
     "B": {
       "item": "minecraft:book"

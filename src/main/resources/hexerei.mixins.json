@@ -5,7 +5,7 @@
   "refmap": "hexerei.refmap.json",
   "client": [
     "AbstractCandleBlockMixin",
-    "ClientPacketListenerMixin",
+    "HexereiClientPacketListenerMixin",
     "FogRendererMixin",
     "HumanoidArmorLayerMixin",
     "ItemInHandMixin",
