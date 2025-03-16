@@ -172,7 +172,7 @@ public class MixingCauldronRecipe implements Recipe<MixingCauldronRecipe.MixingC
 
     public FluidStack getLiquidOutput() { return this.fluidOutput.isEmpty() ? this.fluid.copy() : this.fluidOutput.copy(); }
 
-    public int getFluidLevelsConsumed() { return this.getLiquid().getAmount(); }
+    public int getFluidLevelsConsumed() { return this.getLiquidOutput().getAmount(); }
 
     public ItemStack getToastSymbol() {
         return new ItemStack(ModBlocks.MIXING_CAULDRON.get());

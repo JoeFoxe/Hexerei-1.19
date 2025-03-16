@@ -2763,7 +2763,7 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                     try{
                         BlockEntity entity = targetEntity;
 
-                        IItemHandler handler = level().getCapability(Capabilities.ItemHandler.BLOCK, entity.getBlockPos(), Direction.DOWN);
+                        IItemHandler handler = level().getCapability(Capabilities.ItemHandler.BLOCK, entity.getBlockPos(), null);
                         if(handler != null && cooldown == 0) {
                             ItemStack duplicate = CrowEntity.this.itemHandler.getStackInSlot(1).copy();
                             ItemStack insertSimulate = ItemHandlerHelper.insertItem(handler, duplicate, true);
@@ -2784,6 +2784,21 @@ public class CrowEntity extends TamableAnimal implements ContainerListener, Flyi
                     }
                     this.stop();
                 }
+            }
+        }
+
+        public static ItemStack insertItem(IItemHandler dest, ItemStack stack, boolean simulate) {
+            if (dest != null && !stack.isEmpty()) {
+                for(int i = 0; i < dest.getSlots(); ++i) {
+                    stack = dest.insertItem(i, stack, simulate);
+                    if (stack.isEmpty()) {
+                        return ItemStack.EMPTY;
+                    }
+                }
+
+                return stack;
+            } else {
+                return stack;
             }
         }
 

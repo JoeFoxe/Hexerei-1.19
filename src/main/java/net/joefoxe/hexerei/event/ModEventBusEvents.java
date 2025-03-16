@@ -36,7 +36,6 @@ public class ModEventBusEvents {
                 ModTileEntities.MIXING_CAULDRON_TILE,
                 ModTileEntities.DRYING_RACK_TILE,
                 ModTileEntities.PESTLE_AND_MORTAR_TILE,
-                ModTileEntities.HERB_JAR_TILE,
                 ModTileEntities.CANDLE_DIPPER_TILE,
                 ModTileEntities.CHEST_TILE,
                 ModTileEntities.SAGE_BURNING_PLATE_TILE,
@@ -46,6 +45,7 @@ public class ModEventBusEvents {
             event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, container.get(), (c, side) -> new InvWrapper(c));
         }
 
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModTileEntities.HERB_JAR_TILE.get(), (c, side) -> c.itemHandler);
 
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, ModTileEntities.MIXING_CAULDRON_TILE.get(), (c, side) -> c);
 

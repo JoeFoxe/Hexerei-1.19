@@ -584,7 +584,7 @@ public class MixingCauldronTile extends RandomizableContainerBlockEntity impleme
                             craftTheItem(output);
                             int temp = this.getFluidStack().getAmount();
                             this.getFluidStack().shrink(this.getTankCapacity(0));
-                            this.fill(new FluidStack(iRecipe.value().getLiquidOutput().getFluid(), temp), FluidAction.EXECUTE);
+                            this.fill(new FluidStack(iRecipe.value().getLiquidOutput().getFluid(), temp - iRecipe.value().getFluidLevelsConsumed()), FluidAction.EXECUTE);
 
                             //for setting a cooldown on crafting so the animations can take place
                             this.crafted = true;
