@@ -1,7 +1,6 @@
 package net.joefoxe.hexerei.block.custom;
 
 import com.mojang.datafixers.DataFixUtils;
-import net.joefoxe.hexerei.item.custom.FlowerOutputItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -12,7 +11,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +33,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.CommonHooks;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class PickableDoublePlant extends DoublePlantBlock implements BonemealableBlock {
     protected static final float AABB_OFFSET = 3.0F;
@@ -43,19 +40,19 @@ public class PickableDoublePlant extends DoublePlantBlock implements Bonemealabl
     protected static final VoxelShape SHAPE_BOTTOM = Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
     public static final int MAX_AGE = 3;
     public int type;
-    public ResourceKey<Item> firstOutput;
+    public ResourceKey<Item> firstOutputKey;
     public int maxFirstOutput;
-    public ResourceKey<Item> secondOutput;
+    public ResourceKey<Item> secondOutputKey;
     public int maxSecondOutput;
     public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
 
-    public PickableDoublePlant(Properties properties, ResourceKey<Item> firstOutput , int maxFirstOutput, ResourceKey<Item> secondOutput , int maxSecondOutput) {
+    public PickableDoublePlant(Properties properties, ResourceKey<Item> firstOutputKey , int maxFirstOutput, ResourceKey<Item> secondOutputKey , int maxSecondOutput) {
         super(properties);
 
-        this.firstOutput = firstOutput;
+        this.firstOutputKey = firstOutputKey;
         this.maxFirstOutput = maxFirstOutput;
-        this.secondOutput = secondOutput;
+        this.secondOutputKey = secondOutputKey;
         this.maxSecondOutput = maxSecondOutput;
 
         this.registerDefaultState(this.stateDefinition.any().setValue(AGE, 0).setValue(HALF, DoubleBlockHalf.LOWER));
@@ -64,9 +61,9 @@ public class PickableDoublePlant extends DoublePlantBlock implements Bonemealabl
     public PickableDoublePlant(Properties properties, ResourceKey<Item> firstOutput , int maxFirstOutput) {
         super(properties);
 
-        this.firstOutput = firstOutput;
+        this.firstOutputKey = firstOutput;
         this.maxFirstOutput = maxFirstOutput;
-        this.secondOutput = null;
+        this.secondOutputKey = null;
 
         this.registerDefaultState(this.stateDefinition.any().setValue(AGE, 0));
 
@@ -130,19 +127,13 @@ public class PickableDoublePlant extends DoublePlantBlock implements Bonemealabl
         int i = state.getValue(AGE);
         boolean flag = i == 3;
         if (i > 1) {
-
-
-            ItemStack firstOutput = new ItemStack(DataFixUtils.orElse(level.registryAccess().registryOrThrow(Registries.ITEM).getOptional(this.firstOutput), this), this.maxFirstOutput);
+            ItemStack firstOutput = new ItemStack(DataFixUtils.orElse(level.registryAccess().registryOrThrow(Registries.ITEM).getOptional(this.firstOutputKey), this), Math.max(1, level.random.nextInt(this.maxFirstOutput)) / (flag ? 1 : 2));
             ItemStack secondOutput = ItemStack.EMPTY;
-            if(this.secondOutput != null)
-                secondOutput = new ItemStack(DataFixUtils.orElse(level.registryAccess().registryOrThrow(Registries.ITEM).getOptional(this.secondOutput), this), this.maxSecondOutput);
-            int j = Math.max(1, level.random.nextInt(firstOutput.getCount()));
-            int k = 0;
-            if(this.secondOutput != null)
-                k = Math.max(1, level.random.nextInt(secondOutput.getCount()));
-            popResource(level, pos, new ItemStack(firstOutput.getItem(), Math.max(1,(int)Math.floor(j/2f)) + (flag ? (int)Math.ceil(j/2f) : 0)));
-            if (level.random.nextInt(2) == 0 && this.secondOutput != null)
-                popResource(level, pos, new ItemStack(secondOutput.getItem(), Math.max(1,(int)Math.floor(k/2f)) + (flag ? (int)Math.ceil(k/2f) : 0)));
+            if (this.secondOutputKey != null)
+                secondOutput = new ItemStack(DataFixUtils.orElse(level.registryAccess().registryOrThrow(Registries.ITEM).getOptional(this.secondOutputKey), this), Math.max(1, level.random.nextInt(this.maxSecondOutput)) / (flag ? 1 : 2));
+            popResource(level, pos, firstOutput);
+            if (level.random.nextInt(2) == 0 && this.secondOutputKey != null)
+                popResource(level, pos, secondOutput);
             level.playSound(null, pos, SoundEvents.CAVE_VINES_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.random.nextFloat() * 0.4F);
             if(state.getValue(HALF) == DoubleBlockHalf.LOWER) {
                 level.setBlock(pos, state.setValue(AGE, 0), 2);
