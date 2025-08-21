@@ -39,18 +39,18 @@ public class PickablePlant extends BushBlock implements BonemealableBlock {
     protected static final float AABB_OFFSET = 3.0F;
     protected static final VoxelShape SHAPE = Block.box(5.0D, 0.0D, 5.0D, 11.0D, 10.0D, 11.0D);
     public static final int MAX_AGE = 3;
-    public ResourceKey<Item> firstOutput;
+    public ResourceKey<Item> firstOutputKey;
     public int maxFirstOutput;
-    public ResourceKey<Item> secondOutput;
+    public ResourceKey<Item> secondOutputKey;
     public int maxSecondOutput;
     public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
 
 
     public static final MapCodec<PickablePlant> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                     propertiesCodec(),
-                    ResourceKey.codec(Registries.ITEM).fieldOf("firstOutput").forGetter(d -> d.firstOutput),
+                    ResourceKey.codec(Registries.ITEM).fieldOf("firstOutput").forGetter(d -> d.firstOutputKey),
                     Codec.INT.fieldOf("maxFirstOutput").forGetter(d -> d.maxFirstOutput),
-                    ResourceKey.codec(Registries.ITEM).fieldOf("secondOutput").forGetter(d -> d.secondOutput),
+                    ResourceKey.codec(Registries.ITEM).fieldOf("secondOutput").forGetter(d -> d.secondOutputKey),
                     Codec.INT.fieldOf("maxSecondOutput").forGetter(d -> d.maxSecondOutput)
             )
             .apply(instance, PickablePlant::new));
@@ -58,9 +58,9 @@ public class PickablePlant extends BushBlock implements BonemealableBlock {
     public PickablePlant(BlockBehaviour.Properties properties, ResourceKey<Item> firstOutput , int maxFirstOutput, ResourceKey<Item> secondOutput , int maxSecondOutput) {
         super(properties);
 
-        this.firstOutput = firstOutput;
+        this.firstOutputKey = firstOutput;
         this.maxFirstOutput = maxFirstOutput;
-        this.secondOutput = secondOutput;
+        this.secondOutputKey = secondOutput;
         this.maxSecondOutput = maxSecondOutput;
 
         this.registerDefaultState(this.stateDefinition.any().setValue(AGE, 0));
@@ -108,18 +108,13 @@ public class PickablePlant extends BushBlock implements BonemealableBlock {
         int i = state.getValue(AGE);
         boolean flag = i == 3;
         if (i > 1) {
-
-            ItemStack firstOutput = new ItemStack(DataFixUtils.orElse(level.registryAccess().registryOrThrow(Registries.ITEM).getOptional(this.secondOutput), this), this.maxSecondOutput);
+            ItemStack firstOutput = new ItemStack(DataFixUtils.orElse(level.registryAccess().registryOrThrow(Registries.ITEM).getOptional(this.firstOutputKey), this), Math.max(1, level.random.nextInt(this.maxFirstOutput)) / (flag ? 1 : 2));
             ItemStack secondOutput = ItemStack.EMPTY;
-            if (this.secondOutput != null)
-                secondOutput = new ItemStack(DataFixUtils.orElse(level.registryAccess().registryOrThrow(Registries.ITEM).getOptional(this.firstOutput), this), this.maxFirstOutput);
-            int j = Math.max(1, level.random.nextInt(firstOutput.getCount()));
-            int k = 0;
-            if (this.secondOutput != null)
-                k = Math.max(1, level.random.nextInt(secondOutput.getCount()));
-            popResource(level, pos, new ItemStack(firstOutput.getItem(), (int) Math.floor(j / 2f) + (flag ? (int) Math.ceil(j / 2f) : 0)));
-            if (level.random.nextInt(2) == 0 && this.secondOutput != null)
-                popResource(level, pos, new ItemStack(secondOutput.getItem(), (int) Math.floor(k / 2f) + (flag ? (int) Math.ceil(k / 2f) : 0)));
+            if (this.secondOutputKey != null)
+                secondOutput = new ItemStack(DataFixUtils.orElse(level.registryAccess().registryOrThrow(Registries.ITEM).getOptional(this.secondOutputKey), this), Math.max(1, level.random.nextInt(this.maxSecondOutput)) / (flag ? 1 : 2));
+            popResource(level, pos, firstOutput);
+            if (level.random.nextInt(2) == 0 && this.secondOutputKey != null)
+                popResource(level, pos, secondOutput);
             level.playSound(null, pos, SoundEvents.CAVE_VINES_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.random.nextFloat() * 0.4F);
             level.setBlock(pos, state.setValue(AGE, 0), 2);
 
