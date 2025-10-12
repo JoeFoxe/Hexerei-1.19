@@ -27,7 +27,7 @@ public class CandleData {
     public int height;
     public boolean lit;
     public float meltTimer;
-    public static int meltTimerMAX = 100;
+    public static int meltTimerMAX = 6000; // Sets the time to be 5 minutes instead of 5 seconds. This results in the 35mins total burn time.
     public int dyeColor;
     public int cooldown;
     public CandleLayer base;
