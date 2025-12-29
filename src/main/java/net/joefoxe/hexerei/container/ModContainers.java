@@ -71,8 +71,13 @@ public class ModContainers {
     public static final DeferredHolder<MenuType<?>, MenuType<BroomContainer>> BROOM_CONTAINER = CONTAINERS.register("broom_container",
             () -> new MenuType<>((IContainerFactory<BroomContainer>) (windowId, inv, data) -> {
                 Level world = inv.player.level();//new BroomEntity(world, pos.getX(), pos.getY(), pos.getZ())
-                int id = data.readInt();
+
+                if (data == null) {
+                    return new BroomContainer(windowId,new BroomEntity(world, 0, 0, 0), inv, inv.player, false);
+                }
+
                 boolean isEnder = data.readBoolean();
+                int id = data.readInt();
                 if(world.getEntity(id) != null)
                     return new BroomContainer(windowId,(BroomEntity)world.getEntity(id), inv, inv.player, isEnder);
                 else

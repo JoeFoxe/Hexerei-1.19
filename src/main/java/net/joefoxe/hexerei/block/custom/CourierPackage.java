@@ -28,6 +28,8 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -47,7 +49,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class CourierPackage extends BaseEntityBlock implements ITileEntity<CourierPackageTile>, SimpleWaterloggedBlock {
+public class CourierPackage extends Block implements ITileEntity<CourierPackageTile>, SimpleWaterloggedBlock, EntityBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final EnumProperty<State> STATE = EnumProperty.create("state", State.class);
 
@@ -92,7 +94,7 @@ public class CourierPackage extends BaseEntityBlock implements ITileEntity<Couri
     }
 
     @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
+    protected MapCodec<? extends Block> codec() {
         return CODEC;
     }
 
@@ -231,5 +233,10 @@ public class CourierPackage extends BaseEntityBlock implements ITileEntity<Couri
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return new CourierPackageTile(ModTileEntities.COURIER_PACKAGE_TILE.get(), pPos, pState);
+    }
+
+    @Nullable
+    protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> serverType, BlockEntityType<E> clientType, BlockEntityTicker<? super E> ticker) {
+        return clientType == serverType ? (BlockEntityTicker<A>)ticker : null;
     }
 }
