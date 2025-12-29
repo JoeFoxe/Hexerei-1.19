@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
-public class CandleDipper extends BaseEntityBlock implements ITileEntity<CandleDipperTile>, EntityBlock, SimpleWaterloggedBlock {
+public class CandleDipper extends Block implements ITileEntity<CandleDipperTile>, EntityBlock, SimpleWaterloggedBlock {
     public static final MapCodec<CandleDipper> CODEC = simpleCodec(CandleDipper::new);
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -132,7 +132,7 @@ public class CandleDipper extends BaseEntityBlock implements ITileEntity<CandleD
     }
 
     @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
+    protected MapCodec<? extends Block> codec() {
         return CODEC;
     }
 
@@ -229,5 +229,10 @@ public class CandleDipper extends BaseEntityBlock implements ITileEntity<CandleD
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> entityType){
         return entityType == ModTileEntities.CANDLE_DIPPER_TILE.get() ?
                 (world2, pos, state2, entity) -> ((CandleDipperTile)entity).tick() : null;
+    }
+
+    @Nullable
+    protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> serverType, BlockEntityType<E> clientType, BlockEntityTicker<? super E> ticker) {
+        return clientType == serverType ? (BlockEntityTicker<A>)ticker : null;
     }
 }

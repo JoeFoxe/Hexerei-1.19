@@ -62,7 +62,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, SimpleWaterloggedBlock {
+public class Coffer extends Block implements ITileEntity<CofferTile>, SimpleWaterloggedBlock, EntityBlock {
     public static final MapCodec<Coffer> CODEC = simpleCodec(Coffer::new);
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -73,7 +73,7 @@ public class Coffer extends BaseEntityBlock implements ITileEntity<CofferTile>, 
     }
 
     @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
+    protected MapCodec<? extends Block> codec() {
         return CODEC;
     }
 

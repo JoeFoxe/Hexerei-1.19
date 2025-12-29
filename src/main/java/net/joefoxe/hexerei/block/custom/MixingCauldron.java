@@ -54,10 +54,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.PointedDripstoneBlock;
-import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -93,7 +90,7 @@ import static net.joefoxe.hexerei.tileentity.renderer.MixingCauldronRenderer.MIN
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.LIT;
 
 @SuppressWarnings("deprecation")
-public class MixingCauldron extends BaseEntityBlock implements ITileEntity<MixingCauldronTile> {
+public class MixingCauldron extends Block implements ITileEntity<MixingCauldronTile>, EntityBlock {
 
     //Moved to constant in case this is changed in the future.
     public static final int POTION_MB_AMOUNT = 250;
@@ -610,5 +607,10 @@ public class MixingCauldron extends BaseEntityBlock implements ITileEntity<Mixin
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> entityType) {
         return entityType == ModTileEntities.MIXING_CAULDRON_TILE.get() ?
                 (world2, pos, state2, entity) -> ((MixingCauldronTile) entity).tick() : null;
+    }
+
+    @Nullable
+    protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> serverType, BlockEntityType<E> clientType, BlockEntityTicker<? super E> ticker) {
+        return clientType == serverType ? (BlockEntityTicker<A>)ticker : null;
     }
 }
